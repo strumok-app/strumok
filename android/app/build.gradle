@@ -65,7 +65,7 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("cloud_hook.jks")
+            storeFile file("strumok.jks")
             storePassword "cloud_hook"
             keyAlias "cloud_hook"
             keyPassword "cloud_hook"

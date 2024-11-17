@@ -9,7 +9,7 @@ class SettingsSection extends StatelessWidget {
   const SettingsSection({
     super.key,
     this.contentPadding = 8,
-    this.labelWidth = 320,
+    this.labelWidth = 300,
     required this.label,
     required this.section,
   });

@@ -30,13 +30,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Create secrets
         run: |
-          echo "$SECRETS_JSON" > secrets.json
-          echo "$GOOGLE_SERVICE_JSON" > android/app/google-services.json
-          echo "$ANDOID_KEYSTORE_B64" | base64 -di > android/app/cloud_hook.jks
+          echo "$SECRETS_JSON" | base64 -di > secrets.json
+          echo "$GOOGLE_SERVICE_JSON" | base64 -di > android/app/google-services.json
+          echo "$ANDOID_KEYSTORE" | base64 -di > android/app/cloud_hook.jks
         env:
           SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
           GOOGLE_SERVICE_JSON: ${{ secrets.GOOGLE_SERVICE_JSON }}
-          ANDOID_KEYSTORE_B64: ${{ secrets.ANDOID_KEYSTORE_B64 }}
+          ANDOID_KEYSTORE: ${{ secrets.ANDOID_KEYSTORE }}
         shell: bash
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -69,7 +69,7 @@ jobs:
       - name: Clone Repository
         uses: actions/checkout@v4
       - name: Create secrets
-        run: echo "$SECRETS_JSON" > secrets.json
+        run: echo "$SECRETS_JSON" | base64 -di > secrets.json
         env:
           SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
       - name: Install dependencies
@@ -102,8 +102,7 @@ jobs:
       - name: Clone Repository
         uses: actions/checkout@v4
       - name: Create secrets
-        run: |
-         echo "$SECRETS_JSON" > secrets.json
+        run: echo "$SECRETS_JSON" | base64 -di > secrets.json
         shell: bash
         env:
           SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
