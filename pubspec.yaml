@@ -108,8 +108,10 @@ flutter:
     - secrets.json
 
 flutter_launcher_icons:
-  android: "launcher_icon"
+  android: true 
   image_path: "data/icons/strumok.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "data/icons/strumok.png"
   windows:
     generate: true
     image_path: "data/icons/strumok.png"
