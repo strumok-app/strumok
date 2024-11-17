@@ -99,9 +99,17 @@ dev_dependencies:
   json_serializable: ^6.8.0
   flutter_lints: ^4.0.0
   riverpod_generator: ^2.4.0
+  flutter_launcher_icons: "^0.14.1"
 
 flutter:
   uses-material-design: true
   generate: true
   assets:
     - secrets.json
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "data/icons/strumok.png"
+  windows:
+    generate: true
+    image_path: "data/icons/strumok.png"
