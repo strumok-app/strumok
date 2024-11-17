@@ -26,15 +26,18 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
     );
   }
 
-  FilledButton _renderReadButton(BuildContext context) {
-    return FilledButton.tonalIcon(
-      autofocus: true,
-      onPressed: () {
-        context.push(
-            "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
-      },
-      icon: const Icon(Icons.menu_book_outlined),
-      label: Text(AppLocalizations.of(context)!.readButton),
+  Widget _renderReadButton(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: FilledButton.tonalIcon(
+        autofocus: true,
+        onPressed: () {
+          context.push(
+              "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
+        },
+        icon: const Icon(Icons.menu_book_outlined),
+        label: Text(AppLocalizations.of(context)!.readButton),
+      ),
     );
   }
 }

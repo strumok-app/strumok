@@ -200,7 +200,7 @@ class ContentDetailsView extends ConsumerWidget {
     return [
       SizedBox(height: paddings),
       Text(
-        AppLocalizations.of(context)!.recomendations,
+        AppLocalizations.of(context)!.recommendations,
         style: theme.textTheme.headlineSmall,
       ),
       SizedBox(height: paddings),
@@ -256,11 +256,14 @@ class _MediaCollectionItemButtons extends ConsumerWidget {
     return Row(
       children: [
         const SizedBox(height: 40),
-        CollectionItemStatusSelector.button(
-          collectionItem: data,
-          onSelect: (status) {
-            ref.read(provider.notifier).setStatus(status);
-          },
+        SizedBox(
+          width: 200,
+          child: CollectionItemStatusSelector.button(
+            collectionItem: data,
+            onSelect: (status) {
+              ref.read(provider.notifier).setStatus(status);
+            },
+          ),
         ),
         SizedBox(width: paddings),
         if (data.status != MediaCollectionItemStatus.none)

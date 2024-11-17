@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/content/manga/model.dart';
+import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content_suppliers/ffi_supplier_bundle_info.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -187,6 +188,40 @@ class AppPreferences {
           .where((type) => type.name == instance.getString("manga_reader_mode"))
           .firstOrNull ??
       MangaReaderMode.vertical;
+
+  static bool get videoPlayerSettingShuffleMode =>
+      instance.getBool("video_player_setting_shuffle_mode") ?? false;
+
+  static set videoPlayerSettingShuffleMode(bool enabled) =>
+      instance.setBool("video_player_setting_shuffle_mode", enabled);
+
+  static OnVideoEndsAction get videoPlayerSettingEndsAction =>
+      OnVideoEndsAction.values
+          .where((action) =>
+              action.name ==
+              instance.getString("video_player_setting_ends_action"))
+          .firstOrNull ??
+      OnVideoEndsAction.playNext;
+
+  static set videoPlayerSettingEndsAction(OnVideoEndsAction action) =>
+      instance.setString("video_player_setting_ends_action", action.name);
+
+  static StarVideoPosition get videoPlayerSettingStarFrom =>
+      StarVideoPosition.values
+          .where((startFrom) =>
+              startFrom.name ==
+              instance.getString("video_player_setting_star_from"))
+          .firstOrNull ??
+      StarVideoPosition.fromRemembered;
+
+  static set videoPlayerSettingStarFrom(StarVideoPosition startFrom) =>
+      instance.setString("video_player_setting_star_from", startFrom.name);
+
+  static int get videoPlayerSettingFixedPosition =>
+      instance.getInt("video_player_setting_fixed_position") ?? 0;
+
+  static set videoPlayerSettingFixedPosition(int pos) =>
+      instance.setInt("video_player_setting_fixed_position", pos);
 
   static set ffiSupplierBundleInfo(FFISupplierBundleInfo? info) {
     if (info == null) {

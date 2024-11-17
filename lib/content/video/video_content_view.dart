@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
+import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_content_desktop_view.dart';
 import 'package:strumok/content/video/video_content_mobile_view.dart';
 import 'package:strumok/content/video/video_content_tv_view.dart';
@@ -46,6 +48,7 @@ class PlayerController {
   final ValueNotifier<List<String>> errors = ValueNotifier([]);
 
   List<ContentMediaItemSource>? currentSources;
+  List<int> shuffledPositions = [];
 
   final WidgetRef _ref;
 
@@ -79,19 +82,27 @@ class PlayerController {
 
       final link = await video.link;
 
-      Duration? start;
+      final startPosition = AppPreferences.videoPlayerSettingStarFrom;
+
       final currentItemPosition = progress.currentMediaItemPosition;
+      int start = switch (startPosition) {
+        StarVideoPosition.fromBeginning => 0,
+        StarVideoPosition.fromRemembered => progress.currentPosition,
+        StarVideoPosition.fromFixedPosition =>
+          AppPreferences.videoPlayerSettingFixedPosition,
+      };
+
       if (currentItemPosition.length > 0 &&
-          currentItemPosition.position > currentItemPosition.length - 60) {
-        start = Duration(seconds: currentItemPosition.length - 60);
-      } else {
-        start = Duration(seconds: progress.currentPosition);
+          start > currentItemPosition.length - 60) {
+        start = start - 60;
+      } else if (start < 0) {
+        start = 0;
       }
 
       final media = Media(
         link.toString(),
         httpHeaders: video.headers,
-        start: start,
+        start: Duration(seconds: start),
       );
 
       isLoading.value = false;
@@ -136,6 +147,12 @@ class PlayerController {
   }
 
   void nextItem() {
+    if (AppPreferences.videoPlayerSettingShuffleMode) {
+      final shuffledPosition = _getShuffledPOsition();
+      selectItem(shuffledPosition);
+      return;
+    }
+
     final asyncValue = _ref.read(collectionItemProvider(contentDetails));
 
     asyncValue.whenData((value) {
@@ -149,6 +166,17 @@ class PlayerController {
     asyncValue.whenData((value) {
       selectItem(value.currentItem - 1);
     });
+  }
+
+  void onVideoEnds() async {
+    switch (AppPreferences.videoPlayerSettingEndsAction) {
+      case OnVideoEndsAction.playNext:
+        nextItem();
+      case OnVideoEndsAction.playAgain:
+        await player.seek(Duration.zero);
+        await player.play();
+      case OnVideoEndsAction.doNothing: // do nothing
+    }
   }
 
   void selectItem(int itemIdx) {
@@ -167,6 +195,20 @@ class PlayerController {
 
   void addError(String error) {
     errors.value = [...errors.value, error];
+  }
+
+  int _getShuffledPOsition() {
+    if (shuffledPositions.isEmpty) {
+      final positions = List.generate(mediaItems.length, (i) => i);
+      final rng = Random();
+      while (positions.isNotEmpty) {
+        shuffledPositions.add(
+          positions.removeAt(rng.nextInt(positions.length)),
+        );
+      }
+    }
+
+    return shuffledPositions.removeAt(0);
   }
 }
 
@@ -242,7 +284,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
     // track video end
     player.stream.completed.listen((event) {
       if (event) {
-        playerController.nextItem();
+        playerController.onVideoEnds();
       }
     });
 

@@ -27,7 +27,7 @@ class Dropdown extends StatefulWidget {
 
   Dropdown.button({
     Key? key,
-    required String lable,
+    required String label,
     Icon? icon,
     Offset? alignmentOffset,
     MenuStyle? style,
@@ -37,7 +37,7 @@ class Dropdown extends StatefulWidget {
           anchorBuilder: (context, onPressed, child) => ElevatedButton.icon(
             onPressed: onPressed,
             icon: icon,
-            label: Text(lable),
+            label: Text(label),
           ),
           alignmentOffset: alignmentOffset,
           style: style,

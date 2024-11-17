@@ -31,15 +31,18 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
     );
   }
 
-  FilledButton _renderWatchButton(BuildContext context) {
-    return FilledButton.tonalIcon(
-      autofocus: true,
-      onPressed: () {
-        context.push(
-            "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
-      },
-      icon: const Icon(Icons.play_arrow_outlined),
-      label: Text(AppLocalizations.of(context)!.watchButton),
+  Widget _renderWatchButton(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: FilledButton.tonalIcon(
+        autofocus: true,
+        onPressed: () {
+          context.push(
+              "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
+        },
+        icon: const Icon(Icons.play_arrow_outlined),
+        label: Text(AppLocalizations.of(context)!.watchButton),
+      ),
     );
   }
 }

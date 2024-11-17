@@ -1,4 +1,7 @@
 import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_player_buttons.dart';
+import 'package:strumok/content/video/video_player_settings.dart';
+import 'package:strumok/content/video/video_source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
@@ -67,15 +70,14 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
       primaryButtonBar: [
         const Spacer(flex: 2),
         SkipPrevButton(
-          contentDetails: widget.playerController.contentDetails,
+          playerController: widget.playerController,
           iconSize: 36.0,
         ),
         const Spacer(),
         const MaterialPlayOrPauseButton(iconSize: 48.0),
         const Spacer(),
         SkipNextButton(
-          contentDetails: widget.playerController.contentDetails,
-          mediaItems: widget.playerController.mediaItems,
+          playerController: widget.playerController,
           iconSize: 36.0,
         ),
         const Spacer(flex: 2),
@@ -83,6 +85,7 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
       bottomButtonBar: [
         const MaterialPositionIndicator(),
         const Spacer(),
+        const PlayerSettingsButton(),
         SourceSelector(
           mediaItems: widget.playerController.mediaItems,
           contentDetails: widget.playerController.contentDetails,

@@ -83,6 +83,8 @@ class MainApp extends StatelessWidget {
           // initialLocation: "/settings/suppliers",
           // initialLocation:
           //     "/manga/MangaDex/77488c29-1c01-43d9-803e-e132fbb0f9b6",
+          // initialLocation:
+          //     "/video/AniTube/2710-cey-prekrasniy-svt-blagoslovenniy-bogom-2-sezon",
           // initialLocation: "/content/Eneyida/9339-sogun-shogun",
           routes: [
             GoRoute(

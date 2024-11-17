@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_player_buttons.dart';
+import 'package:strumok/content/video/video_player_settings.dart';
+import 'package:strumok/content/video/video_source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
@@ -365,16 +368,16 @@ class _AndroidTVBottomBar extends ConsumerWidget {
         children: [
           const MaterialDesktopPositionIndicator(),
           const Spacer(),
-          SkipPrevButton(contentDetails: contentDetails),
+          SkipPrevButton(playerController: playerController),
           PlayOrPauseButton(
             focusNode: !isLastItem ? playPauseFocusNode : null,
           ),
           SkipNextButton(
-            contentDetails: contentDetails,
-            mediaItems: playerController.mediaItems,
+            playerController: playerController,
             focusNode: isLastItem ? playPauseFocusNode : null,
           ),
           const Spacer(),
+          const PlayerSettingsButton(),
           SourceSelector(
             mediaItems: playerController.mediaItems,
             contentDetails: contentDetails,

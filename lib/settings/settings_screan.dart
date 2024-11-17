@@ -6,6 +6,7 @@ import 'package:strumok/settings/theme/brightnes_switcher.dart';
 import 'package:strumok/settings/theme/color_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:strumok/widgets/settings_section.dart';
 
 class SettingsScrean extends StatelessWidget {
   const SettingsScrean({super.key});
@@ -79,49 +80,13 @@ class _SettingsView extends StatelessWidget {
   }
 
   Widget _renderSection(BuildContext context, String label, Widget section) {
-    const padding = EdgeInsets.only(top: 8.0, bottom: 8.0);
-    final lableText = Padding(
-      padding: padding,
-      child: SizedBox(
-        width: 200,
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
+    return SettingsSection(
+      labelWidth: 200,
+      label: Text(
+        label,
+        style: Theme.of(context).textTheme.labelLarge,
       ),
-    );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 450) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                lableText,
-                Padding(
-                  padding: padding,
-                  child: section,
-                )
-              ],
-            );
-          } else {
-            return Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                lableText,
-                Expanded(
-                  child: Padding(
-                    padding: padding,
-                    child: section,
-                  ),
-                )
-              ],
-            );
-          }
-        },
-      ),
+      section: section,
     );
   }
 }

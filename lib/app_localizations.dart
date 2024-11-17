@@ -3,6 +3,7 @@ import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
+import 'package:strumok/content/video/model.dart';
 
 export 'package:flutter_gen/gen_l10n/app_localizations.dart'
     show AppLocalizations;
@@ -36,10 +37,10 @@ String statusLabel(
 ) {
   final localization = AppLocalizations.of(context)!;
   return switch (status) {
-    MediaCollectionItemStatus.inProgress => localization.statusLableWatchingNow,
-    MediaCollectionItemStatus.complete => localization.statusLableComplete,
-    MediaCollectionItemStatus.latter => localization.statusLableLatter,
-    MediaCollectionItemStatus.onHold => localization.statusLableOnHold,
+    MediaCollectionItemStatus.inProgress => localization.statusLabelWatchingNow,
+    MediaCollectionItemStatus.complete => localization.statusLabelComplete,
+    MediaCollectionItemStatus.latter => localization.statusLabelLatter,
+    MediaCollectionItemStatus.onHold => localization.statusLabelOnHold,
     _ => localization.addToCollection,
   };
 }
@@ -50,10 +51,10 @@ String statusMenuItemLabel(
 ) {
   final localization = AppLocalizations.of(context)!;
   return switch (status) {
-    MediaCollectionItemStatus.inProgress => localization.statusLableWatchingNow,
-    MediaCollectionItemStatus.complete => localization.statusLableComplete,
-    MediaCollectionItemStatus.latter => localization.statusLableLatter,
-    MediaCollectionItemStatus.onHold => localization.statusLablePutOnHold,
+    MediaCollectionItemStatus.inProgress => localization.statusLabelWatchingNow,
+    MediaCollectionItemStatus.complete => localization.statusLabelComplete,
+    MediaCollectionItemStatus.latter => localization.statusLabelLatter,
+    MediaCollectionItemStatus.onHold => localization.statusLabelPutOnHold,
     _ => localization.removeFromCollection,
   };
 }
@@ -90,13 +91,43 @@ String mangaReaderBackgroundLabel(
 String mangaReaderModeLabel(BuildContext context, MangaReaderMode mode) {
   final localization = AppLocalizations.of(context)!;
   return switch (mode) {
-    MangaReaderMode.vertical => localization.mangaReaderModeVerical,
+    MangaReaderMode.vertical => localization.mangaReaderModeVertical,
     MangaReaderMode.leftToRight => localization.mangaReaderModeLeftToRight,
     MangaReaderMode.rightToLeft => localization.mangaReaderModeRightToLeft,
-    MangaReaderMode.vericalScroll => localization.mangaReaderModeVericalScroll,
+    MangaReaderMode.vericalScroll => localization.mangaReaderModeVerticalScroll,
     MangaReaderMode.hotizontalScroll =>
       localization.mangaReaderModeHorizontalScroll,
     MangaReaderMode.hotizontalRtlScroll =>
       localization.mangaReaderModeHorizontalRtlScroll,
+  };
+}
+
+String videoPlayerSettingEndsAction(
+  BuildContext context,
+  OnVideoEndsAction action,
+) {
+  final localization = AppLocalizations.of(context)!;
+  return switch (action) {
+    OnVideoEndsAction.playNext =>
+      localization.videoPlayerEndsActionPlayNextLabel,
+    OnVideoEndsAction.playAgain =>
+      localization.videoPlayerEndsActionPlayAgainLabel,
+    OnVideoEndsAction.doNothing =>
+      localization.videoPlayerEndsActionDoNothingLabel,
+  };
+}
+
+String videoPlayerSettingStarFrom(
+  BuildContext context,
+  StarVideoPosition from,
+) {
+  final localization = AppLocalizations.of(context)!;
+  return switch (from) {
+    StarVideoPosition.fromBeginning =>
+      localization.videoPlayerSettingStarFromBeginning,
+    StarVideoPosition.fromRemembered =>
+      localization.videoPlayerSettingStarFromRemembered,
+    StarVideoPosition.fromFixedPosition =>
+      localization.videoPlayerSettingStarFromFixed,
   };
 }

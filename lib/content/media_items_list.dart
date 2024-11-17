@@ -32,7 +32,7 @@ class MediaItemsListRoute<T> extends PopupRoute<T> {
     required this.mediaItems,
     this.contentProgress,
     required this.onSelect,
-    this.itemBuilder = videoItemBuilder,
+    this.itemBuilder = playlistItemBuilder,
   });
 
   @override

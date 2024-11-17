@@ -1,4 +1,7 @@
 import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_player_buttons.dart';
+import 'package:strumok/content/video/video_player_settings.dart';
+import 'package:strumok/content/video/video_source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -124,12 +127,9 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
           )
       ],
       bottomButtonBar: [
-        SkipPrevButton(contentDetails: playerController.contentDetails),
+        SkipPrevButton(playerController: playerController),
         const PlayOrPauseButton(),
-        SkipNextButton(
-          contentDetails: playerController.contentDetails,
-          mediaItems: playerController.mediaItems,
-        ),
+        SkipNextButton(playerController: playerController),
         const MaterialDesktopVolumeButton(),
         const MaterialDesktopPositionIndicator(),
         const Spacer(),
@@ -138,6 +138,7 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
             onPressed: _switchToPipMode,
             icon: const Icon(Symbols.pip),
           ),
+        const PlayerSettingsButton(),
         SourceSelector(
           mediaItems: playerController.mediaItems,
           contentDetails: playerController.contentDetails,

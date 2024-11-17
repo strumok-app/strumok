@@ -21,7 +21,7 @@ class ActiveCollectionItemsView extends ConsumerWidget {
 
     if (groups.containsKey(MediaCollectionItemStatus.inProgress)) {
       items = groups[MediaCollectionItemStatus.inProgress]?.toList();
-      title = AppLocalizations.of(context)!.collectionContiue;
+      title = AppLocalizations.of(context)!.collectionContinue;
     } else if (groups.containsKey(MediaCollectionItemStatus.latter)) {
       items = groups[MediaCollectionItemStatus.latter]?.toList();
       title = AppLocalizations.of(context)!.collectionBegin;
