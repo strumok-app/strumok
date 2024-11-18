@@ -9,7 +9,7 @@ typedef AnchorChildBuilder = Function(
 typedef MenuChildrenBuildert = List<Widget> Function(FocusNode focusNode);
 
 class Dropdown extends StatefulWidget {
-  final MenuChildrenBuildert menuChildrenBulder;
+  final MenuChildrenBuildert menuChildrenBuilder;
   final AnchorChildBuilder? anchorBuilder;
   final Offset? alignmentOffset;
   final MenuStyle? style;
@@ -20,7 +20,7 @@ class Dropdown extends StatefulWidget {
   const Dropdown({
     super.key,
     required this.anchorBuilder,
-    required this.menuChildrenBulder,
+    required this.menuChildrenBuilder,
     this.alignmentOffset,
     this.style,
   });
@@ -41,7 +41,7 @@ class Dropdown extends StatefulWidget {
           ),
           alignmentOffset: alignmentOffset,
           style: style,
-          menuChildrenBulder: menuChildrenBulder,
+          menuChildrenBuilder: menuChildrenBulder,
         );
 
   Dropdown.iconButton({
@@ -58,7 +58,7 @@ class Dropdown extends StatefulWidget {
           ),
           alignmentOffset: alignmentOffset,
           style: style,
-          menuChildrenBulder: menuChildrenBulder,
+          menuChildrenBuilder: menuChildrenBulder,
         );
 }
 
@@ -105,7 +105,7 @@ class _DropdownState extends State<Dropdown> {
           },
           child: FocusScope(
             child: Column(
-              children: widget.menuChildrenBulder(_focusNode),
+              children: widget.menuChildrenBuilder(_focusNode),
             ),
           ),
         )

@@ -30,7 +30,7 @@ class HorizontalListCard extends HookWidget {
     final theme = Theme.of(context);
     final focused = useState(false);
 
-    var imageWidth = isMobile(context) ? 150.0 : 195.0;
+    var imageWidth = isMobile(context) ? 165.0 : 195.0;
     final imageHeight = imageWidth * 1.5;
 
     return Card(

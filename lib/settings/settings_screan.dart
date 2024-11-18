@@ -65,7 +65,10 @@ class _SettingsView extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                     leading: const Icon(Icons.chevron_right),
                     horizontalTitleGap: 8,
-                    title: Text(AppLocalizations.of(context)!.suppliers),
+                    title: Text(
+                      AppLocalizations.of(context)!
+                          .settingsSuppliersAndRecommendations,
+                    ),
                     onTap: () {
                       context.push("/settings/suppliers");
                     },

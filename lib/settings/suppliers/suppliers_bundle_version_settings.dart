@@ -36,7 +36,7 @@ class _SuppliersBundleInstall extends ConsumerWidget {
         latestBundle.when(
           data: (info) => SuppliersBundleDownload(
             info: info,
-            lable: const Text("Встановити"),
+            label: const Text("Встановити"),
           ),
           loading: () => const SizedBox(
             height: 16,
@@ -90,14 +90,14 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
   Widget renderUpdateButton(
     BuildContext context,
     WidgetRef ref,
-    FFISupplierBundleInfo lattestInfo,
+    FFISupplierBundleInfo latestInfo,
     bool hasNewVersion,
   ) {
     if (hasNewVersion) {
       return SuppliersBundleDownload(
-        info: lattestInfo,
-        lable: Text(AppLocalizations.of(context)!
-            .settingsDownloadUpdate(lattestInfo.version)),
+        info: latestInfo,
+        label: Text(AppLocalizations.of(context)!
+            .settingsDownloadUpdate(latestInfo.version)),
       );
     }
 
@@ -110,12 +110,12 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
 
 class SuppliersBundleDownload extends ConsumerWidget {
   final FFISupplierBundleInfo info;
-  final Widget lable;
+  final Widget label;
 
   const SuppliersBundleDownload({
     super.key,
     required this.info,
-    required this.lable,
+    required this.label,
   });
 
   @override
@@ -133,13 +133,13 @@ class SuppliersBundleDownload extends ConsumerWidget {
               ),
             ),
             onPressed: null,
-            label: lable,
+            label: label,
           )
         : FilledButton(
             onPressed: () {
               ref.read(provider.notifier).download();
             },
-            child: lable,
+            child: label,
           );
   }
 }

@@ -22,7 +22,7 @@ class CollectionItemStatusSelector extends StatelessWidget {
     return Dropdown(
       anchorBuilder: anchorBuilder,
       alignmentOffset: alignmentOffset,
-      menuChildrenBulder: (focusNode) => _statusMenuItems(context, focusNode),
+      menuChildrenBuilder: (focusNode) => _statusMenuItems(context, focusNode),
     );
   }
 

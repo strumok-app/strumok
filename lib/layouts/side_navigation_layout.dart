@@ -22,7 +22,7 @@ class SideNavigationLayout extends StatelessWidget {
         .map(
           (r) => NavigationRailDestination(
             icon: r.icon,
-            label: Text(r.lableBuilder(context)),
+            label: Text(r.labelBuilder(context)),
           ),
         )
         .toList();
@@ -33,8 +33,9 @@ class SideNavigationLayout extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: NavigationRail(
-              leading:
-                  showBackButton ? const BackNavButton() : const AuthIcon(),
+              leading: showBackButton
+                  ? const BackNavButton()
+                  : const DesktopAuthIcon(),
               trailing: const SizedBox.square(dimension: 48),
               selectedIndex: selectedIndex,
               groupAlignment: 0.0,

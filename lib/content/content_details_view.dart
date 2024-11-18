@@ -14,7 +14,11 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:readmore/readmore.dart';
+import 'package:strumok/widgets/horizontal_list.dart';
 
+const imageRatio = .45;
+
+// maybe should split into different layouts depends of screen width
 class ContentDetailsView extends ConsumerWidget {
   final ContentDetails contentDetails;
 
@@ -23,8 +27,6 @@ class ContentDetailsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mobile = _isCompactLayout(context);
-
-    const imageRatio = .45;
 
     return LayoutBuilder(
       builder: (context, constraints) => Stack(
@@ -38,8 +40,8 @@ class ContentDetailsView extends ConsumerWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: CachedNetworkImageProvider(contentDetails.image),
-                  fit: mobile ? BoxFit.fitWidth : BoxFit.fitHeight,
-                  alignment: Alignment.topRight,
+                  fit: mobile ? BoxFit.cover : BoxFit.fitHeight,
+                  alignment: mobile ? Alignment.topCenter : Alignment.topRight,
                 ),
               ),
             ),
@@ -47,9 +49,7 @@ class ContentDetailsView extends ConsumerWidget {
           SingleChildScrollView(
             child: _renderMainInfo(
               context,
-              mobile
-                  ? constraints.maxWidth
-                  : constraints.maxWidth * (1 - imageRatio),
+              constraints,
             ),
           )
         ],
@@ -57,19 +57,19 @@ class ContentDetailsView extends ConsumerWidget {
     );
   }
 
-  Widget _renderMainInfo(BuildContext context, double width) {
+  Widget _renderMainInfo(BuildContext context, BoxConstraints constraints) {
     final paddings = getPadding(context);
     final mobile = _isCompactLayout(context);
     final theme = Theme.of(context);
-    final size = MediaQuery.sizeOf(context);
 
     return SizedBox(
-      width: width,
+      width: mobile
+          ? constraints.maxWidth
+          : constraints.maxWidth * (1 - imageRatio),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _renderTitle(context),
-          if (mobile) SizedBox(height: size.height * .5),
+          _renderTitleBox(context, constraints),
           Container(
             padding: mobile
                 ? EdgeInsets.symmetric(horizontal: paddings)
@@ -83,11 +83,14 @@ class ContentDetailsView extends ConsumerWidget {
                 const SizedBox(height: 8),
                 _renderContentActions(contentDetails),
                 _MediaCollectionItemButtons(contentDetails),
-                ..._renderAdditionalInfo(context),
+                const SizedBox(height: 8),
+                _renderAdditionalInfo(context),
                 const SizedBox(height: 8),
                 _renderDescription(context),
-                if (contentDetails.similar.isNotEmpty)
-                  ..._renderSimilar(context),
+                if (contentDetails.similar.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  _renderSimilar(context),
+                ],
                 const SizedBox(height: 8),
               ],
             ),
@@ -97,7 +100,7 @@ class ContentDetailsView extends ConsumerWidget {
     );
   }
 
-  Widget _renderTitle(BuildContext context) {
+  Widget _renderTitleBox(BuildContext context, BoxConstraints constrains) {
     final theme = Theme.of(context);
     final compact = _isCompactLayout(context);
 
@@ -124,19 +127,29 @@ class ContentDetailsView extends ConsumerWidget {
     );
 
     if (compact) {
-      return Container(
-        padding: compact ? const EdgeInsets.symmetric(horizontal: 8) : null,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.black54, Colors.transparent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Row(
+      return SizedBox(
+        height: constrains.maxHeight - 100,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            if (isMobile(context)) const BackNavButton(color: Colors.white),
-            Flexible(child: title)
+            Container(
+              padding:
+                  compact ? const EdgeInsets.symmetric(horizontal: 8) : null,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.black54, Colors.transparent],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Row(
+                children: [
+                  if (isMobile(context))
+                    const BackNavButton(color: Colors.white),
+                  Flexible(child: title)
+                ],
+              ),
+            ),
           ],
         ),
       );
@@ -145,30 +158,25 @@ class ContentDetailsView extends ConsumerWidget {
     return Focus(child: title);
   }
 
-  List<Widget> _renderAdditionalInfo(BuildContext context) {
-    final paddings = getPadding(context);
-
-    return [
-      SizedBox(height: paddings),
-      Wrap(
-        children: [
-          Card.filled(
+  Widget _renderAdditionalInfo(BuildContext context) {
+    return Wrap(
+      children: [
+        Card.filled(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(contentDetails.supplier),
+          ),
+        ),
+        ...contentDetails.additionalInfo.map(
+          (e) => Card.outlined(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(contentDetails.supplier),
+              child: Text(e),
             ),
           ),
-          ...contentDetails.additionalInfo.map(
-            (e) => Card.outlined(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(e),
-              ),
-            ),
-          ),
-        ],
-      )
-    ];
+        ),
+      ],
+    );
   }
 
   Widget _renderDescription(BuildContext context) {
@@ -193,28 +201,21 @@ class ContentDetailsView extends ConsumerWidget {
     );
   }
 
-  Iterable<Widget> _renderSimilar(BuildContext context) {
+  Widget _renderSimilar(BuildContext context) {
     final theme = Theme.of(context);
-    final paddings = getPadding(context);
 
-    return [
-      SizedBox(height: paddings),
-      Text(
+    return HorizontalList(
+      paddings: 0,
+      title: Text(
         AppLocalizations.of(context)!.recommendations,
         style: theme.textTheme.headlineSmall,
       ),
-      SizedBox(height: paddings),
-      Wrap(
-        children: contentDetails.similar
-            .map(
-              (e) => ContentInfoCard(
-                contentInfo: e,
-                showSupplier: false,
-              ),
-            )
-            .toList(),
-      )
-    ];
+      itemBuilder: (context, index) => ContentInfoCard(
+        contentInfo: contentDetails.similar[index],
+        showSupplier: false,
+      ),
+      itemCount: contentDetails.similar.length,
+    );
   }
 
   Widget _renderContentActions(ContentDetails contentDetails) {

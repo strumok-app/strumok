@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/home/recomendations/recomendations_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
@@ -7,6 +8,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:strumok/widgets/horizontal_list_card.dart';
+import 'package:strumok/widgets/set_recommendations_hint.dart';
 
 class Recommendations extends ConsumerWidget {
   const Recommendations({super.key});
@@ -16,24 +19,43 @@ class Recommendations extends ConsumerWidget {
     final settings = ref.watch(suppliersSettingsProvider);
     final enabledSuppliers = ref.watch(enabledSuppliersProvider);
 
+    final recommendations = enabledSuppliers
+        .map((s) => (s, settings.getConfig(s)))
+        .where((e) => e.$2.channels.isNotEmpty)
+        .mapIndexed(
+          (groupIdx, e) => [
+            ...e.$2.channels.mapIndexed(
+              (channelIdx, channel) => _RecomendationChannel(
+                channelIdx: channelIdx,
+                supplierName: e.$1,
+                channel: channel,
+              ),
+            ),
+          ],
+        )
+        .expand((e) => e)
+        .toList();
+
+    if (recommendations.isEmpty) {
+      return _renderEmptyRecommendations(context);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: enabledSuppliers
-          .map((s) => (s, settings.getConfig(s)))
-          .where((e) => e.$2.channels.isNotEmpty)
-          .mapIndexed(
-            (groupIdx, e) => [
-              ...e.$2.channels.mapIndexed(
-                (channelIdx, channel) => _RecomendationChannel(
-                  channelIdx: channelIdx,
-                  supplierName: e.$1,
-                  channel: channel,
-                ),
-              ),
-            ],
-          )
-          .expand((e) => e)
-          .toList(),
+      children: recommendations,
+    );
+  }
+
+  Widget _renderEmptyRecommendations(BuildContext context) {
+    return HorizontalList(
+      title: const SizedBox.shrink(),
+      itemBuilder: (context, index) => HorizontalListCard(
+        onTap: () {
+          context.go("/settings/suppliers");
+        },
+        child: const SetRecommendationsHint(),
+      ),
+      itemCount: 1,
     );
   }
 }

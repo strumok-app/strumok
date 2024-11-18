@@ -14,8 +14,16 @@ class ActiveCollectionItemsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final groups = ref.watch(collectionActiveItemsProvider).valueOrNull ?? {};
+    final groups = ref.watch(collectionActiveItemsProvider);
 
+    return groups.maybeWhen(
+      data: (value) => _renderGroups(context, value),
+      orElse: () => const SizedBox.shrink(),
+    );
+  }
+
+  Widget _renderGroups(BuildContext context,
+      Map<MediaCollectionItemStatus, List<MediaCollectionItem>> groups) {
     List<MediaCollectionItem>? items;
     String? title;
 

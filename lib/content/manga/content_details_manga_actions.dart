@@ -1,7 +1,6 @@
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/content/content_details_actions.dart';
 import 'package:strumok/content/manga/widgets.dart';
-import 'package:strumok/utils/visual.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -12,12 +11,10 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
   @override
   Widget renderActions(
       BuildContext context, List<ContentMediaItem> mediaItems) {
-    final paddings = getPadding(context);
-
     return Row(
       children: [
         _renderReadButton(context),
-        SizedBox(width: paddings),
+        const SizedBox(width: 8),
         VolumesButton(
           contentDetails: contentDetails,
           mediaItems: mediaItems,

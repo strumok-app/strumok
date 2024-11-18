@@ -166,7 +166,7 @@ class PlayerErrorPopup extends StatelessWidget {
             focusColor: Colors.white.withOpacity(0.4),
             disabledColor: Colors.white.withOpacity(0.7),
           ),
-          menuChildrenBulder: (_) => [
+          menuChildrenBuilder: (_) => [
             ...value.reversed
                 .take(10)
                 .map((error) => ListTile(title: Text(error)))

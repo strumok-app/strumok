@@ -22,12 +22,12 @@ class CollectionTopBar extends HookConsumerWidget {
 
     return Column(
       children: [
-        _renderSearhBar(context, ref, controller),
+        _renderSearchBar(context, ref, controller),
       ],
     );
   }
 
-  Widget _renderSearhBar(
+  Widget _renderSearchBar(
       BuildContext context, WidgetRef ref, TextEditingController controller) {
     final searchBarFocusNode = useFocusNode();
 
@@ -69,11 +69,6 @@ class CollectionTopBar extends HookConsumerWidget {
               padding: const EdgeInsets.only(left: 8.0),
               child: _renderFilterSwitcher(context),
             ),
-          if (isMobile(context))
-            const Padding(
-              padding: EdgeInsets.only(left: 8.0),
-              child: AuthIcon(),
-            )
         ],
       ),
     );

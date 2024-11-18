@@ -7,7 +7,7 @@ part of 'video_player_provider.dart';
 // **************************************************************************
 
 String _$shuffleModeSettingsHash() =>
-    r'c1847e0b285b2ccdb7f84c140e5458372dccd421';
+    r'4f9d678e0dbacffc8e4ded86d13a44dd301ef298';
 
 /// See also [ShuffleModeSettings].
 @ProviderFor(ShuffleModeSettings)

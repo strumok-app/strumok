@@ -113,7 +113,7 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
     final url = await _downloadUrl(info);
 
     if (url == null) {
-      state = state.fail("platorm not supported");
+      state = state.fail("platform not supported");
       return;
     }
 

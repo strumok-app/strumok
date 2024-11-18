@@ -31,7 +31,7 @@ class CollectionItemPrioritySelector extends StatelessWidget {
       ),
       style: const MenuStyle(alignment: Alignment.topLeft),
       alignmentOffset: const Offset(0, -40),
-      menuChildrenBulder: (focusNode) => List.generate(3, (index) => index)
+      menuChildrenBuilder: (focusNode) => List.generate(3, (index) => index)
           .reversed
           .map(
             (index) => MenuItemButton(

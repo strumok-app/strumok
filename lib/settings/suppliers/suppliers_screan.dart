@@ -40,9 +40,12 @@ class _SuppliersSettingsView extends StatelessWidget {
                     const BackNavButton(),
                     SizedBox(width: padding),
                   ],
-                  Text(
-                    AppLocalizations.of(context)!.suppliers,
-                    style: theme.textTheme.headlineSmall,
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.of(context)!
+                          .settingsSuppliersAndRecommendations,
+                      style: theme.textTheme.headlineSmall,
+                    ),
                   ),
                 ],
               ),
