@@ -7,15 +7,15 @@ import 'package:strumok/app_preferences.dart';
 import 'package:strumok/app_secrets.dart';
 import 'package:strumok/collection/collection_screen.dart';
 import 'package:strumok/content/content_details_screen.dart';
-import 'package:strumok/content/manga/manga_content_screan.dart';
+import 'package:strumok/content/manga/manga_content_screen.dart';
 import 'package:strumok/content/video/video_content_screen.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
-import 'package:strumok/home/home_screan.dart';
+import 'package:strumok/home/home_screen.dart';
 import 'package:strumok/layouts/navigation_data.dart';
 import 'package:strumok/search/search_screen.dart';
-import 'package:strumok/settings/settings_screan.dart';
-import 'package:strumok/settings/suppliers/suppliers_screan.dart';
+import 'package:strumok/settings/settings_screen.dart';
+import 'package:strumok/settings/suppliers/suppliers_screen.dart';
 import 'package:strumok/utils/android_tv.dart';
 import 'package:strumok/utils/error_observer.dart';
 import 'package:strumok/utils/visual.dart';
@@ -90,7 +90,7 @@ class MainApp extends StatelessWidget {
             GoRoute(
               path: NavigationRoute.home.path,
               pageBuilder: (context, state) => const NoTransitionPage(
-                child: HomeScrean(),
+                child: HomeScreen(),
               ),
             ),
             GoRoute(
@@ -108,13 +108,13 @@ class MainApp extends StatelessWidget {
             GoRoute(
               path: NavigationRoute.settings.path,
               pageBuilder: (context, state) => const NoTransitionPage(
-                child: SettingsScrean(),
+                child: SettingsScreen(),
               ),
             ),
             GoRoute(
               path: "/settings/suppliers",
               pageBuilder: (context, state) => const NoTransitionPage(
-                child: SuppliersSettingsScrean(),
+                child: SuppliersSettingsScreen(),
               ),
             ),
             GoRoute(
@@ -138,7 +138,7 @@ class MainApp extends StatelessWidget {
             GoRoute(
               path: "/manga/:supplier/:id",
               pageBuilder: (context, state) => NoTransitionPage(
-                child: MangaContentScrean(
+                child: MangaContentScreen(
                   supplier: state.pathParameters["supplier"]!,
                   id: state.pathParameters["id"]!,
                 ),

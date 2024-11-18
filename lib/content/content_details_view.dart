@@ -252,8 +252,6 @@ class _MediaCollectionItemButtons extends ConsumerWidget {
     WidgetRef ref,
     MediaCollectionItem data,
   ) {
-    final paddings = getPadding(context);
-
     return Row(
       children: [
         const SizedBox(height: 40),
@@ -266,7 +264,7 @@ class _MediaCollectionItemButtons extends ConsumerWidget {
             },
           ),
         ),
-        SizedBox(width: paddings),
+        const SizedBox(width: 8),
         if (data.status != MediaCollectionItemStatus.none)
           CollectionItemPrioritySelector(
             collectionItem: data,

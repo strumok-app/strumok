@@ -6,8 +6,8 @@ import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:flutter/material.dart';
 
-class SuppliersSettingsScrean extends StatelessWidget {
-  const SuppliersSettingsScrean({super.key});
+class SuppliersSettingsScreen extends StatelessWidget {
+  const SuppliersSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

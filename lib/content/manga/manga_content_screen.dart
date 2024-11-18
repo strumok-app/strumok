@@ -5,8 +5,8 @@ import 'package:strumok/widgets/display_error.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class MangaContentScrean extends ConsumerWidget {
-  const MangaContentScrean({
+class MangaContentScreen extends ConsumerWidget {
+  const MangaContentScreen({
     super.key,
     required this.supplier,
     required this.id,

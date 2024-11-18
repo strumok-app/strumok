@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'settings_provider.g.dart';
 
 @riverpod
-class BrigthnesSetting extends _$BrigthnesSetting {
+class BrightnessSetting extends _$BrightnessSetting {
   @override
   Brightness? build() {
     return AppPreferences.themeBrightness;

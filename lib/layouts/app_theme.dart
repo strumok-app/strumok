@@ -10,7 +10,7 @@ class AppTheme extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final brightness = ref.watch(brigthnesSettingProvider);
+    final brightness = ref.watch(brightnessSettingProvider);
     final color = ref.watch(colorSettingsProvider);
 
     return MediaQuery(

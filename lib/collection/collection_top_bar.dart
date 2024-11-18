@@ -1,5 +1,4 @@
 import 'package:strumok/app_localizations.dart';
-import 'package:strumok/auth/auth_icon.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';

@@ -2,14 +2,14 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/settings/app_version/app_version_settings.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_settings.dart';
-import 'package:strumok/settings/theme/brightnes_switcher.dart';
+import 'package:strumok/settings/theme/brightness_switcher.dart';
 import 'package:strumok/settings/theme/color_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:strumok/widgets/settings_section.dart';
 
-class SettingsScrean extends StatelessWidget {
-  const SettingsScrean({super.key});
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class _SettingsView extends StatelessWidget {
                   _renderSection(
                     context,
                     AppLocalizations.of(context)!.settingsTheme,
-                    const BrightnesSwitcher(),
+                    const BrightnessSwitcher(),
                   ),
                   _renderSection(
                     context,

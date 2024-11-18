@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'recomendations_provider.dart';
+part of 'recommendations_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$recomendationChannelHash() =>
-    r'914492600fbee34ea8ba1dcd0d214b68f58d790d';
+String _$recommendationChannelHash() =>
+    r'2cc2e70b75209bc54436ad3778813c1547e9424a';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,41 +30,41 @@ class _SystemHash {
   }
 }
 
-abstract class _$RecomendationChannel
-    extends BuildlessAsyncNotifier<RecomendationChannelState> {
+abstract class _$RecommendationChannel
+    extends BuildlessAsyncNotifier<RecommendationChannelState> {
   late final String supplierName;
   late final String channel;
 
-  FutureOr<RecomendationChannelState> build(
+  FutureOr<RecommendationChannelState> build(
     String supplierName,
     String channel,
   );
 }
 
-/// See also [RecomendationChannel].
-@ProviderFor(RecomendationChannel)
-const recomendationChannelProvider = RecomendationChannelFamily();
+/// See also [RecommendationChannel].
+@ProviderFor(RecommendationChannel)
+const recommendationChannelProvider = RecommendationChannelFamily();
 
-/// See also [RecomendationChannel].
-class RecomendationChannelFamily
-    extends Family<AsyncValue<RecomendationChannelState>> {
-  /// See also [RecomendationChannel].
-  const RecomendationChannelFamily();
+/// See also [RecommendationChannel].
+class RecommendationChannelFamily
+    extends Family<AsyncValue<RecommendationChannelState>> {
+  /// See also [RecommendationChannel].
+  const RecommendationChannelFamily();
 
-  /// See also [RecomendationChannel].
-  RecomendationChannelProvider call(
+  /// See also [RecommendationChannel].
+  RecommendationChannelProvider call(
     String supplierName,
     String channel,
   ) {
-    return RecomendationChannelProvider(
+    return RecommendationChannelProvider(
       supplierName,
       channel,
     );
   }
 
   @override
-  RecomendationChannelProvider getProviderOverride(
-    covariant RecomendationChannelProvider provider,
+  RecommendationChannelProvider getProviderOverride(
+    covariant RecommendationChannelProvider provider,
   ) {
     return call(
       provider.supplierName,
@@ -84,34 +84,34 @@ class RecomendationChannelFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'recomendationChannelProvider';
+  String? get name => r'recommendationChannelProvider';
 }
 
-/// See also [RecomendationChannel].
-class RecomendationChannelProvider extends AsyncNotifierProviderImpl<
-    RecomendationChannel, RecomendationChannelState> {
-  /// See also [RecomendationChannel].
-  RecomendationChannelProvider(
+/// See also [RecommendationChannel].
+class RecommendationChannelProvider extends AsyncNotifierProviderImpl<
+    RecommendationChannel, RecommendationChannelState> {
+  /// See also [RecommendationChannel].
+  RecommendationChannelProvider(
     String supplierName,
     String channel,
   ) : this._internal(
-          () => RecomendationChannel()
+          () => RecommendationChannel()
             ..supplierName = supplierName
             ..channel = channel,
-          from: recomendationChannelProvider,
-          name: r'recomendationChannelProvider',
+          from: recommendationChannelProvider,
+          name: r'recommendationChannelProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$recomendationChannelHash,
-          dependencies: RecomendationChannelFamily._dependencies,
+                  : _$recommendationChannelHash,
+          dependencies: RecommendationChannelFamily._dependencies,
           allTransitiveDependencies:
-              RecomendationChannelFamily._allTransitiveDependencies,
+              RecommendationChannelFamily._allTransitiveDependencies,
           supplierName: supplierName,
           channel: channel,
         );
 
-  RecomendationChannelProvider._internal(
+  RecommendationChannelProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -126,8 +126,8 @@ class RecomendationChannelProvider extends AsyncNotifierProviderImpl<
   final String channel;
 
   @override
-  FutureOr<RecomendationChannelState> runNotifierBuild(
-    covariant RecomendationChannel notifier,
+  FutureOr<RecommendationChannelState> runNotifierBuild(
+    covariant RecommendationChannel notifier,
   ) {
     return notifier.build(
       supplierName,
@@ -136,10 +136,10 @@ class RecomendationChannelProvider extends AsyncNotifierProviderImpl<
   }
 
   @override
-  Override overrideWith(RecomendationChannel Function() create) {
+  Override overrideWith(RecommendationChannel Function() create) {
     return ProviderOverride(
       origin: this,
-      override: RecomendationChannelProvider._internal(
+      override: RecommendationChannelProvider._internal(
         () => create()
           ..supplierName = supplierName
           ..channel = channel,
@@ -155,14 +155,14 @@ class RecomendationChannelProvider extends AsyncNotifierProviderImpl<
   }
 
   @override
-  AsyncNotifierProviderElement<RecomendationChannel, RecomendationChannelState>
-      createElement() {
-    return _RecomendationChannelProviderElement(this);
+  AsyncNotifierProviderElement<RecommendationChannel,
+      RecommendationChannelState> createElement() {
+    return _RecommendationChannelProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is RecomendationChannelProvider &&
+    return other is RecommendationChannelProvider &&
         other.supplierName == supplierName &&
         other.channel == channel;
   }
@@ -177,8 +177,8 @@ class RecomendationChannelProvider extends AsyncNotifierProviderImpl<
   }
 }
 
-mixin RecomendationChannelRef
-    on AsyncNotifierProviderRef<RecomendationChannelState> {
+mixin RecommendationChannelRef
+    on AsyncNotifierProviderRef<RecommendationChannelState> {
   /// The parameter `supplierName` of this provider.
   String get supplierName;
 
@@ -186,16 +186,16 @@ mixin RecomendationChannelRef
   String get channel;
 }
 
-class _RecomendationChannelProviderElement extends AsyncNotifierProviderElement<
-    RecomendationChannel,
-    RecomendationChannelState> with RecomendationChannelRef {
-  _RecomendationChannelProviderElement(super.provider);
+class _RecommendationChannelProviderElement
+    extends AsyncNotifierProviderElement<RecommendationChannel,
+        RecommendationChannelState> with RecommendationChannelRef {
+  _RecommendationChannelProviderElement(super.provider);
 
   @override
   String get supplierName =>
-      (origin as RecomendationChannelProvider).supplierName;
+      (origin as RecommendationChannelProvider).supplierName;
   @override
-  String get channel => (origin as RecomendationChannelProvider).channel;
+  String get channel => (origin as RecommendationChannelProvider).channel;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

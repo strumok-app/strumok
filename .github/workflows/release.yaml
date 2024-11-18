@@ -32,11 +32,11 @@ jobs:
         run: |
           echo "$SECRETS_JSON" | base64 -di > secrets.json
           echo "$GOOGLE_SERVICE_JSON" | base64 -di > android/app/google-services.json
-          echo "$ANDOID_KEYSTORE" | base64 -di > android/app/strumok.jks
+          echo "$ANDROID_KEYSTORE" | base64 -di > android/app/strumok.jks
         env:
           SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
           GOOGLE_SERVICE_JSON: ${{ secrets.GOOGLE_SERVICE_JSON }}
-          ANDOID_KEYSTORE: ${{ secrets.ANDOID_KEYSTORE }}
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         shell: bash
       - name: Install dependencies
         run: |

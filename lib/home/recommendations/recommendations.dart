@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:strumok/content/content_info_card.dart';
-import 'package:strumok/home/recomendations/recomendations_provider.dart';
+import 'package:strumok/home/recommendations/recommendations_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
@@ -25,7 +25,7 @@ class Recommendations extends ConsumerWidget {
         .mapIndexed(
           (groupIdx, e) => [
             ...e.$2.channels.mapIndexed(
-              (channelIdx, channel) => _RecomendationChannel(
+              (channelIdx, channel) => _RecommendationChannel(
                 channelIdx: channelIdx,
                 supplierName: e.$1,
                 channel: channel,
@@ -60,12 +60,12 @@ class Recommendations extends ConsumerWidget {
   }
 }
 
-class _RecomendationChannel extends HookConsumerWidget {
+class _RecommendationChannel extends HookConsumerWidget {
   final int channelIdx;
   final String supplierName;
   final String channel;
 
-  const _RecomendationChannel({
+  const _RecommendationChannel({
     required this.channelIdx,
     required this.supplierName,
     required this.channel,
@@ -73,10 +73,10 @@ class _RecomendationChannel extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = recomendationChannelProvider(supplierName, channel);
+    final provider = recommendationChannelProvider(supplierName, channel);
     final state = ref.watch(provider).valueOrNull;
 
-    if (state == null || state.recomendations.isEmpty) {
+    if (state == null || state.recommendations.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -103,14 +103,14 @@ class _RecomendationChannel extends HookConsumerWidget {
         style: Theme.of(context).textTheme.titleMedium,
       ),
       itemBuilder: (context, index) {
-        final item = state.recomendations[index];
+        final item = state.recommendations[index];
 
         return ContentInfoCard(
           contentInfo: item,
           showSupplier: false,
         );
       },
-      itemCount: state.recomendations.length,
+      itemCount: state.recommendations.length,
     );
 
     if (channelIdx == 0) {

@@ -2,29 +2,29 @@ import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'recomendations_provider.g.dart';
+part 'recommendations_provider.g.dart';
 
-class RecomendationChannelState {
-  final List<ContentInfo> recomendations;
+class RecommendationChannelState {
+  final List<ContentInfo> recommendations;
   final bool hasNext;
   final int page;
   final bool loading;
 
-  RecomendationChannelState({
-    required this.recomendations,
+  RecommendationChannelState({
+    required this.recommendations,
     this.hasNext = true,
     this.page = 1,
     this.loading = false,
   });
 
-  RecomendationChannelState copyWith({
-    List<ContentInfo>? recomendations,
+  RecommendationChannelState copyWith({
+    List<ContentInfo>? recommendations,
     bool? hasNext,
     int? page,
     bool? loading,
   }) {
-    return RecomendationChannelState(
-      recomendations: recomendations ?? this.recomendations,
+    return RecommendationChannelState(
+      recommendations: recommendations ?? this.recommendations,
       hasNext: hasNext ?? this.hasNext,
       page: page ?? this.page,
       loading: loading ?? this.loading,
@@ -33,13 +33,13 @@ class RecomendationChannelState {
 }
 
 @Riverpod(keepAlive: true)
-class RecomendationChannel extends _$RecomendationChannel {
+class RecommendationChannel extends _$RecommendationChannel {
   @override
-  FutureOr<RecomendationChannelState> build(
+  FutureOr<RecommendationChannelState> build(
       String supplierName, String channel) async {
-    final recomendations = await ContentSuppliers.instance
-        .loadRecomendationsChannel(supplierName, channel);
-    return RecomendationChannelState(recomendations: recomendations);
+    final recommendations = await ContentSuppliers.instance
+        .loadRecommendationsChannel(supplierName, channel);
+    return RecommendationChannelState(recommendations: recommendations);
   }
 
   void loadNext() async {
@@ -54,10 +54,10 @@ class RecomendationChannel extends _$RecomendationChannel {
     );
 
     final nextPage = current.page + 1;
-    final nextRecomendations = await ContentSuppliers.instance
-        .loadRecomendationsChannel(supplierName, channel, page: nextPage);
+    final nextRecommendations = await ContentSuppliers.instance
+        .loadRecommendationsChannel(supplierName, channel, page: nextPage);
 
-    if (nextRecomendations.isEmpty) {
+    if (nextRecommendations.isEmpty) {
       state = AsyncValue.data(
         current.copyWith(
           loading: false,
@@ -68,7 +68,7 @@ class RecomendationChannel extends _$RecomendationChannel {
       state = AsyncValue.data(
         current.copyWith(
           loading: false,
-          recomendations: current.recomendations + nextRecomendations,
+          recommendations: current.recommendations + nextRecommendations,
           page: nextPage,
         ),
       );

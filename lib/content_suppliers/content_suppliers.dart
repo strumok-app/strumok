@@ -85,7 +85,7 @@ class ContentSuppliers {
     yield results;
   }
 
-  Future<List<ContentInfo>> loadRecomendationsChannel(
+  Future<List<ContentInfo>> loadRecommendationsChannel(
       String supplierName, String channel,
       {page = 1}) async {
     logger.i(

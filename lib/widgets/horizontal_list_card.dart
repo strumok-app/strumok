@@ -55,6 +55,16 @@ class HorizontalListCard extends HookWidget {
             decoration: decoration,
             child: SizedBox.expand(child: child),
           ),
+          if (badge != null)
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: badge,
+                ),
+              ),
+            ),
           Positioned.fill(
             child: Material(
               color: Colors.transparent,
@@ -77,16 +87,6 @@ class HorizontalListCard extends HookWidget {
               ),
             ),
           ),
-          if (badge != null)
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: badge,
-                ),
-              ),
-            ),
         ],
       ),
     );

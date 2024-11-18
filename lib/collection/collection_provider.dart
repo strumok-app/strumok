@@ -4,6 +4,7 @@ import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_repository.dart';
 import 'package:strumok/collection/collection_service.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
+import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/utils/collections.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -62,13 +63,16 @@ FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>
   ref.watch(collectionChangesProvider);
 
   final repository = ref.watch(collectionServiceProvider);
+  final suppliers = ref.watch(enabledSuppliersProvider);
 
   final collectionItems = await repository.search(status: {
     MediaCollectionItemStatus.inProgress,
     MediaCollectionItemStatus.latter,
   });
 
-  return Future.value(collectionItems.groupListsBy((e) => e.status));
+  return collectionItems
+      .where((item) => suppliers.contains(item.supplier))
+      .groupListsBy((e) => e.status);
 }
 
 @immutable

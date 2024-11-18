@@ -30,7 +30,7 @@ class SuppliersSettingsSection extends ConsumerWidget {
             .mapIndexed(
               (index, supplier) => Container(
                 key: ValueKey(supplier),
-                child: _RecomendationsSettingsItem(
+                child: _RecommendationsSettingsItem(
                   supplierName: supplier,
                   index: index,
                 ),
@@ -52,11 +52,11 @@ class SuppliersSettingsSection extends ConsumerWidget {
   }
 }
 
-class _RecomendationsSettingsItem extends ConsumerWidget {
+class _RecommendationsSettingsItem extends ConsumerWidget {
   final int index;
   final String supplierName;
 
-  const _RecomendationsSettingsItem({
+  const _RecommendationsSettingsItem({
     required this.index,
     required this.supplierName,
   });
@@ -78,7 +78,7 @@ class _RecomendationsSettingsItem extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _renderTtitle(context, ref, supplier, config),
+            _renderTitle(context, ref, supplier, config),
             _renderChannels(context, ref, supplier, config),
           ],
         ),
@@ -86,7 +86,7 @@ class _RecomendationsSettingsItem extends ConsumerWidget {
     );
   }
 
-  Row _renderTtitle(
+  Row _renderTitle(
     BuildContext context,
     WidgetRef ref,
     ContentSupplier supplier,

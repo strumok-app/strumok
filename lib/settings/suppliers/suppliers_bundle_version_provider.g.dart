@@ -43,7 +43,7 @@ final latestSupplierBundleInfoProvider =
 typedef LatestSupplierBundleInfoRef
     = AutoDisposeFutureProviderRef<FFISupplierBundleInfo>;
 String _$suppliersBundleDownloadHash() =>
-    r'1f7c5c07592e3364f58bbc0521f40611efdd518e';
+    r'e62e483b5a2491a47c3624c3bb9da8013230ac2d';
 
 /// Copied from Dart SDK
 class _SystemHash {
