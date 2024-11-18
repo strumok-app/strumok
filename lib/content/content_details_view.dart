@@ -128,7 +128,7 @@ class ContentDetailsView extends ConsumerWidget {
 
     if (compact) {
       return SizedBox(
-        height: constrains.maxHeight - 100,
+        height: constrains.maxHeight - 240,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
