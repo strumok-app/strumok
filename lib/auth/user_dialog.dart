@@ -16,7 +16,7 @@ class UserDialog extends StatelessWidget {
       child: Dialog(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 300),
-          padding: EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.only(top: 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

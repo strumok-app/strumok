@@ -23,7 +23,6 @@ class CollectionItemPrioritySelector extends StatelessWidget {
     return Dropdown(
       anchorBuilder: (context, onPressed, child) => IconButton(
         focusNode: focusNode,
-        autofocus: true,
         onPressed: onPressed,
         icon: Icon(_priorityIcon(collectionItem.priority)),
         tooltip: AppLocalizations.of(context)!

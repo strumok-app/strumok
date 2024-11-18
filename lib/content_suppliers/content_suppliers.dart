@@ -35,15 +35,15 @@ class ContentSuppliers {
     if (ffiLibsDir.isEmpty) {
       ffiLibsDir = FFISuppliersBundleStorage.instance.libsDir;
     }
-    logger.i("FFI libs dirirectory: $ffiLibsDir");
+    logger.i("FFI libs directory: $ffiLibsDir");
 
     _bundles = [
+      DartContentSupplierBundle(tmdbSecret: AppSecrets.getString("tmdb")),
       if (ffiLibName != null)
         RustContentSuppliersBundle(
           directory: ffiLibsDir,
           libName: ffiLibName,
         ),
-      DartContentSupplierBundle(tmdbSecret: AppSecrets.getString("tmdb"))
     ];
 
     for (final bundle in _bundles) {
@@ -51,7 +51,7 @@ class ContentSuppliers {
         await bundle.load();
         suppliers += await bundle.suppliers;
       } catch (e) {
-        logger.w("Fail to load suppliers bundel $bundle: $e");
+        logger.w("Fail to load suppliers bundle $bundle: $e");
       }
     }
     _suppliers = suppliers;

@@ -38,14 +38,15 @@ class _AuthUserMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return IconButton(
-      onPressed: () {
+    return InkResponse(
+      radius: 24,
+      onTap: () {
         showDialog(
           context: context,
           builder: (context) => UserDialog(user: user),
         );
       },
-      icon: MouseRegion(
+      child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Tooltip(
           message: user.name,

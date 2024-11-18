@@ -104,14 +104,14 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
     );
   }
 
-  MaterialDesktopVideoControlsThemeData _createThemeData(bool fullscrean) {
-    const marging = EdgeInsets.symmetric(horizontal: 20.0);
+  MaterialDesktopVideoControlsThemeData _createThemeData(bool fullscreen) {
+    const margin = EdgeInsets.symmetric(horizontal: 20.0);
     final playerController = widget.playerController;
 
     return MaterialDesktopVideoControlsThemeData(
       buttonBarButtonColor: Colors.white,
-      topButtonBarMargin: marging.copyWith(top: 8),
-      bottomButtonBarMargin: marging,
+      topButtonBarMargin: margin.copyWith(top: 8),
+      bottomButtonBarMargin: margin,
       topButtonBar: [
         const ExitButton(),
         const SizedBox(width: 8),
@@ -133,7 +133,7 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
         const MaterialDesktopVolumeButton(),
         const MaterialDesktopPositionIndicator(),
         const Spacer(),
-        if (!fullscrean)
+        if (!fullscreen)
           MaterialCustomButton(
             onPressed: _switchToPipMode,
             icon: const Icon(Symbols.pip),

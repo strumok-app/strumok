@@ -51,7 +51,7 @@ class Recommendations extends ConsumerWidget {
       title: const SizedBox.shrink(),
       itemBuilder: (context, index) => HorizontalListCard(
         onTap: () {
-          context.go("/settings/suppliers");
+          context.push("/settings/suppliers");
         },
         child: const SetRecommendationsHint(),
       ),
