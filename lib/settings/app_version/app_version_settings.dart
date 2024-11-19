@@ -71,11 +71,13 @@ class AppVersionSettings extends ConsumerWidget {
     LatestAppVersionInfo latestAppVersionInfo,
   ) async {
     AppVersionDownloadAssets? asset;
-    if (Platform.isLinux || Platform.isWindows) {
-      final platform = Platform.isLinux ? "linux" : "windows";
-
+    if (Platform.isLinux) {
       asset = latestAppVersionInfo.assets
-          .where((a) => a.name.contains(platform))
+          .where((a) => a.name.contains("linux"))
+          .firstOrNull;
+    } else if(Platform.isWindows) {
+      asset = latestAppVersionInfo.assets
+          .where((a) => a.name.contains(".exe"))
           .firstOrNull;
     } else if (Platform.isAndroid) {
       final deviceInfo = await DeviceInfoPlugin().androidInfo;
