@@ -7,6 +7,7 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:strumok/utils/visual.dart';
 
 class ContentDetailsVideoActions extends ContentDetailsActions {
   const ContentDetailsVideoActions(super.contentDetails, {super.key});
@@ -35,8 +36,13 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
       child: FilledButton.tonalIcon(
         autofocus: true,
         onPressed: () {
-          context.go(
-              "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
+          final location =
+              "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}";
+          if (isDesktopDevice()) {
+            context.go(location);
+          } else {
+            context.push(location);
+          }
         },
         icon: const Icon(Icons.play_arrow_outlined),
         label: Text(AppLocalizations.of(context)!.watchButton),

@@ -4,6 +4,7 @@ import 'package:strumok/content/manga/widgets.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:strumok/utils/visual.dart';
 
 class ContentDetailsMangaActions extends ContentDetailsActions {
   const ContentDetailsMangaActions(super.contentDetails, {super.key});
@@ -29,8 +30,13 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
       child: FilledButton.tonalIcon(
         autofocus: true,
         onPressed: () {
-          context.go(
-              "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
+          final location =
+              "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}";
+          if (isDesktopDevice()) {
+            context.go(location);
+          } else {
+            context.push(location);
+          }
         },
         icon: const Icon(Icons.menu_book_outlined),
         label: Text(AppLocalizations.of(context)!.readButton),
