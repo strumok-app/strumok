@@ -118,11 +118,17 @@ jobs:
       - name: Build Flutter for Windows
         run: flutter build windows
         shell: bash
+      - name: Build Installer
+        run: |
+          cd _packaging/windows
+          iscc.exe strumok.iss
       - name: Upload windows outputs
         uses: actions/upload-artifact@v4
         with:
           name: windows-outputs
-          path: build/windows/x64/runner/Release/
+          path: |
+            build/windows/x64/runner/Release/
+            _packaging/windows/Output
           retention-days: 7
 
   release:
@@ -150,7 +156,7 @@ jobs:
       - name: RePackage Desktops
         run: |
           tar -czf strumok-linux.tar.gz -C linux-outputs .
-          zip -r strumok-windows.zip windows-outputs/
+          zip -r strumok-windows.zip windows-outputs/build/windows/x64/runner/Release/*
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -158,5 +164,6 @@ jobs:
             android-outputs/*
             strumok-linux.tar.gz
             strumok-windows.zip
+            windows-outputs/_packaging/windows/Output/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
