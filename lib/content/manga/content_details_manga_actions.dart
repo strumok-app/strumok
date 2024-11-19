@@ -4,7 +4,6 @@ import 'package:strumok/content/manga/widgets.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:strumok/utils/visual.dart';
 
 class ContentDetailsMangaActions extends ContentDetailsActions {
   const ContentDetailsMangaActions(super.contentDetails, {super.key});
