@@ -20,11 +20,11 @@ on:
         type: boolean
 
 jobs:
-  build-for-android-and-linux:
+  build-for-android:
     runs-on: ubuntu-latest
     name: "Build for Android"
     permissions: write-all
-    if: startsWith(github.ref, 'refs/tags/') || inputs.android || inputs.linux
+    if: startsWith(github.ref, 'refs/tags/') || inputs.android
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
@@ -38,10 +38,6 @@ jobs:
           GOOGLE_SERVICE_JSON: ${{ secrets.GOOGLE_SERVICE_JSON }}
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         shell: bash
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -m -y clang cmake libgtk-3-dev ninja-build libstdc++-12-dev liblzma-dev mpv unzip libmpv-dev
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -56,20 +52,41 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Android
-        if: startsWith(github.ref, 'refs/tags/') || inputs.android
         run: flutter build apk
-      - name: Build Flutter for Linux
-        if: startsWith(github.ref, 'refs/tags/') || inputs.linux
-        run: flutter build linux
       - name: Upload android outputs
-        if: startsWith(github.ref, 'refs/tags/') || inputs.android
         uses: actions/upload-artifact@v4
         with:
           name: android-outputs
           path: build/app/outputs/flutter-apk/*.apk
           retention-days: 7
+
+  build-for-linux:
+    runs-on: ubuntu-latest
+    name: "Buid for Linux"
+    permissions: write-all
+    if: startsWith(github.ref, 'refs/tags/') || inputs.linux
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+      - name: Create secrets
+        run: echo "$SECRETS_JSON" | base64 -di > secrets.json
+        env:
+          SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -m -y clang cmake libgtk-3-dev ninja-build libstdc++-12-dev liblzma-dev mpv unzip libmpv-dev
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+      - name: Get Flutter dependencies
+        run: flutter pub get
+      - name: Build Flutter for Linux
+        run: flutter build linux
       - name: Upload linux outputs
-        if: startsWith(github.ref, 'refs/tags/') || inputs.linux
         uses: actions/upload-artifact@v4
         with:
           name: linux-outputs
@@ -112,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Release"
     permissions: write-all
-    needs: [build-for-android-and-linux, build-for-windows]
+    needs: [build-for-android, build-for-linux, build-for-windows]
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Download artifacts
