@@ -126,9 +126,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-outputs
-          path: |
-            build/windows/x64/runner/Release/
-            .packaging/windows/Output
+          path: .packaging/windows/Output
           retention-days: 7
 
   release:
@@ -156,7 +154,6 @@ jobs:
       - name: RePackage Desktops
         run: |
           tar -czf strumok-linux.tar.gz -C linux-outputs .
-          zip -r strumok-windows.zip windows-outputs/build/windows/x64/runner/Release/*
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -164,6 +161,6 @@ jobs:
             android-outputs/*
             strumok-linux.tar.gz
             strumok-windows.zip
-            windows-outputs/.packaging/windows/Output/*
+            windows-outputs/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
