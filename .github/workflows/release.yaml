@@ -128,7 +128,7 @@ jobs:
           name: windows-outputs
           path: |
             build/windows/x64/runner/Release/
-            _packaging/windows/Output
+            .packaging/windows/Output
           retention-days: 7
 
   release:
@@ -164,6 +164,6 @@ jobs:
             android-outputs/*
             strumok-linux.tar.gz
             strumok-windows.zip
-            windows-outputs/_packaging/windows/Output/*
+            windows-outputs/.packaging/windows/Output/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
