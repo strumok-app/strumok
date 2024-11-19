@@ -53,7 +53,7 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
     return MaterialVideoControlsThemeData(
       buttonBarButtonColor: Colors.white,
       topButtonBar: [
-        const ExitButton(),
+        ExitButton(contentDetails: widget.playerController.contentDetails),
         const SizedBox(width: 8),
         MediaTitle(
           playlistSize: widget.playerController.mediaItems.length,

@@ -36,6 +36,7 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
       child: FilledButton.tonalIcon(
         autofocus: true,
         onPressed: () {
+          // stupid media_kit garbage
           final location =
               "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}";
           if (isDesktopDevice()) {

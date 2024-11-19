@@ -30,13 +30,8 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
       child: FilledButton.tonalIcon(
         autofocus: true,
         onPressed: () {
-          final location =
-              "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}";
-          if (isDesktopDevice()) {
-            context.go(location);
-          } else {
-            context.push(location);
-          }
+          context.push(
+              "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
         },
         icon: const Icon(Icons.menu_book_outlined),
         label: Text(AppLocalizations.of(context)!.readButton),

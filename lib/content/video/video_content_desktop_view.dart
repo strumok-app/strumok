@@ -113,7 +113,7 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       topButtonBarMargin: margin.copyWith(top: 8),
       bottomButtonBarMargin: margin,
       topButtonBar: [
-        const ExitButton(),
+        ExitButton(contentDetails: playerController.contentDetails),
         const SizedBox(width: 8),
         MediaTitle(
           playlistSize: playerController.mediaItems.length,

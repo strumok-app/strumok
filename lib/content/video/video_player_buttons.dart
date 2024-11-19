@@ -13,7 +13,9 @@ import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 
 class ExitButton extends StatelessWidget {
-  const ExitButton({super.key});
+  final ContentDetails contentDetails;
+
+  const ExitButton({super.key, required this.contentDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,8 @@ class ExitButton extends StatelessWidget {
           if (context.canPop()) {
             context.pop();
           } else {
-            context.go("/");
+            context.go(
+                "/content/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
           }
         }
       },
