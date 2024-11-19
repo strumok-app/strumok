@@ -29,7 +29,7 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
       child: FilledButton.tonalIcon(
         autofocus: true,
         onPressed: () {
-          context.push(
+          context.go(
               "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
         },
         icon: const Icon(Icons.menu_book_outlined),
