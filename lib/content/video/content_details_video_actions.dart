@@ -36,14 +36,7 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
       child: FilledButton.tonalIcon(
         autofocus: true,
         onPressed: () {
-          // stupid media_kit garbage
-          final location =
-              "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}";
-          if (isDesktopDevice()) {
-            context.go(location);
-          } else {
-            context.push(location);
-          }
+          _navigateToVieo(context, contentDetails);
         },
         icon: const Icon(Icons.play_arrow_outlined),
         label: Text(AppLocalizations.of(context)!.watchButton),
@@ -86,8 +79,7 @@ class _ContentPlaylistButton extends ConsumerWidget {
             contentProgress: collectionItem,
             onSelect: (item) {
               ref.read(provider.notifier).setCurrentItem(item.number);
-              context.push(
-                  "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
+              _navigateToVieo(context, contentDetails);
             },
           ),
         );
@@ -95,5 +87,15 @@ class _ContentPlaylistButton extends ConsumerWidget {
       icon: const Icon(Icons.list),
       tooltip: AppLocalizations.of(context)!.episodesList,
     );
+  }
+}
+
+void _navigateToVieo(BuildContext context, ContentDetails contentDetails) {
+  final location =
+      "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}";
+  if (isDesktopDevice()) {
+    context.go(location);
+  } else {
+    context.push(location);
   }
 }
