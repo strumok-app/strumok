@@ -43,12 +43,12 @@ final currentAppVersionProvider = FutureProvider<String>.internal(
 
 typedef CurrentAppVersionRef = FutureProviderRef<String>;
 String _$latestAppVersionInfoHash() =>
-    r'8768e4527192dfdd1a81f7798cf9d8ed72f7f9cb';
+    r'f44e3988d043fec64b848c2c5afa59a098d14fd2';
 
 /// See also [latestAppVersionInfo].
 @ProviderFor(latestAppVersionInfo)
 final latestAppVersionInfoProvider =
-    AutoDisposeFutureProvider<LatestAppVersionInfo>.internal(
+    AutoDisposeFutureProvider<LatestAppVersionInfo?>.internal(
   latestAppVersionInfo,
   name: r'latestAppVersionInfoProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -59,6 +59,6 @@ final latestAppVersionInfoProvider =
 );
 
 typedef LatestAppVersionInfoRef
-    = AutoDisposeFutureProviderRef<LatestAppVersionInfo>;
+    = AutoDisposeFutureProviderRef<LatestAppVersionInfo?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

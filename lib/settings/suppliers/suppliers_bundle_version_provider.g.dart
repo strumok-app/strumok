@@ -25,12 +25,12 @@ final installedSupplierBundleInfoProvider =
 typedef InstalledSupplierBundleInfoRef
     = AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
 String _$latestSupplierBundleInfoHash() =>
-    r'6177e58d28bb3f2b7f59cd7633ae47c834a3f996';
+    r'29c7948ce4cc139e260d976918a727dc22cd0123';
 
 /// See also [latestSupplierBundleInfo].
 @ProviderFor(latestSupplierBundleInfo)
 final latestSupplierBundleInfoProvider =
-    AutoDisposeFutureProvider<FFISupplierBundleInfo>.internal(
+    AutoDisposeFutureProvider<FFISupplierBundleInfo?>.internal(
   latestSupplierBundleInfo,
   name: r'latestSupplierBundleInfoProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -41,7 +41,7 @@ final latestSupplierBundleInfoProvider =
 );
 
 typedef LatestSupplierBundleInfoRef
-    = AutoDisposeFutureProviderRef<FFISupplierBundleInfo>;
+    = AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
 String _$suppliersBundleDownloadHash() =>
     r'e62e483b5a2491a47c3624c3bb9da8013230ac2d';
 

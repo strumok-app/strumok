@@ -34,10 +34,16 @@ class _SuppliersBundleInstall extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         latestBundle.when(
-          data: (info) => SuppliersBundleDownload(
-            info: info,
-            label: const Text("Встановити"),
-          ),
+          data: (info) {
+            if (info == null) {
+              return const SizedBox.shrink();
+            }
+
+            return SuppliersBundleDownload(
+              info: info,
+              label: Text(AppLocalizations.of(context)!.install),
+            );
+          },
           loading: () => const SizedBox(
             height: 16,
             width: 16,
@@ -66,12 +72,19 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
         Text(installedBundle.version),
         const Spacer(),
         latestBundle.when(
-          data: (data) => renderUpdateButton(
-            context,
-            ref,
-            data,
-            installedBundle.version != data.version,
-          ),
+          data: (data) {
+            if (data == null) {
+              return const SizedBox.shrink();
+            }
+
+            return renderUpdateButton(
+              context,
+              ref,
+              data,
+              installedBundle.version != data.version,
+            );
+          },
+          skipLoadingOnRefresh: false,
           loading: () => FilledButton.tonalIcon(
             icon: const SizedBox(
               height: 16,

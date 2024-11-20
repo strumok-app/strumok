@@ -21,6 +21,10 @@ class AppVersionSettings extends ConsumerWidget {
         const Spacer(),
         latestVersionInfo.when(
           data: (data) {
+            if (data == null) {
+              return const SizedBox.shrink();
+            }
+
             return renderUpdateButton(
               context,
               ref,
@@ -75,7 +79,7 @@ class AppVersionSettings extends ConsumerWidget {
       asset = latestAppVersionInfo.assets
           .where((a) => a.name.contains("linux"))
           .firstOrNull;
-    } else if(Platform.isWindows) {
+    } else if (Platform.isWindows) {
       asset = latestAppVersionInfo.assets
           .where((a) => a.name.contains(".exe"))
           .firstOrNull;

@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:http/http.dart';
+import 'package:strumok/utils/logger.dart';
 
 part 'app_version_provider.g.dart';
 
@@ -46,9 +47,15 @@ class LatestAppVersionInfo {
 }
 
 @riverpod
-FutureOr<LatestAppVersionInfo> latestAppVersionInfo(
+FutureOr<LatestAppVersionInfo?> latestAppVersionInfo(
     LatestAppVersionInfoRef ref) async {
-  final appVersionCheckURL = AppSecrets.getString("appVersionCheckURL");
-  final res = await Client().get(Uri.parse(appVersionCheckURL));
-  return LatestAppVersionInfo.fromJson(json.decode(res.body));
+  try {
+    final appVersionCheckURL = AppSecrets.getString("appVersionCheckURL");
+    final res = await Client().get(Uri.parse(appVersionCheckURL));
+
+    return LatestAppVersionInfo.fromJson(json.decode(res.body));
+  } catch (e) {
+    logger.e("Failed to load lattest app version: $e");
+    return null;
+  }
 }

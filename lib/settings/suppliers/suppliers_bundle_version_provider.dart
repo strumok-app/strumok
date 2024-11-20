@@ -36,11 +36,17 @@ Future<FFISupplierBundleInfo?> installedSupplierBundleInfo(
 }
 
 @riverpod
-FutureOr<FFISupplierBundleInfo> latestSupplierBundleInfo(
-    LatestSupplierBundleInfoRef ref) async {
-  final latestVersionUrl = AppSecrets.getString("ffiLibVersionCheckURL");
-  final res = await Client().get(Uri.parse(latestVersionUrl));
-  return FFISupplierBundleInfo.fromJson(json.decode(res.body));
+FutureOr<FFISupplierBundleInfo?> latestSupplierBundleInfo(
+  LatestSupplierBundleInfoRef ref,
+) async {
+  try {
+    final latestVersionUrl = AppSecrets.getString("ffiLibVersionCheckURL");
+    final res = await Client().get(Uri.parse(latestVersionUrl));
+    return FFISupplierBundleInfo.fromJson(json.decode(res.body));
+  } catch (e) {
+    logger.e("Failed to load lattest bundle version: $e");
+    return null;
+  }
 }
 
 class SuppliersBundleDownloadState {

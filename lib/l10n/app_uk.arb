@@ -38,6 +38,7 @@
     "singOut": "Вийти",
     "reload": "Оновити з серверу",
     "rewrite": "Перезаписати з серверу",
+    "install": "Встановити",
     "collectionContinue": "Продовжити перегляд",
     "collectionBegin": "Почати перегляд",
     "contentType": "Тип контенту",
