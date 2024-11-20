@@ -1,10 +1,10 @@
 name: strumok
 description: "Strumok"
 publish_to: 'none'
-version: 1.5.3
+version: 1.5.4
 
 isar_version: &isar_version 3.1.8
-media_kit_version: &media_kit_version 59b987e
+# media_kit_version: &media_kit_version 50c510d
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -33,9 +33,9 @@ dependencies:
     hosted: https://pub.isar-community.dev/
   shared_preferences: ^2.3.2
   # media kit
-  media_kit:                              
-  media_kit_video:                         
-  media_kit_libs_video:
+  media_kit: ^1.1.11                              
+  media_kit_video: ^1.2.5                         
+  media_kit_libs_video: ^1.0.5
   # Utility widgets
   scrollable_positioned_list: ^0.3.8
   readmore: ^3.0.0
@@ -67,21 +67,21 @@ dependencies:
     path: content_suppliers_rust
 
 dependency_overrides:
-  media_kit: 
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: media_kit
-      ref: *media_kit_version
-  media_kit_video: 
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: media_kit_video
-      ref: *media_kit_version
-  media_kit_libs_video: 
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: libs/universal/media_kit_libs_video
-      ref: *media_kit_version
+  # media_kit: 
+    # git:
+    #   url: https://github.com/media-kit/media-kit
+    #   path: media_kit
+    #   ref: *media_kit_version
+  # media_kit_video: 
+    # git:
+    #   url: https://github.com/media-kit/media-kit
+    #   path: media_kit_video
+    #   ref: *media_kit_version
+  # media_kit_libs_video: 
+    # git:
+    #   url: https://github.com/media-kit/media-kit
+    #   path: libs/universal/media_kit_libs_video
+    #   ref: *media_kit_version
   # media_kit_native_event_loop:
   #   git:
   #     url: https://github.com/media-kit/media-kit
