@@ -19,7 +19,8 @@ class AndroidTVDetector {
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
     // Check for the presence of features typical of Android TV
-    _isTV = androidInfo.systemFeatures.contains('android.software.leanback');
+    _isTV = androidInfo.systemFeatures.contains('android.software.leanback') ||
+        androidInfo.systemFeatures.contains('android.software.live_tv');
 
     return _isTV;
   }
