@@ -1,7 +1,7 @@
 name: strumok
 description: "Strumok"
 publish_to: 'none'
-version: 1.5.3
+version: 1.5.5
 
 isar_version: &isar_version 3.1.8
 media_kit_version: &media_kit_version 59b987e
