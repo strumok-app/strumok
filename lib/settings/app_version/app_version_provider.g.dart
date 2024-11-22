@@ -43,7 +43,7 @@ final currentAppVersionProvider = FutureProvider<String>.internal(
 
 typedef CurrentAppVersionRef = FutureProviderRef<String>;
 String _$latestAppVersionInfoHash() =>
-    r'f44e3988d043fec64b848c2c5afa59a098d14fd2';
+    r'149f57fc142307a4998937cd664b7db0ca7256b0';
 
 /// See also [latestAppVersionInfo].
 @ProviderFor(latestAppVersionInfo)
@@ -60,5 +60,20 @@ final latestAppVersionInfoProvider =
 
 typedef LatestAppVersionInfoRef
     = AutoDisposeFutureProviderRef<LatestAppVersionInfo?>;
+String _$appDownloadHash() => r'2aa3b6fae22abfbf69bdf257b2fa6556634c3c99';
+
+/// See also [AppDownload].
+@ProviderFor(AppDownload)
+final appDownloadProvider =
+    NotifierProvider<AppDownload, DownloadState>.internal(
+  AppDownload.new,
+  name: r'appDownloadProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$appDownloadHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$AppDownload = Notifier<DownloadState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

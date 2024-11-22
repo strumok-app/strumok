@@ -1,4 +1,3 @@
-import 'dart:io' as io;
 import 'dart:io';
 import 'package:strumok/content_suppliers/ffi_supplier_bundle_info.dart';
 import 'package:strumok/utils/logger.dart';
@@ -19,22 +18,22 @@ class FFISuppliersBundleStorage {
 
     libsDir = "$basePath${Platform.pathSeparator}$ffiSupplierBundleDir";
 
-    await io.Directory(libsDir).create();
+    await Directory(libsDir).create();
   }
 
   String getLibFilePath(FFISupplierBundleInfo info) {
     final libFileName =
-        io.Platform.isWindows ? "${info.libName}.dll" : "lib${info.libName}.so";
+        Platform.isWindows ? "${info.libName}.dll" : "lib${info.libName}.so";
 
     return "$libsDir${Platform.pathSeparator}$libFileName";
   }
 
   Future<bool> isInstalled(FFISupplierBundleInfo info) =>
-      io.File(getLibFilePath(info)).exists();
+      File(getLibFilePath(info)).exists();
 
   Future<void> cleanup(FFISupplierBundleInfo info) async {
     try {
-      final files = await io.Directory(libsDir).list().toList();
+      final files = await Directory(libsDir).list().toList();
 
       for (var file in files) {
         if (file.path.contains(info.name) &&

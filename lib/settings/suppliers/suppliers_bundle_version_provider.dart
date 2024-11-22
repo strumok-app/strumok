@@ -8,6 +8,7 @@ import 'package:strumok/app_secrets.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/content_suppliers/ffi_supplier_bundle_info.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
+import 'package:strumok/settings/models.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -49,70 +50,14 @@ FutureOr<FFISupplierBundleInfo?> latestSupplierBundleInfo(
   }
 }
 
-class SuppliersBundleDownloadState {
-  final FFISupplierBundleInfo info;
-  final bool downloading;
-  final double progress;
-  final String? error;
-
-  SuppliersBundleDownloadState({
-    required this.info,
-    required this.downloading,
-    required this.progress,
-    this.error,
-  });
-
-  factory SuppliersBundleDownloadState.create(FFISupplierBundleInfo info) =>
-      SuppliersBundleDownloadState(
-        info: info,
-        downloading: false,
-        progress: 0.0,
-      );
-
-  SuppliersBundleDownloadState updateProgress(double progress) {
-    return SuppliersBundleDownloadState(
-      info: info,
-      downloading: downloading,
-      progress: progress,
-    );
-  }
-
-  SuppliersBundleDownloadState start() {
-    return SuppliersBundleDownloadState(
-      info: info,
-      downloading: true,
-      progress: 0.0,
-    );
-  }
-
-  SuppliersBundleDownloadState fail(String error) {
-    return SuppliersBundleDownloadState(
-      info: info,
-      downloading: downloading,
-      progress: progress,
-      error: error,
-    );
-  }
-
-  SuppliersBundleDownloadState done() {
-    return SuppliersBundleDownloadState(
-      info: info,
-      downloading: false,
-      progress: 1.0,
-    );
-  }
-}
-
-final downloadManager = DownloadManager();
-
 @Riverpod(keepAlive: true)
 class SuppliersBundleDownload extends _$SuppliersBundleDownload {
   @override
-  SuppliersBundleDownloadState build(FFISupplierBundleInfo info) {
-    return SuppliersBundleDownloadState.create(info);
+  DownloadState build() {
+    return DownloadState.create();
   }
 
-  void download() async {
+  void download(FFISupplierBundleInfo info) async {
     state = state.start();
 
     final libPath = FFISuppliersBundleStorage.instance.getLibFilePath(info);
@@ -123,7 +68,7 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
       return;
     }
 
-    final task = await downloadManager.addDownload(url, libPath);
+    final task = await DownloadManager().addDownload(url, libPath);
     if (task != null) {
       task.progress.addListener(() {
         state = state.updateProgress(task.progress.value);

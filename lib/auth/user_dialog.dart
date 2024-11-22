@@ -14,6 +14,7 @@ class UserDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppTheme(
       child: Dialog(
+        clipBehavior: Clip.antiAlias,
         child: Container(
           constraints: const BoxConstraints(maxWidth: 300),
           padding: const EdgeInsets.only(top: 8),

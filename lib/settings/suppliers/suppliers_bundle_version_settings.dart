@@ -39,7 +39,7 @@ class _SuppliersBundleInstall extends ConsumerWidget {
               return const SizedBox.shrink();
             }
 
-            return SuppliersBundleDownload(
+            return SuppliersBundleDownloadButton(
               info: info,
               label: Text(AppLocalizations.of(context)!.install),
             );
@@ -107,7 +107,7 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
     bool hasNewVersion,
   ) {
     if (hasNewVersion) {
-      return SuppliersBundleDownload(
+      return SuppliersBundleDownloadButton(
         info: latestInfo,
         label: Text(AppLocalizations.of(context)!
             .settingsDownloadUpdate(latestInfo.version)),
@@ -121,11 +121,11 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
   }
 }
 
-class SuppliersBundleDownload extends ConsumerWidget {
+class SuppliersBundleDownloadButton extends ConsumerWidget {
   final FFISupplierBundleInfo info;
   final Widget label;
 
-  const SuppliersBundleDownload({
+  const SuppliersBundleDownloadButton({
     super.key,
     required this.info,
     required this.label,
@@ -133,8 +133,7 @@ class SuppliersBundleDownload extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = suppliersBundleDownloadProvider(info);
-    final state = ref.watch(provider);
+    final state = ref.watch(suppliersBundleDownloadProvider);
 
     return state.downloading
         ? FilledButton.tonalIcon(
@@ -150,7 +149,7 @@ class SuppliersBundleDownload extends ConsumerWidget {
           )
         : FilledButton(
             onPressed: () {
-              ref.read(provider.notifier).download();
+              ref.read(suppliersBundleDownloadProvider.notifier).download(info);
             },
             child: label,
           );

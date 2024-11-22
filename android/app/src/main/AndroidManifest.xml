@@ -31,6 +31,16 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and
@@ -47,27 +57,31 @@
       Internet access permissions.
       -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--
-      Media access permissions.
-      Android 13 or higher.
-      https://developer.android.com/about/versions/13/behavior-changes-13#granular-media-permissions
-      -->
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-    <!--
-      Storage access permissions.
-      Android 12 or lower.
-      -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<!--    &lt;!&ndash;-->
+<!--      Media access permissions.-->
+<!--      Android 13 or higher.-->
+<!--      https://developer.android.com/about/versions/13/behavior-changes-13#granular-media-permissions-->
+<!--      &ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />-->
+<!--    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />-->
+<!--    &lt;!&ndash;-->
+<!--      Storage access permissions.-->
+<!--      Android 12 or lower.-->
+<!--      &ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
 
     <!-- for player -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
+    <!-- for android tv -->
     <uses-feature android:name="android.software.leanback"
         android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen"
         android:required="false" />
+
+    <!-- installation package permissions -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 </manifest>

@@ -127,16 +127,20 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
               cornerVisible.value = !cornerVisible.value;
               focusNode.requestFocus();
             },
-      corner: ValueListenableBuilder(
+      corner: ValueListenableBuilder<bool>(
         valueListenable: cornerVisible,
-        builder: (context, value, child) {
-          return AnimatedOpacity(
-            curve: Curves.easeInOut,
-            opacity: value ? 1.0 : 0,
-            duration: const Duration(milliseconds: 150),
-            child: child,
-          );
-        },
+        builder: desktop
+            ? (context, value, child) {
+                return AnimatedOpacity(
+                  curve: Curves.easeInOut,
+                  opacity: value ? 1.0 : 0,
+                  duration: const Duration(milliseconds: 150),
+                  child: child,
+                );
+              }
+            : (context, value, child) {
+                return value ? child! : const SizedBox.shrink();
+              },
         child: BackButtonListener(
           onBackButtonPressed: () async {
             focusNode.previousFocus();

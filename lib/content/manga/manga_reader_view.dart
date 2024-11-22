@@ -262,21 +262,24 @@ class _ReaderGestureDetectorState
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTapUp: (details) => _tapZones(details),
-      onLongPress: () {
-        Actions.invoke(context, const ShowUIIntent());
+    return ValueListenableBuilder(
+      valueListenable: widget.transformationController,
+      builder: (context, value, child) {
+        return GestureDetector(
+          onDoubleTapDown: (details) => _lastTapDetails = details,
+          onDoubleTap: _toggleZoom,
+          onTapUp: value.isIdentity() ? _tapZones : null,
+          onLongPress: value.isIdentity()
+              ? () => Actions.invoke(context, const ShowUIIntent())
+              : null,
+          child: Container(
+            width: size.width,
+            height: size.height,
+            color: Colors.transparent,
+            child: widget.child,
+          ),
+        );
       },
-      onDoubleTapDown: (details) {
-        _lastTapDetails = details;
-      },
-      onDoubleTap: _toggleZoom,
-      child: Container(
-        width: size.width,
-        height: size.height,
-        color: Colors.transparent,
-        child: widget.child,
-      ),
     );
   }
 
