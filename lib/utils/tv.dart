@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 
-class AndroidTVDetector {
-  AndroidTVDetector._();
+class TVDetector {
+  TVDetector._();
 
   static bool _isTV = false;
 

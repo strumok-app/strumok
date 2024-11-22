@@ -11,6 +11,7 @@ import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
+import 'package:strumok/utils/nav.dart';
 
 class ExitButton extends StatelessWidget {
   final ContentDetails contentDetails;
@@ -27,12 +28,7 @@ class ExitButton extends StatelessWidget {
         }
 
         if (context.mounted) {
-          if (context.canPop()) {
-            context.pop();
-          } else {
-            context.go(
-                "/content/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
-          }
+          backToContentDetails(context, contentDetails);
         }
       },
     );
@@ -111,6 +107,7 @@ class SkipPrevButton extends ConsumerWidget {
     final enabled = currentItem > 0 && !shuffleMode;
 
     return IconButton(
+      focusNode: enabled ? null: FocusNode(canRequestFocus: false),
       onPressed: enabled ? () => playerController.prevItem() : null,
       icon: const Icon(Icons.skip_previous),
       iconSize: iconSize,

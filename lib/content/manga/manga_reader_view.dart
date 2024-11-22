@@ -6,6 +6,7 @@ import 'package:strumok/content/manga/manga_reader_controls.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/settings/settings_provider.dart';
+import 'package:strumok/utils/nav.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -112,74 +113,80 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   Widget build(BuildContext context) {
     final readerMode = ref.watch(mangaReaderModeSettingsProvider);
 
-    return FocusableActionDetector(
-      shortcuts: const {
-        SingleActivator(LogicalKeyboardKey.arrowLeft): PrevPageIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowRight): NextPageIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowUp): ScrollUpPageIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowDown): ScrollDownPageIntent(),
-        SingleActivator(LogicalKeyboardKey.select): ShowUIIntent(),
-        SingleActivator(LogicalKeyboardKey.space): ShowUIIntent(),
-        SingleActivator(LogicalKeyboardKey.enter): ShowUIIntent(),
-        SingleActivator(LogicalKeyboardKey.digit1):
-            SwitchReaderImageMode(MangaReaderScale.fit),
-        SingleActivator(LogicalKeyboardKey.digit2):
-            SwitchReaderImageMode(MangaReaderScale.fitHeight),
-        SingleActivator(LogicalKeyboardKey.digit3):
-            SwitchReaderImageMode(MangaReaderScale.fitWidth),
-      },
-      actions: {
-        PrevPageIntent: CallbackAction<PrevPageIntent>(
-          onInvoke: (_) => _movePage(readerMode, -1),
-        ),
-        NextPageIntent: CallbackAction<NextPageIntent>(
-          onInvoke: (_) => _movePage(readerMode, 1),
-        ),
-        ShowUIIntent: CallbackAction<ShowUIIntent>(
-          onInvoke: (_) => Navigator.of(context).push(
-            MangaReaderControlsRoute(
-              contentDetails: widget.contentDetails,
-              mediaItems: widget.mediaItems,
-              onPageChanged: _jumpToPage,
+    return BackButtonListener(
+      onBackButtonPressed: () async { 
+        backToContentDetails(context, widget.contentDetails);
+        return true;
+       },
+      child: FocusableActionDetector(
+        shortcuts: const {
+          SingleActivator(LogicalKeyboardKey.arrowLeft): PrevPageIntent(),
+          SingleActivator(LogicalKeyboardKey.arrowRight): NextPageIntent(),
+          SingleActivator(LogicalKeyboardKey.arrowUp): ScrollUpPageIntent(),
+          SingleActivator(LogicalKeyboardKey.arrowDown): ScrollDownPageIntent(),
+          SingleActivator(LogicalKeyboardKey.select): ShowUIIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ShowUIIntent(),
+          SingleActivator(LogicalKeyboardKey.enter): ShowUIIntent(),
+          SingleActivator(LogicalKeyboardKey.digit1):
+              SwitchReaderImageMode(MangaReaderScale.fit),
+          SingleActivator(LogicalKeyboardKey.digit2):
+              SwitchReaderImageMode(MangaReaderScale.fitHeight),
+          SingleActivator(LogicalKeyboardKey.digit3):
+              SwitchReaderImageMode(MangaReaderScale.fitWidth),
+        },
+        actions: {
+          PrevPageIntent: CallbackAction<PrevPageIntent>(
+            onInvoke: (_) => _movePage(readerMode, -1),
+          ),
+          NextPageIntent: CallbackAction<NextPageIntent>(
+            onInvoke: (_) => _movePage(readerMode, 1),
+          ),
+          ShowUIIntent: CallbackAction<ShowUIIntent>(
+            onInvoke: (_) => Navigator.of(context).push(
+              MangaReaderControlsRoute(
+                contentDetails: widget.contentDetails,
+                mediaItems: widget.mediaItems,
+                onPageChanged: _jumpToPage,
+              ),
             ),
           ),
-        ),
-        SwitchReaderImageMode: CallbackAction<SwitchReaderImageMode>(
-          onInvoke: (intent) => _swithReaderImageMode(intent.mode),
-        ),
-        ScrollUpPageIntent: CallbackAction<ScrollUpPageIntent>(
-          onInvoke: (_) => _scrollTo(readerMode, 50),
-        ),
-        ScrollDownPageIntent: CallbackAction<ScrollDownPageIntent>(
-          onInvoke: (_) => _scrollTo(readerMode, -50),
-        ),
-      },
-      autofocus: true,
-      child: Stack(
-        children: [
-          const MangaBackground(),
-          _ReaderGestureDetector(
-            readerMode: readerMode,
-            transformationController: transformationController,
-            child: readerMode.scroll
-                ? _ScrolledView(
-                    readerMode: readerMode,
-                    pages: widget.pages,
-                    initialPage: widget.initialPage,
-                    transformationController: transformationController,
-                    scrollOffsetController: scrollOffsetController,
-                    page: page,
-                    collectionItemProvider: widget.collectionItemProvider,
-                  )
-                : _PagedView(
-                    readerMode: readerMode,
-                    pages: widget.pages,
-                    initialPage: widget.initialPage,
-                    transformationController: transformationController,
-                    pageListinable: page,
-                  ),
+          SwitchReaderImageMode: CallbackAction<SwitchReaderImageMode>(
+            onInvoke: (intent) => _swithReaderImageMode(intent.mode),
           ),
-        ],
+          ScrollUpPageIntent: CallbackAction<ScrollUpPageIntent>(
+            onInvoke: (_) => _scrollTo(readerMode, 50),
+          ),
+          ScrollDownPageIntent: CallbackAction<ScrollDownPageIntent>(
+            onInvoke: (_) => _scrollTo(readerMode, -50),
+          ),
+        },
+        autofocus: true,
+        child: Stack(
+          children: [
+            const MangaBackground(),
+            _ReaderGestureDetector(
+              readerMode: readerMode,
+              transformationController: transformationController,
+              child: readerMode.scroll
+                  ? _ScrolledView(
+                      readerMode: readerMode,
+                      pages: widget.pages,
+                      initialPage: widget.initialPage,
+                      transformationController: transformationController,
+                      scrollOffsetController: scrollOffsetController,
+                      page: page,
+                      collectionItemProvider: widget.collectionItemProvider,
+                    )
+                  : _PagedView(
+                      readerMode: readerMode,
+                      pages: widget.pages,
+                      initialPage: widget.initialPage,
+                      transformationController: transformationController,
+                      pageListinable: page,
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -592,6 +599,8 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
 
   @override
   Widget build(BuildContext context) {
+    final currentScale = ref.watch(mangaReaderScaleSettingsProvider);
+
     return LayoutBuilder(builder: (context, constraints) {
       return InteractiveViewer(
         transformationController: widget.transformationController,
@@ -613,7 +622,9 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
           itemBuilder: (context, index) => Image(
             height: constraints.maxHeight,
             image: widget.pages[index],
-            fit: BoxFit.fitHeight,
+            fit: currentScale == MangaReaderScale.fitWidth
+                ? BoxFit.fitWidth
+                : BoxFit.fitHeight,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) {
                 return child;

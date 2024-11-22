@@ -3,7 +3,7 @@ import 'package:strumok/search/search_provider.dart';
 import 'package:strumok/search/search_top_bar/search_suggestion_model.dart';
 import 'package:strumok/search/search_top_bar/search_suggestion_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
-import 'package:strumok/utils/android_tv.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/filter_dialog_section.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -35,16 +35,17 @@ class SearchTopBar extends HookConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              Expanded(
-                child: Center(
-                  child: _renderSearchBar(
-                    searchController,
-                    context,
-                    ref,
-                  ),
+              Align(
+                alignment: TVDetector.isTV
+                    ? Alignment.centerLeft
+                    : Alignment.center,
+                child: _renderSearchBar(
+                  searchController,
+                  context,
+                  ref,
                 ),
               ),
-              if (AndroidTVDetector.isTV)
+              if (TVDetector.isTV)
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: _renderFilterSwitcher(context),
@@ -101,7 +102,7 @@ class SearchTopBar extends HookConsumerWidget {
             onSubmitted: (value) {
               _search(ref, value);
             },
-            trailing: AndroidTVDetector.isTV
+            trailing: TVDetector.isTV
                 ? null
                 : [_renderFilterSwitcher(context)],
           ),

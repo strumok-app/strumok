@@ -10,7 +10,7 @@ import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_content_desktop_view.dart';
 import 'package:strumok/content/video/video_content_mobile_view.dart';
 import 'package:strumok/content/video/video_content_tv_view.dart';
-import 'package:strumok/utils/android_tv.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:collection/collection.dart';
@@ -355,7 +355,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
   Widget build(BuildContext context) {
     final view = switch (Theme.of(context).platform) {
       TargetPlatform.android =>
-        AndroidTVDetector.isTV ? _renderTvView() : _renderMobileView(),
+        TVDetector.isTV ? _renderTvView() : _renderMobileView(),
       TargetPlatform.iOS => _renderMobileView(),
       _ => _renderDesktopView()
     };

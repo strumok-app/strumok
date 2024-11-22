@@ -42,7 +42,8 @@ class MangaReaderSettingsDialog extends ConsumerWidget {
               const SizedBox(height: 8),
               const _MangaReaderModeSelector(),
               const SizedBox(height: 8),
-              if (!currentMode.scroll) const _ImageScaleSelector()
+              if (currentMode.scaleModes.isNotEmpty)
+                _ImageScaleSelector(mode: currentMode)
             ],
           ),
         ),
@@ -182,7 +183,8 @@ class _MangaReaderModeSelector extends ConsumerWidget {
 }
 
 class _ImageScaleSelector extends ConsumerWidget {
-  const _ImageScaleSelector();
+  final MangaReaderMode mode;
+  const _ImageScaleSelector({required this.mode});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -197,7 +199,7 @@ class _ImageScaleSelector extends ConsumerWidget {
       ),
       section: Dropdown.button(
         label: mangaReaderScaleLabel(context, currentScale),
-        menuChildrenBulder: (focusNode) => MangaReaderScale.values
+        menuChildrenBulder: (focusNode) => mode.scaleModes
             .mapIndexed(
               (index, value) => MenuItemButton(
                 focusNode: index == 0 ? focusNode : null,

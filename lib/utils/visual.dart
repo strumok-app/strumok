@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:strumok/utils/android_tv.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:flutter/widgets.dart';
 import 'package:isar/isar.dart';
 
@@ -15,7 +15,7 @@ float getPadding(BuildContext context) {
 }
 
 bool isMobileDevice() {
-  return Platform.isIOS || (Platform.isAndroid && !AndroidTVDetector.isTV);
+  return Platform.isIOS || (Platform.isAndroid && !TVDetector.isTV);
 }
 
 bool isDesktopDevice() {

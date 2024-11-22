@@ -1,11 +1,8 @@
-import 'dart:io';
 
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/settings/app_version/app_version_provider.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class AppVersionSettings extends ConsumerWidget {
   const AppVersionSettings({super.key});
@@ -21,15 +18,11 @@ class AppVersionSettings extends ConsumerWidget {
         const Spacer(),
         latestVersionInfo.when(
           data: (data) {
-            if (data == null) {
-              return const SizedBox.shrink();
-            }
-
             return renderUpdateButton(
               context,
               ref,
               data,
-              data.version != current,
+              current,
             );
           },
           skipLoadingOnRefresh: false,
@@ -53,10 +46,10 @@ class AppVersionSettings extends ConsumerWidget {
   Widget renderUpdateButton(
     BuildContext context,
     WidgetRef ref,
-    LatestAppVersionInfo latestAppVersionInfo,
-    bool hasNewVersion,
+    LatestAppVersionInfo? latestAppVersionInfo,
+    String currentVersion,
   ) {
-    if (hasNewVersion) {
+    if (latestAppVersionInfo != null && latestAppVersionInfo.version != currentVersion) {
       return AppDownloadButton(info: latestAppVersionInfo);
     }
 

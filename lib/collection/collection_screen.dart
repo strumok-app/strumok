@@ -81,11 +81,17 @@ class CollectionHorizontalGroup extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
+    Widget title = Text(
+      statusLabel(context, status),
+      style: Theme.of(context).textTheme.titleMedium,
+    );
+
+    if (groupIdx == 0) {
+      title = Focus(child: title);
+    }
+
     return HorizontalList(
-      title: Text(
-        statusLabel(context, status),
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
+      title: title,
       itemBuilder: (context, index) {
         return CollectionHorizontalListItem(
           autofocuse: groupIdx == 0 && index == 0,

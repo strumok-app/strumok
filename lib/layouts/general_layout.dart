@@ -1,7 +1,7 @@
 import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/layouts/bottom_navigation_layout.dart';
 import 'package:strumok/layouts/side_navigation_layout.dart';
-import 'package:strumok/utils/android_tv.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +34,7 @@ class GeneralLayout extends StatelessWidget {
             } else {
               return SideNavigationLayout(
                 selectedIndex: selectedIndex,
-                showBackButton: AndroidTVDetector.isTV ? false : showBackButton,
+                showBackButton: TVDetector.isTV ? false : showBackButton,
                 child: child,
               );
             }

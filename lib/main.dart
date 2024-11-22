@@ -16,7 +16,7 @@ import 'package:strumok/layouts/navigation_data.dart';
 import 'package:strumok/search/search_screen.dart';
 import 'package:strumok/settings/settings_screen.dart';
 import 'package:strumok/settings/suppliers/suppliers_screen.dart';
-import 'package:strumok/utils/android_tv.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/error_observer.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ void main() async {
   await AppSecrets.init();
   await AppDatabase.init();
   await AppPreferences.init();
-  await AndroidTVDetector.detect();
+  await TVDetector.detect();
 
   // init firebase
   await AppInitFirebase.init();

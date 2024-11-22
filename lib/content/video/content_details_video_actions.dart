@@ -5,9 +5,8 @@ import 'package:strumok/content/content_details_actions.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:strumok/utils/visual.dart';
+import 'package:strumok/utils/nav.dart';
 
 class ContentDetailsVideoActions extends ContentDetailsActions {
   const ContentDetailsVideoActions(super.contentDetails, {super.key});
@@ -36,7 +35,7 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
       child: FilledButton.tonalIcon(
         autofocus: true,
         onPressed: () {
-          _navigateToVieo(context, contentDetails);
+          navigateToContent(context, contentDetails);
         },
         icon: const Icon(Icons.play_arrow_outlined),
         label: Text(AppLocalizations.of(context)!.watchButton),
@@ -79,7 +78,7 @@ class _ContentPlaylistButton extends ConsumerWidget {
             contentProgress: collectionItem,
             onSelect: (item) {
               ref.read(provider.notifier).setCurrentItem(item.number);
-              _navigateToVieo(context, contentDetails);
+              navigateToContent(context, contentDetails);
             },
           ),
         );
@@ -87,15 +86,5 @@ class _ContentPlaylistButton extends ConsumerWidget {
       icon: const Icon(Icons.list),
       tooltip: AppLocalizations.of(context)!.episodesList,
     );
-  }
-}
-
-void _navigateToVieo(BuildContext context, ContentDetails contentDetails) {
-  final location =
-      "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}";
-  if (isDesktopDevice()) {
-    context.go(location);
-  } else {
-    context.push(location);
   }
 }

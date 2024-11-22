@@ -1,4 +1,4 @@
-import 'package:strumok/utils/android_tv.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -37,7 +37,7 @@ class HorizontalListCard extends HookWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       elevation: focused.value ? 5 : 1,
       shape: RoundedRectangleBorder(
-        side: focused.value && AndroidTVDetector.isTV
+        side: focused.value && TVDetector.isTV
             ? BorderSide(
                 color: theme.colorScheme.primaryContainer,
                 width: 2,

@@ -2,7 +2,7 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
-import 'package:strumok/utils/android_tv.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/filter_dialog_section.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -34,36 +34,37 @@ class CollectionTopBar extends HookConsumerWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Expanded(
-            child: Center(
-              child: BackButtonListener(
-                onBackButtonPressed: () async {
-                  if (searchBarFocusNode.hasFocus) {
-                    searchBarFocusNode.unfocus();
-                    return true;
-                  }
-                  return false;
-                },
-                child: SearchBar(
-                  controller: controller,
-                  padding: const WidgetStatePropertyAll<EdgeInsets>(
-                    EdgeInsets.only(left: 16.0, right: 8.0),
-                  ),
-                  focusNode: searchBarFocusNode,
-                  leading: const Icon(Icons.search),
-                  trailing: AndroidTVDetector.isTV
-                      ? null
-                      : [_renderFilterSwitcher(context)],
-                  onSubmitted: (value) {
-                    ref.read(collectionFilterQueryProvider.notifier).state =
-                        value;
-                    searchBarFocusNode.requestFocus();
-                  },
+          Align(
+            alignment: TVDetector.isTV
+                ? Alignment.centerLeft
+                : Alignment.center,
+            child: BackButtonListener(
+              onBackButtonPressed: () async {
+                if (searchBarFocusNode.hasFocus) {
+                  searchBarFocusNode.unfocus();
+                  return true;
+                }
+                return false;
+              },
+              child: SearchBar(
+                controller: controller,
+                padding: const WidgetStatePropertyAll<EdgeInsets>(
+                  EdgeInsets.only(left: 16.0, right: 8.0),
                 ),
+                focusNode: searchBarFocusNode,
+                leading: const Icon(Icons.search),
+                trailing: TVDetector.isTV
+                    ? null
+                    : [_renderFilterSwitcher(context)],
+                onSubmitted: (value) {
+                  ref.read(collectionFilterQueryProvider.notifier).state =
+                      value;
+                  searchBarFocusNode.requestFocus();
+                },
               ),
             ),
           ),
-          if (AndroidTVDetector.isTV)
+          if (TVDetector.isTV)
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: _renderFilterSwitcher(context),

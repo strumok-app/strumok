@@ -36,7 +36,7 @@ class _SuppliersBundleInstall extends ConsumerWidget {
         latestBundle.when(
           data: (info) {
             if (info == null) {
-              return const SizedBox.shrink();
+              return const _RefreshButton();
             }
 
             return SuppliersBundleDownloadButton(
@@ -50,7 +50,7 @@ class _SuppliersBundleInstall extends ConsumerWidget {
             child: CircularProgressIndicator.adaptive(),
           ),
           error: (Object error, StackTrace stackTrace) =>
-              Text(error.toString()),
+              const _RefreshButton(),
         ),
       ],
     );
@@ -73,15 +73,11 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
         const Spacer(),
         latestBundle.when(
           data: (data) {
-            if (data == null) {
-              return const SizedBox.shrink();
-            }
-
-            return renderUpdateButton(
+            return _renderUpdateButton(
               context,
               ref,
               data,
-              installedBundle.version != data.version,
+              installedBundle,
             );
           },
           skipLoadingOnRefresh: false,
@@ -100,13 +96,13 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
     );
   }
 
-  Widget renderUpdateButton(
+  Widget _renderUpdateButton(
     BuildContext context,
     WidgetRef ref,
-    FFISupplierBundleInfo latestInfo,
-    bool hasNewVersion,
+    FFISupplierBundleInfo? latestInfo,
+    FFISupplierBundleInfo installedInfo,
   ) {
-    if (hasNewVersion) {
+    if (latestInfo != null && installedInfo.version != latestInfo.version) {
       return SuppliersBundleDownloadButton(
         info: latestInfo,
         label: Text(AppLocalizations.of(context)!
@@ -114,10 +110,7 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
       );
     }
 
-    return FilledButton.tonal(
-      onPressed: () => ref.refresh(latestSupplierBundleInfoProvider),
-      child: Text(AppLocalizations.of(context)!.settingsCheckForUpdate),
-    );
+    return const _RefreshButton();
   }
 }
 
@@ -153,5 +146,17 @@ class SuppliersBundleDownloadButton extends ConsumerWidget {
             },
             child: label,
           );
+  }
+}
+
+class _RefreshButton extends ConsumerWidget {
+  const _RefreshButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FilledButton.tonalIcon(
+      onPressed: () => ref.refresh(latestSupplierBundleInfoProvider),
+      label: Text(AppLocalizations.of(context)!.settingsCheckForUpdate),
+    );
   }
 }

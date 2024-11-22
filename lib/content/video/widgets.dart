@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:collection/collection.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
@@ -166,10 +167,13 @@ class PlayerErrorPopup extends StatelessWidget {
             focusColor: Colors.white.withOpacity(0.4),
             disabledColor: Colors.white.withOpacity(0.7),
           ),
-          menuChildrenBuilder: (_) => [
+          menuChildrenBuilder: (focusNode) => [
             ...value.reversed
                 .take(10)
-                .map((error) => ListTile(title: Text(error)))
+                .mapIndexed((idx, error) => MenuItemButton(
+                      focusNode: idx == 0 ? focusNode : null,
+                      child: Text(error),
+                    ))
           ],
         );
       },

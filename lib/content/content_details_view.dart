@@ -7,7 +7,7 @@ import 'package:strumok/collection/widgets/status_selector.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/content/manga/content_details_manga_actions.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
-import 'package:strumok/utils/android_tv.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -182,7 +182,7 @@ class ContentDetailsView extends ConsumerWidget {
   Widget _renderDescription(BuildContext context) {
     final theme = Theme.of(context);
 
-    if (AndroidTVDetector.isTV) {
+    if (TVDetector.isTV) {
       return Focus(
         child: Text(
           contentDetails.description,

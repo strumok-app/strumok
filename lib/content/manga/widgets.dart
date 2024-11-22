@@ -8,6 +8,7 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:strumok/utils/nav.dart';
 
 class VolumesButton extends ConsumerWidget {
   final ContentDetails contentDetails;
@@ -52,8 +53,7 @@ class VolumesButton extends ConsumerWidget {
             onSelect: onSelect ??
                 (item) {
                   ref.read(provider.notifier).setCurrentItem(item.number);
-                  context.push(
-                      "/${contentDetails.mediaType.name}/${contentDetails.supplier}/${Uri.encodeComponent(contentDetails.id)}");
+                  navigateToContent(context, contentDetails);
                 },
             itemBuilder: mangaChapterListItemBuilder,
           ),
