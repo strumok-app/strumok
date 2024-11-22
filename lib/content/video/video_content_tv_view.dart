@@ -14,6 +14,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/extensions/duration.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
+import 'package:strumok/utils/nav.dart';
 
 class VideoContentTVView extends StatelessWidget {
   final Player player;
@@ -175,9 +176,10 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
         onBackButtonPressed: () async {
           if (uiShown) {
             onExit();
-            return true;
+          } else {
+            backToContentDetails(context, widget.playerController.contentDetails);
           }
-          return false;
+          return true;
         },
         child: Focus(
           autofocus: true,
