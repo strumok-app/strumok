@@ -582,7 +582,6 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
   void _onPageChanged() {
     _itemScrollController.jumpTo(
       index: widget.page.value,
-      // duration: const Duration(milliseconds: 200),
     );
   }
 
