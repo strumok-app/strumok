@@ -3,11 +3,9 @@ import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/manga/manga_reader_settings_dialog.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/layouts/app_theme.dart';
-import 'package:strumok/utils/nav.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MangaReaderControlsRoute<T> extends PopupRoute<T> {
@@ -67,7 +65,7 @@ class MangaReaderControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapUp: (details) {
-        context.pop();
+        Navigator.of(context).pop();
       },
       child: Material(
         color: Colors.transparent,
@@ -127,8 +125,8 @@ class MangaReaderControlTopBar extends ConsumerWidget {
           if (!TVDetector.isTV) ...[
             BackButton(
               onPressed: () {
-                context.pop();
-                backToContentDetails(context, contentDetails);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
               color: Colors.white,
             ),
@@ -155,7 +153,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
         ref
             .read(collectionItemProvider(contentDetails).notifier)
             .setCurrentItem(item.number);
-        context.pop();
+         Navigator.of(context).pop();
       },
       autofocus: true,
       color: Colors.white,

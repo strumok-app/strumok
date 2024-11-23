@@ -60,7 +60,7 @@ final latestAppVersionInfoProvider =
 
 typedef LatestAppVersionInfoRef
     = AutoDisposeFutureProviderRef<LatestAppVersionInfo?>;
-String _$appDownloadHash() => r'2aa3b6fae22abfbf69bdf257b2fa6556634c3c99';
+String _$appDownloadHash() => r'affde9b2be6a1e09cc4f0ffd5d4238d21879be82';
 
 /// See also [AppDownload].
 @ProviderFor(AppDownload)

@@ -34,7 +34,7 @@ class Dropdown extends StatefulWidget {
     required MenuChildrenBuildert menuChildrenBulder,
   }) : this(
           key: key,
-          anchorBuilder: (context, onPressed, child) => ElevatedButton.icon(
+          anchorBuilder: (context, onPressed, child) => OutlinedButton.icon(
             onPressed: onPressed,
             icon: icon,
             label: Text(label),

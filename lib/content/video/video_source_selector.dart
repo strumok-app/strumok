@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/layouts/app_theme.dart';
@@ -149,7 +148,7 @@ class _SourceSelectDialog extends ConsumerWidget {
                     ? const Icon(Icons.check)
                     : null,
                 onTap: () {
-                  context.pop();
+                  Navigator.of(context).pop();
                   final notifier =
                       ref.read(collectionItemProvider(contentDetails).notifier);
                   notifier.setCurrentSource(e.description);
@@ -188,7 +187,7 @@ class _SourceSelectDialog extends ConsumerWidget {
               final notifier =
                   ref.read(collectionItemProvider(contentDetails).notifier);
               notifier.setCurrentSubtitle(null);
-              context.pop();
+              Navigator.of(context).pop();
             },
             title: Text(AppLocalizations.of(context)!.videoSubtitlesOff),
           ),
@@ -203,7 +202,7 @@ class _SourceSelectDialog extends ConsumerWidget {
                 final notifier =
                     ref.read(collectionItemProvider(contentDetails).notifier);
                 notifier.setCurrentSubtitle(e.description);
-                context.pop();
+                Navigator.of(context).pop();
               },
               title: Text(
                 e.description,

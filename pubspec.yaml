@@ -1,10 +1,9 @@
 name: strumok
 description: "Strumok"
 publish_to: 'none'
-version: 1.6.2
+version: 1.6.3
 
 isar_version: &isar_version 3.1.8
-# media_kit_version: &media_kit_version 50c510d
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -17,7 +16,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   #routing
-  go_router: ^14.2.6
+  auto_route: ^9.2.2
   # auth + firebase
   googleapis_auth: ^1.6.0
   google_sign_in: ^6.2.1
@@ -66,32 +65,10 @@ dependencies:
   content_suppliers_rust:
     path: content_suppliers_rust
 
-dependency_overrides:
-  # media_kit: 
-    # git:
-    #   url: https://github.com/media-kit/media-kit
-    #   path: media_kit
-    #   ref: *media_kit_version
-  # media_kit_video: 
-    # git:
-    #   url: https://github.com/media-kit/media-kit
-    #   path: media_kit_video
-    #   ref: *media_kit_version
-  # media_kit_libs_video: 
-    # git:
-    #   url: https://github.com/media-kit/media-kit
-    #   path: libs/universal/media_kit_libs_video
-    #   ref: *media_kit_version
-  # media_kit_native_event_loop:
-  #   git:
-  #     url: https://github.com/media-kit/media-kit
-  #     path: media_kit_native_event_loop
-  #     ref:  *media_kit_version 
-  intl: any
-
 dev_dependencies:
   analyzer: ^6.7.0
   build_runner: ^2.4.11
+  auto_route_generator: ^9.0.0
   isar_generator: 
     version: *isar_version
     hosted: https://pub.isar-community.dev/

@@ -1,27 +1,25 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/auth/auth.dart';
 import 'package:strumok/auth/auth_provider.dart';
 import 'package:strumok/auth/profile_navigation_dest.dart';
 import 'package:strumok/auth/user_dialog.dart';
-import 'package:strumok/layouts/navigation_data.dart';
+import 'package:strumok/layouts/navigation_bar_data.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class BottomNavigationLayout extends ConsumerWidget {
   const BottomNavigationLayout({
     super.key,
     this.selectedIndex,
-    this.floatingActionButton,
     required this.child,
   });
 
   final int? selectedIndex;
-  final Widget? floatingActionButton;
   final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final routes = NavigationRoute.routes
+    final routes = NavigationBarData.routes
         .map(
           (r) => NavigationDestination(
             icon: r.icon,
@@ -30,8 +28,11 @@ class BottomNavigationLayout extends ConsumerWidget {
         )
         .toList();
 
-    final routesActions =
-        NavigationRoute.routes.map((r) => () => context.go(r.path)).toList();
+    final routesActions = NavigationBarData.routes
+        .map(
+          (r) => () => context.router.replace(r.routeBuilder()),
+        )
+        .toList();
 
     final destinations = [
       ...routes,
@@ -59,7 +60,6 @@ class BottomNavigationLayout extends ConsumerWidget {
         destinations: destinations,
         onDestinationSelected: (index) => actions[index](),
       ),
-      floatingActionButton: floatingActionButton,
     );
   }
 }

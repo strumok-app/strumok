@@ -1,13 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:strumok/app_localizations.dart';
+import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/settings/app_version/app_version_settings.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_settings.dart';
 import 'package:strumok/settings/theme/brightness_switcher.dart';
 import 'package:strumok/settings/theme/color_switcher.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:strumok/widgets/settings_section.dart';
 
+@RoutePage()
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -70,7 +72,7 @@ class _SettingsView extends StatelessWidget {
                           .settingsSuppliersAndRecommendations,
                     ),
                     onTap: () {
-                      context.push("/settings/suppliers");
+                      context.router.push(const SuppliersSettingsRoute());
                     },
                   )
                 ],

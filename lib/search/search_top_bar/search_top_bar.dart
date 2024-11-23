@@ -8,27 +8,39 @@ import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/filter_dialog_section.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SearchTopBar extends HookConsumerWidget {
+class SearchTopBar extends ConsumerStatefulWidget {
   const SearchTopBar({super.key});
 
-  void _search(WidgetRef ref, String query) {
-    ref.read(searchProvider.notifier).search(query);
-    ref.read(suggestionsProvider.notifier).addSuggestion(query);
+  @override
+  ConsumerState<SearchTopBar> createState() => _SearchTopBarState();
+}
+
+class _SearchTopBarState extends ConsumerState<SearchTopBar> {
+  final searchBarFocusNode = FocusNode();
+  final searchController = SearchController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      searchBarFocusNode.requestFocus();
+    });
+
+    searchController.text = ref.read(searchProvider).query ?? "";
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final searchController = useSearchController();
+  void dispose() {
+    super.dispose();
+    searchBarFocusNode.dispose();
+    searchController.dispose();
+  }
 
-    useEffect(() {
-      final query = ref.read(searchProvider).query ?? "";
-      searchController.text = query;
-      return null;
-    });
-
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
@@ -62,8 +74,6 @@ class SearchTopBar extends HookConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    final searchBarFocusNode = useFocusNode();
-
     return SearchAnchor(
       isFullScreen: isMobile(context),
       searchController: searchController,
@@ -90,7 +100,6 @@ class SearchTopBar extends HookConsumerWidget {
               EdgeInsets.only(left: 16.0, right: 8.0),
             ),
             focusNode: searchBarFocusNode,
-            autoFocus: true,
             leading: const Icon(Icons.search),
             controller: controller,
             onTap: () {
@@ -114,6 +123,11 @@ class SearchTopBar extends HookConsumerWidget {
       ),
       suggestionsBuilder: (context, controller) => [],
     );
+  }
+
+  void _search(WidgetRef ref, String query) {
+    ref.read(searchProvider.notifier).search(query);
+    ref.read(suggestionsProvider.notifier).addSuggestion(query);
   }
 
   IconButton _renderFilterSwitcher(BuildContext context) {

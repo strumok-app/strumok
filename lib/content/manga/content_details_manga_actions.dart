@@ -3,7 +3,6 @@ import 'package:strumok/content/content_details_actions.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:strumok/utils/nav.dart';
 
 class ContentDetailsMangaActions extends ContentDetailsActions {
@@ -27,11 +26,8 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
   Widget _renderReadButton(BuildContext context) {
     return SizedBox(
       width: 200,
-      child: FilledButton.tonalIcon(
-        autofocus: true,
-        onPressed: () {
-          navigateToContent(context, contentDetails);
-        },
+      child: OutlinedButton.icon(
+        onPressed: () => navigateToContent(context, contentDetails),
         icon: const Icon(Icons.menu_book_outlined),
         label: Text(AppLocalizations.of(context)!.readButton),
       ),

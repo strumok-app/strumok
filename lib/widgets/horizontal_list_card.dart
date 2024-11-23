@@ -11,7 +11,7 @@ class HorizontalListCard extends HookWidget {
   final Widget? child;
   final Widget? corner;
   final Widget? badge;
-  final bool autofocus;
+  final FocusNode? focusNode;
 
   const HorizontalListCard({
     super.key,
@@ -22,7 +22,7 @@ class HorizontalListCard extends HookWidget {
     this.child,
     this.corner,
     this.badge,
-    this.autofocus = false,
+    this.focusNode,
   });
 
   @override
@@ -39,7 +39,7 @@ class HorizontalListCard extends HookWidget {
       shape: RoundedRectangleBorder(
         side: focused.value && TVDetector.isTV
             ? BorderSide(
-                color: theme.colorScheme.primaryContainer,
+                color: theme.colorScheme.primary,
                 width: 2,
               )
             : BorderSide.none,
@@ -69,7 +69,7 @@ class HorizontalListCard extends HookWidget {
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                autofocus: autofocus,
+                focusNode: focusNode,
                 mouseCursor: SystemMouseCursors.click,
                 onTap: onTap,
                 onHover: onHover,

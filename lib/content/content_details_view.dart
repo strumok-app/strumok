@@ -19,13 +19,35 @@ import 'package:strumok/widgets/horizontal_list.dart';
 const imageRatio = .45;
 
 // maybe should split into different layouts depends of screen width
-class ContentDetailsView extends ConsumerWidget {
+class ContentDetailsView extends StatefulWidget {
   final ContentDetails contentDetails;
 
   const ContentDetailsView(this.contentDetails, {super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  State<ContentDetailsView> createState() => _ContentDetailsViewState();
+}
+
+class _ContentDetailsViewState extends State<ContentDetailsView> {
+  final mainActionsFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      mainActionsFocusNode.requestFocus();
+    });
+  }
+  
+  @override
+  void dispose() {
+    super.dispose();
+    mainActionsFocusNode.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final mobile = _isCompactLayout(context);
 
     return LayoutBuilder(
@@ -39,7 +61,7 @@ class ContentDetailsView extends ConsumerWidget {
                   : constraints.maxWidth * imageRatio,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: CachedNetworkImageProvider(contentDetails.image),
+                  image: CachedNetworkImageProvider(widget.contentDetails.image),
                   fit: mobile ? BoxFit.cover : BoxFit.fitHeight,
                   alignment: mobile ? Alignment.topCenter : Alignment.topRight,
                 ),
@@ -50,6 +72,7 @@ class ContentDetailsView extends ConsumerWidget {
             child: _renderMainInfo(
               context,
               constraints,
+              mainActionsFocusNode
             ),
           )
         ],
@@ -57,7 +80,7 @@ class ContentDetailsView extends ConsumerWidget {
     );
   }
 
-  Widget _renderMainInfo(BuildContext context, BoxConstraints constraints) {
+  Widget _renderMainInfo(BuildContext context, BoxConstraints constraints, FocusNode mainActionsFocusNode) {
     final paddings = getPadding(context);
     final mobile = _isCompactLayout(context);
     final theme = Theme.of(context);
@@ -81,13 +104,13 @@ class ContentDetailsView extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 8),
-                _renderContentActions(contentDetails),
-                _MediaCollectionItemButtons(contentDetails),
+                _renderContentActions(widget.contentDetails, mainActionsFocusNode),
+                _MediaCollectionItemButtons(widget.contentDetails),
                 const SizedBox(height: 8),
                 _renderAdditionalInfo(context),
                 const SizedBox(height: 8),
                 _renderDescription(context),
-                if (contentDetails.similar.isNotEmpty) ...[
+                if (widget.contentDetails.similar.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   _renderSimilar(context),
                 ],
@@ -109,15 +132,15 @@ class ContentDetailsView extends ConsumerWidget {
       children: [
         const SizedBox(height: 8),
         SelectableText(
-          contentDetails.title,
+          widget.contentDetails.title,
           style: theme.textTheme.headlineLarge?.copyWith(
             height: 1,
             color: compact ? Colors.white : null,
           ),
         ),
-        if (contentDetails.originalTitle != null)
+        if (widget.contentDetails.originalTitle != null)
           SelectableText(
-            contentDetails.originalTitle!,
+            widget.contentDetails.originalTitle!,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: compact ? Colors.white : null,
             ),
@@ -164,10 +187,10 @@ class ContentDetailsView extends ConsumerWidget {
         Card.filled(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(contentDetails.supplier),
+            child: Text(widget.contentDetails.supplier),
           ),
         ),
-        ...contentDetails.additionalInfo.map(
+        ...widget.contentDetails.additionalInfo.map(
           (e) => Card.outlined(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -185,14 +208,14 @@ class ContentDetailsView extends ConsumerWidget {
     if (TVDetector.isTV) {
       return Focus(
         child: Text(
-          contentDetails.description,
+          widget.contentDetails.description,
           style: theme.textTheme.bodyLarge,
         ),
       );
     }
 
     return ReadMoreText(
-      contentDetails.description,
+      widget.contentDetails.description,
       trimMode: TrimMode.Line,
       trimLines: 4,
       trimCollapsedText: AppLocalizations.of(context)!.readMore,
@@ -211,16 +234,16 @@ class ContentDetailsView extends ConsumerWidget {
         style: theme.textTheme.headlineSmall,
       ),
       itemBuilder: (context, index) => ContentInfoCard(
-        contentInfo: contentDetails.similar[index],
+        contentInfo: widget.contentDetails.similar[index],
         showSupplier: false,
       ),
-      itemCount: contentDetails.similar.length,
+      itemCount: widget.contentDetails.similar.length,
     );
   }
 
-  Widget _renderContentActions(ContentDetails contentDetails) {
+  Widget _renderContentActions(ContentDetails contentDetails, FocusNode mainActionsFocusNode) {
     return switch (contentDetails.mediaType) {
-      MediaType.video => ContentDetailsVideoActions(contentDetails),
+      MediaType.video => ContentDetailsVideoActions(contentDetails, focusNode: mainActionsFocusNode),
       MediaType.manga => ContentDetailsMangaActions(contentDetails),
     };
   }

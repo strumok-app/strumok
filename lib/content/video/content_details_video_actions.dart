@@ -9,7 +9,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/utils/nav.dart';
 
 class ContentDetailsVideoActions extends ContentDetailsActions {
-  const ContentDetailsVideoActions(super.contentDetails, {super.key});
+  final FocusNode? focusNode;
+
+  const ContentDetailsVideoActions(super.contentDetails, {super.key, this.focusNode});
 
   @override
   Widget renderActions(
@@ -32,11 +34,9 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
   Widget _renderWatchButton(BuildContext context) {
     return SizedBox(
       width: 200,
-      child: FilledButton.tonalIcon(
-        autofocus: true,
-        onPressed: () {
-          navigateToContent(context, contentDetails);
-        },
+      child: OutlinedButton.icon(
+        focusNode: focusNode,
+        onPressed: () => navigateToContent(context, contentDetails),
         icon: const Icon(Icons.play_arrow_outlined),
         label: Text(AppLocalizations.of(context)!.watchButton),
       ),

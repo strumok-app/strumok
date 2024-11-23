@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:strumok/utils/nav.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class ContentInfoCard extends StatelessWidget {
-  final bool autofocus;
+  final FocusNode? focusNode;
   final bool showSupplier;
 
   final ValueChanged<bool>? onHover;
@@ -21,7 +21,7 @@ class ContentInfoCard extends StatelessWidget {
     this.onTap,
     this.onHover,
     this.onLongPress,
-    this.autofocus = false,
+    this.focusNode,
     this.showSupplier = true,
   });
 
@@ -30,12 +30,9 @@ class ContentInfoCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return HorizontalListCard(
-      autofocus: autofocus,
+      focusNode: focusNode,
       onTap: onTap ??
-          () {
-            context.push(
-                "/content/${contentInfo.supplier}/${Uri.encodeComponent(contentInfo.id)}");
-          },
+          () => navigateToContentDetails(context, contentInfo),
       onHover: onHover,
       onLongPress: onLongPress,
       decoration: BoxDecoration(

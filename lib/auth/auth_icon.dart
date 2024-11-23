@@ -1,9 +1,11 @@
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:strumok/auth/auth.dart';
 import 'package:strumok/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/auth/user_dialog.dart';
+import 'package:strumok/utils/tv.dart';
 
 class DesktopAuthIcon extends ConsumerWidget {
   const DesktopAuthIcon({super.key});
@@ -31,13 +33,15 @@ class DesktopAuthIcon extends ConsumerWidget {
   }
 }
 
-class _AuthUserMenu extends ConsumerWidget {
+class _AuthUserMenu extends HookConsumerWidget {
   final User user;
 
   const _AuthUserMenu({required this.user});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final focused = useState(false);
+
     return InkResponse(
       radius: 24,
       onTap: () {
@@ -46,14 +50,26 @@ class _AuthUserMenu extends ConsumerWidget {
           builder: (context) => UserDialog(user: user),
         );
       },
+      onFocusChange: (value) => focused.value = value,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Tooltip(
           message: user.name,
-          child: CircleAvatar(
-            radius: 20,
-            backgroundImage:
-                user.picture != null ? NetworkImage(user.picture!) : null,
+          child: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: focused.value && TVDetector.isTV
+                    ? Border.all(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2,
+                      )
+                    : null),
+            child: CircleAvatar(
+              backgroundImage:
+                  user.picture != null ? NetworkImage(user.picture!) : null,
+            ),
           ),
         ),
       ),

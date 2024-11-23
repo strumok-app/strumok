@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings.dart';
@@ -6,6 +7,7 @@ import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class SuppliersSettingsScreen extends StatelessWidget {
   const SuppliersSettingsScreen({super.key});
 

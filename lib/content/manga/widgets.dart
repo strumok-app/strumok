@@ -6,7 +6,6 @@ import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/utils/nav.dart';
 

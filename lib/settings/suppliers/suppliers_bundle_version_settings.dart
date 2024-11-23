@@ -81,7 +81,7 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
             );
           },
           skipLoadingOnRefresh: false,
-          loading: () => FilledButton.tonalIcon(
+          loading: () => OutlinedButton.icon(
             icon: const SizedBox(
               height: 16,
               width: 16,
@@ -129,7 +129,7 @@ class SuppliersBundleDownloadButton extends ConsumerWidget {
     final state = ref.watch(suppliersBundleDownloadProvider);
 
     return state.downloading
-        ? FilledButton.tonalIcon(
+        ? OutlinedButton.icon(
             icon: SizedBox(
               height: 16,
               width: 16,
@@ -140,7 +140,7 @@ class SuppliersBundleDownloadButton extends ConsumerWidget {
             onPressed: null,
             label: label,
           )
-        : FilledButton(
+        : OutlinedButton(
             onPressed: () {
               ref.read(suppliersBundleDownloadProvider.notifier).download(info);
             },
@@ -154,7 +154,7 @@ class _RefreshButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return FilledButton.tonalIcon(
+    return OutlinedButton.icon(
       onPressed: () => ref.refresh(latestSupplierBundleInfoProvider),
       label: Text(AppLocalizations.of(context)!.settingsCheckForUpdate),
     );

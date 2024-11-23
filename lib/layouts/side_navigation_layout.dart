@@ -1,8 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:strumok/auth/auth_icon.dart';
-import 'package:strumok/layouts/navigation_data.dart';
+import 'package:strumok/layouts/navigation_bar_data.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class SideNavigationLayout extends StatelessWidget {
   const SideNavigationLayout({
@@ -18,7 +18,7 @@ class SideNavigationLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routes = NavigationRoute.routes
+    final routes = NavigationBarData.routes
         .map(
           (r) => NavigationRailDestination(
             icon: r.icon,
@@ -33,6 +33,14 @@ class SideNavigationLayout extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: NavigationRail(
+              indicatorShape: RoundedRectangleBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                side: BorderSide(
+                  width: 2,
+                  color: Theme.of(context).indicatorColor
+                ),
+              ),
+              indicatorColor: Colors.transparent,
               leading: showBackButton
                   ? const BackNavButton()
                   : const DesktopAuthIcon(),
@@ -40,8 +48,11 @@ class SideNavigationLayout extends StatelessWidget {
               selectedIndex: selectedIndex,
               groupAlignment: 0.0,
               destinations: routes,
-              onDestinationSelected: (index) =>
-                  context.go(NavigationRoute.routes[index].path),
+              onDestinationSelected: (index) {
+                final routeBuilder =
+                    NavigationBarData.routes[index].routeBuilder;
+                context.router.replace(routeBuilder());
+              },
             ),
           ),
           Expanded(child: child)

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/fullscreen.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:strumok/app_localizations.dart';
@@ -11,7 +10,6 @@ import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
-import 'package:strumok/utils/nav.dart';
 
 class ExitButton extends StatelessWidget {
   final ContentDetails contentDetails;
@@ -28,7 +26,7 @@ class ExitButton extends StatelessWidget {
         }
 
         if (context.mounted) {
-          backToContentDetails(context, contentDetails);
+          Navigator.of(context).pop();
         }
       },
     );

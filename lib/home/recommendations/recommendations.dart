@@ -1,4 +1,5 @@
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/home/recommendations/recommendations_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
@@ -51,7 +52,7 @@ class Recommendations extends ConsumerWidget {
       title: const SizedBox.shrink(),
       itemBuilder: (context, index) => HorizontalListCard(
         onTap: () {
-          context.push("/settings/suppliers");
+          context.router.push(const SuppliersSettingsRoute());
         },
         child: const SetRecommendationsHint(),
       ),

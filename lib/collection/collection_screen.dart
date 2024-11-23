@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+@RoutePage()
 class CollectionScreen extends StatelessWidget {
   const CollectionScreen({super.key});
 
@@ -61,7 +63,7 @@ class CollectionHorizontalView extends ConsumerWidget {
   }
 }
 
-class CollectionHorizontalGroup extends ConsumerWidget {
+class CollectionHorizontalGroup extends ConsumerStatefulWidget {
   final MediaCollectionItemStatus status;
   final int groupIdx;
 
@@ -72,9 +74,30 @@ class CollectionHorizontalGroup extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CollectionHorizontalGroup> createState() => _CollectionHorizontalGroupState();
+}
+
+class _CollectionHorizontalGroupState extends ConsumerState<CollectionHorizontalGroup> {
+  final primaryFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      primaryFocusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    primaryFocusNode.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final groupItems = ref.watch(
-      collectionProvider.select((value) => value.valueOrNull?[status]),
+      collectionProvider.select((value) => value.valueOrNull?[widget.status]),
     );
 
     if (groupItems == null) {
@@ -82,11 +105,11 @@ class CollectionHorizontalGroup extends ConsumerWidget {
     }
 
     Widget title = Text(
-      statusLabel(context, status),
+      statusLabel(context, widget.status),
       style: Theme.of(context).textTheme.titleMedium,
     );
 
-    if (groupIdx == 0) {
+    if (widget.groupIdx == 0) {
       title = Focus(child: title);
     }
 
@@ -94,7 +117,7 @@ class CollectionHorizontalGroup extends ConsumerWidget {
       title: title,
       itemBuilder: (context, index) {
         return CollectionHorizontalListItem(
-          autofocuse: groupIdx == 0 && index == 0,
+          focusNode: (widget.groupIdx == 0 && index == 0) ? primaryFocusNode : null,
           item: groupItems[index],
         );
       },
@@ -105,22 +128,22 @@ class CollectionHorizontalGroup extends ConsumerWidget {
 
 class CollectionHorizontalListItem extends HookConsumerWidget {
   final MediaCollectionItem item;
-  final bool autofocuse;
+  final FocusNode? focusNode;
 
   const CollectionHorizontalListItem({
     super.key,
-    required this.autofocuse,
     required this.item,
+    this.focusNode,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final focusNode = useFocusNode();
+    final itemActionsfocusNode = useFocusNode();
     final cornerVisible = useState(false);
     final desktop = isDesktopDevice();
 
     return ContentInfoCard(
-      autofocus: autofocuse,
+      focusNode: focusNode,
       contentInfo: item,
       onHover: desktop
           ? (value) {
@@ -131,7 +154,7 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
           ? null
           : () {
               cornerVisible.value = !cornerVisible.value;
-              focusNode.requestFocus();
+              itemActionsfocusNode.requestFocus();
             },
       corner: ValueListenableBuilder<bool>(
         valueListenable: cornerVisible,
@@ -149,12 +172,12 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
               },
         child: BackButtonListener(
           onBackButtonPressed: () async {
-            focusNode.previousFocus();
+            itemActionsfocusNode.previousFocus();
             return true;
           },
           child: _CollectionListItemCorner(
             item: item,
-            focusNode: focusNode,
+            focusNode: itemActionsfocusNode,
           ),
         ),
       ),

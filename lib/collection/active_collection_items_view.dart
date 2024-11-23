@@ -1,4 +1,7 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
+import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
 import 'package:strumok/content/content_info_card.dart';
@@ -6,14 +9,33 @@ import 'package:strumok/widgets/horizontal_list.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
 import 'package:strumok/widgets/use_search_hint.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-class ActiveCollectionItemsView extends ConsumerWidget {
+class ActiveCollectionItemsView extends ConsumerStatefulWidget {
   const ActiveCollectionItemsView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ActiveCollectionItemsView> createState() => _ActiveCollectionItemsViewState();
+}
+
+class _ActiveCollectionItemsViewState extends ConsumerState<ActiveCollectionItemsView> {
+  final primaryFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      primaryFocusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    primaryFocusNode.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final groups = ref.watch(collectionActiveItemsProvider);
 
     return groups.maybeWhen(
@@ -50,7 +72,7 @@ class ActiveCollectionItemsView extends ConsumerWidget {
         final item = items![index];
 
         return ContentInfoCard(
-          autofocus: index == 0,
+          focusNode: index == 0 ? primaryFocusNode : null,
           contentInfo: item,
         );
       },
@@ -66,7 +88,7 @@ class ActiveCollectionItemsView extends ConsumerWidget {
       ),
       itemBuilder: (context, index) => HorizontalListCard(
         onTap: () {
-          context.go("/search");
+          context.router.replace(const SearchRoute());
         },
         child: const UseSearchHint(),
       ),

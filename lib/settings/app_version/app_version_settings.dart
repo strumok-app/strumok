@@ -26,7 +26,7 @@ class AppVersionSettings extends ConsumerWidget {
             );
           },
           skipLoadingOnRefresh: false,
-          loading: () => FilledButton.tonalIcon(
+          loading: () => OutlinedButton.icon(
             icon: const SizedBox(
               height: 16,
               width: 16,
@@ -53,7 +53,7 @@ class AppVersionSettings extends ConsumerWidget {
       return AppDownloadButton(info: latestAppVersionInfo);
     }
 
-    return FilledButton.tonal(
+    return OutlinedButton(
       onPressed: () => ref.refresh(latestAppVersionInfoProvider),
       child: Text(AppLocalizations.of(context)!.settingsCheckForUpdate),
     );
@@ -75,7 +75,7 @@ class AppDownloadButton extends ConsumerWidget {
         AppLocalizations.of(context)!.settingsDownloadUpdate(info.version));
 
     return state.downloading
-        ? FilledButton.tonalIcon(
+        ? OutlinedButton.icon(
             icon: SizedBox(
               height: 16,
               width: 16,
@@ -86,7 +86,7 @@ class AppDownloadButton extends ConsumerWidget {
             onPressed: null,
             label: label,
           )
-        : FilledButton(
+        : OutlinedButton(
             onPressed: () {
               ref.read(appDownloadProvider.notifier).download(info);
             },

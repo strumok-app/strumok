@@ -1,5 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:strumok/app_localizations.dart';
+import 'package:strumok/app_router.gr.dart';
 
 class DisplayError extends StatelessWidget {
   final Object error;
@@ -26,19 +28,20 @@ class DisplayError extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  if (context.canPop()) {
-                    context.pop();
+                  final navigator = Navigator.of(context);
+                  if (navigator.canPop()) {
+                    navigator.pop();
                   } else {
-                    context.go("/");
+                    context.router.replace(const HomeRoute());
                   }
                 },
-                child: const Text("Повернутись назад"),
+                child: Text(AppLocalizations.of(context)!.errorGoBack),
               ),
               if (onRefresh != null) ...[
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: onRefresh,
-                  child: const Text("Повторити"),
+                  child: Text(AppLocalizations.of(context)!.errorReload),
                 )
               ]
             ],
