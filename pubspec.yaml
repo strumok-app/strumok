@@ -19,18 +19,18 @@ dependencies:
   auto_route: ^9.2.2
   # auth + firebase
   googleapis_auth: ^1.6.0
-  google_sign_in: ^6.2.1
-  firebase_dart: ^1.1.5
+  google_sign_in: ^6.2.2
+  firebase_dart: ^1.2.3
   http: ^1.2.2
   # storage
-  path_provider: ^2.0.15
+  path_provider: ^2.1.5
   isar: 
     version: *isar_version
     hosted: https://pub.isar-community.dev/
   isar_flutter_libs: # contains Isar Core
     version: *isar_version
     hosted: https://pub.isar-community.dev/
-  shared_preferences: ^2.3.2
+  shared_preferences: ^2.3.3
   # media kit
   media_kit: ^1.1.11                              
   media_kit_video: ^1.2.5                         
@@ -38,20 +38,20 @@ dependencies:
   # Utility widgets
   scrollable_positioned_list: ^0.3.8
   readmore: ^3.0.0
-  material_symbols_icons: ^4.2780.0
+  material_symbols_icons: ^4.2799.0
   # state managment
   riverpod_annotation: ^2.3.5
   hooks_riverpod: ^2.5.2
   flutter_hooks: ^0.20.5
   flutter_riverpod: ^2.5.1
   # utillity
-  logger: ^2.2.0
-  equatable: ^2.0.5
+  logger: ^2.5.0
+  equatable: ^2.0.7
   json_annotation: ^4.9.0
-  url_launcher: ^6.3.0
+  url_launcher: ^6.3.1
   collection: ^1.18.0
-  device_info_plus: ^10.1.2
-  package_info_plus: ^8.0.2
+  device_info_plus: ^11.1.1
+  package_info_plus: ^8.1.1
   window_manager: ^0.4.2
   cached_network_image: ^3.4.1
   flutter_download_manager: ^0.5.5
