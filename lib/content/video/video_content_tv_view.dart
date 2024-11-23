@@ -175,8 +175,9 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
         onBackButtonPressed: () async {
           if (uiShown) {
             onExit();
+            return true;
           }
-          return true;
+          return false;
         },
         child: Focus(
           autofocus: true,

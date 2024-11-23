@@ -91,7 +91,7 @@ class _SearchTopBarState extends ConsumerState<SearchTopBar> {
         return BackButtonListener(
           onBackButtonPressed: () async {
             if (searchBarFocusNode.hasFocus) {
-              searchBarFocusNode.unfocus();
+              searchBarFocusNode.previousFocus();
               return true;
             }
             return false;
