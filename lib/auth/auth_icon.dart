@@ -2,7 +2,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:strumok/auth/auth.dart';
 import 'package:strumok/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/auth/user_dialog.dart';
 import 'package:strumok/utils/tv.dart';

@@ -34,33 +34,33 @@ class CollectionTopBar extends HookConsumerWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Align(
-            alignment: TVDetector.isTV
-                ? Alignment.centerLeft
-                : Alignment.center,
-            child: BackButtonListener(
-              onBackButtonPressed: () async {
-                if (searchBarFocusNode.hasFocus) {
-                  searchBarFocusNode.unfocus();
-                  return true;
-                }
-                return false;
-              },
-              child: SearchBar(
-                controller: controller,
-                padding: const WidgetStatePropertyAll<EdgeInsets>(
-                  EdgeInsets.only(left: 16.0, right: 8.0),
-                ),
-                focusNode: searchBarFocusNode,
-                leading: const Icon(Icons.search),
-                trailing: TVDetector.isTV
-                    ? null
-                    : [_renderFilterSwitcher(context)],
-                onSubmitted: (value) {
-                  ref.read(collectionFilterQueryProvider.notifier).state =
-                      value;
-                  searchBarFocusNode.requestFocus();
+          Expanded(
+            child: Align(
+              alignment:
+                  TVDetector.isTV ? Alignment.centerLeft : Alignment.center,
+              child: BackButtonListener(
+                onBackButtonPressed: () async {
+                  if (searchBarFocusNode.hasFocus) {
+                    searchBarFocusNode.unfocus();
+                    return true;
+                  }
+                  return false;
                 },
+                child: SearchBar(
+                  controller: controller,
+                  padding: const WidgetStatePropertyAll<EdgeInsets>(
+                    EdgeInsets.only(left: 16.0, right: 8.0),
+                  ),
+                  focusNode: searchBarFocusNode,
+                  leading: const Icon(Icons.search),
+                  trailing:
+                      TVDetector.isTV ? null : [_renderFilterSwitcher(context)],
+                  onSubmitted: (value) {
+                    ref.read(collectionFilterQueryProvider.notifier).state =
+                        value;
+                    searchBarFocusNode.requestFocus();
+                  },
+                ),
               ),
             ),
           ),

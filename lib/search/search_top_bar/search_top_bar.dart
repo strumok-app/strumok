@@ -47,14 +47,15 @@ class _SearchTopBarState extends ConsumerState<SearchTopBar> {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              Align(
-                alignment: TVDetector.isTV
-                    ? Alignment.centerLeft
-                    : Alignment.center,
-                child: _renderSearchBar(
-                  searchController,
-                  context,
-                  ref,
+              Expanded(
+                child: Align(
+                  alignment:
+                      TVDetector.isTV ? Alignment.centerLeft : Alignment.center,
+                  child: _renderSearchBar(
+                    searchController,
+                    context,
+                    ref,
+                  ),
                 ),
               ),
               if (TVDetector.isTV)
@@ -111,9 +112,7 @@ class _SearchTopBarState extends ConsumerState<SearchTopBar> {
             onSubmitted: (value) {
               _search(ref, value);
             },
-            trailing: TVDetector.isTV
-                ? null
-                : [_renderFilterSwitcher(context)],
+            trailing: TVDetector.isTV ? null : [_renderFilterSwitcher(context)],
           ),
         );
       },

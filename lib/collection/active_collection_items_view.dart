@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
@@ -10,42 +11,29 @@ import 'package:strumok/widgets/horizontal_list_card.dart';
 import 'package:strumok/widgets/use_search_hint.dart';
 import 'package:flutter/material.dart';
 
-class ActiveCollectionItemsView extends ConsumerStatefulWidget {
+class ActiveCollectionItemsView extends HookConsumerWidget {
   const ActiveCollectionItemsView({super.key});
 
   @override
-  ConsumerState<ActiveCollectionItemsView> createState() => _ActiveCollectionItemsViewState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final groups = ref.watch(collectionActiveItemsProvider);
+    final primaryFocusNode = useFocusNode();
 
-class _ActiveCollectionItemsViewState extends ConsumerState<ActiveCollectionItemsView> {
-  final primaryFocusNode = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       primaryFocusNode.requestFocus();
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    primaryFocusNode.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final groups = ref.watch(collectionActiveItemsProvider);
 
     return groups.maybeWhen(
-      data: (value) => _renderGroups(context, value),
+      data: (value) => _renderGroups(context, value, primaryFocusNode),
       orElse: () => const SizedBox.shrink(),
     );
   }
 
-  Widget _renderGroups(BuildContext context,
-      Map<MediaCollectionItemStatus, List<MediaCollectionItem>> groups) {
+  Widget _renderGroups(
+    BuildContext context,
+    Map<MediaCollectionItemStatus, List<MediaCollectionItem>> groups,
+    FocusNode primaryFocusNode,
+  ) {
     List<MediaCollectionItem>? items;
     String? title;
 
