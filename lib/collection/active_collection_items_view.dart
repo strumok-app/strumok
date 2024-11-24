@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
@@ -11,29 +10,21 @@ import 'package:strumok/widgets/horizontal_list_card.dart';
 import 'package:strumok/widgets/use_search_hint.dart';
 import 'package:flutter/material.dart';
 
-class ActiveCollectionItemsView extends HookConsumerWidget {
+class ActiveCollectionItemsView extends ConsumerWidget {
   const ActiveCollectionItemsView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groups = ref.watch(collectionActiveItemsProvider);
-    final primaryFocusNode = useFocusNode();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      primaryFocusNode.requestFocus();
-    });
 
     return groups.maybeWhen(
-      data: (value) => _renderGroups(context, value, primaryFocusNode),
+      data: (value) => _renderGroups(context, value),
       orElse: () => const SizedBox.shrink(),
     );
   }
 
-  Widget _renderGroups(
-    BuildContext context,
-    Map<MediaCollectionItemStatus, List<MediaCollectionItem>> groups,
-    FocusNode primaryFocusNode,
-  ) {
+  Widget _renderGroups(BuildContext context,
+      Map<MediaCollectionItemStatus, List<MediaCollectionItem>> groups) {
     List<MediaCollectionItem>? items;
     String? title;
 
@@ -60,7 +51,6 @@ class ActiveCollectionItemsView extends HookConsumerWidget {
         final item = items![index];
 
         return ContentInfoCard(
-          focusNode: index == 0 ? primaryFocusNode : null,
           contentInfo: item,
         );
       },
