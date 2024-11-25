@@ -1,5 +1,5 @@
 
-use std::{collections::HashMap, fmt::format};
+use std::collections::HashMap;
 
 
 use crate::models::{
@@ -80,7 +80,8 @@ impl ContentSupplier for DummyContentSupplier {
                         secondary_title: Some("secondary_dummy_title".to_owned()),
                         image: "dummy_image".to_owned()
                     }
-                ], 
+                ],
+                media_items: None,
                 params: vec!["1".to_owned(), "2".to_owned()]
              }
         ))

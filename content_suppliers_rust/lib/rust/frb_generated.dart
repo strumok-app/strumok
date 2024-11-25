@@ -430,8 +430,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ContentDetails dco_decode_content_details(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 8)
-      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
     return ContentDetails(
       title: dco_decode_String(arr[0]),
       originalTitle: dco_decode_opt_String(arr[1]),
@@ -440,7 +440,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       mediaType: dco_decode_media_type(arr[4]),
       additionalInfo: dco_decode_list_String(arr[5]),
       similar: dco_decode_list_content_info(arr[6]),
-      params: dco_decode_list_String(arr[7]),
+      mediaItems: dco_decode_opt_list_content_media_item(arr[7]),
+      params: dco_decode_list_String(arr[8]),
     );
   }
 
@@ -582,6 +583,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ContentMediaItem>? dco_decode_opt_list_content_media_item(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_list_content_media_item(raw);
+  }
+
+  @protected
   List<ContentMediaItemSource>? dco_decode_opt_list_content_media_item_source(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -664,6 +671,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_mediaType = sse_decode_media_type(deserializer);
     var var_additionalInfo = sse_decode_list_String(deserializer);
     var var_similar = sse_decode_list_content_info(deserializer);
+    var var_mediaItems = sse_decode_opt_list_content_media_item(deserializer);
     var var_params = sse_decode_list_String(deserializer);
     return ContentDetails(
         title: var_title,
@@ -673,6 +681,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         mediaType: var_mediaType,
         additionalInfo: var_additionalInfo,
         similar: var_similar,
+        mediaItems: var_mediaItems,
         params: var_params);
   }
 
@@ -876,6 +885,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ContentMediaItem>? sse_decode_opt_list_content_media_item(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_list_content_media_item(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   List<ContentMediaItemSource>? sse_decode_opt_list_content_media_item_source(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -964,6 +985,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_media_type(self.mediaType, serializer);
     sse_encode_list_String(self.additionalInfo, serializer);
     sse_encode_list_content_info(self.similar, serializer);
+    sse_encode_opt_list_content_media_item(self.mediaItems, serializer);
     sse_encode_list_String(self.params, serializer);
   }
 
@@ -1137,6 +1159,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_box_autoadd_content_details(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_list_content_media_item(
+      List<ContentMediaItem>? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_list_content_media_item(self, serializer);
     }
   }
 

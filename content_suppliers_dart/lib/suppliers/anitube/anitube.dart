@@ -89,7 +89,7 @@ class AniTubeSupplier extends ContentSupplier
       return null;
     }
 
-    // I wish to burn in hell to the person who made this site markup
+    // I wish burn in hell to the person who made this site markup
     if (result["htmlMess"] != null) {
       final additionalInfo = [];
       final htmlMess = result["htmlMess"] as String;

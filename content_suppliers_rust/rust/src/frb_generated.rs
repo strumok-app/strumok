@@ -468,6 +468,8 @@ impl SseDecode for crate::models::ContentDetails {
         let mut var_mediaType = <crate::models::MediaType>::sse_decode(deserializer);
         let mut var_additionalInfo = <Vec<String>>::sse_decode(deserializer);
         let mut var_similar = <Vec<crate::models::ContentInfo>>::sse_decode(deserializer);
+        let mut var_mediaItems =
+            <Option<Vec<crate::models::ContentMediaItem>>>::sse_decode(deserializer);
         let mut var_params = <Vec<String>>::sse_decode(deserializer);
         return crate::models::ContentDetails {
             title: var_title,
@@ -477,6 +479,7 @@ impl SseDecode for crate::models::ContentDetails {
             media_type: var_mediaType,
             additional_info: var_additionalInfo,
             similar: var_similar,
+            media_items: var_mediaItems,
             params: var_params,
         };
     }
@@ -716,6 +719,19 @@ impl SseDecode for Option<crate::models::ContentDetails> {
     }
 }
 
+impl SseDecode for Option<Vec<crate::models::ContentMediaItem>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<Vec<crate::models::ContentMediaItem>>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<Vec<crate::models::ContentMediaItemSource>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -820,6 +836,7 @@ impl flutter_rust_bridge::IntoDart for crate::models::ContentDetails {
             self.media_type.into_into_dart().into_dart(),
             self.additional_info.into_into_dart().into_dart(),
             self.similar.into_into_dart().into_dart(),
+            self.media_items.into_into_dart().into_dart(),
             self.params.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -992,6 +1009,7 @@ impl SseEncode for crate::models::ContentDetails {
         <crate::models::MediaType>::sse_encode(self.media_type, serializer);
         <Vec<String>>::sse_encode(self.additional_info, serializer);
         <Vec<crate::models::ContentInfo>>::sse_encode(self.similar, serializer);
+        <Option<Vec<crate::models::ContentMediaItem>>>::sse_encode(self.media_items, serializer);
         <Vec<String>>::sse_encode(self.params, serializer);
     }
 }
@@ -1196,6 +1214,16 @@ impl SseEncode for Option<crate::models::ContentDetails> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <crate::models::ContentDetails>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<Vec<crate::models::ContentMediaItem>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <Vec<crate::models::ContentMediaItem>>::sse_encode(value, serializer);
         }
     }
 }
