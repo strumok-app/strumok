@@ -113,15 +113,9 @@ class SearchTopBar extends HookConsumerWidget {
             focusNode: searchBarFocusNode,
             leading: const Icon(Icons.search),
             controller: controller,
-            onTap: () {
-              controller.openView();
-            },
-            onChanged: (value) {
-              controller.openView();
-            },
-            onSubmitted: (value) {
-              _search(ref, value);
-            },
+            onTap: () => controller.openView(),
+            onChanged: (value) => controller.openView(),
+            onSubmitted: (value) => _search(ref, value),
             trailing: TVDetector.isTV ? null : [_renderFilterSwitcher(context)],
           ),
         );
@@ -137,6 +131,7 @@ class SearchTopBar extends HookConsumerWidget {
   void _search(WidgetRef ref, String query) {
     ref.read(searchProvider.notifier).search(query);
     ref.read(suggestionsProvider.notifier).addSuggestion(query);
+    searchBarFocusNode.previousFocus();
   }
 
   IconButton _renderFilterSwitcher(BuildContext context) {

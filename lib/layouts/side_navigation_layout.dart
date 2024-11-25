@@ -33,14 +33,6 @@ class SideNavigationLayout extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: NavigationRail(
-              indicatorShape: RoundedRectangleBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                side: BorderSide(
-                  width: 2,
-                  color: Theme.of(context).indicatorColor
-                ),
-              ),
-              indicatorColor: Colors.transparent,
               leading: showBackButton
                   ? const BackNavButton()
                   : const DesktopAuthIcon(),

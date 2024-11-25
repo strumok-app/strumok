@@ -28,7 +28,8 @@ class CollectionTopBar extends HookConsumerWidget {
 
   Widget _renderSearchBar(
       BuildContext context, WidgetRef ref, TextEditingController controller) {
-    final searchBarFocusNode = useFocusNode();
+    final searchBarFocusNode =
+        useFocusNode(debugLabel: "Collections serach bar");
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -41,7 +42,7 @@ class CollectionTopBar extends HookConsumerWidget {
               child: BackButtonListener(
                 onBackButtonPressed: () async {
                   if (searchBarFocusNode.hasFocus) {
-                    searchBarFocusNode.unfocus();
+                    searchBarFocusNode.previousFocus();
                     return true;
                   }
                   return false;
@@ -58,7 +59,7 @@ class CollectionTopBar extends HookConsumerWidget {
                   onSubmitted: (value) {
                     ref.read(collectionFilterQueryProvider.notifier).state =
                         value;
-                    searchBarFocusNode.requestFocus();
+                    searchBarFocusNode.previousFocus();
                   },
                 ),
               ),
