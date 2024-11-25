@@ -18,7 +18,7 @@ class SearchTopBar extends ConsumerStatefulWidget {
 }
 
 class _SearchTopBarState extends ConsumerState<SearchTopBar> {
-  final searchBarFocusNode = FocusNode();
+  final searchBarFocusNode = FocusNode(debugLabel: "Search Bar");
   final searchController = SearchController();
 
   @override
@@ -103,15 +103,9 @@ class _SearchTopBarState extends ConsumerState<SearchTopBar> {
             focusNode: searchBarFocusNode,
             leading: const Icon(Icons.search),
             controller: controller,
-            onTap: () {
-              controller.openView();
-            },
-            onChanged: (value) {
-              controller.openView();
-            },
-            onSubmitted: (value) {
-              _search(ref, value);
-            },
+            onTap: () => controller.openView(),
+            onChanged: (value) => controller.openView(),
+            onSubmitted: (value) => _search(ref, value),
             trailing: TVDetector.isTV ? null : [_renderFilterSwitcher(context)],
           ),
         );
@@ -127,6 +121,7 @@ class _SearchTopBarState extends ConsumerState<SearchTopBar> {
   void _search(WidgetRef ref, String query) {
     ref.read(searchProvider.notifier).search(query);
     ref.read(suggestionsProvider.notifier).addSuggestion(query);
+    searchBarFocusNode.previousFocus();
   }
 
   IconButton _renderFilterSwitcher(BuildContext context) {

@@ -12,12 +12,28 @@ class AppTheme extends ConsumerWidget {
     final brightness = ref.watch(brightnessSettingProvider);
     final color = ref.watch(colorSettingsProvider);
 
+    final colorScheme = ColorScheme.fromSeed(
+      brightness: brightness ?? MediaQuery.platformBrightnessOf(context),
+      seedColor: color,
+    );
+
+    final navigationIndicatorShape = RoundedRectangleBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(20)),
+      side: BorderSide(width: 2, color: colorScheme.onSurfaceVariant),
+    );
+
     return Theme(
       data: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          brightness: brightness ?? MediaQuery.platformBrightnessOf(context),
-          seedColor: color,
+        colorScheme: colorScheme,
+        navigationRailTheme: NavigationRailThemeData(
+          indicatorShape: navigationIndicatorShape,
+          indicatorColor: Colors.transparent,
         ),
+        navigationBarTheme: NavigationBarThemeData(
+          indicatorShape: navigationIndicatorShape,
+          indicatorColor: Colors.transparent,
+        ),
+        focusColor: Colors.white.withAlpha(60),
         useMaterial3: true,
       ),
       child: child,
