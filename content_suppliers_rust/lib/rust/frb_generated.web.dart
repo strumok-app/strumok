@@ -86,6 +86,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ContentDetails? dco_decode_opt_box_autoadd_content_details(dynamic raw);
 
   @protected
+  List<ContentMediaItem>? dco_decode_opt_list_content_media_item(dynamic raw);
+
+  @protected
   List<ContentMediaItemSource>? dco_decode_opt_list_content_media_item_source(
       dynamic raw);
 
@@ -173,6 +176,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ContentDetails? sse_decode_opt_box_autoadd_content_details(
+      SseDeserializer deserializer);
+
+  @protected
+  List<ContentMediaItem>? sse_decode_opt_list_content_media_item(
       SseDeserializer deserializer);
 
   @protected
@@ -274,6 +281,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_content_details(
       ContentDetails? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_list_content_media_item(
+      List<ContentMediaItem>? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_list_content_media_item_source(

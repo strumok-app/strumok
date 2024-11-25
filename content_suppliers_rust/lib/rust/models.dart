@@ -16,6 +16,7 @@ class ContentDetails {
   final MediaType mediaType;
   final List<String> additionalInfo;
   final List<ContentInfo> similar;
+  final List<ContentMediaItem>? mediaItems;
   final List<String> params;
 
   const ContentDetails({
@@ -26,6 +27,7 @@ class ContentDetails {
     required this.mediaType,
     required this.additionalInfo,
     required this.similar,
+    this.mediaItems,
     required this.params,
   });
 
@@ -38,6 +40,7 @@ class ContentDetails {
       mediaType.hashCode ^
       additionalInfo.hashCode ^
       similar.hashCode ^
+      mediaItems.hashCode ^
       params.hashCode;
 
   @override
@@ -52,6 +55,7 @@ class ContentDetails {
           mediaType == other.mediaType &&
           additionalInfo == other.additionalInfo &&
           similar == other.similar &&
+          mediaItems == other.mediaItems &&
           params == other.params;
 }
 

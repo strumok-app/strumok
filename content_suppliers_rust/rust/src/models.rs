@@ -33,6 +33,7 @@ pub struct ContentDetails {
     pub media_type: MediaType,
     pub additional_info: Vec<String>,
     pub similar: Vec<ContentInfo>,
+    pub media_items: Option<Vec<ContentMediaItem>>,
     pub params: Vec<String>,
 }
 

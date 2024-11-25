@@ -100,7 +100,7 @@ class RustContentDetails extends AbstractContentDetails {
   final MediaType mediaType;
   Iterable<ContentMediaItem>? _mediaItems;
 
-  RustContentDetails({
+  RustContentDetails._({
     required super.id,
     required super.supplier,
     required super.title,
@@ -110,10 +110,41 @@ class RustContentDetails extends AbstractContentDetails {
     required super.additionalInfo,
     required super.similar,
     required this.mediaType,
+    Iterable<ContentMediaItem>? mediaItems,
     required RustLibApi api,
     required List<String> params,
   })  : _api = api,
+        _mediaItems = mediaItems,
         _params = params;
+
+  factory RustContentDetails.fromRust(
+    String id,
+    String supplier,
+    models.ContentDetails result,
+    RustLibApi api,
+  ) {
+    return RustContentDetails._(
+      id: id,
+      supplier: supplier,
+      mediaType: MediaType.values.firstWhere(
+        (v) => v.name == result.mediaType.name,
+        orElse: () => MediaType.video,
+      ),
+      title: result.title,
+      originalTitle: result.originalTitle,
+      image: result.image,
+      description: result.description,
+      additionalInfo: result.additionalInfo,
+      similar: result.similar
+          .map((info) => ContentSearchResultExt.fromRust(supplier, info))
+          .toList(),
+      mediaItems: result.mediaItems?.map(
+        (item) => RustMediaItem.fromRust(id, supplier, item, api),
+      ),
+      params: result.params,
+      api: api,
+    );
+  }
 
   @override
   FutureOr<Iterable<ContentMediaItem>> get mediaItems async =>
@@ -123,6 +154,19 @@ class RustContentDetails extends AbstractContentDetails {
         params: _params,
       ))
           .map((item) => RustMediaItem.fromRust(id, supplier, item, _api));
+}
+
+extension ContentSearchResultExt on ContentSearchResult {
+  static ContentSearchResult fromRust(
+      String supplier, models.ContentInfo info) {
+    return ContentSearchResult(
+      id: info.id,
+      supplier: supplier,
+      image: info.image,
+      title: info.title,
+      secondaryTitle: info.secondaryTitle,
+    );
+  }
 }
 
 class RustContentSupplier implements ContentSupplier {
@@ -155,22 +199,7 @@ class RustContentSupplier implements ContentSupplier {
       return null;
     }
 
-    return RustContentDetails(
-      id: id,
-      supplier: name,
-      mediaType: MediaType.values.firstWhere(
-        (v) => v.name == result.mediaType.name,
-        orElse: () => MediaType.video,
-      ),
-      title: result.title,
-      originalTitle: result.originalTitle,
-      image: result.image,
-      description: result.description,
-      additionalInfo: result.additionalInfo,
-      similar: result.similar.map(_mapSearchResult).toList(),
-      api: _api,
-      params: result.params,
-    );
+    return RustContentDetails.fromRust(id, name, result, _api);
   }
 
   @override
@@ -181,7 +210,9 @@ class RustContentSupplier implements ContentSupplier {
       page: page,
     );
 
-    return results.map(_mapSearchResult).toList();
+    return results
+        .map((info) => ContentSearchResultExt.fromRust(name, info))
+        .toList();
   }
 
   @override
@@ -192,7 +223,9 @@ class RustContentSupplier implements ContentSupplier {
       types: type.map((v) => v.name).toList(),
     );
 
-    return results.map(_mapSearchResult).toList();
+    return results
+        .map((info) => ContentSearchResultExt.fromRust(name, info))
+        .toList();
   }
 
   @override
@@ -219,16 +252,6 @@ class RustContentSupplier implements ContentSupplier {
         )
         .nonNulls
         .toSet();
-  }
-
-  ContentSearchResult _mapSearchResult(models.ContentInfo bci) {
-    return ContentSearchResult(
-      id: bci.id,
-      supplier: name,
-      image: bci.image,
-      title: bci.title,
-      secondaryTitle: bci.secondaryTitle,
-    );
   }
 }
 
@@ -350,7 +373,7 @@ FutureOr<ExternalLibrary> _loadExternalLibrary(
           '(without trying effectiveNativeLibDir since it is null)');
     }
 
-    final filePath = effectiveNativeLibDir.path + Platform.pathSeparator + name; 
+    final filePath = effectiveNativeLibDir.path + Platform.pathSeparator + name;
     if (!File(filePath).existsSync()) {
       return fallback('(after trying $filePath but it does not exist)');
     }
