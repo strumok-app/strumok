@@ -77,7 +77,7 @@ class PlayerController {
               as MediaFileItemSource?;
 
       if (video == null) {
-        throw Exception("Video not found");
+        throw Exception("No video sources found");
       }
 
       final link = await video.link;
@@ -113,7 +113,8 @@ class PlayerController {
 
       await setSubtitle(progress.currentSubtitleName);
     } on Exception catch (e, stackTrace) {
-      logger.e("Fail to play", error: e, stackTrace: stackTrace);
+      addError("Fail to start video: $e");
+      logger.e("Fail to start video", error: e, stackTrace: stackTrace);
       player.stop();
       rethrow;
     } finally {
