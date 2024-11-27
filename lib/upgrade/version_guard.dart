@@ -16,8 +16,8 @@ class VersionGuard extends ConsumerWidget {
 
     return installedBundle.when(
       data: (info) => info != null ? child : _InstallSuppliersBundler(),
-      error: (error, stackTrace) =>
-          _Error(error: AppLocalizations.of(context)!.versionGuardUnableToInstall),
+      error: (error, stackTrace) => _Error(
+          error: AppLocalizations.of(context)!.versionGuardUnableToInstall),
       loading: () => _Loader(),
     );
   }
@@ -30,7 +30,8 @@ class _InstallSuppliersBundler extends ConsumerWidget {
 
     return lattestBundle.when(
       data: (info) => info == null
-          ? _Error(error: AppLocalizations.of(context)!.versionGuardUnableToInstall)
+          ? _Error(
+              error: AppLocalizations.of(context)!.versionGuardUnableToInstall)
           : _buildInstall(context, info),
       error: (error, stackTrace) => _Error(error: error.toString()),
       loading: () => _Loader(),
@@ -46,6 +47,7 @@ class _InstallSuppliersBundler extends ConsumerWidget {
             Text(AppLocalizations.of(context)!.versionGuardNoSuppliersLib),
             const SizedBox(height: 8),
             SuppliersBundleDownloadButton(
+              autofocus: true,
               info: info,
               label: Text(AppLocalizations.of(context)!.install),
             ),

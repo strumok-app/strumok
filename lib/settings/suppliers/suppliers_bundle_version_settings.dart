@@ -118,11 +118,13 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
 class SuppliersBundleDownloadButton extends ConsumerWidget {
   final FFISupplierBundleInfo info;
   final Widget label;
+  final bool autofocus;
 
   const SuppliersBundleDownloadButton({
     super.key,
     required this.info,
     required this.label,
+    this.autofocus = false,
   });
 
   @override
@@ -142,6 +144,7 @@ class SuppliersBundleDownloadButton extends ConsumerWidget {
             label: label,
           )
         : OutlinedButton(
+            autofocus: autofocus,
             onPressed: () {
               ref.read(suppliersBundleDownloadProvider.notifier).download(info);
             },
