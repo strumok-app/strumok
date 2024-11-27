@@ -17,7 +17,7 @@ class VersionGuard extends ConsumerWidget {
     return installedBundle.when(
       data: (info) => info != null ? child : _InstallSuppliersBundler(),
       error: (error, stackTrace) =>
-          _Error(error: "Неможливо встановити модуль постачальників"),
+          _Error(error: AppLocalizations.of(context)!.versionGuardUnableToInstall),
       loading: () => _Loader(),
     );
   }
@@ -30,7 +30,7 @@ class _InstallSuppliersBundler extends ConsumerWidget {
 
     return lattestBundle.when(
       data: (info) => info == null
-          ? _Error(error: "Неможливо встановити модуль постачальників")
+          ? _Error(error: AppLocalizations.of(context)!.versionGuardUnableToInstall)
           : _buildInstall(context, info),
       error: (error, stackTrace) => _Error(error: error.toString()),
       loading: () => _Loader(),
@@ -43,7 +43,7 @@ class _InstallSuppliersBundler extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Модуль постачальників не встановлений"),
+            Text(AppLocalizations.of(context)!.versionGuardNoSuppliersLib),
             const SizedBox(height: 8),
             SuppliersBundleDownloadButton(
               info: info,

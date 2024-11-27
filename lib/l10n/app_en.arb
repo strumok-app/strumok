@@ -83,5 +83,7 @@
     "mangaReaderModeHorizontalScroll": "Scroll from left to right",
     "mangaReaderModeHorizontalRtlScroll": "Scroll from right to left",
     "errorGoBack": "Go back",
-    "errorReload": "Reload"
+    "errorReload": "Reload",
+    "versionGuardNoSuppliersLib": "Content suppliers module not installed",
+    "versionGuardUnableToInstall": "Content suppliers module instalattion failed"
 }

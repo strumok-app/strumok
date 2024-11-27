@@ -83,5 +83,7 @@
     "mangaReaderModeHorizontalScroll": "Прокрутка з ліва на право",
     "mangaReaderModeHorizontalRtlScroll": "Прокрутка з права на ліво",
     "errorGoBack": "Повернутись назад",
-    "errorReload": "Повторити"
+    "errorReload": "Повторити",
+    "versionGuardNoSuppliersLib": "Модуль постачальників не встановлений",
+    "versionGuardUnableToInstall": "Неможливо встановити модуль постачальників"
 }

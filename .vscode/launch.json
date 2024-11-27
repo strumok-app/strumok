@@ -8,6 +8,11 @@
             "name": "strumok",
             "request": "launch",
             "type": "dart",
+        },
+        {
+            "name": "strumok external lib",
+            "request": "launch",
+            "type": "dart",
             "toolArgs": [
                 "--dart-define",
                 "FFI_SUPPLIER_LIBS_DIR=/home/andrii/Documents/cloud_hook_suppliers/target/release/",
