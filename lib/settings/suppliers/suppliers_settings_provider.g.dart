@@ -21,7 +21,7 @@ final enabledSuppliersProvider = Provider<Set<String>>.internal(
 );
 
 typedef EnabledSuppliersRef = ProviderRef<Set<String>>;
-String _$suppliersSettingsHash() => r'cccad34b7cdd07f984e7fb2c928b7716c7673522';
+String _$suppliersSettingsHash() => r'5896c1396410404f7ee16ecde5a7537d4fefd85e';
 
 /// See also [SuppliersSettings].
 @ProviderFor(SuppliersSettings)

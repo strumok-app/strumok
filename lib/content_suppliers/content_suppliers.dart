@@ -1,10 +1,10 @@
+import 'package:content_suppliers_dart/bundle.dart';
+import 'package:content_suppliers_rust/bundle.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/app_secrets.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:content_suppliers_api/model.dart';
-import 'package:content_suppliers_dart/bundle.dart';
-import 'package:content_suppliers_rust/bundle.dart';
 
 class ContentSuppliers {
   List<ContentSupplier> _suppliers = [];
@@ -20,30 +20,19 @@ class ContentSuppliers {
   }
 
   Future<void> load() async {
-    return reload(_getDefaultFFILibName());
+    return reload(await _getDefaultFFIBundle());
   }
 
-  Future<void> reload(String? ffiLibName) async {
+  Future<void> reload(List<ContentSupplierBundle> bundles) async {
     List<ContentSupplier> suppliers = [];
 
     for (final bundle in _bundles) {
       bundle.unload();
     }
 
-    // THIS FLUTTER PIECE OF SHIT NOT WORKS WITHOUT CONST
-    var ffiLibsDir = const String.fromEnvironment("FFI_SUPPLIER_LIBS_DIR");
-    if (ffiLibsDir.isEmpty) {
-      ffiLibsDir = FFISuppliersBundleStorage.instance.libsDir;
-    }
-    logger.i("FFI libs directory: $ffiLibsDir");
-
     _bundles = [
       DartContentSupplierBundle(tmdbSecret: AppSecrets.getString("tmdb")),
-      if (ffiLibName != null)
-        RustContentSuppliersBundle(
-          directory: ffiLibsDir,
-          libName: ffiLibName,
-        ),
+      ...bundles
     ];
 
     for (final bundle in _bundles) {
@@ -129,16 +118,36 @@ class ContentSuppliers {
 
   static final ContentSuppliers instance = ContentSuppliers._();
 
-  static String? _getDefaultFFILibName() {
+  static Future<List<ContentSupplierBundle>> _getDefaultFFIBundle() async {
     var libName = const String.fromEnvironment("FFI_SUPPLIER_LIB_NAME");
+
     if (libName.isEmpty) {
       final bundleInfo = AppPreferences.ffiSupplierBundleInfo;
+
       if (bundleInfo != null) {
-        return bundleInfo.libName;
+        final installed =
+            await FFISuppliersBundleStorage.instance.isInstalled(bundleInfo);
+
+        if (!installed) {
+          return [];
+        }
+
+        libName = bundleInfo.libName;
       } else {
-        return null;
+        return [];
       }
     }
-    return libName;
+
+    //const required
+    var libDirectory = const String.fromEnvironment("FFI_SUPPLIER_LIBS_DIR");
+    if (libDirectory.isEmpty) {
+      libDirectory = FFISuppliersBundleStorage.instance.libsDir;
+    }
+
+    logger.i("FFI libs directory: $libDirectory");
+
+    return [
+      RustContentSuppliersBundle(directory: libDirectory, libName: libName)
+    ];
   }
 }

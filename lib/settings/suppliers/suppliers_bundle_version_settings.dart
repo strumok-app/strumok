@@ -69,7 +69,7 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Text(installedBundle.version),
+        Text(installedBundle.version.toString()),
         const Spacer(),
         latestBundle.when(
           data: (data) {
@@ -102,7 +102,8 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
     FFISupplierBundleInfo? latestInfo,
     FFISupplierBundleInfo installedInfo,
   ) {
-    if (latestInfo != null && installedInfo.version != latestInfo.version) {
+    if (latestInfo != null &&
+        latestInfo.version.compareTo(installedInfo.version) > 0) {
       return SuppliersBundleDownloadButton(
         info: latestInfo,
         label: Text(AppLocalizations.of(context)!

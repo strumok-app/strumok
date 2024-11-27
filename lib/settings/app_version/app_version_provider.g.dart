@@ -27,11 +27,11 @@ LatestAppVersionInfo _$LatestAppVersionInfoFromJson(
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentAppVersionHash() => r'b9decd7018b899e50f980ac99dd815d6a284f8ba';
+String _$currentAppVersionHash() => r'ede7fc47bd871b3113c472e61855b3d6d32828f0';
 
 /// See also [currentAppVersion].
 @ProviderFor(currentAppVersion)
-final currentAppVersionProvider = FutureProvider<String>.internal(
+final currentAppVersionProvider = FutureProvider<SemVer>.internal(
   currentAppVersion,
   name: r'currentAppVersionProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -41,7 +41,7 @@ final currentAppVersionProvider = FutureProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef CurrentAppVersionRef = FutureProviderRef<String>;
+typedef CurrentAppVersionRef = FutureProviderRef<SemVer>;
 String _$latestAppVersionInfoHash() =>
     r'149f57fc142307a4998937cd664b7db0ca7256b0';
 

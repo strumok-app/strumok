@@ -47,47 +47,58 @@ class HorizontalListCard extends HookWidget {
       ),
       child: Stack(
         children: [
-          Container(
-            constraints: BoxConstraints(
-              maxHeight: imageHeight,
-              maxWidth: imageWidth,
-            ),
-            decoration: decoration,
-            child: SizedBox.expand(child: child),
-          ),
-          if (badge != null)
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: badge,
-                ),
-              ),
-            ),
-          Positioned.fill(
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                focusNode: focusNode,
-                mouseCursor: SystemMouseCursors.click,
-                onTap: onTap,
-                onHover: onHover,
-                onLongPress: onLongPress,
-                onFocusChange: (value) => focused.value = value,
-                child: corner != null
-                    ? Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: corner,
-                        ),
-                      )
-                    : null,
-              ),
-            ),
-          ),
+          _buildBackground(imageHeight, imageWidth),
+          if (badge != null) _buildBadge(),
+          _buildContent(focused),
         ],
+      ),
+    );
+  }
+
+  Widget _buildContent(ValueNotifier<bool> focused) {
+    return Positioned.fill(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          focusNode: focusNode,
+          mouseCursor: SystemMouseCursors.click,
+          onTap: onTap,
+          onHover: onHover,
+          onLongPress: onLongPress,
+          onFocusChange: (value) => focused.value = value,
+          child: corner != null
+              ? Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: corner,
+                  ),
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackground(double imageHeight, double imageWidth) {
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: imageHeight,
+        maxWidth: imageWidth,
+      ),
+      decoration: decoration,
+      child: SizedBox.expand(child: child),
+    );
+  }
+
+  Widget _buildBadge() {
+    return Positioned.fill(
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: badge,
+        ),
       ),
     );
   }

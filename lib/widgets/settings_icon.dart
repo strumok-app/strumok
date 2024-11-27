@@ -3,6 +3,7 @@ import 'package:strumok/settings/suppliers/suppliers_bundle_version_provider.dar
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:strumok/utils/sem_ver.dart';
 
 part 'settings_icon.g.dart';
 
@@ -16,14 +17,19 @@ bool hasNewVersion(HasNewVersionRef ref) {
       ref.watch(installedSupplierBundleInfoProvider).valueOrNull?.version;
 
   final latestSupplierBundleVersion =
-      ref.watch(latestSupplierBundleInfoProvider).valueOrNull?.version;
+      ref.watch(latestSupplierBundleInfoProvider).valueOrNull?.version ??
+          SemVer.zero;
+
+  if (installedSupplierBundleVersion == null) {
+    return true;
+  }
 
   if (currentAppVersion == null || latestAppVersionInfo == null) {
     return false;
   }
 
-  return currentAppVersion != latestAppVersionInfo.version ||
-      installedSupplierBundleVersion != latestSupplierBundleVersion;
+  return latestAppVersionInfo.version.compareTo(currentAppVersion) > 0 ||
+      latestSupplierBundleVersion.compareTo(installedSupplierBundleVersion) > 0;
 }
 
 class SettingsIcon extends ConsumerWidget {

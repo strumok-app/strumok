@@ -21,21 +21,18 @@ class MangaContentScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final result = ref.watch(detailsAndMediaProvider(supplier, id));
     return SafeArea(
-      child: AppTheme(
-        child: Scaffold(
-          body: result.when(
-            data: (data) => MangaReader(
-              contentDetails: data.contentDetails,
-              mediaItems: data.mediaItems,
-            ),
-            error: (error, stackTrace) => DisplayError(
-              error: error,
-              onRefresh: () =>
-                  ref.refresh(detailsProvider(supplier, id).future),
-            ),
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
+      child: Scaffold(
+        body: result.when(
+          data: (data) => MangaReader(
+            contentDetails: data.contentDetails,
+            mediaItems: data.mediaItems,
+          ),
+          error: (error, stackTrace) => DisplayError(
+            error: error,
+            onRefresh: () => ref.refresh(detailsProvider(supplier, id).future),
+          ),
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
           ),
         ),
       ),

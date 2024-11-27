@@ -3,7 +3,6 @@ import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/home/recommendations/recommendations_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
-import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -116,16 +115,15 @@ class _RecommendationChannel extends HookConsumerWidget {
 
     if (channelIdx == 0) {
       final theme = Theme.of(context);
-      final paddings = getPadding(context);
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: paddings),
+            padding: const EdgeInsets.only(left: 8),
             child: Text(supplierName, style: theme.textTheme.titleLarge),
           ),
-          list
+          list,
         ],
       );
     }

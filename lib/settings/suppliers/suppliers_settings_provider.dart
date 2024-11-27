@@ -78,13 +78,24 @@ class SuppliersSettings extends _$SuppliersSettings {
       suppliersOrder: suppliersOrder.toList(),
       configs: {
         for (final supplierName in suppliersOrder)
-          supplierName: SuppliersConfig(
-            enabled: AppPreferences.getSupplierEnabled(supplierName) ?? true,
-            channels: AppPreferences.getSupplierChannels(supplierName) ??
-                contentSuppliers.getSupplier(supplierName)?.defaultChannels ??
-                const {},
-          )
+          supplierName: _buildSuppliersConfig(supplierName, contentSuppliers)
       },
+    );
+  }
+
+  SuppliersConfig _buildSuppliersConfig(
+      String supplierName, ContentSuppliers contentSuppliers) {
+    final supplier = contentSuppliers.getSupplier(supplierName);
+    final suppliersChannels = supplier!.channels;
+
+    final defaultChannels = supplier.defaultChannels;
+
+    final savedChannels = AppPreferences.getSupplierChannels(supplierName)
+        ?.intersection(suppliersChannels);
+
+    return SuppliersConfig(
+      enabled: AppPreferences.getSupplierEnabled(supplierName) ?? true,
+      channels: savedChannels ?? defaultChannels,
     );
   }
 

@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:content_suppliers_rust/bundle.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/app_secrets.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
@@ -77,7 +78,12 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
         if (task.status.value == DownloadStatus.completed) {
           logger.i("New FFI bundle version donwloaded");
           // reload bundles
-          await ContentSuppliers.instance.reload(info.libName);
+          await ContentSuppliers.instance.reload([
+            RustContentSuppliersBundle(
+              directory: FFISuppliersBundleStorage.instance.libsDir,
+              libName: info.libName,
+            )
+          ]);
           // save info
           AppPreferences.ffiSupplierBundleInfo = info;
           // refresh providers

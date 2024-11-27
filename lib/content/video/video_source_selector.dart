@@ -55,75 +55,73 @@ class _SourceSelectDialog extends ConsumerWidget {
               item.currentSubtitleName,
             )));
 
-    return AppTheme(
-      child: Dialog(
-        clipBehavior: Clip.antiAlias,
-        child: FutureBuilder(
-          future: sourcesDataAsync.then((rec) async {
-            final (currentItem, currentSource, currentSubtitle) = rec;
-            final sources = await mediaItems[currentItem].sources;
+    return Dialog(
+      clipBehavior: Clip.antiAlias,
+      child: FutureBuilder(
+        future: sourcesDataAsync.then((rec) async {
+          final (currentItem, currentSource, currentSubtitle) = rec;
+          final sources = await mediaItems[currentItem].sources;
 
-            return (sources, currentSource, currentSubtitle);
-          }),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const SizedBox(
-                width: 60,
-                height: 60,
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-
-            final (sources, currentSource, currentSubtitle) = snapshot.data!;
-
-            final videos = sources.where((e) => e.kind == FileKind.video);
-            final subtitles = sources.where((e) => e.kind == FileKind.subtitle);
-
-            if (videos.isEmpty) {
-              return Container(
-                constraints: const BoxConstraints.tightFor(
-                  height: 60,
-                  width: 60,
-                ),
-                child: Center(
-                  child: Text(AppLocalizations.of(context)!.videoNoSources),
-                ),
-              );
-            }
-
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                if (constraints.maxWidth < mobileWidth) {
-                  return SingleChildScrollView(
-                    child: Column(children: [
-                      _renderVideoSources(context, ref, videos, currentSource),
-                      if (subtitles.isNotEmpty)
-                        _renderSubtitlesSources(
-                            context, ref, subtitles, currentSubtitle),
-                    ]),
-                  );
-                } else {
-                  return FocusScope(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SingleChildScrollView(
-                            child: _renderVideoSources(
-                                context, ref, videos, currentSource)),
-                        if (subtitles.isNotEmpty)
-                          SingleChildScrollView(
-                            child: _renderSubtitlesSources(
-                                context, ref, subtitles, currentSubtitle),
-                          ),
-                      ],
-                    ),
-                  );
-                }
-              },
+          return (sources, currentSource, currentSubtitle);
+        }),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox(
+              width: 60,
+              height: 60,
+              child: Center(child: CircularProgressIndicator()),
             );
-          },
-        ),
+          }
+
+          final (sources, currentSource, currentSubtitle) = snapshot.data!;
+
+          final videos = sources.where((e) => e.kind == FileKind.video);
+          final subtitles = sources.where((e) => e.kind == FileKind.subtitle);
+
+          if (videos.isEmpty) {
+            return Container(
+              constraints: const BoxConstraints.tightFor(
+                height: 60,
+                width: 60,
+              ),
+              child: Center(
+                child: Text(AppLocalizations.of(context)!.videoNoSources),
+              ),
+            );
+          }
+
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < mobileWidth) {
+                return SingleChildScrollView(
+                  child: Column(children: [
+                    _renderVideoSources(context, ref, videos, currentSource),
+                    if (subtitles.isNotEmpty)
+                      _renderSubtitlesSources(
+                          context, ref, subtitles, currentSubtitle),
+                  ]),
+                );
+              } else {
+                return FocusScope(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SingleChildScrollView(
+                          child: _renderVideoSources(
+                              context, ref, videos, currentSource)),
+                      if (subtitles.isNotEmpty)
+                        SingleChildScrollView(
+                          child: _renderSubtitlesSources(
+                              context, ref, subtitles, currentSubtitle),
+                        ),
+                    ],
+                  ),
+                );
+              }
+            },
+          );
+        },
       ),
     );
   }

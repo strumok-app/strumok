@@ -10,7 +10,7 @@ FFISupplierBundleInfo _$FFISupplierBundleInfoFromJson(
         Map<String, dynamic> json) =>
     FFISupplierBundleInfo(
       name: json['name'] as String,
-      version: json['version'] as String,
+      version: SemVer.fromJson(json['version']),
       metadataUrl: json['metadataUrl'] as String,
       downloadUrl: Map<String, String>.from(json['downloadUrl'] as Map),
     );

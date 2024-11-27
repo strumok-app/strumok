@@ -1,8 +1,8 @@
-
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/settings/app_version/app_version_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:strumok/utils/sem_ver.dart';
 
 class AppVersionSettings extends ConsumerWidget {
   const AppVersionSettings({super.key});
@@ -14,7 +14,7 @@ class AppVersionSettings extends ConsumerWidget {
 
     return currentVersion.maybeWhen(
       data: (current) => Row(mainAxisSize: MainAxisSize.max, children: [
-        Text(current),
+        Text(current.toString()),
         const Spacer(),
         latestVersionInfo.when(
           data: (data) {
@@ -47,9 +47,10 @@ class AppVersionSettings extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     LatestAppVersionInfo? latestAppVersionInfo,
-    String currentVersion,
+    SemVer currentVersion,
   ) {
-    if (latestAppVersionInfo != null && latestAppVersionInfo.version != currentVersion) {
+    if (latestAppVersionInfo != null &&
+        latestAppVersionInfo.version.compareTo(currentVersion) > 0) {
       return AppDownloadButton(info: latestAppVersionInfo);
     }
 

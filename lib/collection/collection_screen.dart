@@ -63,7 +63,7 @@ class CollectionHorizontalView extends ConsumerWidget {
   }
 }
 
-class CollectionHorizontalGroup extends ConsumerStatefulWidget {
+class CollectionHorizontalGroup extends HookConsumerWidget {
   final MediaCollectionItemStatus status;
   final int groupIdx;
 
@@ -74,30 +74,18 @@ class CollectionHorizontalGroup extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<CollectionHorizontalGroup> createState() => _CollectionHorizontalGroupState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final primaryFocusNode = useFocusNode();
 
-class _CollectionHorizontalGroupState extends ConsumerState<CollectionHorizontalGroup> {
-  final primaryFocusNode = FocusNode();
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        primaryFocusNode.requestFocus();
+      });
+      return null;
+    }, [primaryFocusNode]);
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      primaryFocusNode.requestFocus();
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    primaryFocusNode.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final groupItems = ref.watch(
-      collectionProvider.select((value) => value.valueOrNull?[widget.status]),
+      collectionProvider.select((value) => value.valueOrNull?[status]),
     );
 
     if (groupItems == null) {
@@ -105,11 +93,11 @@ class _CollectionHorizontalGroupState extends ConsumerState<CollectionHorizontal
     }
 
     Widget title = Text(
-      statusLabel(context, widget.status),
+      statusLabel(context, status),
       style: Theme.of(context).textTheme.titleMedium,
     );
 
-    if (widget.groupIdx == 0) {
+    if (groupIdx == 0) {
       title = Focus(child: title);
     }
 
@@ -117,7 +105,7 @@ class _CollectionHorizontalGroupState extends ConsumerState<CollectionHorizontal
       title: title,
       itemBuilder: (context, index) {
         return CollectionHorizontalListItem(
-          focusNode: (widget.groupIdx == 0 && index == 0) ? primaryFocusNode : null,
+          focusNode: (groupIdx == 0 && index == 0) ? primaryFocusNode : null,
           item: groupItems[index],
         );
       },

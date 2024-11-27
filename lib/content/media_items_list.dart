@@ -61,18 +61,16 @@ class MediaItemsListRoute<T> extends PopupRoute<T> {
         },
         child: Align(
           alignment: Alignment.centerRight,
-          child: AppTheme(
-            child: SafeArea(
-              child: _MediaItemsListView(
-                title: title,
-                mediaItems: mediaItems,
-                contentProgress: contentProgress,
-                onSelect: (item) {
-                  Navigator.of(context).pop();
-                  onSelect(item);
-                },
-                itemBuilder: itemBuilder,
-              ),
+          child: SafeArea(
+            child: _MediaItemsListView(
+              title: title,
+              mediaItems: mediaItems,
+              contentProgress: contentProgress,
+              onSelect: (item) {
+                Navigator.of(context).pop();
+                onSelect(item);
+              },
+              itemBuilder: itemBuilder,
             ),
           ),
         ),

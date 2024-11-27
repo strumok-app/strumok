@@ -21,9 +21,9 @@ class DartContentSupplierBundle extends ContentSupplierBundle {
         MangaDexSupllier(),
         // UASerialSupplier(),
         // UAKinoClubSupplier(),
-        AniTubeSupplier(),
+        // AniTubeSupplier(),
         // AnimeUASupplier(),
         // UAFilmsSupplier(),
-        UFDubSupplier(),
+        // UFDubSupplier(),
       ]);
 }

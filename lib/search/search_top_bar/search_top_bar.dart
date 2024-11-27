@@ -1,3 +1,4 @@
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/search/search_provider.dart';
 import 'package:strumok/search/search_top_bar/search_suggestion_model.dart';
@@ -10,37 +11,44 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SearchTopBar extends ConsumerStatefulWidget {
+// final searchBarFocusNode = FocusNode();
+// final searchController = SearchController();
+
+// @override
+// void initState() {
+//   super.initState();
+
+//   WidgetsBinding.instance.addPostFrameCallback((_) {
+//     searchBarFocusNode.requestFocus();
+//   });
+
+//   searchController.text = ref.read(searchProvider).query ?? "";
+// }
+
+// @override
+// void dispose() {
+//   super.dispose();
+//   searchBarFocusNode.dispose();
+//   searchController.dispose();
+// }
+
+class SearchTopBar extends HookConsumerWidget {
   const SearchTopBar({super.key});
 
   @override
-  ConsumerState<SearchTopBar> createState() => _SearchTopBarState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final searchController = useSearchController();
+    final searchBarFocusNode = useFocusNode();
 
-class _SearchTopBarState extends ConsumerState<SearchTopBar> {
-  final searchBarFocusNode = FocusNode();
-  final searchController = SearchController();
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        searchBarFocusNode.requestFocus();
+      });
 
-  @override
-  void initState() {
-    super.initState();
+      searchController.text = ref.read(searchProvider).query ?? "";
+      return null;
+    }, [searchController, searchBarFocusNode]);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      searchBarFocusNode.requestFocus();
-    });
-
-    searchController.text = ref.read(searchProvider).query ?? "";
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    searchBarFocusNode.dispose();
-    searchController.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
@@ -53,6 +61,7 @@ class _SearchTopBarState extends ConsumerState<SearchTopBar> {
                       TVDetector.isTV ? Alignment.centerLeft : Alignment.center,
                   child: _renderSearchBar(
                     searchController,
+                    searchBarFocusNode,
                     context,
                     ref,
                   ),
@@ -72,6 +81,7 @@ class _SearchTopBarState extends ConsumerState<SearchTopBar> {
 
   Widget _renderSearchBar(
     SearchController searchController,
+    FocusNode searchBarFocusNode,
     BuildContext context,
     WidgetRef ref,
   ) {

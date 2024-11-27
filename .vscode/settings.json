@@ -3,5 +3,6 @@
     "files.watcherInclude": [
         "lib/**",
         ".dart_tool/flutter_gen/**"
-    ]
+    ],
+    "dart.previewLsp": true,
 }

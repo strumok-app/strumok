@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
@@ -19,36 +20,22 @@ import 'package:strumok/widgets/horizontal_list.dart';
 const imageRatio = .45;
 
 // maybe should split into different layouts depends of screen width
-class ContentDetailsView extends StatefulWidget {
+class ContentDetailsView extends HookConsumerWidget {
   final ContentDetails contentDetails;
 
   const ContentDetailsView(this.contentDetails, {super.key});
 
   @override
-  State<ContentDetailsView> createState() => _ContentDetailsViewState();
-}
-
-class _ContentDetailsViewState extends State<ContentDetailsView> {
-  final mainActionsFocusNode = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      mainActionsFocusNode.requestFocus();
-    });
-  }
-  
-  @override
-  void dispose() {
-    super.dispose();
-    mainActionsFocusNode.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mainActionsFocusNode = useFocusNode();
     final mobile = _isCompactLayout(context);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        mainActionsFocusNode.requestFocus();
+      });
+      return null;
+    }, [mainActionsFocusNode]);
 
     return LayoutBuilder(
       builder: (context, constraints) => Stack(
@@ -61,7 +48,7 @@ class _ContentDetailsViewState extends State<ContentDetailsView> {
                   : constraints.maxWidth * imageRatio,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: CachedNetworkImageProvider(widget.contentDetails.image),
+                  image: CachedNetworkImageProvider(contentDetails.image),
                   fit: mobile ? BoxFit.cover : BoxFit.fitHeight,
                   alignment: mobile ? Alignment.topCenter : Alignment.topRight,
                 ),
@@ -69,18 +56,15 @@ class _ContentDetailsViewState extends State<ContentDetailsView> {
             ),
           ),
           SingleChildScrollView(
-            child: _renderMainInfo(
-              context,
-              constraints,
-              mainActionsFocusNode
-            ),
+            child: _renderMainInfo(context, constraints, mainActionsFocusNode),
           )
         ],
       ),
     );
   }
 
-  Widget _renderMainInfo(BuildContext context, BoxConstraints constraints, FocusNode mainActionsFocusNode) {
+  Widget _renderMainInfo(BuildContext context, BoxConstraints constraints,
+      FocusNode mainActionsFocusNode) {
     final paddings = getPadding(context);
     final mobile = _isCompactLayout(context);
     final theme = Theme.of(context);
@@ -104,13 +88,13 @@ class _ContentDetailsViewState extends State<ContentDetailsView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 8),
-                _renderContentActions(widget.contentDetails, mainActionsFocusNode),
-                _MediaCollectionItemButtons(widget.contentDetails),
+                _renderContentActions(contentDetails, mainActionsFocusNode),
+                _MediaCollectionItemButtons(contentDetails),
                 const SizedBox(height: 8),
                 _renderAdditionalInfo(context),
                 const SizedBox(height: 8),
                 _renderDescription(context),
-                if (widget.contentDetails.similar.isNotEmpty) ...[
+                if (contentDetails.similar.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   _renderSimilar(context),
                 ],
@@ -132,15 +116,15 @@ class _ContentDetailsViewState extends State<ContentDetailsView> {
       children: [
         const SizedBox(height: 8),
         SelectableText(
-          widget.contentDetails.title,
+          contentDetails.title,
           style: theme.textTheme.headlineLarge?.copyWith(
             height: 1,
             color: compact ? Colors.white : null,
           ),
         ),
-        if (widget.contentDetails.originalTitle != null)
+        if (contentDetails.originalTitle != null)
           SelectableText(
-            widget.contentDetails.originalTitle!,
+            contentDetails.originalTitle!,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: compact ? Colors.white : null,
             ),
@@ -187,10 +171,10 @@ class _ContentDetailsViewState extends State<ContentDetailsView> {
         Card.filled(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(widget.contentDetails.supplier),
+            child: Text(contentDetails.supplier),
           ),
         ),
-        ...widget.contentDetails.additionalInfo.map(
+        ...contentDetails.additionalInfo.map(
           (e) => Card.outlined(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -208,14 +192,14 @@ class _ContentDetailsViewState extends State<ContentDetailsView> {
     if (TVDetector.isTV) {
       return Focus(
         child: Text(
-          widget.contentDetails.description,
+          contentDetails.description,
           style: theme.textTheme.bodyLarge,
         ),
       );
     }
 
     return ReadMoreText(
-      widget.contentDetails.description,
+      contentDetails.description,
       trimMode: TrimMode.Line,
       trimLines: 4,
       trimCollapsedText: AppLocalizations.of(context)!.readMore,
@@ -234,16 +218,18 @@ class _ContentDetailsViewState extends State<ContentDetailsView> {
         style: theme.textTheme.headlineSmall,
       ),
       itemBuilder: (context, index) => ContentInfoCard(
-        contentInfo: widget.contentDetails.similar[index],
+        contentInfo: contentDetails.similar[index],
         showSupplier: false,
       ),
-      itemCount: widget.contentDetails.similar.length,
+      itemCount: contentDetails.similar.length,
     );
   }
 
-  Widget _renderContentActions(ContentDetails contentDetails, FocusNode mainActionsFocusNode) {
+  Widget _renderContentActions(
+      ContentDetails contentDetails, FocusNode mainActionsFocusNode) {
     return switch (contentDetails.mediaType) {
-      MediaType.video => ContentDetailsVideoActions(contentDetails, focusNode: mainActionsFocusNode),
+      MediaType.video => ContentDetailsVideoActions(contentDetails,
+          focusNode: mainActionsFocusNode),
       MediaType.manga => ContentDetailsMangaActions(contentDetails),
     };
   }

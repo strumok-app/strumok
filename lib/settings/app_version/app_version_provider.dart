@@ -11,15 +11,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:http/http.dart';
 import 'package:strumok/settings/models.dart';
 import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/sem_ver.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'app_version_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-FutureOr<String> currentAppVersion(CurrentAppVersionRef ref) async {
+FutureOr<SemVer> currentAppVersion(CurrentAppVersionRef ref) async {
   final packageInfo = await PackageInfo.fromPlatform();
-  return packageInfo.version;
+  return SemVer.fromString(packageInfo.version);
 }
 
 @JsonSerializable(createToJson: false)
@@ -41,13 +42,13 @@ class AppVersionDownloadAssets {
 class LatestAppVersionInfo {
   final String name;
   final List<AppVersionDownloadAssets> assets;
-
-  String get version => name.substring(1);
+  @JsonKey(includeFromJson: true)
+  final SemVer version;
 
   LatestAppVersionInfo({
     required this.name,
     required this.assets,
-  });
+  }) : version = SemVer.fromString(name);
 
   factory LatestAppVersionInfo.fromJson(Map<String, dynamic> json) =>
       _$LatestAppVersionInfoFromJson(json);

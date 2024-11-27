@@ -8,6 +8,8 @@ import 'package:strumok/app_router.dart';
 import 'package:strumok/app_secrets.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
+import 'package:strumok/layouts/app_theme.dart';
+import 'package:strumok/upgrade/version_guard.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/error_observer.dart';
 import 'package:strumok/utils/visual.dart';
@@ -67,6 +69,9 @@ class MainApp extends StatelessWidget {
           PointerDeviceKind.trackpad
         }),
         routerConfig: _appRouter.config(),
+        builder: (context, child) => AppTheme(
+          child: VersionGuard(child: child!),
+        ),
       ),
     );
   }

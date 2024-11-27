@@ -35,21 +35,19 @@ class PlayerSettingsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppTheme(
-      child: Dialog(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 600),
-          padding: const EdgeInsets.all(8),
-          child: FocusScope(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _ShuffleModeSwitcher(),
-                _OnVideoEndsActionSettingsSection(),
-                _StarVideoPositionSettingsSection(),
-              ],
-            ),
+    return Dialog(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 600),
+        padding: const EdgeInsets.all(8),
+        child: FocusScope(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _ShuffleModeSwitcher(),
+              _OnVideoEndsActionSettingsSection(),
+              _StarVideoPositionSettingsSection(),
+            ],
           ),
         ),
       ),

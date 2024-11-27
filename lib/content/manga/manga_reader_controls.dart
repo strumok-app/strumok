@@ -36,13 +36,11 @@ class MangaReaderControlsRoute<T> extends PopupRoute<T> {
   ) {
     return FadeTransition(
       opacity: animation,
-      child: AppTheme(
-        child: SafeArea(
-          child: MangaReaderControls(
-            contentDetails: contentDetails,
-            mediaItems: mediaItems,
-            onPageChanged: onPageChanged,
-          ),
+      child: SafeArea(
+        child: MangaReaderControls(
+          contentDetails: contentDetails,
+          mediaItems: mediaItems,
+          onPageChanged: onPageChanged,
         ),
       ),
     );
@@ -153,7 +151,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
         ref
             .read(collectionItemProvider(contentDetails).notifier)
             .setCurrentItem(item.number);
-         Navigator.of(context).pop();
+        Navigator.of(context).pop();
       },
       autofocus: true,
       color: Colors.white,
@@ -191,10 +189,9 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
 
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(
-        navigationMode: TVDetector.isTV?
-          NavigationMode.directional :
-          NavigationMode.traditional
-      ),
+          navigationMode: TVDetector.isTV
+              ? NavigationMode.directional
+              : NavigationMode.traditional),
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
