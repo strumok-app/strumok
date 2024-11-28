@@ -11,27 +11,6 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// final searchBarFocusNode = FocusNode();
-// final searchController = SearchController();
-
-// @override
-// void initState() {
-//   super.initState();
-
-//   WidgetsBinding.instance.addPostFrameCallback((_) {
-//     searchBarFocusNode.requestFocus();
-//   });
-
-//   searchController.text = ref.read(searchProvider).query ?? "";
-// }
-
-// @override
-// void dispose() {
-//   super.dispose();
-//   searchBarFocusNode.dispose();
-//   searchController.dispose();
-// }
-
 class SearchTopBar extends HookConsumerWidget {
   const SearchTopBar({super.key});
 
@@ -59,18 +38,16 @@ class SearchTopBar extends HookConsumerWidget {
                 child: Align(
                   alignment:
                       TVDetector.isTV ? Alignment.centerLeft : Alignment.center,
-                  child: _renderSearchBar(
-                    searchController,
-                    searchBarFocusNode,
-                    context,
-                    ref,
+                  child: _SearchBar(
+                    searchController: searchController,
+                    focusNode: searchBarFocusNode,
                   ),
                 ),
               ),
               if (TVDetector.isTV)
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
-                  child: _renderFilterSwitcher(context),
+                  child: _FilterSwitcher(),
                 ),
             ],
           ),
@@ -78,13 +55,19 @@ class SearchTopBar extends HookConsumerWidget {
       ],
     );
   }
+}
 
-  Widget _renderSearchBar(
-    SearchController searchController,
-    FocusNode searchBarFocusNode,
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+class _SearchBar extends ConsumerWidget {
+  final SearchController searchController;
+  final FocusNode focusNode;
+
+  const _SearchBar({
+    required this.searchController,
+    required this.focusNode,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return SearchAnchor(
       isFullScreen: isMobile(context),
       searchController: searchController,
@@ -100,8 +83,8 @@ class SearchTopBar extends HookConsumerWidget {
       builder: (context, controller) {
         return BackButtonListener(
           onBackButtonPressed: () async {
-            if (searchBarFocusNode.hasFocus) {
-              searchBarFocusNode.previousFocus();
+            if (focusNode.hasFocus) {
+              focusNode.previousFocus();
               return true;
             }
             return false;
@@ -110,13 +93,13 @@ class SearchTopBar extends HookConsumerWidget {
             padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.only(left: 16.0, right: 8.0),
             ),
-            focusNode: searchBarFocusNode,
+            focusNode: focusNode,
             leading: const Icon(Icons.search),
             controller: controller,
             onTap: () => controller.openView(),
             onChanged: (value) => controller.openView(),
             onSubmitted: (value) => _search(ref, value),
-            trailing: TVDetector.isTV ? null : [_renderFilterSwitcher(context)],
+            trailing: TVDetector.isTV ? null : [_FilterSwitcher()],
           ),
         );
       },
@@ -131,10 +114,12 @@ class SearchTopBar extends HookConsumerWidget {
   void _search(WidgetRef ref, String query) {
     ref.read(searchProvider.notifier).search(query);
     ref.read(suggestionsProvider.notifier).addSuggestion(query);
-    searchBarFocusNode.previousFocus();
   }
+}
 
-  IconButton _renderFilterSwitcher(BuildContext context) {
+class _FilterSwitcher extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
         showDialog(

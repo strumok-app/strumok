@@ -15,6 +15,7 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:readmore/readmore.dart';
+import 'package:strumok/widgets/focus_indicator.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
 
 const imageRatio = .45;
@@ -162,7 +163,7 @@ class ContentDetailsView extends HookConsumerWidget {
       );
     }
 
-    return Focus(child: title);
+    return FocusIndicator(child: title);
   }
 
   Widget _renderAdditionalInfo(BuildContext context) {
@@ -190,11 +191,9 @@ class ContentDetailsView extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     if (TVDetector.isTV) {
-      return Focus(
-        child: Text(
-          contentDetails.description,
-          style: theme.textTheme.bodyLarge,
-        ),
+      return Text(
+        contentDetails.description,
+        style: theme.textTheme.bodyLarge,
       );
     }
 

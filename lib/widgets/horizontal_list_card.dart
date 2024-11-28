@@ -1,4 +1,3 @@
-import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -35,13 +34,9 @@ class HorizontalListCard extends HookWidget {
 
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      elevation: focused.value ? 5 : 1,
       shape: RoundedRectangleBorder(
-        side: focused.value && TVDetector.isTV
-            ? BorderSide(
-                color: theme.colorScheme.primary,
-                width: 2,
-              )
+        side: focused.value
+            ? BorderSide(color: theme.colorScheme.primary, width: 1)
             : BorderSide.none,
         borderRadius: BorderRadius.circular(8),
       ),

@@ -5,6 +5,7 @@ import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
 import 'package:strumok/content/content_info_card.dart';
+import 'package:strumok/widgets/focus_indicator.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
 import 'package:strumok/widgets/use_search_hint.dart';
@@ -41,7 +42,7 @@ class ActiveCollectionItemsView extends ConsumerWidget {
     }
 
     return HorizontalList(
-      title: Focus(
+      title: FocusIndicator(
         child: Text(
           title!,
           style: Theme.of(context).textTheme.titleMedium,

@@ -188,10 +188,8 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
     final pageNumber = pageIndex + 1;
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(
-          navigationMode: TVDetector.isTV
-              ? NavigationMode.directional
-              : NavigationMode.traditional),
+      data: MediaQuery.of(context)
+          .copyWith(navigationMode: NavigationMode.directional),
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

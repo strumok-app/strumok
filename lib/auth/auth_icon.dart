@@ -59,10 +59,10 @@ class _AuthUserMenu extends HookConsumerWidget {
             width: 40,
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: focused.value && TVDetector.isTV
+                border: focused.value
                     ? Border.all(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        width: 1,
                       )
                     : null),
             child: CircleAvatar(

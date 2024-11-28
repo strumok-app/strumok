@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
@@ -71,7 +72,7 @@ Widget playlistItemBuilder(
   );
 }
 
-class VideoItemsListItem extends StatelessWidget {
+class VideoItemsListItem extends HookWidget {
   final ContentMediaItem item;
   final bool selected;
   final double progress;
@@ -87,17 +88,25 @@ class VideoItemsListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final focused = useState(false);
     final theme = Theme.of(context);
     final title = item.title;
     final image = item.image;
 
     return Card.filled(
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        side: focused.value == true
+            ? BorderSide(color: theme.colorScheme.onSurfaceVariant)
+            : BorderSide.none,
+      ),
       clipBehavior: Clip.antiAlias,
       color: selected ? theme.colorScheme.onInverseSurface : null,
       child: InkWell(
         autofocus: selected,
         mouseCursor: SystemMouseCursors.click,
         onTap: onTap,
+        onFocusChange: (value) => focused.value = value,
         child: Row(
           children: [
             Container(
