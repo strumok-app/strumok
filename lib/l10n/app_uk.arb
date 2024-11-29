@@ -84,6 +84,8 @@
     "mangaReaderModeHorizontalRtlScroll": "Прокрутка з права на ліво",
     "errorGoBack": "Повернутись назад",
     "errorReload": "Повторити",
-    "versionGuardNoSuppliersLib": "Модуль постачальників не встановлений",
-    "versionGuardUnableToInstall": "Неможливо встановити модуль постачальників"
+    "ffiLibNotInstalled": "Модуль постачальників не встановлений",
+    "ffiLibInstalled": "Модуль постачальників встановлений",
+    "ffiLibNotInstallationFailed": "Неможливо встановити модуль постачальників",
+    "appUpdateFailed": "Неможливо встановити нову версію"
 }
