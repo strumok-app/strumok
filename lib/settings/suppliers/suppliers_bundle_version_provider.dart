@@ -76,27 +76,40 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
       });
       task.status.addListener(() async {
         if (task.status.value == DownloadStatus.completed) {
-          logger.i("New FFI bundle version donwloaded");
-          // reload bundles
-          await ContentSuppliers.instance.reload([
-            RustContentSuppliersBundle(
-              directory: FFISuppliersBundleStorage.instance.libsDir,
-              libName: info.libName,
-            )
-          ]);
-          // save info
-          AppPreferences.ffiSupplierBundleInfo = info;
-          // refresh providers
-          ref.refresh(installedSupplierBundleInfoProvider);
-          ref.refresh(suppliersSettingsProvider);
-          // cleanup old versions
-          FFISuppliersBundleStorage.instance.cleanup(info);
+          await _reloadSuppliersBundle(info);
         } else if (task.status.value == DownloadStatus.failed) {
           state = state.fail("Download failed");
           logger.i("New FFI bundle version donwload failed");
         }
       });
     }
+  }
+
+  Future<void> _reloadSuppliersBundle(FFISupplierBundleInfo info) async {
+    logger.i("New FFI bundle version donwloaded");
+
+    final bundle = RustContentSuppliersBundle(
+      directory: FFISuppliersBundleStorage.instance.libsDir,
+      libName: info.libName,
+    );
+
+    try {
+      await bundle.load();
+    } catch (err) {
+      logger.e("Fail to load new bundle FFI: $info: $err");
+      state = state.fail(err.toString());
+      return;
+    }
+
+    // reload bundles
+    await ContentSuppliers.instance.reload([bundle]);
+    // save info
+    AppPreferences.ffiSupplierBundleInfo = info;
+    // refresh providers
+    ref.refresh(installedSupplierBundleInfoProvider);
+    ref.refresh(suppliersSettingsProvider);
+    // cleanup old versions
+    FFISuppliersBundleStorage.instance.cleanup(info);
   }
 
   Future<String?> _downloadUrl(FFISupplierBundleInfo info) async {

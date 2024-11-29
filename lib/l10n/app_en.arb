@@ -72,7 +72,7 @@
     "mangaReaderScaleFitWidth": "Fit width",
     "mangaReaderScaleFitHeight": "Fit height",
     "mangaTranslation": "Translation",
-    "mangaReaderBackground": "Backgroung",
+    "mangaReaderBackground": "Background",
     "mangaReaderBackgroundLight": "Light",
     "mangaReaderBackgroundDark": "Dark",
     "mangaReaderMode": "Mode",
@@ -84,6 +84,8 @@
     "mangaReaderModeHorizontalRtlScroll": "Scroll from right to left",
     "errorGoBack": "Go back",
     "errorReload": "Reload",
-    "versionGuardNoSuppliersLib": "Content suppliers module not installed",
-    "versionGuardUnableToInstall": "Content suppliers module instalattion failed"
+    "ffiLibNotInstalled": "Content suppliers module not installed",
+    "ffiLibInstalled": "Content suppliers installed",
+    "ffiLibNotInstallationFailed": "Content suppliers module installation failed",
+    "appUpdateFailed": "Application update failed"
 }

@@ -17,7 +17,7 @@ class VersionGuard extends ConsumerWidget {
     return installedBundle.when(
       data: (info) => info != null ? child : _InstallSuppliersBundler(),
       error: (error, stackTrace) => _Error(
-          error: AppLocalizations.of(context)!.versionGuardUnableToInstall),
+          error: AppLocalizations.of(context)!.ffiLibNotInstallationFailed),
       loading: () => _Loader(),
     );
   }
@@ -31,7 +31,7 @@ class _InstallSuppliersBundler extends ConsumerWidget {
     return lattestBundle.when(
       data: (info) => info == null
           ? _Error(
-              error: AppLocalizations.of(context)!.versionGuardUnableToInstall)
+              error: AppLocalizations.of(context)!.ffiLibNotInstallationFailed)
           : _buildInstall(context, info),
       error: (error, stackTrace) => _Error(error: error.toString()),
       loading: () => _Loader(),
@@ -44,7 +44,7 @@ class _InstallSuppliersBundler extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(AppLocalizations.of(context)!.versionGuardNoSuppliersLib),
+            Text(AppLocalizations.of(context)!.ffiLibNotInstalled),
             const SizedBox(height: 8),
             SuppliersBundleDownloadButton(
               autofocus: true,

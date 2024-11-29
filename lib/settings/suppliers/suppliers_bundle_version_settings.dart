@@ -1,3 +1,4 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/content_suppliers/ffi_supplier_bundle_info.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_provider.dart';
@@ -130,6 +131,19 @@ class SuppliersBundleDownloadButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(suppliersBundleDownloadProvider);
+
+    ref.listen(suppliersBundleDownloadProvider, (_, state) {
+      if (state.completed) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            state.error != null
+                ? AppLocalizations.of(context)!.ffiLibNotInstallationFailed
+                : AppLocalizations.of(context)!.ffiLibNotInstalled,
+          ),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    });
 
     return state.downloading
         ? OutlinedButton.icon(

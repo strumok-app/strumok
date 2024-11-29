@@ -75,6 +75,17 @@ class AppDownloadButton extends ConsumerWidget {
     final label = Text(
         AppLocalizations.of(context)!.settingsDownloadUpdate(info.version));
 
+    ref.listen(appDownloadProvider, (_, state) {
+      if (state.error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.appUpdateFailed,
+          ),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    });
+
     return state.downloading
         ? OutlinedButton.icon(
             icon: SizedBox(
