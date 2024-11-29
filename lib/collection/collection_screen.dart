@@ -8,6 +8,7 @@ import 'package:strumok/collection/widgets/status_selector.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/utils/visual.dart';
+import 'package:strumok/widgets/focus_indicator.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
 import 'package:strumok/widgets/use_search_hint.dart';
 import 'package:collection/collection.dart';
@@ -98,7 +99,7 @@ class CollectionHorizontalGroup extends HookConsumerWidget {
     );
 
     if (groupIdx == 0) {
-      title = Focus(child: title);
+      title = FocusIndicator(child: title);
     }
 
     return HorizontalList(
@@ -133,31 +134,27 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
     return ContentInfoCard(
       focusNode: focusNode,
       contentInfo: item,
-      onHover: desktop
-          ? (value) {
-              cornerVisible.value = value;
-            }
-          : null,
-      onLongPress: desktop
-          ? null
-          : () {
-              cornerVisible.value = !cornerVisible.value;
-              itemActionsfocusNode.requestFocus();
-            },
+      onHover: (value) {
+        cornerVisible.value = value;
+      },
+      onLongPress: () {
+        cornerVisible.value = !cornerVisible.value;
+        itemActionsfocusNode.requestFocus();
+      },
       corner: ValueListenableBuilder<bool>(
         valueListenable: cornerVisible,
-        builder: desktop
-            ? (context, value, child) {
-                return AnimatedOpacity(
-                  curve: Curves.easeInOut,
-                  opacity: value ? 1.0 : 0,
-                  duration: const Duration(milliseconds: 150),
-                  child: child,
-                );
-              }
-            : (context, value, child) {
-                return value ? child! : const SizedBox.shrink();
-              },
+        builder:
+            //     ? (context, value, child) {
+            //         return AnimatedOpacity(
+            //           curve: Curves.easeInOut,
+            //           opacity: value ? 1.0 : 0,
+            //           duration: const Duration(milliseconds: 150),
+            //           child: child,
+            //         );
+            //       }
+            (context, value, child) {
+          return value ? child! : const SizedBox.shrink();
+        },
         child: BackButtonListener(
           onBackButtonPressed: () async {
             itemActionsfocusNode.previousFocus();
@@ -187,8 +184,9 @@ class _CollectionListItemCorner extends ConsumerWidget {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-          color: theme.colorScheme.secondaryContainer,
-          borderRadius: BorderRadius.circular(40)),
+        color: theme.colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(40),
+      ),
       child: FocusScope(
         child: Row(
           mainAxisSize: MainAxisSize.min,

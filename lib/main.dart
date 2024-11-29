@@ -55,10 +55,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FocusManager.instance.addListener(() {
-      print("Focus on: ${FocusManager.instance.primaryFocus}");
-    });
-
     return Shortcuts(
       shortcuts: <LogicalKeySet, Intent>{
         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),

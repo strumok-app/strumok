@@ -387,3 +387,14 @@ class _AndroidTVBottomBar extends ConsumerWidget {
     );
   }
 }
+
+// class _TVKeyActivator extends ShortcutActivator {
+//   @override
+//   bool accepts(KeyEvent event, HardwareKeyboard state) {
+//     // TODO: implement accepts
+//     throw UnimplementedError();
+//   }
+
+//   @override
+//   String debugDescribeKeys() => "TV Key Activator";
+// }

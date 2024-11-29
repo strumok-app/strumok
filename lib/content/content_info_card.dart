@@ -31,8 +31,7 @@ class ContentInfoCard extends StatelessWidget {
 
     return HorizontalListCard(
       focusNode: focusNode,
-      onTap: onTap ??
-          () => navigateToContentDetails(context, contentInfo),
+      onTap: onTap ?? () => navigateToContentDetails(context, contentInfo),
       onHover: onHover,
       onLongPress: onLongPress,
       decoration: BoxDecoration(

@@ -1,7 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
@@ -140,38 +142,57 @@ class _StarVideoPositionSettingsSection extends ConsumerWidget {
           ),
           if (starVideoPosition == StarVideoPosition.fromFixedPosition) ...[
             const SizedBox(width: 8),
-            SizedBox(
-              width: 52,
-              height: 32,
-              child: TextFormField(
-                initialValue: fixedPosition.toString(),
-                onChanged: (value) {
-                  ref
-                      .read(fixedPositionSettingsProvider.notifier)
-                      .select(int.parse(value));
-                },
-                autofocus: true,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                maxLength: 4,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                ),
-                buildCounter: (
-                  context, {
-                  required currentLength,
-                  required isFocused,
-                  required maxLength,
-                }) =>
-                    const SizedBox.shrink(),
-              ),
-            )
+            _FixedSecondInput(fixedPosition: fixedPosition)
           ]
         ],
+      ),
+    );
+  }
+}
+
+class _FixedSecondInput extends HookConsumerWidget {
+  const _FixedSecondInput({required this.fixedPosition});
+
+  final int fixedPosition;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final focusNode = useFocusNode();
+
+    return SizedBox(
+      width: 52,
+      height: 32,
+      child: BackButtonListener(
+        onBackButtonPressed: () async {
+          focusNode.previousFocus();
+          return true;
+        },
+        child: TextFormField(
+          focusNode: focusNode,
+          initialValue: fixedPosition.toString(),
+          onChanged: (value) {
+            ref
+                .read(fixedPositionSettingsProvider.notifier)
+                .select(int.parse(value));
+          },
+          autofocus: true,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+          ],
+          maxLength: 4,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+          ),
+          buildCounter: (
+            context, {
+            required currentLength,
+            required isFocused,
+            required maxLength,
+          }) =>
+              const SizedBox.shrink(),
+        ),
       ),
     );
   }
