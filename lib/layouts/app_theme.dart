@@ -25,6 +25,7 @@ class AppTheme extends ConsumerWidget {
 
     return Theme(
       data: ThemeData(
+        splashFactory: NoSplash.splashFactory,
         colorScheme: colorScheme,
         navigationRailTheme: NavigationRailThemeData(
           indicatorShape: navigationIndicatorShape,
@@ -66,6 +67,11 @@ class AppTheme extends ConsumerWidget {
                   : BorderSide.none,
             );
           }),
+        ),
+        searchViewTheme: SearchViewThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
       child: child,

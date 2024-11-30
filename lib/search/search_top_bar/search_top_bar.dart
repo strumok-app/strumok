@@ -69,6 +69,7 @@ class _SearchBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SearchAnchor(
+      dividerColor: Colors.transparent,
       isFullScreen: isMobile(context),
       searchController: searchController,
       viewOnChanged: (value) {
@@ -93,7 +94,6 @@ class _SearchBar extends ConsumerWidget {
             padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.only(left: 16.0, right: 8.0),
             ),
-            focusNode: focusNode,
             leading: const Icon(Icons.search),
             controller: controller,
             onTap: () => controller.openView(),
@@ -239,10 +239,13 @@ class _TopSearchSuggestions extends HookConsumerWidget {
 
     return suggestionsValue.maybeWhen(
       data: (suggestions) {
-        return ListView(
-          children: suggestions
-              .map((suggestion) => _renderSuggestion(suggestion, ref))
-              .toList(),
+        return Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: ListView(
+            children: suggestions
+                .map((suggestion) => _renderSuggestion(suggestion, ref))
+                .toList(),
+          ),
         );
       },
       orElse: () => ListView(),

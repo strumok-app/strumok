@@ -20,6 +20,8 @@ import 'package:media_kit/media_kit.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
+  await AppSecrets.init();
+
   WidgetsFlutterBinding.ensureInitialized();
 
   if (isDesktopDevice()) {
@@ -29,7 +31,6 @@ void main() async {
   // init media kit
   MediaKit.ensureInitialized();
 
-  await AppSecrets.init();
   await AppDatabase.init();
   await AppPreferences.init();
   await TVDetector.detect();

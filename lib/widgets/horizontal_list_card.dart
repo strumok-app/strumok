@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/services.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';

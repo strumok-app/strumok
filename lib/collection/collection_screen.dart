@@ -105,7 +105,9 @@ class CollectionHorizontalGroup extends HookConsumerWidget {
     return HorizontalList(
       title: title,
       itemBuilder: (context, index) {
+        final item = groupItems[index];
         return CollectionHorizontalListItem(
+          key: ValueKey(item),
           focusNode: (groupIdx == 0 && index == 0) ? primaryFocusNode : null,
           item: groupItems[index],
         );
@@ -127,9 +129,37 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    return isDesktopDevice()
+        ? _buildDesktop(context, ref)
+        : _buildNoMouse(context, ref);
+  }
+
+  Widget _buildNoMouse(BuildContext context, WidgetRef ref) {
     final itemActionsfocusNode = useFocusNode();
     final cornerVisible = useState(false);
-    final desktop = isDesktopDevice();
+
+    return ContentInfoCard(
+      focusNode: focusNode,
+      contentInfo: item,
+      onLongPress: () {
+        cornerVisible.value = !cornerVisible.value;
+        itemActionsfocusNode.requestFocus();
+      },
+      corner: BackButtonListener(
+        onBackButtonPressed: () async {
+          itemActionsfocusNode.previousFocus();
+          return true;
+        },
+        child: _CollectionListItemCorner(
+          item: item,
+          focusNode: itemActionsfocusNode,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDesktop(BuildContext context, WidgetRef ref) {
+    final cornerVisible = useState(false);
 
     return ContentInfoCard(
       focusNode: focusNode,
@@ -137,32 +167,12 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
       onHover: (value) {
         cornerVisible.value = value;
       },
-      onLongPress: () {
-        cornerVisible.value = !cornerVisible.value;
-        itemActionsfocusNode.requestFocus();
-      },
-      corner: ValueListenableBuilder<bool>(
-        valueListenable: cornerVisible,
-        builder:
-            //     ? (context, value, child) {
-            //         return AnimatedOpacity(
-            //           curve: Curves.easeInOut,
-            //           opacity: value ? 1.0 : 0,
-            //           duration: const Duration(milliseconds: 150),
-            //           child: child,
-            //         );
-            //       }
-            (context, value, child) {
-          return value ? child! : const SizedBox.shrink();
-        },
-        child: BackButtonListener(
-          onBackButtonPressed: () async {
-            itemActionsfocusNode.previousFocus();
-            return true;
-          },
+      corner: ExcludeFocus(
+        child: AnimatedOpacity(
+          opacity: cornerVisible.value ? 1 : 0,
+          duration: const Duration(milliseconds: 500),
           child: _CollectionListItemCorner(
             item: item,
-            focusNode: itemActionsfocusNode,
           ),
         ),
       ),
@@ -191,8 +201,12 @@ class _CollectionListItemCorner extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CollectionItemPrioritySelector(
+            Focus(
+              // focus reciver
               focusNode: focusNode,
+              child: const SizedBox(),
+            ),
+            CollectionItemPrioritySelector(
               collectionItem: item,
               onSelect: (priority) {
                 ref
