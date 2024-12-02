@@ -382,32 +382,15 @@ class _CustomRustLib
 
 FutureOr<ExternalLibrary> _loadExternalLibrary(
     ExternalLibraryLoaderConfig config) async {
-  final ioDirectory = config.ioDirectory;
+  final ioDirectory = config.ioDirectory!;
 
   final stem = config.stem;
-  final nativeLibDirWhenNonPackaged =
-      ioDirectory == null ? null : Directory.current.uri.resolve(ioDirectory);
 
-  // ref
-  // * https://flutter.dev/docs/development/platform-integration/c-interop
-  // * https://github.com/fzyzcjy/flutter_rust_bridge/pull/898
-  // * https://github.com/flutter/flutter/blob/8b6277e63868c2029f1e2327879b7899be44fbe2/packages/flutter_tools/templates/plugin_ffi/lib/projectName.dart.tmpl#L47-L58
-
-  ExternalLibrary tryAssumingNonPackaged(
-      String name, ExternalLibrary Function(String debugInfo) fallback) {
-    final effectiveNativeLibDir = Platform
-            .environment['FRB_DART_LOAD_EXTERNAL_LIBRARY_NATIVE_LIB_DIR']
-            ?.toUriDirectory() ??
-        nativeLibDirWhenNonPackaged;
-
-    if (effectiveNativeLibDir == null) {
-      return fallback(
-          '(without trying effectiveNativeLibDir since it is null)');
-    }
-
-    final filePath = effectiveNativeLibDir.path + Platform.pathSeparator + name;
+  ExternalLibrary tryLoad(String name) {
+    final filePath = ioDirectory + Platform.pathSeparator + name;
     if (!File(filePath).existsSync()) {
-      return fallback('(after trying $filePath but it does not exist)');
+      throw ContentSuppliersException(
+          "Rust Suppliers lib not found in path: $filePath");
     }
 
     return ExternalLibrary.open(filePath);
@@ -415,26 +398,16 @@ FutureOr<ExternalLibrary> _loadExternalLibrary(
 
   if (Platform.isWindows) {
     final name = '$stem.dll';
-    return tryAssumingNonPackaged(
-        name, (debugInfo) => ExternalLibrary.open(name, debugInfo: debugInfo));
+    return tryLoad(name);
   }
 
   if (Platform.isIOS || Platform.isMacOS) {
-    return tryAssumingNonPackaged(
-      'lib$stem.dylib',
-      (debugInfo) => _tryOpen(
-        'rust_builder.framework/rust_builder',
-        debugInfo,
-        (debugInfo) =>
-            ExternalLibrary.open('$stem.framework/$stem', debugInfo: debugInfo),
-      ),
-    );
+    return tryLoad('lib$stem.dylib');
   }
 
   if (Platform.isLinux || Platform.isAndroid) {
     final name = 'lib$stem.so';
-    return tryAssumingNonPackaged(
-        name, (debugInfo) => ExternalLibrary.open(name, debugInfo: debugInfo));
+    return tryLoad(name);
   }
 
   throw Exception(
