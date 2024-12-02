@@ -120,7 +120,7 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Windows
-        run: flutter build linux --dart-define SENTRY_DSN="$SENTRY_DSN"
+        run: flutter build windows --dart-define SENTRY_DSN="$SENTRY_DSN"
         shell: bash
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
