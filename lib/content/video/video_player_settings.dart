@@ -2,12 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
-import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/widgets/dropdown.dart';
 import 'package:strumok/widgets/settings_section.dart';
 

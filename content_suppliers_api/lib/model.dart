@@ -323,3 +323,9 @@ abstract class ContentSupplierBundle {
   Future<void> load() async {}
   void unload() {}
 }
+
+class ContentSuppliersException implements Exception {
+  final String message;
+
+  ContentSuppliersException(this.message);
+}

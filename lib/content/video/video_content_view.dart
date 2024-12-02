@@ -10,6 +10,7 @@ import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_content_desktop_view.dart';
 import 'package:strumok/content/video/video_content_mobile_view.dart';
 import 'package:strumok/content/video/video_content_tv_view.dart';
+import 'package:strumok/utils/trace.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/visual.dart';
@@ -113,8 +114,16 @@ class PlayerController {
 
       await setSubtitle(progress.currentSubtitleName);
     } on Exception catch (e, stackTrace) {
+      if (e is ContentSuppliersException) {
+        traceError(
+          error: e,
+          stackTrace: stackTrace,
+          msg: "fail to start video",
+        );
+      } else {
+        logger.e("Fail to start video", error: e, stackTrace: stackTrace);
+      }
       addError("Fail to start video: $e");
-      logger.e("Fail to start video", error: e, stackTrace: stackTrace);
       player.stop();
       rethrow;
     } finally {

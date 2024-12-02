@@ -59,14 +59,21 @@ class RustMediaItem implements ContentMediaItem {
   }
 
   @override
-  FutureOr<List<ContentMediaItemSource>> get sources async =>
-      _sources ??= (await _api.crateApiLoadMediaItemSources(
+  FutureOr<List<ContentMediaItemSource>> get sources async {
+    try {
+      return _sources ??= (await _api.crateApiLoadMediaItemSources(
         supplier: supplier,
         id: id,
         params: _params,
       ))
           .map(mapMediaItemSource)
           .toList();
+    } catch (e) {
+      throw ContentSuppliersException(
+        "FFI LoadMediaItemSources Failed [supplier=$supplier id=$id params: $_params] error: $e",
+      );
+    }
+  }
 
   static ContentMediaItemSource mapMediaItemSource(
     models.ContentMediaItemSource item,
@@ -147,13 +154,20 @@ class RustContentDetails extends AbstractContentDetails {
   }
 
   @override
-  FutureOr<Iterable<ContentMediaItem>> get mediaItems async =>
-      _mediaItems ??= (await _api.crateApiLoadMediaItems(
+  FutureOr<Iterable<ContentMediaItem>> get mediaItems async {
+    try {
+      return _mediaItems ??= (await _api.crateApiLoadMediaItems(
         supplier: supplier,
         id: id,
         params: _params,
       ))
           .map((item) => RustMediaItem.fromRust(id, supplier, item, _api));
+    } catch (e) {
+      throw ContentSuppliersException(
+        "FFI LoadMediaItems Failed [supplier=$supplier id=$id params: $_params] error: $e",
+      );
+    }
+  }
 }
 
 extension ContentSearchResultExt on ContentSearchResult {
@@ -190,42 +204,60 @@ class RustContentSupplier implements ContentSupplier {
 
   @override
   Future<ContentDetails?> detailsById(String id) async {
-    final result = await _api.crateApiGetContentDetails(
-      supplier: name,
-      id: id,
-    );
+    try {
+      final result = await _api.crateApiGetContentDetails(
+        supplier: name,
+        id: id,
+      );
 
-    if (result == null) {
-      return null;
+      if (result == null) {
+        return null;
+      }
+
+      return RustContentDetails.fromRust(id, name, result, _api);
+    } catch (e) {
+      throw ContentSuppliersException(
+        "FFI GetContentDetails Failed [suppier=$name id=$id] error: $e",
+      );
     }
-
-    return RustContentDetails.fromRust(id, name, result, _api);
   }
 
   @override
   Future<List<ContentInfo>> loadChannel(String channel, {int page = 0}) async {
-    final results = await _api.crateApiLoadChannel(
-      supplier: name,
-      channel: channel,
-      page: page,
-    );
+    try {
+      final results = await _api.crateApiLoadChannel(
+        supplier: name,
+        channel: channel,
+        page: page,
+      );
 
-    return results
-        .map((info) => ContentSearchResultExt.fromRust(name, info))
-        .toList();
+      return results
+          .map((info) => ContentSearchResultExt.fromRust(name, info))
+          .toList();
+    } catch (e) {
+      throw ContentSuppliersException(
+        "FFI LoadChannel Failed [supplier=$name channel=$channel page=$page] error: $e",
+      );
+    }
   }
 
   @override
   Future<List<ContentInfo>> search(String query, Set<ContentType> type) async {
-    final results = await _api.crateApiSearch(
-      supplier: name,
-      query: query,
-      types: type.map((v) => v.name).toList(),
-    );
+    try {
+      final results = await _api.crateApiSearch(
+        supplier: name,
+        query: query,
+        types: type.map((v) => v.name).toList(),
+      );
 
-    return results
-        .map((info) => ContentSearchResultExt.fromRust(name, info))
-        .toList();
+      return results
+          .map((info) => ContentSearchResultExt.fromRust(name, info))
+          .toList();
+    } catch (e) {
+      throw ContentSuppliersException(
+        "FFI Search Failed [supplier=$name query=$query] error: $e",
+      );
+    }
   }
 
   @override

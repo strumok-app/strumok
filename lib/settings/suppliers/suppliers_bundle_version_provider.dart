@@ -16,6 +16,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_download_manager/flutter_download_manager.dart';
 import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:strumok/utils/trace.dart';
 
 part 'suppliers_bundle_version_provider.g.dart';
 
@@ -46,7 +47,7 @@ FutureOr<FFISupplierBundleInfo?> latestSupplierBundleInfo(
     final res = await Client().get(Uri.parse(latestVersionUrl));
     return FFISupplierBundleInfo.fromJson(json.decode(res.body));
   } catch (e) {
-    logger.e("Failed to load lattest bundle version: $e");
+    traceError(error: e, msg: "Failed to load lattest bundle version");
     return null;
   }
 }
@@ -95,9 +96,9 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
 
     try {
       await bundle.load();
-    } catch (err) {
-      logger.e("Fail to load new bundle FFI: $info: $err");
-      state = state.fail(err.toString());
+    } catch (e) {
+      traceError(error: e, msg: "Fail to load new bundle FFI");
+      state = state.fail(e.toString());
       return;
     }
 

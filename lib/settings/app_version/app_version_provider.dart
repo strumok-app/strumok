@@ -12,6 +12,7 @@ import 'package:http/http.dart';
 import 'package:strumok/settings/models.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/sem_ver.dart';
+import 'package:strumok/utils/trace.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -63,7 +64,7 @@ FutureOr<LatestAppVersionInfo?> latestAppVersionInfo(
 
     return LatestAppVersionInfo.fromJson(json.decode(res.body));
   } catch (e) {
-    logger.e("Failed to load lattest app version: $e");
+    traceError(error: e, msg: "fail to load lattest app version info");
     return null;
   }
 }
@@ -168,7 +169,7 @@ class AppDownload extends _$AppDownload {
     try {
       await installApk.invokeMethod<bool>('installApk', {'filePath': filePath});
     } catch (e) {
-      logger.e("New app version installation failed: $e");
+      traceError(error: e, msg: "new app vetsion installation failed");
       state.fail(e.toString());
     }
 

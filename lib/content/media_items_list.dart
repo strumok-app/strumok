@@ -1,6 +1,5 @@
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/content/video/widgets.dart';
-import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';

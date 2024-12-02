@@ -55,6 +55,8 @@ dependencies:
   window_manager: ^0.4.2
   cached_network_image: ^3.4.1
   flutter_download_manager: ^0.5.5
+  #tracing
+  sentry_flutter: ^8.10.1
 
   content_suppliers_api:
     path: content_suppliers_api

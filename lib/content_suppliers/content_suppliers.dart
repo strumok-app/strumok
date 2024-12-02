@@ -5,6 +5,7 @@ import 'package:strumok/app_secrets.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:content_suppliers_api/model.dart';
+import 'package:strumok/utils/trace.dart';
 
 class ContentSuppliers {
   List<ContentSupplier> _suppliers = [];
@@ -39,8 +40,12 @@ class ContentSuppliers {
       try {
         await bundle.load();
         suppliers += await bundle.suppliers;
-      } catch (e) {
-        logger.w("Fail to load suppliers bundle $bundle: $e");
+      } catch (e, stackTrace) {
+        traceError(
+          error: e,
+          stackTrace: stackTrace,
+          msg: "fail to load bundle: $bundle",
+        );
       }
     }
     _suppliers = suppliers;
@@ -66,8 +71,11 @@ class ContentSuppliers {
         results[supplier.name] = res;
         yield results;
       } catch (error, stackTrace) {
-        logger.e("Supplier ${supplier.name} fail",
-            error: error, stackTrace: stackTrace);
+        traceError(
+          error: error,
+          stackTrace: stackTrace,
+          msg: "Supplier ${supplier.name} fail",
+        );
       }
     }
 
@@ -103,9 +111,11 @@ class ContentSuppliers {
     try {
       details = await supplier.detailsById(id);
     } catch (error, stackTrace) {
-      logger.e("Supplier $supplier fail with $id",
-          error: error, stackTrace: stackTrace);
-
+      traceError(
+        error: error,
+        stackTrace: stackTrace,
+        msg: "Supplier $supplier fail with $id",
+      );
       rethrow;
     }
 

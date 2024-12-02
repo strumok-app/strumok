@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
-import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/utils/visual.dart';
 
 class SourceSelector extends StatelessWidget {

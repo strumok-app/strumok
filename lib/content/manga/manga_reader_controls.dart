@@ -2,7 +2,6 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/manga/manga_reader_settings_dialog.dart';
 import 'package:strumok/content/manga/widgets.dart';
-import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
