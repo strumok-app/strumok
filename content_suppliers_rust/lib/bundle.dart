@@ -413,16 +413,3 @@ FutureOr<ExternalLibrary> _loadExternalLibrary(
   throw Exception(
       'loadExternalLibrary failed: Unknown platform=${Platform.operatingSystem}');
 }
-
-ExternalLibrary _tryOpen(String name, String debugInfo,
-    ExternalLibrary Function(String debugInfo) fallback) {
-  try {
-    return ExternalLibrary.open(name, debugInfo: debugInfo);
-  } catch (e) {
-    return fallback('$debugInfo (after trying $name but has error $e)');
-  }
-}
-
-extension on String {
-  Uri toUriDirectory() => Uri.directory(this);
-}
