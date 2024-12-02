@@ -52,7 +52,7 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Android
-        run: flutter build apk --dart-define SENTRY_DSN=$SENTRY_DSN
+        run: flutter build apk --dart-define SENTRY_DSN="$SENTRY_DSN"
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       - name: Upload android outputs
@@ -87,7 +87,7 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Linux
-        run: flutter build linux --dart-define SENTRY_DSN=$SENTRY_DSN
+        run: flutter build linux --dart-define SENTRY_DSN="$SENTRY_DSN" 
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       - name: Upload linux outputs
@@ -120,7 +120,7 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Windows
-        run: flutter build window --dart-define SENTRY_DSN=$SENTRY_DSN
+        run: flutter build linux --dart-define SENTRY_DSN="$SENTRY_DSN"
         shell: bash
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
