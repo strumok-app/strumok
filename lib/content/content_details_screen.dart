@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:strumok/app_localizations.dart';
+import 'package:strumok/collection/collection_provider.dart';
 import 'package:strumok/content/content_details_provider.dart';
 import 'package:strumok/content/content_details_view.dart';
 import 'package:strumok/layouts/general_layout.dart';
@@ -29,6 +31,14 @@ class ContentDetailsScreen extends ConsumerWidget {
         error: (error, stackTrace) => DisplayError(
           error: error,
           onRefresh: () => ref.refresh(detailsProvider(supplier, id).future),
+          actions: [
+            OutlinedButton(
+              onPressed: () {
+                ref.read(collectionServiceProvider).delete(supplier, id);
+              },
+              child: Text(AppLocalizations.of(context)!.removeFromCollection),
+            )
+          ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),

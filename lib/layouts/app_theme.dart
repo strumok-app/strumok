@@ -57,6 +57,11 @@ class AppTheme extends ConsumerWidget {
             }),
           ),
         ),
+        listTileTheme: ListTileThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
         searchBarTheme: SearchBarThemeData(
           elevation: const WidgetStatePropertyAll(1),
           shape: WidgetStateProperty.resolveWith((states) {

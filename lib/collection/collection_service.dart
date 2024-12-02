@@ -28,6 +28,10 @@ class CollectionService {
     return collectionItem;
   }
 
+  Future<void> delete(String supplier, String id) async {
+    await repository.delete(supplier, id);
+  }
+
   FutureOr<Iterable<MediaCollectionItem>> search({
     String? query,
     Set<MediaCollectionItemStatus>? status,

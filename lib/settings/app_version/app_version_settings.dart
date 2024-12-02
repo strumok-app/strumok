@@ -99,6 +99,7 @@ class AppDownloadButton extends ConsumerWidget {
             label: label,
           )
         : OutlinedButton(
+            autofocus: true,
             onPressed: () {
               ref.read(appDownloadProvider.notifier).download(info);
             },
