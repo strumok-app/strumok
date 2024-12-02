@@ -173,7 +173,6 @@ class PlayerErrorPopup extends StatelessWidget {
             onPressed: onPressed,
             icon: const Icon(Icons.warning_rounded),
             color: Colors.white,
-            focusColor: Colors.white.withOpacity(0.4),
             disabledColor: Colors.white.withOpacity(0.7),
           ),
           menuChildrenBuilder: (focusNode) => [

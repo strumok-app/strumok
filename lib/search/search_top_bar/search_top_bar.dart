@@ -91,6 +91,7 @@ class _SearchBar extends ConsumerWidget {
             return false;
           },
           child: SearchBar(
+            focusNode: focusNode,
             padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.only(left: 16.0, right: 8.0),
             ),

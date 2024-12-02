@@ -129,7 +129,7 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return isDesktopDevice()
+    return !isDesktopDevice()
         ? _buildDesktop(context, ref)
         : _buildNoMouse(context, ref);
   }
@@ -145,16 +145,18 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
         cornerVisible.value = !cornerVisible.value;
         itemActionsfocusNode.requestFocus();
       },
-      corner: BackButtonListener(
-        onBackButtonPressed: () async {
-          itemActionsfocusNode.previousFocus();
-          return true;
-        },
-        child: _CollectionListItemCorner(
-          item: item,
-          focusNode: itemActionsfocusNode,
-        ),
-      ),
+      corner: cornerVisible.value
+          ? BackButtonListener(
+              onBackButtonPressed: () async {
+                itemActionsfocusNode.previousFocus();
+                return true;
+              },
+              child: _CollectionListItemCorner(
+                item: item,
+                focusNode: itemActionsfocusNode,
+              ),
+            )
+          : null,
     );
   }
 
@@ -170,7 +172,7 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
       corner: ExcludeFocus(
         child: AnimatedOpacity(
           opacity: cornerVisible.value ? 1 : 0,
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 200),
           child: _CollectionListItemCorner(
             item: item,
           ),

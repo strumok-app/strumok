@@ -14,11 +14,13 @@ class VersionGuard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final installedBundle = ref.watch(installedSupplierBundleInfoProvider);
 
-    return installedBundle.when(
-      data: (info) => info != null ? child : _InstallSuppliersBundler(),
-      error: (error, stackTrace) => _Error(
-          error: AppLocalizations.of(context)!.ffiLibNotInstallationFailed),
-      loading: () => _Loader(),
+    return Scaffold(
+      body: installedBundle.when(
+        data: (info) => info != null ? child : _InstallSuppliersBundler(),
+        error: (error, stackTrace) => _Error(
+            error: AppLocalizations.of(context)!.ffiLibNotInstallationFailed),
+        loading: () => _Loader(),
+      ),
     );
   }
 }
@@ -39,20 +41,18 @@ class _InstallSuppliersBundler extends ConsumerWidget {
   }
 
   Widget _buildInstall(BuildContext context, FFISupplierBundleInfo info) {
-    return Material(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(AppLocalizations.of(context)!.ffiLibNotInstalled),
-            const SizedBox(height: 8),
-            SuppliersBundleDownloadButton(
-              autofocus: true,
-              info: info,
-              label: Text(AppLocalizations.of(context)!.install),
-            ),
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(AppLocalizations.of(context)!.ffiLibNotInstalled),
+          const SizedBox(height: 8),
+          SuppliersBundleDownloadButton(
+            autofocus: true,
+            info: info,
+            label: Text(AppLocalizations.of(context)!.install),
+          ),
+        ],
       ),
     );
   }
@@ -61,10 +61,8 @@ class _InstallSuppliersBundler extends ConsumerWidget {
 class _Loader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Material(
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
+    return const Center(
+      child: CircularProgressIndicator(),
     );
   }
 }
@@ -76,8 +74,6 @@ class _Error extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Center(child: Text(error)),
-    );
+    return Center(child: Text(error));
   }
 }

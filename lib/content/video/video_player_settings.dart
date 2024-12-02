@@ -24,7 +24,6 @@ class PlayerSettingsButton extends StatelessWidget {
       tooltip: AppLocalizations.of(context)!.settings,
       icon: const Icon(Icons.settings),
       color: Colors.white,
-      focusColor: Colors.white.withOpacity(0.4),
       disabledColor: Colors.white.withOpacity(0.7),
     );
   }

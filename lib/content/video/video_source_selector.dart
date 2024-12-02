@@ -30,7 +30,6 @@ class SourceSelector extends StatelessWidget {
       },
       icon: const Icon(Icons.track_changes),
       color: Colors.white,
-      focusColor: Colors.white.withOpacity(0.4),
       disabledColor: Colors.white.withOpacity(0.7),
     );
   }

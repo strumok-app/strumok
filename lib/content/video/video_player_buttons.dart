@@ -68,7 +68,6 @@ class PlayerPlaylistButton extends ConsumerWidget {
       },
       icon: const Icon(Icons.list),
       color: Colors.white,
-      focusColor: Colors.white.withOpacity(0.4),
       disabledColor: Colors.white.withOpacity(0.7),
     );
   }
@@ -105,12 +104,11 @@ class SkipPrevButton extends ConsumerWidget {
     final enabled = currentItem > 0 && !shuffleMode;
 
     return IconButton(
-      focusNode: enabled ? null: FocusNode(canRequestFocus: false),
+      focusNode: enabled ? null : FocusNode(canRequestFocus: false),
       onPressed: enabled ? () => playerController.prevItem() : null,
       icon: const Icon(Icons.skip_previous),
       iconSize: iconSize,
       color: Colors.white,
-      focusColor: Colors.white.withOpacity(0.4),
       disabledColor: Colors.white.withOpacity(0.7),
     );
   }
@@ -153,7 +151,6 @@ class SkipNextButton extends ConsumerWidget {
       icon: const Icon(Icons.skip_next),
       iconSize: iconSize,
       color: Colors.white,
-      focusColor: Colors.white.withOpacity(0.4),
       disabledColor: Colors.white.withOpacity(0.7),
       focusNode: focusNode,
     );
@@ -217,7 +214,6 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
     return IconButton(
       focusNode: widget.focusNode,
       color: Colors.white,
-      focusColor: Colors.white.withOpacity(0.4),
       onPressed: controller(context).player.playOrPause,
       icon: AnimatedIcon(
         progress: animation,
