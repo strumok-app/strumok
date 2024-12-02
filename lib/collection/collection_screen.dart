@@ -129,7 +129,7 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return !isDesktopDevice()
+    return isDesktopDevice()
         ? _buildDesktop(context, ref)
         : _buildNoMouse(context, ref);
   }
