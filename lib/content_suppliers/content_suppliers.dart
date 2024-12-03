@@ -44,7 +44,7 @@ class ContentSuppliers {
         traceError(
           error: e,
           stackTrace: stackTrace,
-          msg: "fail to load bundle: $bundle",
+          message: "fail to load bundle: $bundle",
         );
       }
     }
@@ -74,7 +74,7 @@ class ContentSuppliers {
         traceError(
           error: error,
           stackTrace: stackTrace,
-          msg: "Supplier ${supplier.name} fail",
+          message: "Supplier ${supplier.name} fail",
         );
       }
     }
@@ -114,7 +114,7 @@ class ContentSuppliers {
       traceError(
         error: error,
         stackTrace: stackTrace,
-        msg: "Supplier $supplier fail with $id",
+        message: "Supplier $supplier fail with $id",
       );
       rethrow;
     }

@@ -4,15 +4,22 @@ import 'package:strumok/utils/logger.dart';
 void traceError({
   required dynamic error,
   dynamic stackTrace,
-  String? msg,
+  String? message,
 }) {
   Sentry.captureException(
     error,
     stackTrace: stackTrace,
-    hint: Hint.withMap({"message": msg}),
+    hint: Hint.withMap({"message": message}),
   );
 
-  if (msg != null) {
-    logger.e(msg, error: error, stackTrace: stackTrace);
+  if (message != null) {
+    logger.e(message, error: error, stackTrace: stackTrace);
   }
+}
+
+void traceAction(
+  String action, {
+  String? description,
+}) {
+  Sentry.getSpan()?.startChild(action, description: description).finish();
 }

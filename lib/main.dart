@@ -81,7 +81,13 @@ class MainApp extends StatelessWidget {
           PointerDeviceKind.touch,
           PointerDeviceKind.trackpad
         }),
-        routerConfig: _appRouter.config(),
+        routerConfig: _appRouter.config(
+          navigatorObservers: () => [
+            SentryNavigatorObserver(
+              setRouteNameAsTransaction: true,
+            )
+          ],
+        ),
         builder: (context, child) => AppTheme(
           child: VersionGuard(child: child!),
         ),

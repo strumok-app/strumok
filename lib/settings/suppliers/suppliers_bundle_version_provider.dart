@@ -47,7 +47,7 @@ FutureOr<FFISupplierBundleInfo?> latestSupplierBundleInfo(
     final res = await Client().get(Uri.parse(latestVersionUrl));
     return FFISupplierBundleInfo.fromJson(json.decode(res.body));
   } catch (e) {
-    traceError(error: e, msg: "Failed to load lattest bundle version");
+    traceError(error: e, message: "Failed to load lattest bundle version");
     return null;
   }
 }
@@ -97,7 +97,7 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
     try {
       await bundle.load();
     } catch (e) {
-      traceError(error: e, msg: "Fail to load new bundle FFI");
+      traceError(error: e, message: "Fail to load new bundle FFI");
       state = state.fail(e.toString());
       return;
     }

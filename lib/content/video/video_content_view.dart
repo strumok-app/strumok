@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
@@ -118,7 +119,7 @@ class PlayerController {
         traceError(
           error: e,
           stackTrace: stackTrace,
-          msg: "fail to start video",
+          message: "fail to start video",
         );
       } else {
         logger.e("Fail to start video", error: e, stackTrace: stackTrace);
@@ -245,6 +246,12 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
   @override
   void initState() {
     super.initState();
+
+    traceAction(
+      "load_video",
+      description:
+          "supplier: ${widget.contentDetails.supplier}, id: ${widget.contentDetails.id}",
+    );
 
     if (player.platform is NativePlayer) {
       (player.platform as NativePlayer).setProperty("force-seekable", "yes");

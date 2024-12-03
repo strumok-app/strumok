@@ -64,7 +64,7 @@ FutureOr<LatestAppVersionInfo?> latestAppVersionInfo(
 
     return LatestAppVersionInfo.fromJson(json.decode(res.body));
   } catch (e) {
-    traceError(error: e, msg: "fail to load lattest app version info");
+    traceError(error: e, message: "fail to load lattest app version info");
     return null;
   }
 }
@@ -169,7 +169,7 @@ class AppDownload extends _$AppDownload {
     try {
       await installApk.invokeMethod<bool>('installApk', {'filePath': filePath});
     } catch (e) {
-      traceError(error: e, msg: "new app vetsion installation failed");
+      traceError(error: e, message: "new app vetsion installation failed");
       state.fail(e.toString());
     }
 
