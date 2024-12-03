@@ -225,11 +225,18 @@ class ContentDetailsView extends HookConsumerWidget {
   }
 
   Widget _renderContentActions(
-      ContentDetails contentDetails, FocusNode mainActionsFocusNode) {
+    ContentDetails contentDetails,
+    FocusNode mainActionsFocusNode,
+  ) {
     return switch (contentDetails.mediaType) {
-      MediaType.video => ContentDetailsVideoActions(contentDetails,
-          focusNode: mainActionsFocusNode),
-      MediaType.manga => ContentDetailsMangaActions(contentDetails),
+      MediaType.video => ContentDetailsVideoActions(
+          contentDetails,
+          focusNode: mainActionsFocusNode,
+        ),
+      MediaType.manga => ContentDetailsMangaActions(
+          contentDetails,
+          focusNode: mainActionsFocusNode,
+        ),
     };
   }
 

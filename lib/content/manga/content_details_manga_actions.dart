@@ -6,7 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:strumok/utils/nav.dart';
 
 class ContentDetailsMangaActions extends ContentDetailsActions {
-  const ContentDetailsMangaActions(super.contentDetails, {super.key});
+  final FocusNode? focusNode;
+
+  const ContentDetailsMangaActions(
+    super.contentDetails, {
+    super.key,
+    this.focusNode,
+  });
 
   @override
   Widget renderActions(
@@ -27,6 +33,7 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
     return SizedBox(
       width: 200,
       child: OutlinedButton.icon(
+        focusNode: focusNode,
         onPressed: () => navigateToContent(context, contentDetails),
         icon: const Icon(Icons.menu_book_outlined),
         label: Text(AppLocalizations.of(context)!.readButton),
@@ -34,4 +41,3 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
     );
   }
 }
-
