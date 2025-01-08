@@ -4,7 +4,7 @@ mod dummy;
 
 use std::str::FromStr;
 
-use dummy::DummyContentSupplier;
+use dummy::{DummyContentSupplier, DummyPageLoader};
 use enum_dispatch::enum_dispatch;
 use strum::VariantNames;
 use strum_macros::{EnumIter, EnumString, VariantNames};
@@ -22,26 +22,31 @@ pub trait ContentSupplier {
         &self,
         query: String,
         types: Vec<String>,
-    ) -> Result<Vec<ContentInfo>, anyhow::Error>;
+    ) -> anyhow::Result<Vec<ContentInfo>>;
     async fn load_channel(
         &self,
         channel: String,
         page: u16,
-    ) -> Result<Vec<ContentInfo>, anyhow::Error>;
+    ) -> anyhow::Result<Vec<ContentInfo>>;
     async fn get_content_details(
         &self,
         id: String,
-    ) -> Result<Option<ContentDetails>, anyhow::Error>;
+    ) -> anyhow::Result<Option<ContentDetails>>;
     async fn load_media_items(
         &self,
         id: String,
         params: Vec<String>,
-    ) -> Result<Vec<ContentMediaItem>, anyhow::Error>;
+    ) -> anyhow::Result<Vec<ContentMediaItem>>;
     async fn load_media_item_sources(
         &self,
         id: String,
         params: Vec<String>,
-    ) -> Result<Vec<ContentMediaItemSource>, anyhow::Error>;
+    ) -> anyhow::Result<Vec<ContentMediaItemSource>>;
+}
+
+#[enum_dispatch]
+pub trait MangaPagesLoader {
+    async fn load_pages(&self, id: String, params: Vec<String>) -> anyhow::Result<Vec<String>>;
 }
 
 #[enum_dispatch(ContentSupplier)]
@@ -49,6 +54,13 @@ pub trait ContentSupplier {
 pub enum AllContentSuppliers {
     #[strum(serialize="dummy")]
     DummyContentSupplier
+}
+
+#[enum_dispatch(MangaPagesLoader)]
+#[derive(EnumString)]
+pub enum AllMangaPagesLoaders {
+    #[strum(serialize="dummy")]
+    DummyPageLoader
 }
 
 pub fn avalaible_suppliers() -> Vec<String> {

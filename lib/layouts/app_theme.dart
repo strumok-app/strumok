@@ -25,60 +25,64 @@ class AppTheme extends ConsumerWidget {
 
     return Theme(
       data: ThemeData(
-        splashFactory: NoSplash.splashFactory,
-        colorScheme: colorScheme,
-        navigationRailTheme: NavigationRailThemeData(
-          indicatorShape: navigationIndicatorShape,
-          indicatorColor: Colors.transparent,
-        ),
-        navigationBarTheme: NavigationBarThemeData(
-          indicatorShape: navigationIndicatorShape,
-          indicatorColor: Colors.transparent,
-        ),
-        useMaterial3: true,
-        iconButtonTheme: IconButtonThemeData(
-          style: ButtonStyle(
+          splashFactory: NoSplash.splashFactory,
+          colorScheme: colorScheme,
+          navigationRailTheme: NavigationRailThemeData(
+            indicatorShape: navigationIndicatorShape,
+            indicatorColor: Colors.transparent,
+          ),
+          navigationBarTheme: NavigationBarThemeData(
+            indicatorShape: navigationIndicatorShape,
+            indicatorColor: Colors.transparent,
+          ),
+          useMaterial3: true,
+          iconButtonTheme: IconButtonThemeData(
+            style: ButtonStyle(
+              shape: WidgetStateProperty.resolveWith((states) {
+                return states.contains(WidgetState.focused)
+                    ? CircleBorder(side: focusBorder)
+                    : null;
+              }),
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+              shape: WidgetStateProperty.resolveWith((states) {
+                return states.contains(WidgetState.focused)
+                    ? RoundedRectangleBorder(
+                        side: focusBorder,
+                        borderRadius: BorderRadius.circular(16),
+                      )
+                    : null;
+              }),
+            ),
+          ),
+          listTileTheme: ListTileThemeData(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          searchBarTheme: SearchBarThemeData(
+            elevation: const WidgetStatePropertyAll(1),
             shape: WidgetStateProperty.resolveWith((states) {
-              return states.contains(WidgetState.focused)
-                  ? CircleBorder(side: focusBorder)
-                  : null;
+              return RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: states.contains(WidgetState.focused)
+                    ? focusBorder
+                    : BorderSide.none,
+              );
             }),
           ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-            shape: WidgetStateProperty.resolveWith((states) {
-              return states.contains(WidgetState.focused)
-                  ? RoundedRectangleBorder(
-                      side: focusBorder,
-                      borderRadius: BorderRadius.circular(16),
-                    )
-                  : null;
-            }),
-          ),
-        ),
-        listTileTheme: ListTileThemeData(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        searchBarTheme: SearchBarThemeData(
-          elevation: const WidgetStatePropertyAll(1),
-          shape: WidgetStateProperty.resolveWith((states) {
-            return RoundedRectangleBorder(
+          searchViewTheme: SearchViewThemeData(
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: states.contains(WidgetState.focused)
-                  ? focusBorder
-                  : BorderSide.none,
-            );
-          }),
-        ),
-        searchViewTheme: SearchViewThemeData(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            ),
           ),
-        ),
-      ),
+          dialogTheme: DialogTheme(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+                side: BorderSide(color: colorScheme.onSurfaceVariant)),
+          )),
       child: child,
     );
   }

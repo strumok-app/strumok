@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';

@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class MangaReaderView extends ConsumerWidget {
   final ContentDetails contentDetails;
@@ -105,10 +106,17 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   @override
   void initState() {
     page = ValueNotifier(widget.initialPage);
+
+    WakelockPlus.enable();
     super.initState();
   }
 
   @override
+  void dispose() {
+    WakelockPlus.disable();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     final readerMode = ref.watch(mangaReaderModeSettingsProvider);
 

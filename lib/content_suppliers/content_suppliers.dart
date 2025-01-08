@@ -1,7 +1,5 @@
-import 'package:content_suppliers_dart/bundle.dart';
 import 'package:content_suppliers_rust/bundle.dart';
 import 'package:strumok/app_preferences.dart';
-import 'package:strumok/app_secrets.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -31,10 +29,7 @@ class ContentSuppliers {
       bundle.unload();
     }
 
-    _bundles = [
-      DartContentSupplierBundle(tmdbSecret: AppSecrets.getString("tmdb")),
-      ...bundles
-    ];
+    _bundles = bundles;
 
     for (final bundle in _bundles) {
       try {

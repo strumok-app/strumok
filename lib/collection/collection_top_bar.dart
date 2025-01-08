@@ -98,83 +98,85 @@ class _StatusFilterDialog extends ConsumerWidget {
 
     return Dialog(
       insetPadding: EdgeInsets.only(left: isMobile(context) ? 0 : 80.0),
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 800),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FilterDialogSection(
-              label: Text(
-                AppLocalizations.of(context)!.mediaType,
-                style: theme.textTheme.headlineSmall,
+      child: SingleChildScrollView(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 800),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FilterDialogSection(
+                label: Text(
+                  AppLocalizations.of(context)!.mediaType,
+                  style: theme.textTheme.headlineSmall,
+                ),
+                itemsCount: MediaType.values.length,
+                itemBuilder: (context, index) {
+                  final item = MediaType.values[index];
+                  return FilterChip(
+                    selected: collectionFilter.mediaTypes.contains(item),
+                    label: Text(mediaTypeLabel(context, item)),
+                    onSelected: (value) {
+                      ref
+                          .read(collectionFilterProvider.notifier)
+                          .toggleMediaType(item);
+                    },
+                  );
+                },
               ),
-              itemsCount: MediaType.values.length,
-              itemBuilder: (context, index) {
-                final item = MediaType.values[index];
-                return FilterChip(
-                  selected: collectionFilter.mediaTypes.contains(item),
-                  label: Text(mediaTypeLabel(context, item)),
-                  onSelected: (value) {
-                    ref
-                        .read(collectionFilterProvider.notifier)
-                        .toggleMediaType(item);
-                  },
-                );
-              },
-            ),
-            const SizedBox(height: 8),
-            FilterDialogSection(
-              label: Text(
-                AppLocalizations.of(context)!.status,
-                style: theme.textTheme.headlineSmall,
+              const SizedBox(height: 8),
+              FilterDialogSection(
+                label: Text(
+                  AppLocalizations.of(context)!.status,
+                  style: theme.textTheme.headlineSmall,
+                ),
+                itemsCount: allStatus.length,
+                itemBuilder: (context, index) {
+                  final item = allStatus[index];
+                  return FilterChip(
+                    selected: collectionFilter.status.contains(item),
+                    label: Text(statusLabel(context, item)),
+                    onSelected: (value) {
+                      ref
+                          .read(collectionFilterProvider.notifier)
+                          .toggleStatus(item);
+                    },
+                  );
+                },
               ),
-              itemsCount: allStatus.length,
-              itemBuilder: (context, index) {
-                final item = allStatus[index];
-                return FilterChip(
-                  selected: collectionFilter.status.contains(item),
-                  label: Text(statusLabel(context, item)),
-                  onSelected: (value) {
-                    ref
-                        .read(collectionFilterProvider.notifier)
-                        .toggleStatus(item);
-                  },
-                );
-              },
-            ),
-            const SizedBox(height: 8),
-            FilterDialogSection(
-              label: Text(
-                AppLocalizations.of(context)!.suppliers,
-                style: theme.textTheme.headlineSmall,
+              const SizedBox(height: 8),
+              FilterDialogSection(
+                label: Text(
+                  AppLocalizations.of(context)!.suppliers,
+                  style: theme.textTheme.headlineSmall,
+                ),
+                itemsCount: suppliersNames.length,
+                itemBuilder: (context, index) {
+                  final item = suppliersNames[index];
+                  return FilterChip(
+                    label: Text(item),
+                    selected: collectionFilter.suppliersNames.contains(item),
+                    onSelected: (value) {
+                      ref
+                          .read(collectionFilterProvider.notifier)
+                          .toggleSupplierName(item);
+                    },
+                  );
+                },
+                onSelectAll: () {
+                  ref
+                      .read(collectionFilterProvider.notifier)
+                      .toggleAllSuppliers(true);
+                },
+                onUnselectAll: () {
+                  ref
+                      .read(collectionFilterProvider.notifier)
+                      .toggleAllSuppliers(false);
+                },
               ),
-              itemsCount: suppliersNames.length,
-              itemBuilder: (context, index) {
-                final item = suppliersNames[index];
-                return FilterChip(
-                  label: Text(item),
-                  selected: collectionFilter.suppliersNames.contains(item),
-                  onSelected: (value) {
-                    ref
-                        .read(collectionFilterProvider.notifier)
-                        .toggleSupplierName(item);
-                  },
-                );
-              },
-              onSelectAll: () {
-                ref
-                    .read(collectionFilterProvider.notifier)
-                    .toggleAllSuppliers(true);
-              },
-              onUnselectAll: () {
-                ref
-                    .read(collectionFilterProvider.notifier)
-                    .toggleAllSuppliers(false);
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

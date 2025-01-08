@@ -1,6 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:content_suppliers_rust/bundle.dart';
-import 'package:flutter/material.dart';
 import 'package:test/test.dart';
 
 const libDirectory = "rust/target/release/";
@@ -145,11 +145,62 @@ void main() async {
     expect(
         await mangaSource.allPages(),
         equals([
-          const NetworkImage("http://page1"),
-          const NetworkImage("http://page2"),
+          const CachedNetworkImageProvider("http://page1"),
+          const CachedNetworkImageProvider("http://page2"),
         ]));
+    expect(mangaSource.pageNambers, 2);
     expect(mangaSource.kind, equals(FileKind.manga));
     expect(mangaSource.description, equals("$id 1,2,3"));
     expect(mangaSource.pageNambers, equals(2));
+  });
+
+  test("should_load_manga_page_async", () async {
+    const id = "async_manga";
+
+    final supplier = suppliers.first;
+    final details = await supplier.detailsById(id);
+
+    expect(details, isNotNull);
+
+    final mediaItems = await details!.mediaItems;
+    expect(mediaItems.length, equals(1));
+
+    final mediaItem = mediaItems.first;
+
+    final sources = await mediaItem.sources;
+    expect(sources.length, equals(1));
+
+    final source = sources[0];
+    expect(source, isA<MangaMediaItemSource>());
+    final mangaSource = source as MangaMediaItemSource;
+    expect(
+        await mangaSource.allPages(),
+        equals([
+          const CachedNetworkImageProvider("http://${id}_$id"),
+        ]));
+    expect(mangaSource.pageNambers, 2);
+    expect(mangaSource.kind, equals(FileKind.manga));
+    expect(mangaSource.description, id);
+    expect(mangaSource.pageNambers, equals(2));
+  });
+
+  test("should load data eagerly", () async {
+    const id = "eager_sources";
+
+    final supplier = suppliers.first;
+    final details = await supplier.detailsById(id);
+
+    expect(details, isNotNull);
+
+    final mediaItems = await details!.mediaItems;
+    expect(mediaItems.length, equals(1));
+
+    final mediaItem = mediaItems.first;
+
+    final sources = await mediaItem.sources;
+    expect(sources.length, equals(1));
+
+    final source = sources[0];
+    expect(source, isA<MediaFileItemSource>());
   });
 }

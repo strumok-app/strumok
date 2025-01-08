@@ -61,6 +61,8 @@ pub enum ContentMediaItemSource {
     },
     Manga {
         description: String,
-        pages: Vec<String>,
+        page_numbers: u32,
+        pages: Option<Vec<String>>,
+        params: Vec<String>,
     },
 }

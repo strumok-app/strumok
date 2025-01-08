@@ -1,4 +1,8 @@
-use crate::{models::*, suppliers::{get_supplier, AllContentSuppliers, ContentSupplier}};
+use std::str::FromStr;
+
+use anyhow::anyhow;
+
+use crate::{models::*, suppliers::{get_supplier, AllContentSuppliers, AllMangaPagesLoaders, ContentSupplier, MangaPagesLoader}};
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn get_channels(supplier: String) -> anyhow::Result<Vec<String>> {
@@ -47,6 +51,11 @@ pub async fn load_media_items(supplier: String, id: String, params: Vec<String>)
 pub async fn load_media_item_sources(supplier: String, id: String, params: Vec<String>) -> anyhow::Result<Vec<ContentMediaItemSource>> {
     let sup = get_supplier(&supplier)?;
     AllContentSuppliers::load_media_item_sources(&sup, id, params).await
+}
+
+pub async fn load_manga_pages(supplier: String, id: String, params: Vec<String>) -> anyhow::Result<Vec<String>> {
+   let loader = AllMangaPagesLoaders::from_str(&supplier).map_err(|err| anyhow!(err))?; 
+   AllMangaPagesLoaders::load_pages(&loader, id, params).await
 }
 
 #[flutter_rust_bridge::frb(sync)] // Synchronous mode for simplicity of the demo

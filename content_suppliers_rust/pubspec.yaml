@@ -12,12 +12,13 @@ publish_to: none
 dependencies:
   flutter:
     sdk: flutter
-  flutter_rust_bridge: 2.6.0
+  flutter_rust_bridge: 2.7.0
   plugin_platform_interface: ^2.0.2
   content_suppliers_api:
     path: ../content_suppliers_api
   freezed_annotation: ^2.4.4
   collection: ^1.18.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

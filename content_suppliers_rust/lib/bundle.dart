@@ -1,195 +1,64 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:content_suppliers_rust/rust/frb_generated.dart';
 import 'package:content_suppliers_rust/rust/frb_generated.io.dart';
 import 'package:content_suppliers_rust/rust/models.dart' as models;
+import 'package:flutter/src/painting/image_provider.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // ignore_for_file: invalid_use_of_internal_member
+class RustContentSuppliersBundle implements ContentSupplierBundle {
+  final String? directory;
+  final String libName;
+  _CustomRustLib? _lib;
 
-class RustMediaItem implements ContentMediaItem {
-  final String id;
-  final String supplier;
-  @override
-  final int number;
-  @override
-  final String title;
-  @override
-  final String? section;
-  @override
-  final String? image;
-  final RustLibApi _api;
-  final List<String> _params;
-
-  List<ContentMediaItemSource>? _sources;
-
-  RustMediaItem._({
-    required this.id,
-    required this.supplier,
-    required this.number,
-    required this.title,
-    required this.section,
-    required this.image,
-    required List<ContentMediaItemSource>? sources,
-    required List<String> params,
-    required RustLibApi api,
-  })  : _sources = sources,
-        _params = params,
-        _api = api;
-
-  factory RustMediaItem.fromRust(
-    String id,
-    String supplier,
-    models.ContentMediaItem item,
-    RustLibApi api,
-  ) {
-    return RustMediaItem._(
-      id: id,
-      supplier: supplier,
-      number: item.number,
-      title: item.title,
-      section: item.section,
-      image: item.image,
-      sources: item.sources?.map(RustMediaItem.mapMediaItemSource).toList(),
-      params: item.params,
-      api: api,
-    );
-  }
+  RustContentSuppliersBundle({
+    required this.directory,
+    required this.libName,
+  });
 
   @override
-  FutureOr<List<ContentMediaItemSource>> get sources async {
-    try {
-      return _sources ??= (await _api.crateApiLoadMediaItemSources(
-        supplier: supplier,
-        id: id,
-        params: _params,
-      ))
-          .map(mapMediaItemSource)
-          .toList();
-    } catch (e) {
-      throw ContentSuppliersException(
-        "FFI LoadMediaItemSources Failed [supplier=$supplier id=$id params: $_params] error: $e",
+  Future<void> load() async {
+    if (_lib == null) {
+      _lib = _CustomRustLib(
+        directory: directory,
+        libName: libName,
       );
+
+      await _lib!.init();
     }
   }
 
-  static ContentMediaItemSource mapMediaItemSource(
-    models.ContentMediaItemSource item,
-  ) =>
-      switch (item) {
-        models.ContentMediaItemSource_Video() => SimpleContentMediaItemSource(
-            kind: FileKind.video,
-            description: item.description,
-            link: Uri.parse(item.link),
-            headers: item.headers,
-          ),
-        models.ContentMediaItemSource_Subtitle() =>
-          SimpleContentMediaItemSource(
-            kind: FileKind.subtitle,
-            description: item.description,
-            link: Uri.parse(item.link),
-            headers: item.headers,
-          ),
-        models.ContentMediaItemSource_Manga() => SimpleMangaMediaItemSource(
-            description: item.description,
-            pages: item.pages,
-          ),
-      };
-}
-
-// ignore: must_be_immutable
-class RustContentDetails extends AbstractContentDetails {
-  final RustLibApi _api;
-  final List<String> _params;
   @override
-  final MediaType mediaType;
-  Iterable<ContentMediaItem>? _mediaItems;
-
-  RustContentDetails._({
-    required super.id,
-    required super.supplier,
-    required super.title,
-    required super.originalTitle,
-    required super.image,
-    required super.description,
-    required super.additionalInfo,
-    required super.similar,
-    required this.mediaType,
-    Iterable<ContentMediaItem>? mediaItems,
-    required RustLibApi api,
-    required List<String> params,
-  })  : _api = api,
-        _mediaItems = mediaItems,
-        _params = params;
-
-  factory RustContentDetails.fromRust(
-    String id,
-    String supplier,
-    models.ContentDetails result,
-    RustLibApi api,
-  ) {
-    return RustContentDetails._(
-      id: id,
-      supplier: supplier,
-      mediaType: MediaType.values.firstWhere(
-        (v) => v.name == result.mediaType.name,
-        orElse: () => MediaType.video,
-      ),
-      title: result.title,
-      originalTitle: result.originalTitle,
-      image: result.image,
-      description: result.description,
-      additionalInfo: result.additionalInfo,
-      similar: result.similar
-          .map((info) => ContentSearchResultExt.fromRust(supplier, info))
-          .toList(),
-      mediaItems: result.mediaItems?.map(
-        (item) => RustMediaItem.fromRust(id, supplier, item, api),
-      ),
-      params: result.params,
-      api: api,
-    );
+  void unload() {
+    _lib?.unload();
   }
 
   @override
-  FutureOr<Iterable<ContentMediaItem>> get mediaItems async {
-    try {
-      return _mediaItems ??= (await _api.crateApiLoadMediaItems(
-        supplier: supplier,
-        id: id,
-        params: _params,
-      ))
-          .map((item) => RustMediaItem.fromRust(id, supplier, item, _api));
-    } catch (e) {
-      throw ContentSuppliersException(
-        "FFI LoadMediaItems Failed [supplier=$supplier id=$id params: $_params] error: $e",
-      );
+  Future<List<ContentSupplier>> get suppliers async {
+    if (_lib == null) {
+      return [];
     }
+
+    final api = _lib!.api;
+
+    return api
+        .crateApiAvalaibleSuppliers()
+        .map((supplier) => _RustContentSupplier(name: supplier, api: api))
+        .toList();
   }
 }
 
-extension ContentSearchResultExt on ContentSearchResult {
-  static ContentSearchResult fromRust(
-      String supplier, models.ContentInfo info) {
-    return ContentSearchResult(
-      id: info.id,
-      supplier: supplier,
-      image: info.image,
-      title: info.title,
-      secondaryTitle: info.secondaryTitle,
-    );
-  }
-}
-
-class RustContentSupplier implements ContentSupplier {
+class _RustContentSupplier implements ContentSupplier {
   final RustLibApi _api;
 
   @override
   final String name;
 
-  RustContentSupplier({required this.name, required RustLibApi api})
+  _RustContentSupplier({required this.name, required RustLibApi api})
       : _api = api;
 
   @override
@@ -214,7 +83,7 @@ class RustContentSupplier implements ContentSupplier {
         return null;
       }
 
-      return RustContentDetails.fromRust(id, name, result, _api);
+      return _RustContentDetails.fromRust(id, name, result, _api);
     } catch (e) {
       throw ContentSuppliersException(
         "FFI GetContentDetails Failed [suppier=$name id=$id] error: $e",
@@ -287,44 +156,236 @@ class RustContentSupplier implements ContentSupplier {
   }
 }
 
-class RustContentSuppliersBundle implements ContentSupplierBundle {
-  final String? directory;
-  final String libName;
-  _CustomRustLib? _lib;
+extension ContentSearchResultExt on ContentSearchResult {
+  static ContentSearchResult fromRust(
+      String supplier, models.ContentInfo info) {
+    return ContentSearchResult(
+      id: info.id,
+      supplier: supplier,
+      image: info.image,
+      title: info.title,
+      secondaryTitle: info.secondaryTitle,
+    );
+  }
+}
 
-  RustContentSuppliersBundle({
-    required this.directory,
-    required this.libName,
-  });
+// ignore: must_be_immutable
+class _RustContentDetails extends AbstractContentDetails {
+  final RustLibApi _api;
+  final List<String> _params;
+  @override
+  final MediaType mediaType;
+  Iterable<ContentMediaItem>? _mediaItems;
+
+  _RustContentDetails._({
+    required super.id,
+    required super.supplier,
+    required super.title,
+    required super.originalTitle,
+    required super.image,
+    required super.description,
+    required super.additionalInfo,
+    required super.similar,
+    required this.mediaType,
+    Iterable<ContentMediaItem>? mediaItems,
+    required RustLibApi api,
+    required List<String> params,
+  })  : _api = api,
+        _mediaItems = mediaItems,
+        _params = params;
+
+  factory _RustContentDetails.fromRust(
+    String id,
+    String supplier,
+    models.ContentDetails result,
+    RustLibApi api,
+  ) {
+    return _RustContentDetails._(
+      id: id,
+      supplier: supplier,
+      mediaType: MediaType.values.firstWhere(
+        (v) => v.name == result.mediaType.name,
+        orElse: () => MediaType.video,
+      ),
+      title: result.title,
+      originalTitle: result.originalTitle,
+      image: result.image,
+      description: result.description,
+      additionalInfo: result.additionalInfo,
+      similar: result.similar
+          .map((info) => ContentSearchResultExt.fromRust(supplier, info))
+          .toList(),
+      mediaItems: result.mediaItems?.map(
+        (item) => _RustMediaItem.fromRust(id, supplier, item, api),
+      ),
+      params: result.params,
+      api: api,
+    );
+  }
 
   @override
-  Future<void> load() async {
-    if (_lib == null) {
-      _lib = _CustomRustLib(
-        directory: directory,
-        libName: libName,
+  FutureOr<Iterable<ContentMediaItem>> get mediaItems async {
+    try {
+      return _mediaItems ??= (await _api.crateApiLoadMediaItems(
+        supplier: supplier,
+        id: id,
+        params: _params,
+      ))
+          .map((item) => _RustMediaItem.fromRust(id, supplier, item, _api));
+    } catch (e) {
+      throw ContentSuppliersException(
+        "FFI LoadMediaItems Failed [supplier=$supplier id=$id params: $_params] error: $e",
       );
-
-      await _lib!.init();
     }
+  }
+}
+
+class _RustMediaItem implements ContentMediaItem {
+  final String id;
+  final String supplier;
+  @override
+  final int number;
+  @override
+  final String title;
+  @override
+  final String? section;
+  @override
+  final String? image;
+  final RustLibApi _api;
+  final List<String> _params;
+
+  List<ContentMediaItemSource>? _sources;
+
+  _RustMediaItem._({
+    required this.id,
+    required this.supplier,
+    required this.number,
+    required this.title,
+    required this.section,
+    required this.image,
+    required List<ContentMediaItemSource>? sources,
+    required List<String> params,
+    required RustLibApi api,
+  })  : _sources = sources,
+        _params = params,
+        _api = api;
+
+  factory _RustMediaItem.fromRust(
+    String id,
+    String supplier,
+    models.ContentMediaItem item,
+    RustLibApi api,
+  ) {
+    return _RustMediaItem._(
+      id: id,
+      supplier: supplier,
+      number: item.number,
+      title: item.title,
+      section: item.section,
+      image: item.image,
+      sources: item.sources
+          ?.map((item) => mapMediaItemSource(id, supplier, item, api))
+          .toList(),
+      params: item.params,
+      api: api,
+    );
   }
 
   @override
-  void unload() {
-    _lib?.unload();
+  FutureOr<List<ContentMediaItemSource>> get sources async {
+    try {
+      return _sources ??= (await _api.crateApiLoadMediaItemSources(
+        supplier: supplier,
+        id: id,
+        params: _params,
+      ))
+          .map((item) => mapMediaItemSource(id, supplier, item, _api))
+          .toList();
+    } catch (e) {
+      throw ContentSuppliersException(
+        "FFI LoadMediaItemSources Failed [supplier=$supplier id=$id params: $_params] error: $e",
+      );
+    }
+  }
+
+  static ContentMediaItemSource mapMediaItemSource(
+    String id,
+    String supplier,
+    models.ContentMediaItemSource item,
+    RustLibApi api,
+  ) =>
+      switch (item) {
+        models.ContentMediaItemSource_Video() => SimpleContentMediaItemSource(
+            kind: FileKind.video,
+            description: item.description,
+            link: Uri.parse(item.link),
+            headers: item.headers,
+          ),
+        models.ContentMediaItemSource_Subtitle() =>
+          SimpleContentMediaItemSource(
+            kind: FileKind.subtitle,
+            description: item.description,
+            link: Uri.parse(item.link),
+            headers: item.headers,
+          ),
+        models.ContentMediaItemSource_Manga() =>
+          _RustMangaMediaItemSource.fromRust(id, supplier, item, api)
+      };
+}
+
+class _RustMangaMediaItemSource implements MangaMediaItemSource {
+  final String id;
+  final String supplier;
+  @override
+  final String description;
+  @override
+  final int pageNambers;
+
+  List<ImageProvider>? _pages;
+  final RustLibApi _api;
+  final List<String> _params;
+
+  _RustMangaMediaItemSource._({
+    required this.id,
+    required this.supplier,
+    required this.description,
+    required this.pageNambers,
+    required List<ImageProvider>? pages,
+    required RustLibApi api,
+    required List<String> params,
+  })  : _pages = pages,
+        _api = api,
+        _params = params;
+
+  factory _RustMangaMediaItemSource.fromRust(
+    String id,
+    String supplier,
+    models.ContentMediaItemSource_Manga item,
+    RustLibApi api,
+  ) {
+    return _RustMangaMediaItemSource._(
+      id: id,
+      supplier: supplier,
+      pageNambers: item.pageNumbers,
+      description: item.description,
+      pages:
+          item.pages?.map((link) => CachedNetworkImageProvider(link)).toList(),
+      params: item.params,
+      api: api,
+    );
   }
 
   @override
-  Future<List<ContentSupplier>> get suppliers async {
-    if (_lib == null) {
-      return [];
-    }
+  FileKind get kind => FileKind.manga;
 
-    final api = _lib!.api;
-
-    return api
-        .crateApiAvalaibleSuppliers()
-        .map((supplier) => RustContentSupplier(name: supplier, api: api))
+  @override
+  Future<List<ImageProvider<Object>>> allPages() async {
+    return _pages ??= (await _api.crateApiLoadMangaPages(
+      supplier: supplier,
+      id: id,
+      params: _params,
+    ))
+        .map((link) => CachedNetworkImageProvider(link))
         .toList();
   }
 }

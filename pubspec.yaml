@@ -1,9 +1,7 @@
 name: strumok
 description: "Strumok"
 publish_to: 'none'
-version: 1.7.8
-
-isar_version: &isar_version 3.1.8
+version: 1.7.9
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -25,10 +23,10 @@ dependencies:
   # storage
   path_provider: ^2.1.5
   isar: 
-    version: *isar_version
+    version: 3.1.8
     hosted: https://pub.isar-community.dev/
   isar_flutter_libs: # contains Isar Core
-    version: *isar_version
+    version: 3.1.8
     hosted: https://pub.isar-community.dev/
   shared_preferences: ^2.3.3
   # media kit
@@ -55,24 +53,23 @@ dependencies:
   window_manager: ^0.4.2
   cached_network_image: ^3.4.1
   flutter_download_manager: ^0.5.5
+  wakelock_plus: ^1.2.10
   #tracing
   sentry_flutter: ^8.10.1
 
   content_suppliers_api:
     path: content_suppliers_api
 
-  content_suppliers_dart:
-    path: content_suppliers_dart
-
   content_suppliers_rust:
     path: content_suppliers_rust
+
 
 dev_dependencies:
   analyzer: ^6.7.0
   build_runner: ^2.4.11
   auto_route_generator: ^9.0.0
   isar_generator: 
-    version: *isar_version
+    version: 3.1.8
     hosted: https://pub.isar-community.dev/
   custom_lint: ^0.6.4
   json_serializable: ^6.8.0

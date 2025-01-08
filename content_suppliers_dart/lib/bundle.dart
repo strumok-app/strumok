@@ -1,7 +1,4 @@
 import 'package:content_suppliers_api/model.dart';
-import 'package:content_suppliers_dart/suppliers/anitaku/anitaku.dart';
-import 'package:content_suppliers_dart/suppliers/hianime/hianime.dart';
-import 'package:content_suppliers_dart/suppliers/mangadex/mangadex.dart';
 import 'package:content_suppliers_dart/suppliers/tmdb/tmdb.dart';
 
 class DartContentSupplierBundle extends ContentSupplierBundle {
@@ -14,9 +11,9 @@ class DartContentSupplierBundle extends ContentSupplierBundle {
   @override
   Future<List<ContentSupplier>> get suppliers => Future.value([
         TmdbSupplier(secret: tmdbSecret),
-        Anitaku(),
-        HianimeSupplier(),
-        MangaDexSupllier(),
+        // Anitaku(),
+        // HianimeSupplier(),
+        // MangaDexSupllier(),
         // UASerialSupplier(),
         // UAKinoClubSupplier(),
         // AniTubeSupplier(),
