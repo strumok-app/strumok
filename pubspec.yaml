@@ -53,7 +53,7 @@ dependencies:
   window_manager: ^0.4.2
   cached_network_image: ^3.4.1
   flutter_download_manager: ^0.5.5
-  wakelock_plus: ^1.2.10
+  wakelock_plus: ^1.1.1 # same as media_kit have
   #tracing
   sentry_flutter: ^8.10.1
 
