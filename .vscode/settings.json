@@ -1,4 +1,5 @@
 {
     "search.followSymlinks": false,
-    "dart.previewLsp": true,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 160,
 }

@@ -47,34 +47,30 @@ class ContentSuppliers {
     _suppliersByName = {for (var s in suppliers) s.name: s};
   }
 
-  Stream<Map<String, List<ContentInfo>>> search(
+  Stream<(String, List<ContentInfo>)> search(
     String query,
     Set<String> contentSuppliers,
     Set<ContentType> contentTypes,
-  ) async* {
-    final results = <String, List<ContentInfo>>{};
-    for (var supplierName in contentSuppliers) {
-      final supplier = getSupplier(supplierName);
+  ) {
+    final futures = contentSuppliers
+        .map((supplierName) {
+          final supplier = getSupplier(supplierName);
 
-      if (supplier == null ||
-          supplier.supportedTypes.intersection(contentTypes).isEmpty) {
-        continue;
-      }
+          if (supplier == null ||
+              supplier.supportedTypes.intersection(contentTypes).isEmpty) {
+            return null;
+          }
 
-      try {
-        final res = await supplier.search(query, contentTypes);
-        results[supplier.name] = res;
-        yield results;
-      } catch (error, stackTrace) {
-        traceError(
-          error: error,
-          stackTrace: stackTrace,
-          message: "Supplier ${supplier.name} fail",
+          return supplier;
+        })
+        .nonNulls
+        .map(
+          (supplier) => supplier
+              .search(query, contentTypes)
+              .then((res) => (supplier.name, res)),
         );
-      }
-    }
 
-    yield results;
+    return Stream.fromFutures(futures);
   }
 
   Future<List<ContentInfo>> loadRecommendationsChannel(

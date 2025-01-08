@@ -1,3 +1,4 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -8,7 +9,7 @@ part 'manga_provider.g.dart';
 
 @riverpod
 Future<List<MangaMediaItemSource>> mangaChapterScans(
-  MangaChapterScansRef ref,
+  Ref ref,
   ContentDetails contentDetails,
   List<ContentMediaItem> mediaItems,
 ) async {
@@ -26,7 +27,7 @@ Future<List<MangaMediaItemSource>> mangaChapterScans(
 
 @riverpod
 Future<MangaMediaItemSource?> mangaChapterScan(
-  MangaChapterScanRef ref,
+  Ref ref,
   ContentDetails contentDetails,
   List<ContentMediaItem> mediaItems,
 ) async {
@@ -43,7 +44,7 @@ Future<MangaMediaItemSource?> mangaChapterScan(
 
 @riverpod
 Future<List<ImageProvider>> currentMangaPages(
-  CurrentMangaPagesRef ref,
+  Ref ref,
   ContentDetails contentDetails,
   List<ContentMediaItem> mediaItems,
 ) async {

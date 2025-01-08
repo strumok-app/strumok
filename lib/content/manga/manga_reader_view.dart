@@ -117,6 +117,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     final readerMode = ref.watch(mangaReaderModeSettingsProvider);
 

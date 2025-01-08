@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -7,7 +8,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'content_details_provider.g.dart';
 
 @riverpod
-Future<ContentDetails> details(DetailsRef ref, String supplier, String id) {
+Future<ContentDetails> details(Ref ref, String supplier, String id) {
   final link = ref.keepAlive();
 
   Timer? timer;
@@ -38,7 +39,7 @@ class DetailsAndMediaItems {
 
 @riverpod
 Future<DetailsAndMediaItems> detailsAndMedia(
-  DetailsAndMediaRef ref,
+  Ref ref,
   String supplier,
   String id,
 ) async {

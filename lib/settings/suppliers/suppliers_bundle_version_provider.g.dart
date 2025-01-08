@@ -22,10 +22,12 @@ final installedSupplierBundleInfoProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef InstalledSupplierBundleInfoRef
     = AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
 String _$latestSupplierBundleInfoHash() =>
-    r'bc5618de31d90ff6ccbf0f3ac61a517f802aa333';
+    r'92022bd3fcda9a907485cd5f5f658b165143cd65';
 
 /// See also [latestSupplierBundleInfo].
 @ProviderFor(latestSupplierBundleInfo)
@@ -40,10 +42,12 @@ final latestSupplierBundleInfoProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef LatestSupplierBundleInfoRef
     = AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
 String _$suppliersBundleDownloadHash() =>
-    r'8462fc5d59e101d62d8c8f028634b7b8272e7301';
+    r'4170048e68341a35d98826e51dff276d49c52662';
 
 /// See also [SuppliersBundleDownload].
 @ProviderFor(SuppliersBundleDownload)
@@ -60,4 +64,4 @@ final suppliersBundleDownloadProvider =
 
 typedef _$SuppliersBundleDownload = Notifier<DownloadState>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

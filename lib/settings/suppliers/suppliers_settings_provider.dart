@@ -1,3 +1,4 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:equatable/equatable.dart';
@@ -156,7 +157,7 @@ class SuppliersSettings extends _$SuppliersSettings {
 }
 
 @Riverpod(keepAlive: true)
-Set<String> enabledSuppliers(EnabledSuppliersRef ref) {
+Set<String> enabledSuppliers(Ref ref) {
   final suppliersSettings = ref.watch(suppliersSettingsProvider);
   return suppliersSettings.suppliersOrder
       .where((element) => suppliersSettings.getConfig(element).enabled)

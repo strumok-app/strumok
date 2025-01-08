@@ -16,7 +16,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'collection_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-CollectionService collectionService(CollectionServiceRef ref) {
+CollectionService collectionService(Ref ref) {
   final user = ref.watch(userProvider).valueOrNull;
 
   final repository = FirebaseRepository(
@@ -39,7 +39,7 @@ final collectionFilterQueryProvider = StateProvider<String>((ref) => "");
 
 @riverpod
 FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collection(
-    CollectionRef ref) async {
+    Ref ref) async {
   ref.watch(collectionChangesProvider);
 
   final repository = ref.watch(collectionServiceProvider);
@@ -59,7 +59,7 @@ FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collection(
 
 @riverpod
 FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>
-    collectionActiveItems(CollectionActiveItemsRef ref) async {
+    collectionActiveItems(Ref ref) async {
   ref.watch(collectionChangesProvider);
 
   final repository = ref.watch(collectionServiceProvider);

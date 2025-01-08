@@ -6,7 +6,7 @@ part of 'search_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$searchHash() => r'b1e6488d184259496a10ffb2194f15b87f5ffbe0';
+String _$searchHash() => r'dd5bbe25ed92804f269717d138a7b401fc7cebd5';
 
 /// See also [Search].
 @ProviderFor(Search)
@@ -37,4 +37,4 @@ final searchSettingsProvider =
 
 typedef _$SearchSettings = AutoDisposeNotifier<SearchSettingsModel>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

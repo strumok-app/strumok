@@ -23,8 +23,6 @@ class SearchTopBar extends HookConsumerWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         searchBarFocusNode.requestFocus();
       });
-
-      searchController.text = ref.read(searchProvider).query ?? "";
       return null;
     }, [searchController, searchBarFocusNode]);
 
@@ -68,6 +66,8 @@ class _SearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isLoadingResults = ref.watch(searchProvider).isLoading;
+
     return SearchAnchor(
       dividerColor: Colors.transparent,
       isFullScreen: isMobile(context),
@@ -95,7 +95,7 @@ class _SearchBar extends ConsumerWidget {
             padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.only(left: 16.0, right: 8.0),
             ),
-            leading: const Icon(Icons.search),
+            leading: _buildLeading(isLoadingResults),
             controller: controller,
             onTap: () => controller.openView(),
             onChanged: (value) => controller.openView(),
@@ -115,6 +115,16 @@ class _SearchBar extends ConsumerWidget {
   void _search(WidgetRef ref, String query) {
     ref.read(searchProvider.notifier).search(query);
     ref.read(suggestionsProvider.notifier).addSuggestion(query);
+  }
+
+  Widget _buildLeading(bool isLoadingResults) {
+    return isLoadingResults
+        ? const SizedBox(
+            height: 24,
+            width: 24,
+            child: CircularProgressIndicator(),
+          )
+        : const Icon(Icons.search);
   }
 }
 

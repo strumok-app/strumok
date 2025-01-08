@@ -41,9 +41,11 @@ final currentAppVersionProvider = FutureProvider<SemVer>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CurrentAppVersionRef = FutureProviderRef<SemVer>;
 String _$latestAppVersionInfoHash() =>
-    r'149f57fc142307a4998937cd664b7db0ca7256b0';
+    r'e6ffff6c8f29c0c495e0edba6ba27729d97ded55';
 
 /// See also [latestAppVersionInfo].
 @ProviderFor(latestAppVersionInfo)
@@ -58,9 +60,11 @@ final latestAppVersionInfoProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef LatestAppVersionInfoRef
     = AutoDisposeFutureProviderRef<LatestAppVersionInfo?>;
-String _$appDownloadHash() => r'affde9b2be6a1e09cc4f0ffd5d4238d21879be82';
+String _$appDownloadHash() => r'719066050f75fd42bb64b44091cafee5a94305ae';
 
 /// See also [AppDownload].
 @ProviderFor(AppDownload)
@@ -76,4 +80,4 @@ final appDownloadProvider =
 
 typedef _$AppDownload = Notifier<DownloadState>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

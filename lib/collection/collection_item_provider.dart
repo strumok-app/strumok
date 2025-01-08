@@ -1,3 +1,4 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -124,7 +125,7 @@ class CollectionItem extends _$CollectionItem {
 
 @riverpod
 Future<int> collectionItemCurrentItem(
-  CollectionItemCurrentItemRef ref,
+  Ref ref,
   ContentDetails contentDetails,
 ) {
   return ref.watch(collectionItemProvider(contentDetails)
@@ -133,7 +134,7 @@ Future<int> collectionItemCurrentItem(
 
 @riverpod
 Future<String?> collectionItemCurrentSourceName(
-  CollectionItemCurrentSourceNameRef ref,
+  Ref ref,
   ContentDetails contentDetails,
 ) async {
   return ref.watch(collectionItemProvider(contentDetails)
@@ -142,7 +143,7 @@ Future<String?> collectionItemCurrentSourceName(
 
 @riverpod
 Future<String?> collectionItemCurrentSubtitleName(
-  CollectionItemCurrentSubtitleNameRef ref,
+  Ref ref,
   ContentDetails contentDetails,
 ) async {
   return ref.watch(collectionItemProvider(contentDetails)
@@ -151,7 +152,7 @@ Future<String?> collectionItemCurrentSubtitleName(
 
 @riverpod
 Future<int> collectionItemCurrentPosition(
-  CollectionItemCurrentPositionRef ref,
+  Ref ref,
   ContentDetails contentDetails,
 ) async {
   return ref.watch(collectionItemProvider(contentDetails)
@@ -160,7 +161,7 @@ Future<int> collectionItemCurrentPosition(
 
 @riverpod
 Future<MediaItemPosition> collectionItemCurrentMediaItemPosition(
-  CollectionItemCurrentMediaItemPositionRef ref,
+  Ref ref,
   ContentDetails contentDetails,
 ) async {
   return ref.watch(collectionItemProvider(contentDetails)

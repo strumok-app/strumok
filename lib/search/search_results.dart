@@ -22,9 +22,6 @@ class SearchResults extends HookWidget {
           AppLocalizations.of(context)!.searchNoResults,
         ),
       );
-    } else if (searchState.results.isEmpty) {
-      // wait for first provider
-      return const Center(child: CircularProgressIndicator());
     }
 
     // loading providers

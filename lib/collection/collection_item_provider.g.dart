@@ -144,6 +144,8 @@ class CollectionItemCurrentItemProvider extends AutoDisposeFutureProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CollectionItemCurrentItemRef on AutoDisposeFutureProviderRef<int> {
   /// The parameter `contentDetails` of this provider.
   ContentDetails get contentDetails;
@@ -280,6 +282,8 @@ class CollectionItemCurrentSourceNameProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CollectionItemCurrentSourceNameRef
     on AutoDisposeFutureProviderRef<String?> {
   /// The parameter `contentDetails` of this provider.
@@ -417,6 +421,8 @@ class CollectionItemCurrentSubtitleNameProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CollectionItemCurrentSubtitleNameRef
     on AutoDisposeFutureProviderRef<String?> {
   /// The parameter `contentDetails` of this provider.
@@ -552,6 +558,8 @@ class CollectionItemCurrentPositionProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CollectionItemCurrentPositionRef on AutoDisposeFutureProviderRef<int> {
   /// The parameter `contentDetails` of this provider.
   ContentDetails get contentDetails;
@@ -691,6 +699,8 @@ class CollectionItemCurrentMediaItemPositionProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CollectionItemCurrentMediaItemPositionRef
     on AutoDisposeFutureProviderRef<MediaItemPosition> {
   /// The parameter `contentDetails` of this provider.
@@ -837,6 +847,8 @@ class CollectionItemProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CollectionItemRef
     on AutoDisposeAsyncNotifierProviderRef<MediaCollectionItem> {
   /// The parameter `details` of this provider.
@@ -852,4 +864,4 @@ class _CollectionItemProviderElement
   ContentDetails get details => (origin as CollectionItemProvider).details;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

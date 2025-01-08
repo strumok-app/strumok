@@ -6,20 +6,24 @@ import 'package:flutter/material.dart';
 class SearchState extends Equatable {
   final Map<String, List<ContentInfo>> results;
   final bool isLoading;
-  final String? query;
 
   const SearchState({
     this.results = const {},
     required this.isLoading,
-    this.query,
   });
 
   static const SearchState empty = SearchState(results: {}, isLoading: false);
 
-  const SearchState.loading(
-    String this.query,
-  )   : isLoading = true,
+  const SearchState.loading()
+      : isLoading = true,
         results = const {};
+
+  SearchState addResults(
+    String supplierName,
+    List<ContentInfo> supplierResults,
+  ) {
+    return copyWith(results: {...results, supplierName: supplierResults});
+  }
 
   SearchState copyWith({
     Map<String, List<ContentInfo>>? results,
@@ -32,5 +36,5 @@ class SearchState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [results, isLoading, query];
+  List<Object?> get props => [results, isLoading];
 }

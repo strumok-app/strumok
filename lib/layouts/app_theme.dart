@@ -80,7 +80,7 @@ class AppTheme extends ConsumerWidget {
           ),
           dialogTheme: DialogTheme(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(16),
                 side: BorderSide(color: colorScheme.onSurfaceVariant)),
           )),
       child: child,

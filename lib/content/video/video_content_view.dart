@@ -72,13 +72,18 @@ class PlayerController {
       final sources = await item.sources;
       final videos = sources.where((s) => s.kind == FileKind.video).toList();
 
-      final video = sourceName == null
+      var video = sourceName == null
           ? videos.firstOrNull as MediaFileItemSource?
           : videos.firstWhereOrNull((s) => s.description == sourceName)
               as MediaFileItemSource?;
 
+      if (video == null && sourceName != null) {
+        addError("Video source $sourceName not avalaible");
+        video = videos.firstOrNull as MediaFileItemSource?;
+      }
+
       if (video == null) {
-        throw Exception("No video sources found");
+        throw Exception("No avalaible video sources");
       }
 
       final link = await video.link;

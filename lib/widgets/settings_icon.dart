@@ -8,7 +8,7 @@ import 'package:strumok/utils/sem_ver.dart';
 part 'settings_icon.g.dart';
 
 @riverpod
-bool hasNewVersion(HasNewVersionRef ref) {
+bool hasNewVersion(Ref ref) {
   final currentAppVersion = ref.watch(currentAppVersionProvider).valueOrNull;
   final latestAppVersionInfo =
       ref.watch(latestAppVersionInfoProvider).valueOrNull;

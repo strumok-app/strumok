@@ -23,7 +23,7 @@ class Search extends _$Search {
       return;
     }
 
-    state = SearchState.loading(query);
+    state = const SearchState.loading();
 
     final enabledSuppliers = ref.read(enabledSuppliersProvider);
     final searchSettings = ref.read(searchSettingsProvider);
@@ -38,7 +38,8 @@ class Search extends _$Search {
     );
 
     final subscription = stream.listen((event) {
-      state = state.copyWith(results: event);
+      final (supplierName, supplierResults) = event;
+      state = state.addResults(supplierName, supplierResults);
     });
 
     subscription.onDone(() {

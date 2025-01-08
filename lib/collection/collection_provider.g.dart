@@ -20,6 +20,8 @@ final collectionServiceProvider = Provider<CollectionService>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CollectionServiceRef = ProviderRef<CollectionService>;
 String _$collectionHash() => r'ac1e7e9d35f6867fb1c5bd8e4216b17b5746e6c7';
 
@@ -35,6 +37,8 @@ final collectionProvider = AutoDisposeFutureProvider<
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CollectionRef = AutoDisposeFutureProviderRef<
     Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>;
 String _$collectionActiveItemsHash() =>
@@ -53,6 +57,8 @@ final collectionActiveItemsProvider = AutoDisposeFutureProvider<
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CollectionActiveItemsRef = AutoDisposeFutureProviderRef<
     Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>;
 String _$collectionChangesHash() => r'9cdbf00aee59ae6661f58a392677e0a6aa07d663';
@@ -88,4 +94,4 @@ final collectionFilterProvider = AutoDisposeNotifierProvider<CollectionFilter,
 
 typedef _$CollectionFilter = AutoDisposeNotifier<CollectionFilterModel>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
