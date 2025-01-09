@@ -41,8 +41,7 @@ class SuppliersSettingsModel extends Equatable {
     required this.configs,
   });
 
-  SuppliersSettingsModel copyWith(
-      {List<String>? suppliersOrder, Map<String, SuppliersConfig>? configs}) {
+  SuppliersSettingsModel copyWith({List<String>? suppliersOrder, Map<String, SuppliersConfig>? configs}) {
     return SuppliersSettingsModel(
       suppliersOrder: suppliersOrder ?? this.suppliersOrder,
       configs: configs != null ? {...this.configs, ...configs} : this.configs,
@@ -78,21 +77,18 @@ class SuppliersSettings extends _$SuppliersSettings {
     return SuppliersSettingsModel(
       suppliersOrder: suppliersOrder.toList(),
       configs: {
-        for (final supplierName in suppliersOrder)
-          supplierName: _buildSuppliersConfig(supplierName, contentSuppliers)
+        for (final supplierName in suppliersOrder) supplierName: _buildSuppliersConfig(supplierName, contentSuppliers)
       },
     );
   }
 
-  SuppliersConfig _buildSuppliersConfig(
-      String supplierName, ContentSuppliers contentSuppliers) {
+  SuppliersConfig _buildSuppliersConfig(String supplierName, ContentSuppliers contentSuppliers) {
     final supplier = contentSuppliers.getSupplier(supplierName);
     final suppliersChannels = supplier!.channels;
 
     final defaultChannels = supplier.defaultChannels;
 
-    final savedChannels = AppPreferences.getSupplierChannels(supplierName)
-        ?.intersection(suppliersChannels);
+    final savedChannels = AppPreferences.getSupplierChannels(supplierName)?.intersection(suppliersChannels);
 
     return SuppliersConfig(
       enabled: AppPreferences.getSupplierEnabled(supplierName) ?? true,
@@ -146,8 +142,7 @@ class SuppliersSettings extends _$SuppliersSettings {
   void disableChannel(String supplierName, String channel) {
     final config = state.getConfig(supplierName);
 
-    final newChannels =
-        config.channels.where((element) => element != channel).toSet();
+    final newChannels = config.channels.where((element) => element != channel).toSet();
 
     AppPreferences.setSupplierChannels(supplierName, newChannels);
     state = state.copyWith(configs: {
@@ -159,7 +154,5 @@ class SuppliersSettings extends _$SuppliersSettings {
 @Riverpod(keepAlive: true)
 Set<String> enabledSuppliers(Ref ref) {
   final suppliersSettings = ref.watch(suppliersSettingsProvider);
-  return suppliersSettings.suppliersOrder
-      .where((element) => suppliersSettings.getConfig(element).enabled)
-      .toSet();
+  return suppliersSettings.suppliersOrder.where((element) => suppliersSettings.getConfig(element).enabled).toSet();
 }

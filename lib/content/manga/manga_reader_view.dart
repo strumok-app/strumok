@@ -56,8 +56,7 @@ class MangaReaderView extends ConsumerWidget {
       );
     }
 
-    final pageFeature =
-        ref.read(collectionItemCurrentPositionProvider(contentDetails).future);
+    final pageFeature = ref.read(collectionItemCurrentPositionProvider(contentDetails).future);
 
     return FutureBuilder(
       future: pageFeature,
@@ -94,8 +93,7 @@ class _MangaPagesReaderView extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<_MangaPagesReaderView> createState() =>
-      _MangaPagesReaderViewState();
+  ConsumerState<_MangaPagesReaderView> createState() => _MangaPagesReaderViewState();
 }
 
 class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
@@ -130,12 +128,9 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
         SingleActivator(LogicalKeyboardKey.select): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.space): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.enter): ShowUIIntent(),
-        SingleActivator(LogicalKeyboardKey.digit1):
-            SwitchReaderImageMode(MangaReaderScale.fit),
-        SingleActivator(LogicalKeyboardKey.digit2):
-            SwitchReaderImageMode(MangaReaderScale.fitHeight),
-        SingleActivator(LogicalKeyboardKey.digit3):
-            SwitchReaderImageMode(MangaReaderScale.fitWidth),
+        SingleActivator(LogicalKeyboardKey.digit1): SwitchReaderImageMode(MangaReaderScale.fit),
+        SingleActivator(LogicalKeyboardKey.digit2): SwitchReaderImageMode(MangaReaderScale.fitHeight),
+        SingleActivator(LogicalKeyboardKey.digit3): SwitchReaderImageMode(MangaReaderScale.fitWidth),
       },
       actions: {
         PrevPageIntent: CallbackAction<PrevPageIntent>(
@@ -201,8 +196,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   void _movePage(MangaReaderMode readerMode, int inc) async {
     inc = readerMode.rtl ? -inc : inc;
 
-    final contentProgress =
-        (await ref.read(widget.collectionItemProvider.future));
+    final contentProgress = (await ref.read(widget.collectionItemProvider.future));
     final pos = contentProgress.currentPosition;
 
     final newPos = pos + inc;
@@ -260,12 +254,10 @@ class _ReaderGestureDetector extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<_ReaderGestureDetector> createState() =>
-      _ReaderGestureDetectorState();
+  ConsumerState<_ReaderGestureDetector> createState() => _ReaderGestureDetectorState();
 }
 
-class _ReaderGestureDetectorState
-    extends ConsumerState<_ReaderGestureDetector> {
+class _ReaderGestureDetectorState extends ConsumerState<_ReaderGestureDetector> {
   late TapDownDetails _lastTapDetails;
 
   @override
@@ -277,10 +269,8 @@ class _ReaderGestureDetectorState
         return GestureDetector(
           onDoubleTapDown: (details) => _lastTapDetails = details,
           onDoubleTap: _toggleZoom,
-          onTapUp: value.isIdentity() ? _tapZones : null,
-          onLongPress: value.isIdentity()
-              ? () => Actions.invoke(context, const ShowUIIntent())
-              : null,
+          onTapUp: _isNotScaled(value) ? _tapZones : null,
+          onLongPress: _isNotScaled(value) ? () => Actions.invoke(context, const ShowUIIntent()) : null,
           child: Container(
             width: size.width,
             height: size.height,
@@ -292,17 +282,16 @@ class _ReaderGestureDetectorState
     );
   }
 
+  bool _isNotScaled(Matrix4 mat) => mat.entry(0, 0) == 1.0;
+
   bool _isInZone(
     int testZone,
     int zonesNum,
     Offset point,
   ) {
     final viewport = MediaQuery.sizeOf(context);
-    final position =
-        widget.readerMode.direction == Axis.horizontal ? point.dx : point.dy;
-    final range = widget.readerMode.direction == Axis.horizontal
-        ? viewport.width
-        : viewport.height;
+    final position = widget.readerMode.direction == Axis.horizontal ? point.dx : point.dy;
+    final range = widget.readerMode.direction == Axis.horizontal ? viewport.width : viewport.height;
 
     final zoneSize = range / zonesNum.toDouble();
     final lowerBoundry = (testZone - 1) * zoneSize;
@@ -443,10 +432,8 @@ class _SinglePageView extends ConsumerWidget {
         constrained: false,
         transformationController: transformationController,
         boundaryMargin: switch (scale) {
-          MangaReaderScale.fitWidth => EdgeInsets.symmetric(
-              vertical: constraints.maxHeight * 2, horizontal: 0),
-          MangaReaderScale.fitHeight => EdgeInsets.symmetric(
-              vertical: 0, horizontal: constraints.maxHeight * 2),
+          MangaReaderScale.fitWidth => EdgeInsets.symmetric(vertical: constraints.maxHeight * 2, horizontal: 0),
+          MangaReaderScale.fitHeight => EdgeInsets.symmetric(vertical: 0, horizontal: constraints.maxHeight * 2),
           _ => EdgeInsets.zero
         },
         child: _PageImage(
@@ -483,17 +470,10 @@ class _PageImage extends StatelessWidget {
       alignment: Alignment.topCenter,
       child: SizedBox(
         height: switch (scale) {
-          MangaReaderScale.fitHeight ||
-          MangaReaderScale.fit =>
-            constraints.maxHeight,
+          MangaReaderScale.fitHeight || MangaReaderScale.fit => constraints.maxHeight,
           _ => null
         },
-        width: switch (scale) {
-          MangaReaderScale.fitWidth ||
-          MangaReaderScale.fit =>
-            constraints.maxWidth,
-          _ => null
-        },
+        width: switch (scale) { MangaReaderScale.fitWidth || MangaReaderScale.fit => constraints.maxWidth, _ => null },
         child: Image(
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) {
@@ -542,8 +522,7 @@ class _ScrolledView extends ConsumerStatefulWidget {
 
 class _ScrolledViewState extends ConsumerState<_ScrolledView> {
   bool isScaling = false;
-  final ItemPositionsListener _itemPositionsListener =
-      ItemPositionsListener.create();
+  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
   final ItemScrollController _itemScrollController = ItemScrollController();
 
   @override
@@ -571,14 +550,11 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
       return;
     }
 
-    final pageIndex = (lastItem.index == widget.pages.length - 1 &&
-            lastItem.itemTrailingEdge == 1.0)
+    final pageIndex = (lastItem.index == widget.pages.length - 1 && lastItem.itemTrailingEdge == 1.0)
         ? lastItem.index
         : firstItem.index;
 
-    ref
-        .watch(widget.collectionItemProvider.notifier)
-        .setCurrentPosition(pageIndex);
+    ref.watch(widget.collectionItemProvider.notifier).setCurrentPosition(pageIndex);
   }
 
   void _onPageChanged() {
@@ -609,28 +585,19 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
         panEnabled: isScaling,
         child: ScrollablePositionedList.separated(
           reverse: widget.readerMode.rtl,
-          separatorBuilder: (context, index) =>
-              const SizedBox.square(dimension: 8),
+          separatorBuilder: (context, index) => const SizedBox.square(dimension: 8),
           scrollDirection: widget.readerMode.direction,
           scrollOffsetController: widget.scrollOffsetController,
           itemScrollController: _itemScrollController,
           itemPositionsListener: _itemPositionsListener,
-          physics: isScaling
-              ? const NeverScrollableScrollPhysics()
-              : const ClampingScrollPhysics(),
+          physics: isScaling ? const NeverScrollableScrollPhysics() : const ClampingScrollPhysics(),
           itemCount: widget.pages.length,
           initialScrollIndex: widget.initialPage,
           itemBuilder: (context, index) => Image(
-            height: currentScale != MangaReaderScale.fitWidth
-                ? constraints.maxHeight
-                : null,
-            width: currentScale != MangaReaderScale.fitWidth
-                ? constraints.maxWidth
-                : null,
+            height: currentScale != MangaReaderScale.fitWidth ? constraints.maxHeight : null,
+            width: currentScale != MangaReaderScale.fitWidth ? constraints.maxWidth : null,
             image: widget.pages[index],
-            fit: currentScale == MangaReaderScale.fitWidth
-                ? BoxFit.fitWidth
-                : BoxFit.fitHeight,
+            fit: currentScale == MangaReaderScale.fitWidth ? BoxFit.fitWidth : BoxFit.fitHeight,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) {
                 return child;

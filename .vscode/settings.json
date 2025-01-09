@@ -1,5 +1,8 @@
 {
     "search.followSymlinks": false,
-    "editor.wordWrap": "wordWrapColumn",
-    "editor.wordWrapColumn": 160,
+    "editor.rulers": [80, 120],
+    "dart.lineLength": 120,
+    "cSpell.enabledFileTypes": {
+        "yaml": false
+    },
 }
