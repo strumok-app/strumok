@@ -74,8 +74,7 @@ class PlayerController {
 
       var video = sourceName == null
           ? videos.firstOrNull as MediaFileItemSource?
-          : videos.firstWhereOrNull((s) => s.description == sourceName)
-              as MediaFileItemSource?;
+          : videos.firstWhereOrNull((s) => s.description == sourceName) as MediaFileItemSource?;
 
       if (video == null && sourceName != null) {
         addError("Video source $sourceName not avalaible");
@@ -94,12 +93,10 @@ class PlayerController {
       int start = switch (startPosition) {
         StarVideoPosition.fromBeginning => 0,
         StarVideoPosition.fromRemembered => progress.currentPosition,
-        StarVideoPosition.fromFixedPosition =>
-          AppPreferences.videoPlayerSettingFixedPosition,
+        StarVideoPosition.fromFixedPosition => AppPreferences.videoPlayerSettingFixedPosition,
       };
 
-      if (currentItemPosition.length > 0 &&
-          start > currentItemPosition.length - 60) {
+      if (currentItemPosition.length > 0 && start > currentItemPosition.length - 60) {
         start = start - 60;
       } else if (start < 0) {
         start = 0;
@@ -146,12 +143,9 @@ class PlayerController {
       return;
     }
 
-    final subtitles =
-        currentSources!.where((s) => s.kind == FileKind.subtitle).toList();
+    final subtitles = currentSources!.where((s) => s.kind == FileKind.subtitle).toList();
 
-    final subtitle =
-        subtitles.firstWhereOrNull((s) => s.description == currentSubtitle)
-            as MediaFileItemSource?;
+    final subtitle = subtitles.firstWhereOrNull((s) => s.description == currentSubtitle) as MediaFileItemSource?;
 
     if (subtitle != null) {
       await player.setSubtitleTrack(SubtitleTrack.uri(
@@ -253,8 +247,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
 
     traceAction(
       "load_video",
-      description:
-          "supplier: ${widget.contentDetails.supplier}, id: ${widget.contentDetails.id}",
+      description: "supplier: ${widget.contentDetails.supplier}, id: ${widget.contentDetails.id}",
     );
 
     if (player.platform is NativePlayer) {
@@ -290,11 +283,9 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
 
         if (nextValue != null) {
           if ((previousValue?.currentItem != nextValue.currentItem ||
-              previousValue?.currentSourceName !=
-                  nextValue.currentSourceName)) {
+              previousValue?.currentSourceName != nextValue.currentSourceName)) {
             await _playMediaItems(nextValue);
-          } else if (previousValue?.currentSubtitleName !=
-              nextValue.currentSubtitleName) {
+          } else if (previousValue?.currentSubtitleName != nextValue.currentSubtitleName) {
             await playerController.setSubtitle(nextValue.currentSubtitleName);
           }
         }
@@ -375,8 +366,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
   @override
   Widget build(BuildContext context) {
     final view = switch (Theme.of(context).platform) {
-      TargetPlatform.android =>
-        TVDetector.isTV ? _renderTvView() : _renderMobileView(),
+      TargetPlatform.android => TVDetector.isTV ? _renderTvView() : _renderMobileView(),
       TargetPlatform.iOS => _renderMobileView(),
       _ => _renderDesktopView()
     };
