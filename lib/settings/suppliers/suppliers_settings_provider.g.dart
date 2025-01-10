@@ -6,7 +6,7 @@ part of 'suppliers_settings_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$enabledSuppliersHash() => r'ca65f721a09fce30d81493e6c3ccfd8fab248cb8';
+String _$enabledSuppliersHash() => r'00803c2a340060d8ed40af06f0ca991945656505';
 
 /// See also [enabledSuppliers].
 @ProviderFor(enabledSuppliers)

@@ -9,8 +9,7 @@ abstract class ContentDetailsActions extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mediaItemsFuture =
-        useMemoized(() => Future.value(contentDetails.mediaItems));
+    final mediaItemsFuture = useMemoized(() => Future.value(contentDetails.mediaItems));
     final snapshot = useFuture(mediaItemsFuture);
 
     if (snapshot.connectionState == ConnectionState.waiting) {

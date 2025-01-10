@@ -1,7 +1,7 @@
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
-import 'package:strumok/content/content_details_actions.dart';
+import 'package:strumok/content/details/content_details_actions.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +14,7 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
   const ContentDetailsVideoActions(super.contentDetails, {super.key, this.focusNode});
 
   @override
-  Widget renderActions(
-      BuildContext context, List<ContentMediaItem> mediaItems) {
+  Widget renderActions(BuildContext context, List<ContentMediaItem> mediaItems) {
     final showList = mediaItems.firstOrNull?.title.isNotEmpty ?? false;
 
     return Row(

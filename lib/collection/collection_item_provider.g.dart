@@ -6,8 +6,7 @@ part of 'collection_item_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$collectionItemCurrentItemHash() =>
-    r'4bcd51cabe77270f827bf5d2744bd465ca299de7';
+String _$hasCollectionItemHash() => r'cb87bbcc1a4e3853e921c74c29bf26c862efbcd4';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,6 +28,154 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+/// See also [hasCollectionItem].
+@ProviderFor(hasCollectionItem)
+const hasCollectionItemProvider = HasCollectionItemFamily();
+
+/// See also [hasCollectionItem].
+class HasCollectionItemFamily extends Family<AsyncValue<bool>> {
+  /// See also [hasCollectionItem].
+  const HasCollectionItemFamily();
+
+  /// See also [hasCollectionItem].
+  HasCollectionItemProvider call(
+    String supplier,
+    String id,
+  ) {
+    return HasCollectionItemProvider(
+      supplier,
+      id,
+    );
+  }
+
+  @override
+  HasCollectionItemProvider getProviderOverride(
+    covariant HasCollectionItemProvider provider,
+  ) {
+    return call(
+      provider.supplier,
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'hasCollectionItemProvider';
+}
+
+/// See also [hasCollectionItem].
+class HasCollectionItemProvider extends AutoDisposeFutureProvider<bool> {
+  /// See also [hasCollectionItem].
+  HasCollectionItemProvider(
+    String supplier,
+    String id,
+  ) : this._internal(
+          (ref) => hasCollectionItem(
+            ref as HasCollectionItemRef,
+            supplier,
+            id,
+          ),
+          from: hasCollectionItemProvider,
+          name: r'hasCollectionItemProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$hasCollectionItemHash,
+          dependencies: HasCollectionItemFamily._dependencies,
+          allTransitiveDependencies:
+              HasCollectionItemFamily._allTransitiveDependencies,
+          supplier: supplier,
+          id: id,
+        );
+
+  HasCollectionItemProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.supplier,
+    required this.id,
+  }) : super.internal();
+
+  final String supplier;
+  final String id;
+
+  @override
+  Override overrideWith(
+    FutureOr<bool> Function(HasCollectionItemRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: HasCollectionItemProvider._internal(
+        (ref) => create(ref as HasCollectionItemRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        supplier: supplier,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<bool> createElement() {
+    return _HasCollectionItemProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is HasCollectionItemProvider &&
+        other.supplier == supplier &&
+        other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, supplier.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin HasCollectionItemRef on AutoDisposeFutureProviderRef<bool> {
+  /// The parameter `supplier` of this provider.
+  String get supplier;
+
+  /// The parameter `id` of this provider.
+  String get id;
+}
+
+class _HasCollectionItemProviderElement
+    extends AutoDisposeFutureProviderElement<bool> with HasCollectionItemRef {
+  _HasCollectionItemProviderElement(super.provider);
+
+  @override
+  String get supplier => (origin as HasCollectionItemProvider).supplier;
+  @override
+  String get id => (origin as HasCollectionItemProvider).id;
+}
+
+String _$collectionItemCurrentItemHash() =>
+    r'88ffc18ea6906207c30f1945dbcd99dc8a0c9bf8';
 
 /// See also [collectionItemCurrentItem].
 @ProviderFor(collectionItemCurrentItem)
@@ -162,7 +309,7 @@ class _CollectionItemCurrentItemProviderElement
 }
 
 String _$collectionItemCurrentSourceNameHash() =>
-    r'147f53b1ccf9d4b85b17ea67338a62118f21ca28';
+    r'a1cba9d382f314ac898e0f6529539acf3ebf676f';
 
 /// See also [collectionItemCurrentSourceName].
 @ProviderFor(collectionItemCurrentSourceName)
@@ -301,7 +448,7 @@ class _CollectionItemCurrentSourceNameProviderElement
 }
 
 String _$collectionItemCurrentSubtitleNameHash() =>
-    r'68eab394d55d3de3752e218209e75e936bd280bb';
+    r'e9ce78a318f07f70488a74ddffce52d10b25e80c';
 
 /// See also [collectionItemCurrentSubtitleName].
 @ProviderFor(collectionItemCurrentSubtitleName)
@@ -440,7 +587,7 @@ class _CollectionItemCurrentSubtitleNameProviderElement
 }
 
 String _$collectionItemCurrentPositionHash() =>
-    r'a40836469154592616c1cad035aad4ec50bc12a7';
+    r'421c1745074caea693dd30d55a47bc464e90d0b2';
 
 /// See also [collectionItemCurrentPosition].
 @ProviderFor(collectionItemCurrentPosition)
@@ -576,7 +723,7 @@ class _CollectionItemCurrentPositionProviderElement
 }
 
 String _$collectionItemCurrentMediaItemPositionHash() =>
-    r'd9b0a27f79968b4bd704411a97e1261fe9fca59e';
+    r'562687c826222e1e3a8a9f156060c04d94778896';
 
 /// See also [collectionItemCurrentMediaItemPosition].
 @ProviderFor(collectionItemCurrentMediaItemPosition)
@@ -717,7 +864,7 @@ class _CollectionItemCurrentMediaItemPositionProviderElement
       (origin as CollectionItemCurrentMediaItemPositionProvider).contentDetails;
 }
 
-String _$collectionItemHash() => r'5c6a8d81ef63b02f3d413c74a586bdbdd529fab6';
+String _$collectionItemHash() => r'0039eda292782676b881a2dde71f50c5f54f02a8';
 
 abstract class _$CollectionItem
     extends BuildlessAutoDisposeAsyncNotifier<MediaCollectionItem> {

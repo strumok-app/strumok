@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:strumok/content/content_details_provider.dart';
+import 'package:strumok/content/details/content_details_provider.dart';
 import 'package:strumok/content/manga/manga_reader.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:flutter/material.dart';

@@ -38,8 +38,7 @@ class CollectionService {
     Set<MediaType>? mediaTypes,
     Set<String>? suppliersNames,
   }) async {
-    Iterable<MediaCollectionItem> collectionItems =
-        await repository.search(query: query);
+    Iterable<MediaCollectionItem> collectionItems = await repository.search(query: query);
 
     if (status != null) {
       collectionItems = collectionItems.where(

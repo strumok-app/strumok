@@ -7,7 +7,7 @@ part of 'suppliers_bundle_version_provider.dart';
 // **************************************************************************
 
 String _$installedSupplierBundleInfoHash() =>
-    r'743b78551adec3feb4ba4645425450b87905b6aa';
+    r'ea530725e98b6fa83d912891b387dadb2a086f6c';
 
 /// See also [installedSupplierBundleInfo].
 @ProviderFor(installedSupplierBundleInfo)
@@ -27,7 +27,7 @@ final installedSupplierBundleInfoProvider =
 typedef InstalledSupplierBundleInfoRef
     = AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
 String _$latestSupplierBundleInfoHash() =>
-    r'92022bd3fcda9a907485cd5f5f658b165143cd65';
+    r'05d9872489ce195b042b1dea8482c6d80f630072';
 
 /// See also [latestSupplierBundleInfo].
 @ProviderFor(latestSupplierBundleInfo)

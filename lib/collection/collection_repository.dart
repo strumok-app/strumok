@@ -132,14 +132,12 @@ abstract class CollectionRepository {
 
 class IsarCollectionRepository extends CollectionRepository {
   final Isar db = AppDatabase.database();
-  late final IsarCollection<IsarMediaCollectionItem> collection =
-      db.isarMediaCollectionItems;
+  late final IsarCollection<IsarMediaCollectionItem> collection = db.isarMediaCollectionItems;
 
   @override
   Stream<void> get changesStream => collection.watchLazy();
   @override
-  FutureOr<MediaCollectionItem?> getCollectionItem(
-      String supplier, String id) async {
+  FutureOr<MediaCollectionItem?> getCollectionItem(String supplier, String id) async {
     final collectionItem = await collection.getBySupplierId(supplier, id);
 
     return collectionItem?.toMediaCollectionItem();
@@ -147,8 +145,7 @@ class IsarCollectionRepository extends CollectionRepository {
 
   @override
   FutureOr<int> save(MediaCollectionItem collectionItem) async {
-    final item =
-        IsarMediaCollectionItem.fromMediaCollectionItem(collectionItem);
+    final item = IsarMediaCollectionItem.fromMediaCollectionItem(collectionItem);
 
     return await db.writeTxn(
       () async => await collection.put(item),
@@ -241,8 +238,7 @@ class FirebaseRepository extends CollectionRepository {
       return;
     }
 
-    final itemId =
-        "${collectionItem.supplier}${_sanitizeId(collectionItem.id)}";
+    final itemId = "${collectionItem.supplier}${_sanitizeId(collectionItem.id)}";
     final ref = database.reference().child("collection/${user!.id}/$itemId");
 
     await ref.set(collectionItem.toJson());

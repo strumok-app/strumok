@@ -1,5 +1,5 @@
 import 'package:strumok/app_localizations.dart';
-import 'package:strumok/content/content_details_actions.dart';
+import 'package:strumok/content/details/content_details_actions.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +15,7 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
   });
 
   @override
-  Widget renderActions(
-      BuildContext context, List<ContentMediaItem> mediaItems) {
+  Widget renderActions(BuildContext context, List<ContentMediaItem> mediaItems) {
     return Row(
       children: [
         _renderReadButton(context),

@@ -26,9 +26,7 @@ class MediaTitle extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    final currentItem = ref
-        .watch(collectionItemCurrentItemProvider(contentDetails))
-        .valueOrNull;
+    final currentItem = ref.watch(collectionItemCurrentItemProvider(contentDetails)).valueOrNull;
 
     if (currentItem == null) {
       return const SizedBox.shrink();
@@ -92,16 +90,18 @@ class VideoItemsListItem extends HookWidget {
     final theme = Theme.of(context);
     final title = item.title;
     final image = item.image;
+    final colorScheme = theme.colorScheme;
+    final accentColor = colorScheme.surfaceTint.withOpacity(0.5);
 
     return Card.filled(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(16)),
-        side: focused.value == true
-            ? BorderSide(color: theme.colorScheme.onSurfaceVariant)
-            : BorderSide.none,
+        side: BorderSide(
+          color: focused.value ? colorScheme.onSurfaceVariant : accentColor,
+        ),
       ),
       clipBehavior: Clip.antiAlias,
-      color: selected ? theme.colorScheme.onInverseSurface : null,
+      color: Colors.transparent,
       child: InkWell(
         autofocus: selected,
         mouseCursor: SystemMouseCursors.click,
@@ -119,9 +119,7 @@ class VideoItemsListItem extends HookWidget {
                         fit: BoxFit.cover,
                       )
                     : null,
-                color: image == null
-                    ? theme.colorScheme.surfaceTint.withOpacity(0.5)
-                    : null,
+                color: image == null ? accentColor : null,
               ),
               child: selected
                   ? const Center(
@@ -176,12 +174,10 @@ class PlayerErrorPopup extends StatelessWidget {
             disabledColor: Colors.white.withOpacity(0.7),
           ),
           menuChildrenBuilder: (focusNode) => [
-            ...value.reversed
-                .take(10)
-                .mapIndexed((idx, error) => MenuItemButton(
-                      focusNode: idx == 0 ? focusNode : null,
-                      child: Text(error),
-                    ))
+            ...value.reversed.take(10).mapIndexed((idx, error) => MenuItemButton(
+                  focusNode: idx == 0 ? focusNode : null,
+                  child: Text(error),
+                ))
           ],
         );
       },

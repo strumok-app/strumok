@@ -39,9 +39,7 @@ class AppTheme extends ConsumerWidget {
           iconButtonTheme: IconButtonThemeData(
             style: ButtonStyle(
               shape: WidgetStateProperty.resolveWith((states) {
-                return states.contains(WidgetState.focused)
-                    ? CircleBorder(side: focusBorder)
-                    : null;
+                return states.contains(WidgetState.focused) ? CircleBorder(side: focusBorder) : null;
               }),
             ),
           ),
@@ -57,19 +55,12 @@ class AppTheme extends ConsumerWidget {
               }),
             ),
           ),
-          listTileTheme: ListTileThemeData(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
           searchBarTheme: SearchBarThemeData(
             elevation: const WidgetStatePropertyAll(1),
             shape: WidgetStateProperty.resolveWith((states) {
               return RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: states.contains(WidgetState.focused)
-                    ? focusBorder
-                    : BorderSide.none,
+                side: states.contains(WidgetState.focused) ? focusBorder : BorderSide.none,
               );
             }),
           ),
@@ -80,8 +71,7 @@ class AppTheme extends ConsumerWidget {
           ),
           dialogTheme: DialogTheme(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: colorScheme.onSurfaceVariant)),
+                borderRadius: BorderRadius.circular(16), side: BorderSide(color: colorScheme.onSurfaceVariant)),
           )),
       child: child,
     );

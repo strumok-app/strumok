@@ -63,7 +63,7 @@
     "videoPlayerSettingStarFromFixed": "Фіксованої секунди",
     "settingsUnableDownloadNewVersion": "Не вдається завантажити нову версію",
     "settingsCheckForUpdate": "Перевірити оновлення",
-    "settingsDownloadUpdate": "Завантажити оновлення {update}",
+    "settingsDownloadUpdate": "Завантажити вер. {update}",
     "settingsSuppliersAndRecommendations": "Постачальники та Рекомендації",
     "mangaUnableToLoadPage": "Неможливо відобразити сторінку",
     "mangaPageLoading": "Завантаження сторінки",

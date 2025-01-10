@@ -6,7 +6,7 @@ part of 'collection_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$collectionServiceHash() => r'903f958ae1c771553d27ee159089b670a27e5d67';
+String _$collectionServiceHash() => r'f583a9d5a120d58cbc28f1f83bf7ab1860c3dcf8';
 
 /// See also [collectionService].
 @ProviderFor(collectionService)
@@ -23,7 +23,7 @@ final collectionServiceProvider = Provider<CollectionService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CollectionServiceRef = ProviderRef<CollectionService>;
-String _$collectionHash() => r'ac1e7e9d35f6867fb1c5bd8e4216b17b5746e6c7';
+String _$collectionHash() => r'07e7395ce1e2d8285a2d3139529017dbbbf5a46d';
 
 /// See also [collection].
 @ProviderFor(collection)
@@ -42,7 +42,7 @@ final collectionProvider = AutoDisposeFutureProvider<
 typedef CollectionRef = AutoDisposeFutureProviderRef<
     Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>;
 String _$collectionActiveItemsHash() =>
-    r'023443907a6e42d251d4484fee05ce67a67fe3c4';
+    r'9e9d366f58fa245141438d432289c3502082b1b4';
 
 /// See also [collectionActiveItems].
 @ProviderFor(collectionActiveItems)

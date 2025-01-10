@@ -27,7 +27,7 @@ LatestAppVersionInfo _$LatestAppVersionInfoFromJson(
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentAppVersionHash() => r'ede7fc47bd871b3113c472e61855b3d6d32828f0';
+String _$currentAppVersionHash() => r'1b8be778347ea0923da209174409af1bdd9b6add';
 
 /// See also [currentAppVersion].
 @ProviderFor(currentAppVersion)
@@ -45,7 +45,7 @@ final currentAppVersionProvider = FutureProvider<SemVer>.internal(
 // ignore: unused_element
 typedef CurrentAppVersionRef = FutureProviderRef<SemVer>;
 String _$latestAppVersionInfoHash() =>
-    r'e6ffff6c8f29c0c495e0edba6ba27729d97ded55';
+    r'4c76d353c1068e5706dd919366d998e14b4edbe1';
 
 /// See also [latestAppVersionInfo].
 @ProviderFor(latestAppVersionInfo)

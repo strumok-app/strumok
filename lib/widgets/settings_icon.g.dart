@@ -6,7 +6,7 @@ part of 'settings_icon.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$hasNewVersionHash() => r'6f98aa53a2ab7f1717b0d02228101d8b38874cf9';
+String _$hasNewVersionHash() => r'c59064f914a68646e5d36ae4aa8f2145646929bc';
 
 /// See also [hasNewVersion].
 @ProviderFor(hasNewVersion)

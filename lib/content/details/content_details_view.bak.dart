@@ -29,7 +29,6 @@ class ContentDetailsView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mainActionsFocusNode = useFocusNode();
-    final mobile = _isCompactLayout(context);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -39,49 +38,45 @@ class ContentDetailsView extends HookConsumerWidget {
     }, [mainActionsFocusNode]);
 
     return LayoutBuilder(
-      builder: (context, constraints) => Stack(
-        children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              width: mobile
-                  ? constraints.maxWidth
-                  : constraints.maxWidth * imageRatio,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: CachedNetworkImageProvider(contentDetails.image),
-                  fit: mobile ? BoxFit.cover : BoxFit.fitHeight,
-                  alignment: mobile ? Alignment.topCenter : Alignment.topRight,
+      builder: (context, constraints) {
+        final mobile = _isCompactLayout(context);
+        return Stack(
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                width: mobile ? constraints.maxWidth : constraints.maxWidth * imageRatio,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(contentDetails.image),
+                    fit: mobile ? BoxFit.contain : BoxFit.fitHeight,
+                    alignment: mobile ? Alignment.topCenter : Alignment.topRight,
+                  ),
                 ),
               ),
             ),
-          ),
-          SingleChildScrollView(
-            child: _renderMainInfo(context, constraints, mainActionsFocusNode),
-          )
-        ],
-      ),
+            SingleChildScrollView(
+              child: _renderMainInfo(context, constraints, mainActionsFocusNode),
+            )
+          ],
+        );
+      },
     );
   }
 
-  Widget _renderMainInfo(BuildContext context, BoxConstraints constraints,
-      FocusNode mainActionsFocusNode) {
+  Widget _renderMainInfo(BuildContext context, BoxConstraints constraints, FocusNode mainActionsFocusNode) {
     final paddings = getPadding(context);
     final mobile = _isCompactLayout(context);
     final theme = Theme.of(context);
 
     return SizedBox(
-      width: mobile
-          ? constraints.maxWidth
-          : constraints.maxWidth * (1 - imageRatio),
+      width: mobile ? constraints.maxWidth : constraints.maxWidth * (1 - imageRatio),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _renderTitleBox(context, constraints),
           Container(
-            padding: mobile
-                ? EdgeInsets.symmetric(horizontal: paddings)
-                : EdgeInsets.only(right: paddings),
+            padding: mobile ? EdgeInsets.symmetric(horizontal: paddings) : EdgeInsets.only(right: paddings),
             decoration: BoxDecoration(
               color: mobile ? theme.colorScheme.surface : Colors.transparent,
             ),
@@ -141,8 +136,7 @@ class ContentDetailsView extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding:
-                  compact ? const EdgeInsets.symmetric(horizontal: 8) : null,
+              padding: compact ? const EdgeInsets.symmetric(horizontal: 8) : null,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Colors.black54, Colors.transparent],
@@ -151,11 +145,7 @@ class ContentDetailsView extends HookConsumerWidget {
                 ),
               ),
               child: Row(
-                children: [
-                  if (isMobile(context))
-                    const BackNavButton(color: Colors.white),
-                  Flexible(child: title)
-                ],
+                children: [if (isMobile(context)) const BackNavButton(color: Colors.white), Flexible(child: title)],
               ),
             ),
           ],
@@ -246,8 +236,7 @@ class ContentDetailsView extends HookConsumerWidget {
 }
 
 class _MediaCollectionItemButtons extends ConsumerWidget {
-  _MediaCollectionItemButtons(ContentDetails contentDetails)
-      : provider = collectionItemProvider(contentDetails);
+  _MediaCollectionItemButtons(ContentDetails contentDetails) : provider = collectionItemProvider(contentDetails);
 
   final CollectionItemProvider provider;
 

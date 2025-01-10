@@ -6,7 +6,7 @@ part of 'manga_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$mangaChapterScansHash() => r'a663928dda93afb8f7e9507a7fef2f333dc0bc02';
+String _$mangaChapterScansHash() => r'390963c39d61a75bdec001fc8838d13b3a40f2ee';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -181,7 +181,7 @@ class _MangaChapterScansProviderElement
       (origin as MangaChapterScansProvider).mediaItems;
 }
 
-String _$mangaChapterScanHash() => r'976a5673c1add99630e0b320ceb9eaf4c41d6dfe';
+String _$mangaChapterScanHash() => r'a8c9f04c4b9d7dd8e0eef2cc892c2e847f3221ad';
 
 /// See also [mangaChapterScan].
 @ProviderFor(mangaChapterScan)
@@ -334,7 +334,7 @@ class _MangaChapterScanProviderElement
       (origin as MangaChapterScanProvider).mediaItems;
 }
 
-String _$currentMangaPagesHash() => r'd7055405d0633116c1cdd42fc2c50902ba8a4ed5';
+String _$currentMangaPagesHash() => r'17b9fb803d0b4076a8764135cc10f090b8304a6b';
 
 /// See also [currentMangaPages].
 @ProviderFor(currentMangaPages)
