@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:readmore/readmore.dart';
 import 'package:strumok/app_localizations.dart';
-import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/content/details/widgets.dart';
 import 'package:strumok/content/manga/content_details_manga_actions.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
-import 'package:strumok/widgets/horizontal_list.dart';
 
 class ContentDetailsMobileView extends StatelessWidget {
   final ContentDetails contentDetails;
@@ -197,36 +195,15 @@ class _InfoBlock extends StatelessWidget {
         children: [
           MediaCollectionItemButtons(contentDetails: contentDetails),
           const SizedBox(height: 8),
-          _renderAdditionalInfo(context),
+          AdditionalInfoBlock(contentDetails: contentDetails),
           const SizedBox(height: 8),
           _renderDescription(context),
           if (contentDetails.similar.isNotEmpty) ...[
             const SizedBox(height: 8),
-            _renderSimilar(context),
+            AdditionalInfoBlock(contentDetails: contentDetails),
           ]
         ],
       ),
-    );
-  }
-
-  Widget _renderAdditionalInfo(BuildContext context) {
-    return Wrap(
-      children: [
-        Card.filled(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(contentDetails.supplier),
-          ),
-        ),
-        ...contentDetails.additionalInfo.map(
-          (e) => Card.outlined(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(e),
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -240,23 +217,6 @@ class _InfoBlock extends StatelessWidget {
       trimCollapsedText: AppLocalizations.of(context)!.readMore,
       trimExpandedText: AppLocalizations.of(context)!.readLess,
       style: theme.textTheme.bodyLarge?.copyWith(inherit: true),
-    );
-  }
-
-  Widget _renderSimilar(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return HorizontalList(
-      paddings: 0,
-      title: Text(
-        AppLocalizations.of(context)!.recommendations,
-        style: theme.textTheme.headlineSmall,
-      ),
-      itemBuilder: (context, index) => ContentInfoCard(
-        contentInfo: contentDetails.similar[index],
-        showSupplier: false,
-      ),
-      itemCount: contentDetails.similar.length,
     );
   }
 }
