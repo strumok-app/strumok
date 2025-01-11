@@ -38,8 +38,7 @@ class CollectionChanges extends _$CollectionChanges {
 final collectionFilterQueryProvider = StateProvider<String>((ref) => "");
 
 @riverpod
-FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collection(
-    Ref ref) async {
+FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collection(Ref ref) async {
   ref.watch(collectionChangesProvider);
 
   final repository = ref.watch(collectionServiceProvider);
@@ -58,8 +57,7 @@ FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collection(
 }
 
 @riverpod
-FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>
-    collectionActiveItems(Ref ref) async {
+FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collectionActiveItems(Ref ref) async {
   ref.watch(collectionChangesProvider);
 
   final repository = ref.watch(collectionServiceProvider);
@@ -70,9 +68,11 @@ FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>
     MediaCollectionItemStatus.latter,
   });
 
-  return collectionItems
-      .where((item) => suppliers.contains(item.supplier))
-      .groupListsBy((e) => e.status);
+  final activeItems = collectionItems.where((item) => suppliers.contains(item.supplier)).groupListsBy((e) => e.status);
+
+  print(activeItems);
+
+  return activeItems;
 }
 
 @immutable
@@ -108,12 +108,9 @@ class CollectionFilter extends _$CollectionFilter {
   @override
   CollectionFilterModel build() {
     return CollectionFilterModel(
-      status: AppPreferences.collectionItemStatus ??
-          MediaCollectionItemStatus.values.toSet(),
-      mediaTypes:
-          AppPreferences.collectionMediaType ?? MediaType.values.toSet(),
-      suppliersNames: AppPreferences.collectionContentSuppliers ??
-          ContentSuppliers.instance.suppliersName,
+      status: AppPreferences.collectionItemStatus ?? MediaCollectionItemStatus.values.toSet(),
+      mediaTypes: AppPreferences.collectionMediaType ?? MediaType.values.toSet(),
+      suppliersNames: AppPreferences.collectionContentSuppliers ?? ContentSuppliers.instance.suppliersName,
     );
   }
 
@@ -136,8 +133,7 @@ class CollectionFilter extends _$CollectionFilter {
   }
 
   void toggleAllSuppliers(bool select) {
-    final newSupplierNames =
-        select ? ContentSuppliers.instance.suppliersName : <String>{};
+    final newSupplierNames = select ? ContentSuppliers.instance.suppliersName : <String>{};
     state = state.copyWith(suppliersNames: newSupplierNames);
     AppPreferences.collectionContentSuppliers = newSupplierNames;
   }

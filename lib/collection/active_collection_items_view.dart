@@ -24,8 +24,7 @@ class ActiveCollectionItemsView extends ConsumerWidget {
     );
   }
 
-  Widget _renderGroups(BuildContext context,
-      Map<MediaCollectionItemStatus, List<MediaCollectionItem>> groups) {
+  Widget _renderGroups(BuildContext context, Map<MediaCollectionItemStatus, List<MediaCollectionItem>> groups) {
     List<MediaCollectionItem>? items;
     String? title;
 
@@ -52,6 +51,7 @@ class ActiveCollectionItemsView extends ConsumerWidget {
         final item = items![index];
 
         return ContentInfoCard(
+          key: Key("${item.supplier}/${item.id}"),
           contentInfo: item,
         );
       },
