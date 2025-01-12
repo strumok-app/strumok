@@ -29,7 +29,7 @@ class VideoContentScreen extends ConsumerWidget {
           ),
           error: (error, stackTrace) => DisplayError(
             error: error,
-            onRefresh: () => ref.refresh(detailsProvider(supplier, id).future),
+            onRefresh: () => ref.invalidate(detailsProvider(supplier, id)),
           ),
           loading: () => const Material(
             color: Colors.black,

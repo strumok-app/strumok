@@ -98,6 +98,8 @@ class _MainAccentBlock extends HookWidget {
 
   Widget _renderContentActions(double screenWidth) {
     return Container(
+      height: 128,
+      width: screenWidth,
       padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 64),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -111,14 +113,12 @@ class _MainAccentBlock extends HookWidget {
           end: Alignment.bottomCenter,
         ),
       ),
-      child: Stack(
-        children: [
-          SizedBox(width: screenWidth),
-          switch (contentDetails.mediaType) {
-            MediaType.video => ContentDetailsVideoActions(contentDetails),
-            MediaType.manga => ContentDetailsMangaActions(contentDetails),
-          },
-        ],
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: switch (contentDetails.mediaType) {
+          MediaType.video => ContentDetailsVideoActions(contentDetails),
+          MediaType.manga => ContentDetailsMangaActions(contentDetails),
+        },
       ),
     );
   }
@@ -200,7 +200,7 @@ class _InfoBlock extends StatelessWidget {
           _renderDescription(context),
           if (contentDetails.similar.isNotEmpty) ...[
             const SizedBox(height: 8),
-            AdditionalInfoBlock(contentDetails: contentDetails),
+            SimilarBlock(contentDetails: contentDetails),
           ]
         ],
       ),

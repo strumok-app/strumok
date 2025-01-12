@@ -74,10 +74,10 @@ packages:
     dependency: "direct main"
     description:
       name: auto_route
-      sha256: b83e8ce46da7228cdd019b5a11205454847f0a971bca59a7529b98df9876889b
+      sha256: "1d1bd908a1fec327719326d5d0791edd37f16caff6493c01003689fb03315ad7"
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.2"
+    version: "9.3.0+1"
   auto_route_generator:
     dependency: "direct dev"
     description:
@@ -1183,10 +1183,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "02a7d8a9ef346c9af715811b01fbd8e27845ad2c41148eefd31321471b41863d"
+      sha256: bf808be89fe9dc467475e982c1db6c2faf3d2acf54d526cd5ec37d86c99dbd84
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.1"
   shared_preferences_foundation:
     dependency: transitive
     description:
@@ -1492,10 +1492,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_windows
-      sha256: "44cf3aabcedde30f2dba119a9dea3b0f2672fbe6fa96e85536251d678216b3c4"
+      sha256: "3284b6d2ac454cf34f114e1d3319866fdd1e19cdc329999057e44ffe936cfa77"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.3"
+    version: "3.1.4"
   uuid:
     dependency: transitive
     description:

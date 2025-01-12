@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:strumok/app_database.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/auth/auth.dart';
@@ -8,14 +10,22 @@ import 'package:firebase_dart/firebase_dart.dart';
 import 'package:firebase_dart/src/database/impl/firebase_impl.dart';
 
 class CollectionSync {
+  final StreamController<bool> _syncStatus = StreamController();
+
+  static final CollectionSync instance = CollectionSync._();
+
   CollectionSync._();
 
-  static void run() async {
+  Stream<bool> get syncStatus => _syncStatus.stream;
+
+  Future<void> run() async {
     // wait for user
     final user = Auth.instance.currentUser;
     if (user == null) {
       return;
     }
+
+    _syncStatus.sink.add(true);
 
     // obtain databases
     final isar = AppDatabase.database();
@@ -35,6 +45,7 @@ class CollectionSync {
     final remoteCollection = remoteSnapshot.treeStructuredData.toJson(true);
 
     if (remoteCollection == null) {
+      _syncStatus.sink.add(false);
       return;
     }
 
@@ -68,6 +79,7 @@ class CollectionSync {
     });
 
     AppPreferences.lastSyncTimestamp = nowTimestamp;
+    _syncStatus.sink.add(false);
   }
 
   static void _mergePositions(

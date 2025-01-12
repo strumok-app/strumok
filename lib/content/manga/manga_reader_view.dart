@@ -38,7 +38,7 @@ class MangaReaderView extends ConsumerWidget {
           data: (pages) => _renderReader(context, ref, pages),
           error: (error, stackTrace) => DisplayError(
             error: error,
-            onRefresh: () => ref.refresh(_pagesProvider.future),
+            onRefresh: () => ref.invalidate(_pagesProvider),
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
         );

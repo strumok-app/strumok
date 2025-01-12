@@ -28,10 +28,13 @@ class ContentDetailsDesktopView extends StatelessWidget {
         children: [
           Flexible(child: _InfoBlock(contentDetails: contentDetails, compact: compact)),
           if (!compact)
-            CachedNetworkImage(
-              imageUrl: contentDetails.image,
-              height: screanHeight,
-              fit: BoxFit.fitHeight,
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: CachedNetworkImage(
+                imageUrl: contentDetails.image,
+                height: screanHeight,
+                fit: BoxFit.fitHeight,
+              ),
             ),
         ],
       ),

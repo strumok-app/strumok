@@ -18,38 +18,43 @@ class DisplayError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            error.toString(),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              OutlinedButton(
-                autofocus: true,
-                onPressed: () {
-                  final navigator = Navigator.of(context);
-                  if (navigator.canPop()) {
-                    navigator.pop();
-                  } else {
-                    context.router.replace(const HomeRoute());
-                  }
-                },
-                child: Text(AppLocalizations.of(context)!.errorGoBack),
-              ),
-              if (onRefresh != null)
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              error.toString(),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.center,
+              children: [
                 OutlinedButton(
-                  onPressed: onRefresh,
-                  child: Text(AppLocalizations.of(context)!.errorReload),
+                  autofocus: true,
+                  onPressed: () {
+                    final navigator = Navigator.of(context);
+                    if (navigator.canPop()) {
+                      navigator.pop();
+                    } else {
+                      context.router.replace(const HomeRoute());
+                    }
+                  },
+                  child: Text(AppLocalizations.of(context)!.errorGoBack),
                 ),
-              ...actions,
-            ],
-          )
-        ],
+                if (onRefresh != null)
+                  OutlinedButton(
+                    onPressed: onRefresh,
+                    child: Text(AppLocalizations.of(context)!.errorReload),
+                  ),
+                ...actions,
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

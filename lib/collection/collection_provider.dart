@@ -70,8 +70,6 @@ FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collectionAc
 
   final activeItems = collectionItems.where((item) => suppliers.contains(item.supplier)).groupListsBy((e) => e.status);
 
-  print(activeItems);
-
   return activeItems;
 }
 
