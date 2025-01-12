@@ -20,14 +20,12 @@ class AppPreferences {
   static Set<ContentLanguage>? get selectedContentLanguage => instance
       .getStringList("selected_content_language")
       ?.map(
-        (value) => ContentLanguage.values
-            .firstWhereOrNull((lang) => lang.name == value),
+        (value) => ContentLanguage.values.firstWhereOrNull((lang) => lang.name == value),
       )
       .nonNulls
       .toSet();
 
-  static set selectedContentLanguage(Set<ContentLanguage>? value) =>
-      instance.setStringList(
+  static set selectedContentLanguage(Set<ContentLanguage>? value) => instance.setStringList(
         "selected_content_language",
         value?.map((lang) => lang.name).toList() ?? List.empty(),
       );
@@ -35,23 +33,19 @@ class AppPreferences {
   static Set<ContentType>? get selectedContentType => instance
       .getStringList("selected_content_type")
       ?.map(
-        (value) =>
-            ContentType.values.firstWhereOrNull((type) => type.name == value),
+        (value) => ContentType.values.firstWhereOrNull((type) => type.name == value),
       )
       .nonNulls
       .toSet();
 
-  static set selectedContentType(Set<ContentType>? value) =>
-      instance.setStringList(
+  static set selectedContentType(Set<ContentType>? value) => instance.setStringList(
         "selected_content_type",
         value?.map((type) => type.name).toList() ?? List.empty(),
       );
 
-  static Set<String>? get selectedContentSuppliers =>
-      instance.getStringList("selected_content_suppliers")?.toSet();
+  static Set<String>? get selectedContentSuppliers => instance.getStringList("selected_content_suppliers")?.toSet();
 
-  static set selectedContentSuppliers(Set<String>? value) =>
-      instance.setStringList(
+  static set selectedContentSuppliers(Set<String>? value) => instance.setStringList(
         "selected_content_suppliers",
         value?.toList() ?? List.empty(),
       );
@@ -66,8 +60,7 @@ class AppPreferences {
       )
       .firstOrNull;
 
-  static set themeColor(Color color) =>
-      instance.setInt("theme_color", color.value);
+  static set themeColor(Color color) => instance.setInt("theme_color", color.value);
 
   static Color get themeColor {
     final colorValue = instance.getInt("theme_color");
@@ -78,8 +71,7 @@ class AppPreferences {
   static Set<MediaType>? get collectionMediaType => instance
       .getStringList("collection_media_type")
       ?.map(
-        (value) =>
-            MediaType.values.firstWhereOrNull((type) => type.name == value),
+        (value) => MediaType.values.firstWhereOrNull((type) => type.name == value),
       )
       .nonNulls
       .toSet();
@@ -95,8 +87,7 @@ class AppPreferences {
   static Set<MediaCollectionItemStatus>? get collectionItemStatus => instance
       .getStringList("collection_item_status")
       ?.map(
-        (value) => MediaCollectionItemStatus.values
-            .firstWhereOrNull((type) => type.name == value),
+        (value) => MediaCollectionItemStatus.values.firstWhereOrNull((type) => type.name == value),
       )
       .nonNulls
       .toSet();
@@ -109,30 +100,24 @@ class AppPreferences {
         value?.map((type) => type.name).toList() ?? List.empty(),
       );
 
-  static Set<String>? get collectionContentSuppliers =>
-      instance.getStringList("collection_content_suppliers")?.toSet();
+  static Set<String>? get collectionContentSuppliers => instance.getStringList("collection_content_suppliers")?.toSet();
 
-  static set collectionContentSuppliers(Set<String>? value) =>
-      instance.setStringList(
+  static set collectionContentSuppliers(Set<String>? value) => instance.setStringList(
         "collection_content_suppliers",
         value?.toList() ?? List.empty(),
       );
 
-  static int get lastSyncTimestamp =>
-      instance.getInt("last_sync_timestamp") ?? 0;
+  static int get lastSyncTimestamp => instance.getInt("last_sync_timestamp") ?? 0;
 
-  static set lastSyncTimestamp(int timestamp) =>
-      instance.setInt("last_sync_timestamp", timestamp);
+  static set lastSyncTimestamp(int timestamp) => instance.setInt("last_sync_timestamp", timestamp);
 
   static double get volume => instance.getDouble("volume") ?? 100.0;
 
   static set volume(double value) => instance.setDouble("volume", value);
 
-  static List<String>? get suppliersOrder =>
-      instance.getStringList("suppliers_order");
+  static List<String>? get suppliersOrder => instance.getStringList("suppliers_order");
 
-  static set suppliersOrder(List<String>? value) =>
-      instance.setStringList("suppliers_order", value ?? []);
+  static set suppliersOrder(List<String>? value) => instance.setStringList("suppliers_order", value ?? []);
 
   static void setSupplierEnabled(
     String supplierName,
@@ -141,8 +126,7 @@ class AppPreferences {
     instance.setBool("suppliers.$supplierName.enabled", enabled);
   }
 
-  static bool? getSupplierEnabled(String supplierName) =>
-      instance.getBool("suppliers.$supplierName.enabled");
+  static bool? getSupplierEnabled(String supplierName) => instance.getBool("suppliers.$supplierName.enabled");
 
   static void setSupplierChannels(
     String supplierName,
@@ -157,8 +141,7 @@ class AppPreferences {
   static Set<String>? getSupplierChannels(String supplierName) =>
       instance.getStringList("suppliers.$supplierName.channels")?.toSet();
 
-  static set mangaReaderScale(MangaReaderScale scale) =>
-      instance.setString("manga_reader_scale", scale.name);
+  static set mangaReaderScale(MangaReaderScale scale) => instance.setString("manga_reader_scale", scale.name);
 
   static MangaReaderScale get mangaReaderScale =>
       MangaReaderScale.values
@@ -174,32 +157,25 @@ class AppPreferences {
   static MangaReaderBackground get mangaReaderBackground =>
       MangaReaderBackground.values
           .where(
-            (type) =>
-                type.name == instance.getString("manga_reader_background"),
+            (type) => type.name == instance.getString("manga_reader_background"),
           )
           .firstOrNull ??
       MangaReaderBackground.dark;
 
-  static set mangaReaderMode(MangaReaderMode mode) =>
-      instance.setString("manga_reader_mode", mode.name);
+  static set mangaReaderMode(MangaReaderMode mode) => instance.setString("manga_reader_mode", mode.name);
 
   static MangaReaderMode get mangaReaderMode =>
-      MangaReaderMode.values
-          .where((type) => type.name == instance.getString("manga_reader_mode"))
-          .firstOrNull ??
-      MangaReaderMode.vertical;
+      MangaReaderMode.values.where((type) => type.name == instance.getString("manga_reader_mode")).firstOrNull ??
+      MangaReaderMode.vericalScroll;
 
-  static bool get videoPlayerSettingShuffleMode =>
-      instance.getBool("video_player_setting_shuffle_mode") ?? false;
+  static bool get videoPlayerSettingShuffleMode => instance.getBool("video_player_setting_shuffle_mode") ?? false;
 
   static set videoPlayerSettingShuffleMode(bool enabled) =>
       instance.setBool("video_player_setting_shuffle_mode", enabled);
 
   static OnVideoEndsAction get videoPlayerSettingEndsAction =>
       OnVideoEndsAction.values
-          .where((action) =>
-              action.name ==
-              instance.getString("video_player_setting_ends_action"))
+          .where((action) => action.name == instance.getString("video_player_setting_ends_action"))
           .firstOrNull ??
       OnVideoEndsAction.playNext;
 
@@ -208,20 +184,16 @@ class AppPreferences {
 
   static StarVideoPosition get videoPlayerSettingStarFrom =>
       StarVideoPosition.values
-          .where((startFrom) =>
-              startFrom.name ==
-              instance.getString("video_player_setting_star_from"))
+          .where((startFrom) => startFrom.name == instance.getString("video_player_setting_star_from"))
           .firstOrNull ??
       StarVideoPosition.fromRemembered;
 
   static set videoPlayerSettingStarFrom(StarVideoPosition startFrom) =>
       instance.setString("video_player_setting_star_from", startFrom.name);
 
-  static int get videoPlayerSettingFixedPosition =>
-      instance.getInt("video_player_setting_fixed_position") ?? 0;
+  static int get videoPlayerSettingFixedPosition => instance.getInt("video_player_setting_fixed_position") ?? 0;
 
-  static set videoPlayerSettingFixedPosition(int pos) =>
-      instance.setInt("video_player_setting_fixed_position", pos);
+  static set videoPlayerSettingFixedPosition(int pos) => instance.setInt("video_player_setting_fixed_position", pos);
 
   static set ffiSupplierBundleInfo(FFISupplierBundleInfo? info) {
     if (info == null) {

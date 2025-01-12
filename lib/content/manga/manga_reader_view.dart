@@ -119,6 +119,13 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   Widget build(BuildContext context) {
     final readerMode = ref.watch(mangaReaderModeSettingsProvider);
 
+    ref.listen(
+      mangaReaderScaleSettingsProvider,
+      (previous, next) {
+        transformationController.value = Matrix4.diagonal3Values(1, 1, 1);
+      },
+    );
+
     return FocusableActionDetector(
       shortcuts: const {
         SingleActivator(LogicalKeyboardKey.arrowLeft): PrevPageIntent(),
@@ -258,7 +265,7 @@ class _ReaderGestureDetector extends ConsumerStatefulWidget {
 }
 
 class _ReaderGestureDetectorState extends ConsumerState<_ReaderGestureDetector> {
-  late TapDownDetails _lastTapDetails;
+  TapDownDetails? _lastTapDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -267,10 +274,11 @@ class _ReaderGestureDetectorState extends ConsumerState<_ReaderGestureDetector> 
       valueListenable: widget.transformationController,
       builder: (context, value, child) {
         return GestureDetector(
-          onDoubleTapDown: (details) => _lastTapDetails = details,
+          onTapDown: (details) => _lastTapDetails = details,
+          // onDoubleTapDown: (details) => _lastTapDetails = details,
           onDoubleTap: _toggleZoom,
-          onTapUp: _isNotScaled(value) ? _tapZones : null,
-          onLongPress: _isNotScaled(value) ? () => Actions.invoke(context, const ShowUIIntent()) : null,
+          onTap: _isNotScaled(value) ? _tapZones : null,
+          // onLongPress: _isNotScaled(value) ? () => Actions.invoke(context, const ShowUIIntent()) : null,
           child: Container(
             width: size.width,
             height: size.height,
@@ -300,18 +308,26 @@ class _ReaderGestureDetectorState extends ConsumerState<_ReaderGestureDetector> 
     return lowerBoundry <= position && position < upperBoundry;
   }
 
-  void _tapZones(
-    TapUpDetails details,
-  ) {
-    if (_isInZone(1, 3, details.globalPosition)) {
+  void _tapZones() {
+    if (_lastTapDetails == null) {
+      return;
+    }
+
+    if (_isInZone(1, 3, _lastTapDetails!.globalPosition)) {
       Actions.invoke(context, const PrevPageIntent());
-    } else if (_isInZone(3, 3, details.globalPosition)) {
+    } else if (_isInZone(3, 3, _lastTapDetails!.globalPosition)) {
       Actions.invoke(context, const NextPageIntent());
+    } else {
+      Actions.invoke(context, const ShowUIIntent());
     }
   }
 
   void _toggleZoom() {
-    final position = _lastTapDetails.globalPosition;
+    if (_lastTapDetails == null) {
+      return;
+    }
+
+    final position = _lastTapDetails!.globalPosition;
     final transfomationController = widget.transformationController;
 
     if (!_isInZone(2, 3, position)) {
@@ -424,18 +440,12 @@ class _SinglePageView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scale = ref.watch(mangaReaderScaleSettingsProvider);
 
-    transformationController.value = Matrix4.diagonal3Values(1, 1, 1);
-
     return LayoutBuilder(builder: (context, constraints) {
       return InteractiveViewer(
         minScale: 1,
-        constrained: false,
+        // constrained: false,
         transformationController: transformationController,
-        boundaryMargin: switch (scale) {
-          MangaReaderScale.fitWidth => EdgeInsets.symmetric(vertical: constraints.maxHeight * 2, horizontal: 0),
-          MangaReaderScale.fitHeight => EdgeInsets.symmetric(vertical: 0, horizontal: constraints.maxHeight * 2),
-          _ => EdgeInsets.zero
-        },
+        boundaryMargin: EdgeInsets.zero,
         child: _PageImage(
           readerMode: readerMode,
           constraints: constraints,
@@ -485,11 +495,7 @@ class _PageImage extends StatelessWidget {
               constraints: constraints,
             );
           },
-          fit: switch (scale) {
-            MangaReaderScale.fitHeight => BoxFit.fitHeight,
-            MangaReaderScale.fitWidth => BoxFit.fitWidth,
-            _ => BoxFit.contain
-          },
+          fit: BoxFit.contain,
           image: page,
         ),
       ),
@@ -558,8 +564,9 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
   }
 
   void _onPageChanged() {
-    _itemScrollController.jumpTo(
+    _itemScrollController.scrollTo(
       index: widget.page.value,
+      duration: const Duration(milliseconds: 300),
     );
   }
 

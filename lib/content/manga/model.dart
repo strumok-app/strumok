@@ -7,12 +7,6 @@ enum MangaReaderScale {
 }
 
 enum MangaReaderMode {
-  vertical(
-    direction: Axis.vertical,
-    scaleModes: MangaReaderScale.values,
-  ),
-  leftToRight(scaleModes: MangaReaderScale.values),
-  rightToLeft(rtl: true, scaleModes: MangaReaderScale.values),
   vericalScroll(
     scroll: true,
     direction: Axis.vertical,
@@ -22,18 +16,25 @@ enum MangaReaderMode {
   hotizontalRtlScroll(
     scroll: true,
     rtl: true,
-  );
+  ),
+  vertical(
+    direction: Axis.vertical,
+    scaleModes: [],
+  ),
+  leftToRight(scaleModes: []),
+  rightToLeft(rtl: true, scaleModes: []);
 
   final bool scroll;
   final Axis direction;
   final bool rtl;
   final List<MangaReaderScale> scaleModes;
 
-  const MangaReaderMode(
-      {this.scroll = false,
-      this.direction = Axis.horizontal,
-      this.rtl = false,
-      this.scaleModes = const []});
+  const MangaReaderMode({
+    this.scroll = false,
+    this.direction = Axis.horizontal,
+    this.rtl = false,
+    this.scaleModes = const [],
+  });
 }
 
 enum MangaReaderBackground {

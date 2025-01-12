@@ -50,11 +50,8 @@ class _MainAccentBlock extends HookWidget {
           elevation: 5,
           color: background,
           child: GestureDetector(
-            onLongPress: () {
-              showPoster.value = !showPoster.value;
-            },
             onTap: () {
-              showPoster.value = false;
+              showPoster.value = !showPoster.value;
             },
             child: CachedNetworkImage(
               imageUrl: contentDetails.image,
