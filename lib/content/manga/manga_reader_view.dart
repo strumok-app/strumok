@@ -275,10 +275,8 @@ class _ReaderGestureDetectorState extends ConsumerState<_ReaderGestureDetector> 
       builder: (context, value, child) {
         return GestureDetector(
           onTapDown: (details) => _lastTapDetails = details,
-          // onDoubleTapDown: (details) => _lastTapDetails = details,
           onDoubleTap: _toggleZoom,
-          onTap: _isNotScaled(value) ? _tapZones : null,
-          // onLongPress: _isNotScaled(value) ? () => Actions.invoke(context, const ShowUIIntent()) : null,
+          onTap: value.isScaled() ? null : _tapZones,
           child: Container(
             width: size.width,
             height: size.height,
@@ -289,8 +287,6 @@ class _ReaderGestureDetectorState extends ConsumerState<_ReaderGestureDetector> 
       },
     );
   }
-
-  bool _isNotScaled(Matrix4 mat) => mat.entry(0, 0) == 1.0;
 
   bool _isInZone(
     int testZone,
@@ -443,7 +439,6 @@ class _SinglePageView extends ConsumerWidget {
     return LayoutBuilder(builder: (context, constraints) {
       return InteractiveViewer(
         minScale: 1,
-        // constrained: false,
         transformationController: transformationController,
         boundaryMargin: EdgeInsets.zero,
         child: _PageImage(
@@ -571,7 +566,7 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
   }
 
   void _onTransformationChange() {
-    final newIsScale = !widget.transformationController.value.isIdentity();
+    final newIsScale = widget.transformationController.value.isScaled();
     if (newIsScale != isScaling) {
       if (mounted) {
         setState(() {
@@ -662,4 +657,8 @@ class _NoPagesView extends StatelessWidget {
       ),
     );
   }
+}
+
+extension on Matrix4 {
+  bool isScaled() => entry(0, 0) != 1.0;
 }
