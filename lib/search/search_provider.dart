@@ -31,11 +31,7 @@ class Search extends _$Search {
       searchSettings.searchSuppliersNames,
     );
 
-    final stream = ContentSuppliers.instance.search(
-      query,
-      contentSuppliers,
-      searchSettings.types,
-    );
+    final stream = ContentSuppliers().search(query, contentSuppliers);
 
     final subscription = stream.listen((event) {
       final (supplierName, supplierResults) = event;
@@ -61,15 +57,19 @@ class SearchSettingsModel extends Equatable {
     required this.suppliersNames,
   });
 
-  Set<String> get avaliableSuppliers =>
-      ContentSuppliers.instance.suppliersName.where((supplierName) {
-        final supplier = ContentSuppliers.instance.getSupplier(supplierName)!;
-        return languages.intersection(supplier.supportedLanguages).isNotEmpty &&
-            types.intersection(supplier.supportedTypes).isNotEmpty;
-      }).toSet();
+  Set<String> get avaliableSuppliers {
+    return ContentSuppliers()
+        .suppliers
+        .where(
+          (sup) =>
+              languages.intersection(sup.supportedLanguages).isNotEmpty &&
+              types.intersection(sup.supportedTypes).isNotEmpty,
+        )
+        .map((sup) => sup.name)
+        .toSet();
+  }
 
-  Set<String> get searchSuppliersNames =>
-      suppliersNames.intersection(avaliableSuppliers);
+  Set<String> get searchSuppliersNames => suppliersNames.intersection(avaliableSuppliers);
 
   @override
   List<Object?> get props => [languages, types, suppliersNames];
@@ -92,11 +92,9 @@ class SearchSettings extends _$SearchSettings {
   @override
   SearchSettingsModel build() {
     return SearchSettingsModel(
-        languages: AppPreferences.selectedContentLanguage ??
-            ContentLanguage.values.toSet(),
+        languages: AppPreferences.selectedContentLanguage ?? ContentLanguage.values.toSet(),
         types: AppPreferences.selectedContentType ?? ContentType.values.toSet(),
-        suppliersNames: AppPreferences.collectionContentSuppliers ??
-            ContentSuppliers.instance.suppliersName);
+        suppliersNames: AppPreferences.collectionContentSuppliers ?? ContentSuppliers().suppliersName);
   }
 
   void toggleLanguage(ContentLanguage lang) {
@@ -118,8 +116,7 @@ class SearchSettings extends _$SearchSettings {
   }
 
   void toggleAllSuppliers(bool select) {
-    final newSupplierNames =
-        select ? ContentSuppliers.instance.suppliersName : <String>{};
+    final newSupplierNames = select ? ContentSuppliers().suppliersName : <String>{};
     state = state.copyWith(suppliersNames: newSupplierNames);
     AppPreferences.collectionContentSuppliers = newSupplierNames;
   }

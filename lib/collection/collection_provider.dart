@@ -106,33 +106,29 @@ class CollectionFilter extends _$CollectionFilter {
   @override
   CollectionFilterModel build() {
     return CollectionFilterModel(
-      status: AppPreferences.collectionItemStatus ?? MediaCollectionItemStatus.values.toSet(),
-      mediaTypes: AppPreferences.collectionMediaType ?? MediaType.values.toSet(),
-      suppliersNames: AppPreferences.collectionContentSuppliers ?? ContentSuppliers.instance.suppliersName,
+      status: MediaCollectionItemStatus.values.toSet(),
+      mediaTypes: MediaType.values.toSet(),
+      suppliersNames: ContentSuppliers().suppliersName,
     );
   }
 
   void toggleStatus(MediaCollectionItemStatus status) {
     final newStatus = state.status.toggle(status);
     state = state.copyWith(status: newStatus);
-    AppPreferences.collectionItemStatus = newStatus;
   }
 
   void toggleMediaType(MediaType mediaType) {
     final newMediaTypes = state.mediaTypes.toggle(mediaType);
     state = state.copyWith(mediaTypes: newMediaTypes);
-    AppPreferences.collectionMediaType = newMediaTypes;
   }
 
   void toggleSupplierName(String supplierName) {
     final newSupplierNames = state.suppliersNames.toggle(supplierName);
     state = state.copyWith(suppliersNames: newSupplierNames);
-    AppPreferences.collectionContentSuppliers = newSupplierNames;
   }
 
   void toggleAllSuppliers(bool select) {
-    final newSupplierNames = select ? ContentSuppliers.instance.suppliersName : <String>{};
+    final newSupplierNames = select ? ContentSuppliers().suppliersName : <String>{};
     state = state.copyWith(suppliersNames: newSupplierNames);
-    AppPreferences.collectionContentSuppliers = newSupplierNames;
   }
 }

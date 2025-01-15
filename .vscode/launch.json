@@ -20,7 +20,10 @@
                 "FFI_SUPPLIER_LIBS_DIR=/home/andrii/Documents/cloud_hook_suppliers/target/release/",
                 "--dart-define",
                 "FFI_SUPPLIER_LIB_NAME=strumok_suppliers",
-            ]
+            ],
+            "env": {
+                "RUST_LOG": "debug"
+            }
         },
     ]
 }

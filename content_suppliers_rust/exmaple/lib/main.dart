@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   await bundle.load();
                   final suppliers = await bundle.suppliers;
                   final sup = suppliers.first;
-                  final r = await sup.search("1", {});
+                  final r = await sup.search("1");
                   setState(() {
                     _result = r.toString();
                   });

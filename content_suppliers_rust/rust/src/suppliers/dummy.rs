@@ -28,10 +28,10 @@ impl ContentSupplier for DummyContentSupplier {
         vec!["en".to_owned(), "uk".to_owned()]
     }
 
-    async fn search(&self, query: String, types: Vec<String>) -> anyhow::Result<Vec<ContentInfo>> {
+    async fn search(&self, query: String) -> anyhow::Result<Vec<ContentInfo>> {
         Ok(vec![ContentInfo {
-            id: query,
-            title: types.join(","),
+            id: query.clone(),
+            title: query.clone(),
             secondary_title: Some("secondary_dummy_title".to_owned()),
             image: "dummy_image".to_owned(),
         }])
@@ -46,7 +46,7 @@ impl ContentSupplier for DummyContentSupplier {
         }])
     }
 
-    async fn get_content_details(&self, id: String) -> anyhow::Result<Option<ContentDetails>> {
+    async fn get_content_details(&self, id: String, langs: Vec<String>) -> anyhow::Result<Option<ContentDetails>> {
         if id == "eager_sources" {
             return Ok(Some(ContentDetails {
                 title: format!("dummy_title {id}"),
@@ -68,7 +68,7 @@ impl ContentSupplier for DummyContentSupplier {
                     }]),
                     params: vec![],
                 }]),
-                params: vec![],
+                params: langs,
             }));
         }
 
@@ -119,6 +119,10 @@ impl ContentSupplier for DummyContentSupplier {
         if id == "async_manga" {
             return Ok(vec![ContentMediaItemSource::Manga {
                 description: id.clone(),
+                headers: Some(HashMap::from([(
+                    "User-Agent".to_owned(),
+                    "dummy".to_owned(),
+                )])),
                 page_numbers: 2,
                 pages: None,
                 params: vec![id.clone()],
@@ -144,6 +148,10 @@ impl ContentSupplier for DummyContentSupplier {
             },
             ContentMediaItemSource::Manga {
                 description: format!("{} {}", id, params.join(",")),
+                headers: Some(HashMap::from([(
+                    "User-Agent".to_owned(),
+                    "dummy".to_owned(),
+                )])),
                 page_numbers: 2,
                 pages: Some(vec!["http://page1".to_owned(), "http://page2".to_owned()]),
                 params: vec![],

@@ -11,8 +11,7 @@ class SuppliersSettingsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final suppliersOrder = ref.watch(
-        suppliersSettingsProvider.select((value) => value.suppliersOrder));
+    final suppliersOrder = ref.watch(suppliersSettingsProvider.select((value) => value.suppliersOrder));
 
     return Container(
       constraints: const BoxConstraints.tightFor(width: 800),
@@ -22,9 +21,7 @@ class SuppliersSettingsSection extends ConsumerWidget {
         proxyDecorator: _proxyDecorator,
         buildDefaultDragHandles: false,
         onReorder: (oldIndex, newIndex) {
-          ref
-              .read(suppliersSettingsProvider.notifier)
-              .reorder(oldIndex, newIndex);
+          ref.read(suppliersSettingsProvider.notifier).reorder(oldIndex, newIndex);
         },
         children: suppliersOrder
             .mapIndexed(
@@ -70,7 +67,7 @@ class _RecommendationsSettingsItem extends ConsumerWidget {
       ),
     );
 
-    final supplier = ContentSuppliers.instance.getSupplier(supplierName)!;
+    final supplier = ContentSuppliers().getSupplier(supplierName)!;
 
     return Card.outlined(
       child: Padding(
@@ -101,13 +98,9 @@ class _RecommendationsSettingsItem extends ConsumerWidget {
           value: config.enabled,
           onChanged: (value) {
             if (value == true) {
-              ref
-                  .read(suppliersSettingsProvider.notifier)
-                  .enableSupplier(supplierName);
+              ref.read(suppliersSettingsProvider.notifier).enableSupplier(supplierName);
             } else {
-              ref
-                  .read(suppliersSettingsProvider.notifier)
-                  .disableSupplier(supplierName);
+              ref.read(suppliersSettingsProvider.notifier).disableSupplier(supplierName);
             }
           },
         ),
@@ -161,13 +154,9 @@ class _RecommendationsSettingsItem extends ConsumerWidget {
                       label: Text(channel),
                       onSelected: (value) {
                         if (value) {
-                          ref
-                              .read(suppliersSettingsProvider.notifier)
-                              .enableChannel(supplierName, channel);
+                          ref.read(suppliersSettingsProvider.notifier).enableChannel(supplierName, channel);
                         } else {
-                          ref
-                              .read(suppliersSettingsProvider.notifier)
-                              .disableChannel(supplierName, channel);
+                          ref.read(suppliersSettingsProvider.notifier).disableChannel(supplierName, channel);
                         }
                       },
                     ),

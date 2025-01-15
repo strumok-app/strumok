@@ -84,21 +84,21 @@ class AppPreferences {
         value?.map((type) => type.name).toList() ?? List.empty(),
       );
 
-  static Set<MediaCollectionItemStatus>? get collectionItemStatus => instance
-      .getStringList("collection_item_status")
-      ?.map(
-        (value) => MediaCollectionItemStatus.values.firstWhereOrNull((type) => type.name == value),
-      )
-      .nonNulls
-      .toSet();
+  // static Set<MediaCollectionItemStatus>? get collectionItemStatus => instance
+  //     .getStringList("collection_item_status")
+  //     ?.map(
+  //       (value) => MediaCollectionItemStatus.values.firstWhereOrNull((type) => type.name == value),
+  //     )
+  //     .nonNulls
+  //     .toSet();
 
-  static set collectionItemStatus(
-    Set<MediaCollectionItemStatus>? value,
-  ) =>
-      instance.setStringList(
-        "collection_item_status",
-        value?.map((type) => type.name).toList() ?? List.empty(),
-      );
+  // static set collectionItemStatus(
+  //   Set<MediaCollectionItemStatus>? value,
+  // ) =>
+  //     instance.setStringList(
+  //       "collection_item_status",
+  //       value?.map((type) => type.name).toList() ?? List.empty(),
+  //     );
 
   static Set<String>? get collectionContentSuppliers => instance.getStringList("collection_content_suppliers")?.toSet();
 

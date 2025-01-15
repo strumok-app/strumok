@@ -1,7 +1,9 @@
+import 'package:content_suppliers_api/model.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:strumok/utils/collections.dart';
 
 part 'settings_provider.g.dart';
 
@@ -67,5 +69,19 @@ class MangaReaderModeSettings extends _$MangaReaderModeSettings {
   void select(MangaReaderMode mode) {
     AppPreferences.mangaReaderMode = mode;
     state = mode;
+  }
+}
+
+@riverpod
+class ContentLanguageSettings extends _$ContentLanguageSettings {
+  @override
+  Set<ContentLanguage> build() {
+    return AppPreferences.selectedContentLanguage ?? ContentLanguage.values.toSet();
+  }
+
+  void toggleLanguage(ContentLanguage lang) {
+    final newLanuages = state.toggle(lang);
+    state = newLanuages;
+    AppPreferences.selectedContentLanguage = newLanuages;
   }
 }

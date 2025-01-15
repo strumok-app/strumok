@@ -35,10 +35,8 @@ class RecommendationChannelState {
 @Riverpod(keepAlive: true)
 class RecommendationChannel extends _$RecommendationChannel {
   @override
-  FutureOr<RecommendationChannelState> build(
-      String supplierName, String channel) async {
-    final recommendations = await ContentSuppliers.instance
-        .loadRecommendationsChannel(supplierName, channel);
+  FutureOr<RecommendationChannelState> build(String supplierName, String channel) async {
+    final recommendations = await ContentSuppliers().loadRecommendationsChannel(supplierName, channel);
     return RecommendationChannelState(recommendations: recommendations);
   }
 
@@ -54,8 +52,8 @@ class RecommendationChannel extends _$RecommendationChannel {
     );
 
     final nextPage = current.page + 1;
-    final nextRecommendations = await ContentSuppliers.instance
-        .loadRecommendationsChannel(supplierName, channel, page: nextPage);
+    final nextRecommendations =
+        await ContentSuppliers().loadRecommendationsChannel(supplierName, channel, page: nextPage);
 
     if (nextRecommendations.isEmpty) {
       state = AsyncValue.data(

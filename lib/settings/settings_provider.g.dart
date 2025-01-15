@@ -90,5 +90,22 @@ final mangaReaderModeSettingsProvider = AutoDisposeNotifierProvider<
 );
 
 typedef _$MangaReaderModeSettings = AutoDisposeNotifier<MangaReaderMode>;
+String _$contentLanguageSettingsHash() =>
+    r'3ddc72cec20e7b5f2912c2b9c5cc75b38d45ceec';
+
+/// See also [ContentLanguageSettings].
+@ProviderFor(ContentLanguageSettings)
+final contentLanguageSettingsProvider = AutoDisposeNotifierProvider<
+    ContentLanguageSettings, Set<ContentLanguage>>.internal(
+  ContentLanguageSettings.new,
+  name: r'contentLanguageSettingsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$contentLanguageSettingsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$ContentLanguageSettings = AutoDisposeNotifier<Set<ContentLanguage>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

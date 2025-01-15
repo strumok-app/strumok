@@ -13,6 +13,7 @@ class ContentSuppliers {
   ContentSuppliers._();
 
   Set<String> get suppliersName => _suppliersByName.keys.toSet();
+  List<ContentSupplier> get suppliers => _suppliersByName.values.toList();
 
   ContentSupplier? getSupplier(String supplierName) {
     return _suppliersByName[supplierName];
@@ -47,37 +48,17 @@ class ContentSuppliers {
     _suppliersByName = {for (var s in suppliers) s.name: s};
   }
 
-  Stream<(String, List<ContentInfo>)> search(
-    String query,
-    Set<String> contentSuppliers,
-    Set<ContentType> contentTypes,
-  ) {
+  Stream<(String, List<ContentInfo>)> search(String query, Set<String> contentSuppliers) {
     final futures = contentSuppliers
-        .map((supplierName) {
-          final supplier = getSupplier(supplierName);
-
-          if (supplier == null ||
-              supplier.supportedTypes.intersection(contentTypes).isEmpty) {
-            return null;
-          }
-
-          return supplier;
-        })
+        .map((name) => _suppliersByName[name])
         .nonNulls
-        .map(
-          (supplier) => supplier
-              .search(query, contentTypes)
-              .then((res) => (supplier.name, res)),
-        );
+        .map((supplier) => supplier.search(query).then((res) => (supplier.name, res)));
 
     return Stream.fromFutures(futures);
   }
 
-  Future<List<ContentInfo>> loadRecommendationsChannel(
-      String supplierName, String channel,
-      {page = 1}) async {
-    logger.i(
-        "Loading content supplier: $supplierName recommendations channel: $channel");
+  Future<List<ContentInfo>> loadRecommendationsChannel(String supplierName, String channel, {page = 1}) async {
+    logger.i("Loading content supplier: $supplierName recommendations channel: $channel");
 
     final supplier = getSupplier(supplierName);
 
@@ -88,11 +69,10 @@ class ContentSuppliers {
     return supplier.loadChannel(channel, page: page);
   }
 
-  Future<ContentDetails> detailsById(String supplierName, String id) async {
+  Future<ContentDetails> detailsById(String supplierName, String id, Set<ContentLanguage> langs) async {
     logger.i("Load content details supplier: $supplierName id: $id");
 
-    final supplier =
-        _suppliers.where((e) => e.name == supplierName).firstOrNull;
+    final supplier = _suppliers.where((e) => e.name == supplierName).firstOrNull;
 
     if (supplier == null) {
       throw Exception("No supplier $supplierName found");
@@ -100,7 +80,7 @@ class ContentSuppliers {
 
     ContentDetails? details;
     try {
-      details = await supplier.detailsById(id);
+      details = await supplier.detailsById(id, langs);
     } catch (error, stackTrace) {
       traceError(
         error: error,
@@ -117,7 +97,11 @@ class ContentSuppliers {
     return details;
   }
 
-  static final ContentSuppliers instance = ContentSuppliers._();
+  static final ContentSuppliers _instance = ContentSuppliers._();
+
+  factory ContentSuppliers() {
+    return _instance;
+  }
 
   static Future<List<ContentSupplierBundle>> _getDefaultFFIBundle() async {
     var libName = const String.fromEnvironment("FFI_SUPPLIER_LIB_NAME");
@@ -126,8 +110,7 @@ class ContentSuppliers {
       final bundleInfo = AppPreferences.ffiSupplierBundleInfo;
 
       if (bundleInfo != null) {
-        final installed =
-            await FFISuppliersBundleStorage.instance.isInstalled(bundleInfo);
+        final installed = await FFISuppliersBundleStorage.instance.isInstalled(bundleInfo);
 
         if (!installed) {
           return [];
@@ -147,8 +130,6 @@ class ContentSuppliers {
 
     logger.i("FFI libs directory: $libDirectory");
 
-    return [
-      RustContentSuppliersBundle(directory: libDirectory, libName: libName)
-    ];
+    return [RustContentSuppliersBundle(directory: libDirectory, libName: libName)];
   }
 }

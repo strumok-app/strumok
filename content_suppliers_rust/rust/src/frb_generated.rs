@@ -130,12 +130,14 @@ fn wire__crate__api__get_content_details_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_supplier = <String>::sse_decode(&mut deserializer);
             let api_id = <String>::sse_decode(&mut deserializer);
+            let api_langs = <Vec<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
                         let output_ok =
-                            crate::api::get_content_details(api_supplier, api_id).await?;
+                            crate::api::get_content_details(api_supplier, api_id, api_langs)
+                                .await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -455,13 +457,11 @@ fn wire__crate__api__search_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_supplier = <String>::sse_decode(&mut deserializer);
             let api_query = <String>::sse_decode(&mut deserializer);
-            let api_types = <Vec<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
-                        let output_ok =
-                            crate::api::search(api_supplier, api_query, api_types).await?;
+                        let output_ok = crate::api::search(api_supplier, api_query).await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -590,11 +590,14 @@ impl SseDecode for crate::models::ContentMediaItemSource {
             }
             2 => {
                 let mut var_description = <String>::sse_decode(deserializer);
+                let mut var_headers =
+                    <Option<std::collections::HashMap<String, String>>>::sse_decode(deserializer);
                 let mut var_pageNumbers = <u32>::sse_decode(deserializer);
                 let mut var_pages = <Option<Vec<String>>>::sse_decode(deserializer);
                 let mut var_params = <Vec<String>>::sse_decode(deserializer);
                 return crate::models::ContentMediaItemSource::Manga {
                     description: var_description,
+                    headers: var_headers,
                     page_numbers: var_pageNumbers,
                     pages: var_pages,
                     params: var_params,
@@ -976,12 +979,14 @@ impl flutter_rust_bridge::IntoDart for crate::models::ContentMediaItemSource {
             .into_dart(),
             crate::models::ContentMediaItemSource::Manga {
                 description,
+                headers,
                 page_numbers,
                 pages,
                 params,
             } => [
                 2.into_dart(),
                 description.into_into_dart().into_dart(),
+                headers.into_into_dart().into_dart(),
                 page_numbers.into_into_dart().into_dart(),
                 pages.into_into_dart().into_dart(),
                 params.into_into_dart().into_dart(),
@@ -1128,12 +1133,16 @@ impl SseEncode for crate::models::ContentMediaItemSource {
             }
             crate::models::ContentMediaItemSource::Manga {
                 description,
+                headers,
                 page_numbers,
                 pages,
                 params,
             } => {
                 <i32>::sse_encode(2, serializer);
                 <String>::sse_encode(description, serializer);
+                <Option<std::collections::HashMap<String, String>>>::sse_encode(
+                    headers, serializer,
+                );
                 <u32>::sse_encode(page_numbers, serializer);
                 <Option<Vec<String>>>::sse_encode(pages, serializer);
                 <Vec<String>>::sse_encode(params, serializer);

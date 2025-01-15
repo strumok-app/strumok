@@ -50,10 +50,9 @@ void main() async {
 
   test("should load search results", () async {
     const query = "test";
-    final type = {ContentType.anime};
 
     final supplier = suppliers.first;
-    final results = await supplier.search(query, type);
+    final results = await supplier.search(query);
 
     expect(results.length, equals(1));
 
@@ -61,7 +60,7 @@ void main() async {
 
     expect(searchResult.id, equals(query));
     expect(searchResult.supplier, equals("dummy"));
-    expect(searchResult.title, equals(type.map((t) => t.name).join(",")));
+    expect(searchResult.title, equals(query));
     expect(searchResult.secondaryTitle, equals("secondary_dummy_title"));
     expect(searchResult.image, equals("dummy_image"));
   });
@@ -88,7 +87,7 @@ void main() async {
     const id = "dummy_id";
 
     final supplier = suppliers.first;
-    final details = await supplier.detailsById(id);
+    final details = await supplier.detailsById(id, {ContentLanguage.en});
 
     expect(details, isNotNull);
     expect(details!.id, equals(id));
@@ -142,8 +141,9 @@ void main() async {
     expect(sources[2], isA<MangaMediaItemSource>());
     final mangaSource = sources[2] as MangaMediaItemSource;
 
+    final pages = await mangaSource.allPages();
     expect(
-        await mangaSource.allPages(),
+        pages,
         equals([
           const CachedNetworkImageProvider("http://page1"),
           const CachedNetworkImageProvider("http://page2"),
@@ -158,7 +158,7 @@ void main() async {
     const id = "async_manga";
 
     final supplier = suppliers.first;
-    final details = await supplier.detailsById(id);
+    final details = await supplier.detailsById(id, {ContentLanguage.en});
 
     expect(details, isNotNull);
 
@@ -188,7 +188,7 @@ void main() async {
     const id = "eager_sources";
 
     final supplier = suppliers.first;
-    final details = await supplier.detailsById(id);
+    final details = await supplier.detailsById(id, {ContentLanguage.en});
 
     expect(details, isNotNull);
 

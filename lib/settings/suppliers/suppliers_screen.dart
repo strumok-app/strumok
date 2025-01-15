@@ -44,8 +44,7 @@ class _SuppliersSettingsView extends StatelessWidget {
                   ],
                   Flexible(
                     child: Text(
-                      AppLocalizations.of(context)!
-                          .settingsSuppliersAndRecommendations,
+                      AppLocalizations.of(context)!.settingsSuppliersAndRecommendations,
                       style: theme.textTheme.headlineSmall,
                     ),
                   ),

@@ -3,6 +3,7 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/settings/app_version/app_version_settings.dart';
+import 'package:strumok/settings/content_language/content_language.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_settings.dart';
 import 'package:strumok/settings/theme/brightness_switcher.dart';
 import 'package:strumok/settings/theme/color_switcher.dart';
@@ -63,13 +64,17 @@ class _SettingsView extends StatelessWidget {
                     AppLocalizations.of(context)!.settingsSuppliersVersion,
                     const SuppliersBundleVersionSettings(),
                   ),
+                  _renderSection(
+                    context,
+                    AppLocalizations.of(context)!.contentLanguage,
+                    const ContentLanguageSelector(),
+                  ),
                   ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                     leading: const Icon(Icons.chevron_right),
                     horizontalTitleGap: 8,
                     title: Text(
-                      AppLocalizations.of(context)!
-                          .settingsSuppliersAndRecommendations,
+                      AppLocalizations.of(context)!.settingsSuppliersAndRecommendations,
                     ),
                     onTap: () {
                       context.router.push(const SuppliersSettingsRoute());

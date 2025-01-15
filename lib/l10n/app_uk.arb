@@ -15,6 +15,7 @@
     "status": "Статус",
     "language": "Мова",
     "mediaType": "Контент",
+    "contentLanguage": "Мова контенту",
     "mediaTypeVideo": "Відео",
     "mediaTypeManga": "Манга",
     "statusLabelWatchingNow": "Дивлюсь зараз",

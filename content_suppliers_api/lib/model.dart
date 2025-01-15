@@ -17,7 +17,7 @@ enum ContentType {
 enum ContentLanguage {
   en("EN"),
   uk("UK"),
-  multi("Multi");
+  jp("JP");
 
   final String label;
 
@@ -35,18 +35,14 @@ abstract class ContentSupplier {
   Set<String> get defaultChannels => const {};
   Set<ContentType> get supportedTypes => const {};
   Set<ContentLanguage> get supportedLanguages => const {};
-  Future<List<ContentInfo>> search(
-    String query,
-    Set<ContentType> type,
-  ) async =>
-      const [];
+  Future<List<ContentInfo>> search(String query) async => const [];
 
   Future<List<ContentInfo>> loadChannel(
     String channel, {
     int page = 0,
   }) async =>
       const [];
-  Future<ContentDetails?> detailsById(String id) async => null;
+  Future<ContentDetails?> detailsById(String id, Set<ContentLanguage> langs) async => null;
 }
 
 abstract interface class ContentInfo {
@@ -117,8 +113,7 @@ class ContentSearchResult extends Equatable implements ContentInfo {
     required this.secondaryTitle,
   });
 
-  factory ContentSearchResult.fromJson(Map<String, dynamic> json) =>
-      _$ContentSearchResultFromJson(json);
+  factory ContentSearchResult.fromJson(Map<String, dynamic> json) => _$ContentSearchResultFromJson(json);
 
   static List<ContentSearchResult> fromJsonList(List<dynamic> json) =>
       json.map((e) => ContentSearchResult.fromJson(e)).toList();
@@ -129,8 +124,7 @@ class ContentSearchResult extends Equatable implements ContentInfo {
   List<Object?> get props => [id, supplier, image, title, secondaryTitle];
 }
 
-abstract class AbstractContentDetails extends Equatable
-    implements ContentDetails {
+abstract class AbstractContentDetails extends Equatable implements ContentDetails {
   @override
   final String id;
   @override
@@ -169,84 +163,11 @@ abstract class AbstractContentDetails extends Equatable
   });
 
   @override
-  List<Object?> get props => [
-        id,
-        supplier,
-        title,
-        originalTitle,
-        image,
-        description,
-        additionalInfo,
-        similar
-      ];
-}
-
-abstract class AbstractContentMediaItem extends Equatable
-    implements ContentMediaItem {
-  @override
-  final int number;
-  @override
-  final String title;
-  @override
-  final String? section;
-  @override
-  final String? image;
-
-  const AbstractContentMediaItem({
-    required this.number,
-    required this.title,
-    this.section,
-    this.image,
-  });
-
-  @override
-  List<Object?> get props => [number];
-}
-
-abstract interface class ContentMediaItemLoader {
-  FutureOr<List<ContentMediaItem>> call();
-}
-
-abstract interface class ContentMediaItemSourceLoader {
-  FutureOr<List<ContentMediaItemSource>> call();
-}
-
-// ignore: must_be_immutable
-class AsyncContentMediaItem extends AbstractContentMediaItem {
-  List<ContentMediaItemSource>? _cachedSources;
-
-  @override
-  Future<List<ContentMediaItemSource>> get sources async =>
-      _cachedSources ??= await sourcesLoader();
-
-  final ContentMediaItemSourceLoader sourcesLoader;
-
-  AsyncContentMediaItem({
-    required super.number,
-    required super.title,
-    required this.sourcesLoader,
-    super.section,
-    super.image,
-  });
+  List<Object?> get props => [id, supplier, title, originalTitle, image, description, additionalInfo, similar];
 }
 
 @immutable
-class SimpleContentMediaItem extends AbstractContentMediaItem {
-  @override
-  final List<ContentMediaItemSource> sources;
-
-  const SimpleContentMediaItem({
-    required super.number,
-    required super.title,
-    required this.sources,
-    super.section,
-    super.image,
-  });
-}
-
-@immutable
-class SimpleContentMediaItemSource extends Equatable
-    implements MediaFileItemSource {
+class SimpleContentMediaItemSource extends Equatable implements MediaFileItemSource {
   @override
   final FileKind kind;
   @override
@@ -259,57 +180,6 @@ class SimpleContentMediaItemSource extends Equatable
   const SimpleContentMediaItemSource({
     required this.description,
     required this.link,
-    this.kind = FileKind.video,
-    this.headers,
-  });
-
-  @override
-  List<Object?> get props => [link, headers];
-}
-
-class SimpleMangaMediaItemSource extends MangaMediaItemSource {
-  @override
-  final String description;
-  final List<String> pages;
-
-  SimpleMangaMediaItemSource({
-    required this.description,
-    required this.pages,
-  });
-  @override
-  FileKind get kind => FileKind.manga;
-
-  @override
-  int get pageNambers => pages.length;
-
-  @override
-  FutureOr<List<ImageProvider<Object>>> allPages() {
-    return pages.map((e) => NetworkImage(e)).toList();
-  }
-}
-
-typedef ContentItemMediaSourceLinkLoader = Future<Uri> Function();
-
-// ignore: must_be_immutable
-class AsyncContentMediaItemSource extends Equatable
-    implements MediaFileItemSource {
-  @override
-  final FileKind kind;
-  @override
-  final String description;
-  @override
-  final Map<String, String>? headers;
-
-  Uri? _linkLoader;
-
-  final ContentItemMediaSourceLinkLoader linkLoader;
-
-  @override
-  Future<Uri> get link async => _linkLoader ??= await linkLoader();
-
-  AsyncContentMediaItemSource({
-    required this.description,
-    required this.linkLoader,
     this.kind = FileKind.video,
     this.headers,
   });

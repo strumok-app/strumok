@@ -85,7 +85,9 @@ abstract class RustLibApi extends BaseApi {
   List<String> crateApiGetChannels({required String supplier});
 
   Future<ContentDetails?> crateApiGetContentDetails(
-      {required String supplier, required String id});
+      {required String supplier,
+      required String id,
+      required List<String> langs});
 
   List<String> crateApiGetDefaultChannels({required String supplier});
 
@@ -114,9 +116,7 @@ abstract class RustLibApi extends BaseApi {
       required List<String> params});
 
   Future<List<ContentInfo>> crateApiSearch(
-      {required String supplier,
-      required String query,
-      required List<String> types});
+      {required String supplier, required String query});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -174,12 +174,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<ContentDetails?> crateApiGetContentDetails(
-      {required String supplier, required String id}) {
+      {required String supplier,
+      required String id,
+      required List<String> langs}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(supplier, serializer);
         sse_encode_String(id, serializer);
+        sse_encode_list_String(langs, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 3, port: port_);
       },
@@ -188,14 +191,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiGetContentDetailsConstMeta,
-      argValues: [supplier, id],
+      argValues: [supplier, id, langs],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta get kCrateApiGetContentDetailsConstMeta => const TaskConstMeta(
         debugName: "get_content_details",
-        argNames: ["supplier", "id"],
+        argNames: ["supplier", "id", "langs"],
       );
 
   @override
@@ -408,15 +411,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<List<ContentInfo>> crateApiSearch(
-      {required String supplier,
-      required String query,
-      required List<String> types}) {
+      {required String supplier, required String query}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(supplier, serializer);
         sse_encode_String(query, serializer);
-        sse_encode_list_String(types, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 12, port: port_);
       },
@@ -425,14 +425,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiSearchConstMeta,
-      argValues: [supplier, query, types],
+      argValues: [supplier, query],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta get kCrateApiSearchConstMeta => const TaskConstMeta(
         debugName: "search",
-        argNames: ["supplier", "query", "types"],
+        argNames: ["supplier", "query"],
       );
 
   @protected
@@ -528,9 +528,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 2:
         return ContentMediaItemSource_Manga(
           description: dco_decode_String(raw[1]),
-          pageNumbers: dco_decode_u_32(raw[2]),
-          pages: dco_decode_opt_list_String(raw[3]),
-          params: dco_decode_list_String(raw[4]),
+          headers: dco_decode_opt_Map_String_String(raw[2]),
+          pageNumbers: dco_decode_u_32(raw[3]),
+          pages: dco_decode_opt_list_String(raw[4]),
+          params: dco_decode_list_String(raw[5]),
         );
       default:
         throw Exception("unreachable");
@@ -781,11 +782,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             link: var_link, description: var_description, headers: var_headers);
       case 2:
         var var_description = sse_decode_String(deserializer);
+        var var_headers = sse_decode_opt_Map_String_String(deserializer);
         var var_pageNumbers = sse_decode_u_32(deserializer);
         var var_pages = sse_decode_opt_list_String(deserializer);
         var var_params = sse_decode_list_String(deserializer);
         return ContentMediaItemSource_Manga(
             description: var_description,
+            headers: var_headers,
             pageNumbers: var_pageNumbers,
             pages: var_pages,
             params: var_params);
@@ -1093,12 +1096,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_opt_Map_String_String(headers, serializer);
       case ContentMediaItemSource_Manga(
           description: final description,
+          headers: final headers,
           pageNumbers: final pageNumbers,
           pages: final pages,
           params: final params
         ):
         sse_encode_i_32(2, serializer);
         sse_encode_String(description, serializer);
+        sse_encode_opt_Map_String_String(headers, serializer);
         sse_encode_u_32(pageNumbers, serializer);
         sse_encode_opt_list_String(pages, serializer);
         sse_encode_list_String(params, serializer);

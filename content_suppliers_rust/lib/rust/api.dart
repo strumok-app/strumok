@@ -20,11 +20,8 @@ List<String> getSupportedLanguages({required String supplier}) =>
     RustLib.instance.api.crateApiGetSupportedLanguages(supplier: supplier);
 
 Future<List<ContentInfo>> search(
-        {required String supplier,
-        required String query,
-        required List<String> types}) =>
-    RustLib.instance.api
-        .crateApiSearch(supplier: supplier, query: query, types: types);
+        {required String supplier, required String query}) =>
+    RustLib.instance.api.crateApiSearch(supplier: supplier, query: query);
 
 Future<List<ContentInfo>> loadChannel(
         {required String supplier,
@@ -34,8 +31,11 @@ Future<List<ContentInfo>> loadChannel(
         .crateApiLoadChannel(supplier: supplier, channel: channel, page: page);
 
 Future<ContentDetails?> getContentDetails(
-        {required String supplier, required String id}) =>
-    RustLib.instance.api.crateApiGetContentDetails(supplier: supplier, id: id);
+        {required String supplier,
+        required String id,
+        required List<String> langs}) =>
+    RustLib.instance.api
+        .crateApiGetContentDetails(supplier: supplier, id: id, langs: langs);
 
 Future<List<ContentMediaItem>> loadMediaItems(
         {required String supplier,

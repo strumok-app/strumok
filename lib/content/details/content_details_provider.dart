@@ -4,11 +4,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:strumok/settings/settings_provider.dart';
 
 part 'content_details_provider.g.dart';
 
 @riverpod
 Future<ContentDetails> details(Ref ref, String supplier, String id) {
+  final langs = ref.watch(contentLanguageSettingsProvider);
   final link = ref.keepAlive();
 
   Timer? timer;
@@ -27,7 +29,7 @@ Future<ContentDetails> details(Ref ref, String supplier, String id) {
     timer?.cancel();
   });
 
-  return ContentSuppliers.instance.detailsById(supplier, id);
+  return ContentSuppliers().detailsById(supplier, id, langs);
 }
 
 class DetailsAndMediaItems {

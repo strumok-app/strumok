@@ -52,7 +52,7 @@ void appRunner() async {
 
   // load suppliers
   await FFISuppliersBundleStorage.instance.setup();
-  await ContentSuppliers.instance.load();
+  await ContentSuppliers().load();
 
   // start ui
   runApp(ProviderScope(
@@ -76,11 +76,8 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        scrollBehavior: const MaterialScrollBehavior().copyWith(dragDevices: {
-          PointerDeviceKind.mouse,
-          PointerDeviceKind.touch,
-          PointerDeviceKind.trackpad
-        }),
+        scrollBehavior: const MaterialScrollBehavior()
+            .copyWith(dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.trackpad}),
         routerConfig: _appRouter.config(
           navigatorObservers: () => [
             SentryNavigatorObserver(
@@ -88,9 +85,8 @@ class MainApp extends StatelessWidget {
             )
           ],
         ),
-        builder: (context, child) => AppTheme(
-          child: VersionGuard(child: child!),
-        ),
+        builder: (context, child) => AppTheme(child: child! //VersionGuard(child: child!),
+            ),
       ),
     );
   }

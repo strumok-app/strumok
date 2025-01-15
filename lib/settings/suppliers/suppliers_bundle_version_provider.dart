@@ -28,8 +28,7 @@ Future<FFISupplierBundleInfo?> installedSupplierBundleInfo(
   final info = AppPreferences.ffiSupplierBundleInfo;
 
   if (info != null) {
-    final installed =
-        await FFISuppliersBundleStorage.instance.isInstalled(info);
+    final installed = await FFISuppliersBundleStorage.instance.isInstalled(info);
 
     if (!installed) {
       return null;
@@ -102,7 +101,7 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
     }
 
     // reload bundles
-    await ContentSuppliers.instance.reload([bundle]);
+    await ContentSuppliers().reload([bundle]);
     // save info
     AppPreferences.ffiSupplierBundleInfo = info;
     // refresh providers

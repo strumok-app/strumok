@@ -142,6 +142,7 @@ sealed class ContentMediaItemSource with _$ContentMediaItemSource {
   }) = ContentMediaItemSource_Subtitle;
   const factory ContentMediaItemSource.manga({
     required String description,
+    Map<String, String>? headers,
     required int pageNumbers,
     List<String>? pages,
     required List<String> params,

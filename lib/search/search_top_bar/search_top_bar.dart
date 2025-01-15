@@ -34,8 +34,7 @@ class SearchTopBar extends HookConsumerWidget {
             children: [
               Expanded(
                 child: Align(
-                  alignment:
-                      TVDetector.isTV ? Alignment.centerLeft : Alignment.center,
+                  alignment: TVDetector.isTV ? Alignment.centerLeft : Alignment.center,
                   child: _SearchBar(
                     searchController: searchController,
                     focusNode: searchBarFocusNode,
@@ -164,7 +163,7 @@ class _FilterSelectorsDialog extends ConsumerWidget {
             children: [
               FilterDialogSection(
                 label: Text(
-                  AppLocalizations.of(context)!.language,
+                  AppLocalizations.of(context)!.contentLanguage,
                   style: theme.textTheme.headlineSmall,
                 ),
                 itemsCount: ContentLanguage.values.length,
@@ -174,9 +173,7 @@ class _FilterSelectorsDialog extends ConsumerWidget {
                     selected: searchSettings.languages.contains(item),
                     label: Text(item.label),
                     onSelected: (value) {
-                      ref
-                          .read(searchSettingsProvider.notifier)
-                          .toggleLanguage(item);
+                      ref.read(searchSettingsProvider.notifier).toggleLanguage(item);
                     },
                   );
                 },
@@ -194,9 +191,7 @@ class _FilterSelectorsDialog extends ConsumerWidget {
                     selected: searchSettings.types.contains(item),
                     label: Text(contentTypeLabel(context, item)),
                     onSelected: (value) {
-                      ref
-                          .read(searchSettingsProvider.notifier)
-                          .toggleType(item);
+                      ref.read(searchSettingsProvider.notifier).toggleType(item);
                     },
                   );
                 },
@@ -212,26 +207,19 @@ class _FilterSelectorsDialog extends ConsumerWidget {
                   final item = enabledSuppliers[index];
                   return FilterChip(
                     label: Text(item),
-                    selected:
-                        searchSettings.searchSuppliersNames.contains(item),
+                    selected: searchSettings.searchSuppliersNames.contains(item),
                     onSelected: searchSettings.avaliableSuppliers.contains(item)
                         ? (value) {
-                            ref
-                                .read(searchSettingsProvider.notifier)
-                                .toggleSupplierName(item);
+                            ref.read(searchSettingsProvider.notifier).toggleSupplierName(item);
                           }
                         : null,
                   );
                 },
                 onSelectAll: () {
-                  ref
-                      .read(searchSettingsProvider.notifier)
-                      .toggleAllSuppliers(true);
+                  ref.read(searchSettingsProvider.notifier).toggleAllSuppliers(true);
                 },
                 onUnselectAll: () {
-                  ref
-                      .read(searchSettingsProvider.notifier)
-                      .toggleAllSuppliers(false);
+                  ref.read(searchSettingsProvider.notifier).toggleAllSuppliers(false);
                 },
               ),
             ],
@@ -243,8 +231,7 @@ class _FilterSelectorsDialog extends ConsumerWidget {
 }
 
 class _TopSearchSuggestions extends HookConsumerWidget {
-  const _TopSearchSuggestions(
-      {required this.searchController, required this.onSelect});
+  const _TopSearchSuggestions({required this.searchController, required this.onSelect});
 
   final SearchController searchController;
   final Function(String) onSelect;
@@ -258,9 +245,7 @@ class _TopSearchSuggestions extends HookConsumerWidget {
         return Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: ListView(
-            children: suggestions
-                .map((suggestion) => _renderSuggestion(suggestion, ref))
-                .toList(),
+            children: suggestions.map((suggestion) => _renderSuggestion(suggestion, ref)).toList(),
           ),
         );
       },
@@ -286,9 +271,7 @@ class _TopSearchSuggestions extends HookConsumerWidget {
             child: IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () {
-                ref
-                    .read(suggestionsProvider.notifier)
-                    .deleteSuggestion(suggestion);
+                ref.read(suggestionsProvider.notifier).deleteSuggestion(suggestion);
               },
             ),
           ),

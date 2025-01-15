@@ -51,6 +51,8 @@ class RustContentSuppliersBundle implements ContentSupplierBundle {
 
 class _RustContentSupplier implements ContentSupplier {
   final RustLibApi _api;
+  Set<ContentType>? _supportedTypes;
+  Set<ContentLanguage>? _supportedLanguage;
 
   @override
   final String name;
@@ -68,12 +70,10 @@ class _RustContentSupplier implements ContentSupplier {
   }
 
   @override
-  Future<ContentDetails?> detailsById(String id) async {
+  Future<ContentDetails?> detailsById(String id, Set<ContentLanguage> langs) async {
     try {
-      final result = await _api.crateApiGetContentDetails(
-        supplier: name,
-        id: id,
-      );
+      final langsCodes = langs.map((lang) => lang.name).toList();
+      final result = await _api.crateApiGetContentDetails(supplier: name, id: id, langs: langsCodes);
 
       if (result == null) {
         return null;
@@ -105,12 +105,11 @@ class _RustContentSupplier implements ContentSupplier {
   }
 
   @override
-  Future<List<ContentInfo>> search(String query, Set<ContentType> type) async {
+  Future<List<ContentInfo>> search(String query) async {
     try {
       final results = await _api.crateApiSearch(
         supplier: name,
         query: query,
-        types: type.map((v) => v.name).toList(),
       );
 
       return results.map((info) => ContentSearchResultExt.fromRust(name, info)).toList();
@@ -123,20 +122,29 @@ class _RustContentSupplier implements ContentSupplier {
 
   @override
   Set<ContentLanguage> get supportedLanguages {
-    return _api
-        .crateApiGetSupportedLanguages(supplier: name)
-        .map(
-          (lang) => ContentLanguage.values.firstWhereOrNull(
-            (v) => v.name == lang,
-          ),
-        )
-        .nonNulls
-        .toSet();
+    if (_supportedLanguage == null) {
+      final langs = _api.crateApiGetSupportedLanguages(supplier: name);
+
+      if (langs.firstOrNull == "multi") {
+        _supportedLanguage = ContentLanguage.values.toSet();
+      }
+
+      _supportedLanguage = langs
+          .map(
+            (lang) => ContentLanguage.values.firstWhereOrNull(
+              (v) => v.name == lang,
+            ),
+          )
+          .nonNulls
+          .toSet();
+    }
+
+    return _supportedLanguage!;
   }
 
   @override
   Set<ContentType> get supportedTypes {
-    return _api
+    return _supportedTypes ??= _api
         .crateApiGetSupportedTypes(supplier: name)
         .map(
           (type) => ContentType.values.firstWhereOrNull(
@@ -327,6 +335,7 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
   final int pageNambers;
 
   List<ImageProvider>? _pages;
+  Map<String, String>? _headers;
   final RustLibApi _api;
   final List<String> _params;
 
@@ -338,9 +347,11 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
     required List<ImageProvider>? pages,
     required RustLibApi api,
     required List<String> params,
+    Map<String, String>? headers,
   })  : _pages = pages,
         _api = api,
-        _params = params;
+        _params = params,
+        _headers = headers;
 
   factory _RustMangaMediaItemSource.fromRust(
     String id,
@@ -353,7 +364,8 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
       supplier: supplier,
       pageNambers: item.pageNumbers,
       description: item.description,
-      pages: item.pages?.map((link) => CachedNetworkImageProvider(link)).toList(),
+      headers: item.headers,
+      pages: item.pages?.map((link) => CachedNetworkImageProvider(link, headers: item.headers)).toList(),
       params: item.params,
       api: api,
     );
@@ -369,7 +381,7 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
       id: id,
       params: _params,
     ))
-        .map((link) => CachedNetworkImageProvider(link))
+        .map((link) => CachedNetworkImageProvider(link, headers: _headers))
         .toList();
   }
 }

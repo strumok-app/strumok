@@ -60,7 +60,7 @@ class SuppliersSettingsModel extends Equatable {
 class SuppliersSettings extends _$SuppliersSettings {
   @override
   SuppliersSettingsModel build() {
-    final contentSuppliers = ContentSuppliers.instance;
+    final contentSuppliers = ContentSuppliers();
     final supplierNames = contentSuppliers.suppliersName;
 
     Set<String> suppliersOrder;

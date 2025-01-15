@@ -7,12 +7,11 @@ import 'package:strumok/utils/sem_ver.dart';
 const ffiSupplierBundleDir = "ffi";
 
 class FFISuppliersBundleStorage {
-  static const minimalCompatibleVersion = SemVer(major: 1, minor: 3, inc: 0);
+  static const minimalCompatibleVersion = SemVer(major: 1, minor: 4, inc: 0);
 
   FFISuppliersBundleStorage._();
 
-  static final FFISuppliersBundleStorage instance =
-      FFISuppliersBundleStorage._();
+  static final FFISuppliersBundleStorage instance = FFISuppliersBundleStorage._();
 
   late String libsDir;
 
@@ -44,8 +43,7 @@ class FFISuppliersBundleStorage {
       final files = await Directory(libsDir).list().toList();
 
       for (var file in files) {
-        if (file.path.contains(info.name) &&
-            !file.path.contains(info.version.toString())) {
+        if (file.path.contains(info.name) && !file.path.contains(info.version.toString())) {
           await file.delete();
         }
       }
