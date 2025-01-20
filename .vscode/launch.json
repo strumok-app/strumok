@@ -22,7 +22,7 @@
                 "FFI_SUPPLIER_LIB_NAME=strumok_suppliers",
             ],
             "env": {
-                "RUST_LOG": "debug"
+                "RUST_LOG": "info"
             }
         },
     ]
