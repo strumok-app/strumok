@@ -62,6 +62,7 @@ class SearchSettingsModel extends Equatable {
         .suppliers
         .where(
           (sup) =>
+              suppliersNames.contains(sup.name) &&
               languages.intersection(sup.supportedLanguages).isNotEmpty &&
               types.intersection(sup.supportedTypes).isNotEmpty,
         )
