@@ -5,11 +5,7 @@ use anyhow::anyhow;
 use crate::{
     models::*,
     suppliers::{
-        get_supplier, 
-        AllContentSuppliers, 
-        AllMangaPagesLoaders, 
-        ContentSupplier, 
-        MangaPagesLoader,
+        get_supplier, AllContentSuppliers, AllMangaPagesLoaders, ContentSupplier, MangaPagesLoader,
     },
 };
 
@@ -54,7 +50,7 @@ pub async fn load_channel(
 pub async fn get_content_details(
     supplier: String,
     id: String,
-    langs: Vec<String>
+    langs: Vec<String>,
 ) -> anyhow::Result<Option<ContentDetails>> {
     let sup = get_supplier(&supplier)?;
     AllContentSuppliers::get_content_details(&sup, id, langs).await
@@ -63,19 +59,21 @@ pub async fn get_content_details(
 pub async fn load_media_items(
     supplier: String,
     id: String,
+    langs: Vec<String>,
     params: Vec<String>,
 ) -> anyhow::Result<Vec<ContentMediaItem>> {
     let sup = get_supplier(&supplier)?;
-    AllContentSuppliers::load_media_items(&sup, id, params).await
+    AllContentSuppliers::load_media_items(&sup, id, langs, params).await
 }
 
 pub async fn load_media_item_sources(
     supplier: String,
     id: String,
+    langs: Vec<String>,
     params: Vec<String>,
 ) -> anyhow::Result<Vec<ContentMediaItemSource>> {
     let sup = get_supplier(&supplier)?;
-    AllContentSuppliers::load_media_item_sources(&sup, id, params).await
+    AllContentSuppliers::load_media_item_sources(&sup, id, langs, params).await
 }
 
 pub async fn load_manga_pages(

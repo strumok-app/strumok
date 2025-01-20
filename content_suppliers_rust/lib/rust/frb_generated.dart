@@ -108,11 +108,13 @@ abstract class RustLibApi extends BaseApi {
   Future<List<ContentMediaItemSource>> crateApiLoadMediaItemSources(
       {required String supplier,
       required String id,
+      required List<String> langs,
       required List<String> params});
 
   Future<List<ContentMediaItem>> crateApiLoadMediaItems(
       {required String supplier,
       required String id,
+      required List<String> langs,
       required List<String> params});
 
   Future<List<ContentInfo>> crateApiSearch(
@@ -354,12 +356,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Future<List<ContentMediaItemSource>> crateApiLoadMediaItemSources(
       {required String supplier,
       required String id,
+      required List<String> langs,
       required List<String> params}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(supplier, serializer);
         sse_encode_String(id, serializer);
+        sse_encode_list_String(langs, serializer);
         sse_encode_list_String(params, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 10, port: port_);
@@ -369,7 +373,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiLoadMediaItemSourcesConstMeta,
-      argValues: [supplier, id, params],
+      argValues: [supplier, id, langs, params],
       apiImpl: this,
     ));
   }
@@ -377,19 +381,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiLoadMediaItemSourcesConstMeta =>
       const TaskConstMeta(
         debugName: "load_media_item_sources",
-        argNames: ["supplier", "id", "params"],
+        argNames: ["supplier", "id", "langs", "params"],
       );
 
   @override
   Future<List<ContentMediaItem>> crateApiLoadMediaItems(
       {required String supplier,
       required String id,
+      required List<String> langs,
       required List<String> params}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(supplier, serializer);
         sse_encode_String(id, serializer);
+        sse_encode_list_String(langs, serializer);
         sse_encode_list_String(params, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 11, port: port_);
@@ -399,14 +405,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiLoadMediaItemsConstMeta,
-      argValues: [supplier, id, params],
+      argValues: [supplier, id, langs, params],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta get kCrateApiLoadMediaItemsConstMeta => const TaskConstMeta(
         debugName: "load_media_items",
-        argNames: ["supplier", "id", "params"],
+        argNames: ["supplier", "id", "langs", "params"],
       );
 
   @override

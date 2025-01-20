@@ -40,16 +40,18 @@ Future<ContentDetails?> getContentDetails(
 Future<List<ContentMediaItem>> loadMediaItems(
         {required String supplier,
         required String id,
+        required List<String> langs,
         required List<String> params}) =>
-    RustLib.instance.api
-        .crateApiLoadMediaItems(supplier: supplier, id: id, params: params);
+    RustLib.instance.api.crateApiLoadMediaItems(
+        supplier: supplier, id: id, langs: langs, params: params);
 
 Future<List<ContentMediaItemSource>> loadMediaItemSources(
         {required String supplier,
         required String id,
+        required List<String> langs,
         required List<String> params}) =>
     RustLib.instance.api.crateApiLoadMediaItemSources(
-        supplier: supplier, id: id, params: params);
+        supplier: supplier, id: id, langs: langs, params: params);
 
 Future<List<String>> loadMangaPages(
         {required String supplier,

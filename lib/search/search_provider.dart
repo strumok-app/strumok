@@ -28,7 +28,7 @@ class Search extends _$Search {
     final enabledSuppliers = ref.read(enabledSuppliersProvider);
     final searchSettings = ref.read(searchSettingsProvider);
     final contentSuppliers = enabledSuppliers.intersection(
-      searchSettings.searchSuppliersNames,
+      searchSettings.avaliableSuppliers,
     );
 
     final stream = ContentSuppliers().search(query, contentSuppliers);
@@ -93,8 +93,8 @@ class SearchSettings extends _$SearchSettings {
   SearchSettingsModel build() {
     return SearchSettingsModel(
         languages: AppPreferences.selectedContentLanguage ?? ContentLanguage.values.toSet(),
-        types: AppPreferences.selectedContentType ?? ContentType.values.toSet(),
-        suppliersNames: AppPreferences.collectionContentSuppliers ?? ContentSuppliers().suppliersName);
+        types: AppPreferences.searchContentType ?? ContentType.values.toSet(),
+        suppliersNames: AppPreferences.searchContentSuppliers ?? ContentSuppliers().suppliersName);
   }
 
   void toggleLanguage(ContentLanguage lang) {
@@ -106,18 +106,18 @@ class SearchSettings extends _$SearchSettings {
   void toggleType(ContentType type) {
     final newTypes = state.types.toggle(type);
     state = state.copyWith(types: newTypes);
-    AppPreferences.selectedContentType = newTypes;
+    AppPreferences.searchContentType = newTypes;
   }
 
   void toggleSupplierName(String supplierName) {
     final newSupplierNames = state.suppliersNames.toggle(supplierName);
     state = state.copyWith(suppliersNames: newSupplierNames);
-    AppPreferences.collectionContentSuppliers = newSupplierNames;
+    AppPreferences.searchContentSuppliers = newSupplierNames;
   }
 
   void toggleAllSuppliers(bool select) {
     final newSupplierNames = select ? ContentSuppliers().suppliersName : <String>{};
     state = state.copyWith(suppliersNames: newSupplierNames);
-    AppPreferences.collectionContentSuppliers = newSupplierNames;
+    AppPreferences.searchContentSuppliers = newSupplierNames;
   }
 }

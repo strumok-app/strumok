@@ -24,11 +24,13 @@ pub trait ContentSupplier {
     async fn load_media_items(
         &self,
         id: String,
+        langs: Vec<String>,
         params: Vec<String>,
     ) -> anyhow::Result<Vec<ContentMediaItem>>;
     async fn load_media_item_sources(
         &self,
         id: String,
+        langs: Vec<String>,
         params: Vec<String>,
     ) -> anyhow::Result<Vec<ContentMediaItemSource>>;
 }

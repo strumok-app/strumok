@@ -19,7 +19,9 @@ class ContentDetailsDesktopView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screanHeight = MediaQuery.of(context).size.height;
+    var size = MediaQuery.of(context).size;
+    final screanHeight = size.height;
+    final screanWidth = size.width;
     final compact = _isCompactLayout(context);
 
     return SizedBox.expand(
@@ -30,10 +32,13 @@ class ContentDetailsDesktopView extends StatelessWidget {
           if (!compact)
             Padding(
               padding: const EdgeInsets.only(left: 8),
-              child: CachedNetworkImage(
-                imageUrl: contentDetails.image,
-                height: screanHeight,
-                fit: BoxFit.fitHeight,
+              child: Container(
+                constraints: BoxConstraints(maxWidth: screanWidth * .4),
+                child: CachedNetworkImage(
+                  imageUrl: contentDetails.image,
+                  height: screanHeight,
+                  fit: BoxFit.fitHeight,
+                ),
               ),
             ),
         ],

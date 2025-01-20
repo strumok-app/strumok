@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content_suppliers/ffi_supplier_bundle_info.dart';
@@ -30,7 +29,7 @@ class AppPreferences {
         value?.map((lang) => lang.name).toList() ?? List.empty(),
       );
 
-  static Set<ContentType>? get selectedContentType => instance
+  static Set<ContentType>? get searchContentType => instance
       .getStringList("selected_content_type")
       ?.map(
         (value) => ContentType.values.firstWhereOrNull((type) => type.name == value),
@@ -38,14 +37,14 @@ class AppPreferences {
       .nonNulls
       .toSet();
 
-  static set selectedContentType(Set<ContentType>? value) => instance.setStringList(
+  static set searchContentType(Set<ContentType>? value) => instance.setStringList(
         "selected_content_type",
         value?.map((type) => type.name).toList() ?? List.empty(),
       );
 
-  static Set<String>? get selectedContentSuppliers => instance.getStringList("selected_content_suppliers")?.toSet();
+  static Set<String>? get searchContentSuppliers => instance.getStringList("selected_content_suppliers")?.toSet();
 
-  static set selectedContentSuppliers(Set<String>? value) => instance.setStringList(
+  static set searchContentSuppliers(Set<String>? value) => instance.setStringList(
         "selected_content_suppliers",
         value?.toList() ?? List.empty(),
       );
@@ -68,21 +67,21 @@ class AppPreferences {
     return colorValue != null ? Color(colorValue) : defaultColor;
   }
 
-  static Set<MediaType>? get collectionMediaType => instance
-      .getStringList("collection_media_type")
-      ?.map(
-        (value) => MediaType.values.firstWhereOrNull((type) => type.name == value),
-      )
-      .nonNulls
-      .toSet();
+  // static Set<MediaType>? get collectionMediaType => instance
+  //     .getStringList("collection_media_type")
+  //     ?.map(
+  //       (value) => MediaType.values.firstWhereOrNull((type) => type.name == value),
+  //     )
+  //     .nonNulls
+  //     .toSet();
 
-  static set collectionMediaType(
-    Set<MediaType>? value,
-  ) =>
-      instance.setStringList(
-        "collection_media_type",
-        value?.map((type) => type.name).toList() ?? List.empty(),
-      );
+  // static set collectionMediaType(
+  //   Set<MediaType>? value,
+  // ) =>
+  //     instance.setStringList(
+  //       "collection_media_type",
+  //       value?.map((type) => type.name).toList() ?? List.empty(),
+  //     );
 
   // static Set<MediaCollectionItemStatus>? get collectionItemStatus => instance
   //     .getStringList("collection_item_status")
@@ -100,12 +99,12 @@ class AppPreferences {
   //       value?.map((type) => type.name).toList() ?? List.empty(),
   //     );
 
-  static Set<String>? get collectionContentSuppliers => instance.getStringList("collection_content_suppliers")?.toSet();
+  // static Set<String>? get collectionContentSuppliers => instance.getStringList("collection_content_suppliers")?.toSet();
 
-  static set collectionContentSuppliers(Set<String>? value) => instance.setStringList(
-        "collection_content_suppliers",
-        value?.toList() ?? List.empty(),
-      );
+  // static set collectionContentSuppliers(Set<String>? value) => instance.setStringList(
+  //       "collection_content_suppliers",
+  //       value?.toList() ?? List.empty(),
+  //     );
 
   static int get lastSyncTimestamp => instance.getInt("last_sync_timestamp") ?? 0;
 

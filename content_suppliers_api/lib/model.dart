@@ -17,7 +17,7 @@ enum ContentType {
 enum ContentLanguage {
   en("EN"),
   uk("UK"),
-  jp("JP");
+  ja("JA");
 
   final String label;
 

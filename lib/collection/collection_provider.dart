@@ -1,4 +1,3 @@
-import 'package:strumok/app_preferences.dart';
 import 'package:strumok/auth/auth_provider.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_repository.dart';

@@ -6,6 +6,7 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
 import 'package:strumok/collection/horizontal_list/horizontal_list_item.dart';
+import 'package:strumok/collection/sync/collection_sync_provider.dart';
 import 'package:strumok/widgets/focus_indicator.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
 import 'package:strumok/widgets/use_search_hint.dart';
@@ -23,6 +24,11 @@ class CollectionHorizontalView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final collections = ref.watch(collectionProvider).valueOrNull;
+    final collectionSync = ref.watch(collectionSyncStatusProvider).valueOrNull ?? false;
+
+    if (collectionSync) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     if (collections == null) {
       return const SizedBox.shrink();

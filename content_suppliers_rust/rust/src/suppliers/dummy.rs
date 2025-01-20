@@ -46,7 +46,11 @@ impl ContentSupplier for DummyContentSupplier {
         }])
     }
 
-    async fn get_content_details(&self, id: String, langs: Vec<String>) -> anyhow::Result<Option<ContentDetails>> {
+    async fn get_content_details(
+        &self,
+        id: String,
+        langs: Vec<String>,
+    ) -> anyhow::Result<Option<ContentDetails>> {
         if id == "eager_sources" {
             return Ok(Some(ContentDetails {
                 title: format!("dummy_title {id}"),
@@ -96,6 +100,7 @@ impl ContentSupplier for DummyContentSupplier {
     async fn load_media_items(
         &self,
         id: String,
+        _langs: Vec<String>,
         params: Vec<String>,
     ) -> anyhow::Result<Vec<ContentMediaItem>> {
         let mut new_params = params;
@@ -114,6 +119,7 @@ impl ContentSupplier for DummyContentSupplier {
     async fn load_media_item_sources(
         &self,
         id: String,
+        _langs: Vec<String>,
         params: Vec<String>,
     ) -> Result<Vec<ContentMediaItemSource>, anyhow::Error> {
         if id == "async_manga" {

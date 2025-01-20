@@ -72,14 +72,20 @@ class _RustContentSupplier implements ContentSupplier {
   @override
   Future<ContentDetails?> detailsById(String id, Set<ContentLanguage> langs) async {
     try {
-      final langsCodes = langs.map((lang) => lang.name).toList();
+      final langsCodes = langs
+          .where(
+            (lang) => supportedLanguages.contains(lang),
+          )
+          .map((lang) => lang.name)
+          .toList();
+
       final result = await _api.crateApiGetContentDetails(supplier: name, id: id, langs: langsCodes);
 
       if (result == null) {
         return null;
       }
 
-      return _RustContentDetails.fromRust(id, name, result, _api);
+      return _RustContentDetails.fromRust(id, name, langsCodes, result, _api);
     } catch (e) {
       throw ContentSuppliersException(
         "FFI GetContentDetails Failed [suppier=$name id=$id] error: $e",
@@ -171,6 +177,7 @@ extension ContentSearchResultExt on ContentSearchResult {
 // ignore: must_be_immutable
 class _RustContentDetails extends AbstractContentDetails {
   final RustLibApi _api;
+  final List<String> langs;
   final List<String> _params;
   @override
   final MediaType mediaType;
@@ -179,6 +186,7 @@ class _RustContentDetails extends AbstractContentDetails {
   _RustContentDetails._({
     required super.id,
     required super.supplier,
+    required this.langs,
     required super.title,
     required super.originalTitle,
     required super.image,
@@ -196,12 +204,14 @@ class _RustContentDetails extends AbstractContentDetails {
   factory _RustContentDetails.fromRust(
     String id,
     String supplier,
+    List<String> langs,
     models.ContentDetails result,
     RustLibApi api,
   ) {
     return _RustContentDetails._(
       id: id,
       supplier: supplier,
+      langs: langs,
       mediaType: MediaType.values.firstWhere(
         (v) => v.name == result.mediaType.name,
         orElse: () => MediaType.video,
@@ -213,7 +223,7 @@ class _RustContentDetails extends AbstractContentDetails {
       additionalInfo: result.additionalInfo,
       similar: result.similar.map((info) => ContentSearchResultExt.fromRust(supplier, info)).toList(),
       mediaItems: result.mediaItems?.map(
-        (item) => _RustMediaItem.fromRust(id, supplier, item, api),
+        (item) => _RustMediaItem.fromRust(id, supplier, langs, item, api),
       ),
       params: result.params,
       api: api,
@@ -226,9 +236,10 @@ class _RustContentDetails extends AbstractContentDetails {
       return _mediaItems ??= (await _api.crateApiLoadMediaItems(
         supplier: supplier,
         id: id,
+        langs: langs,
         params: _params,
       ))
-          .map((item) => _RustMediaItem.fromRust(id, supplier, item, _api));
+          .map((item) => _RustMediaItem.fromRust(id, supplier, langs, item, _api));
     } catch (e) {
       throw ContentSuppliersException(
         "FFI LoadMediaItems Failed [supplier=$supplier id=$id params: $_params] error: $e",
@@ -240,6 +251,7 @@ class _RustContentDetails extends AbstractContentDetails {
 class _RustMediaItem implements ContentMediaItem {
   final String id;
   final String supplier;
+  final List<String> langs;
   @override
   final int number;
   @override
@@ -256,6 +268,7 @@ class _RustMediaItem implements ContentMediaItem {
   _RustMediaItem._({
     required this.id,
     required this.supplier,
+    required this.langs,
     required this.number,
     required this.title,
     required this.section,
@@ -270,12 +283,14 @@ class _RustMediaItem implements ContentMediaItem {
   factory _RustMediaItem.fromRust(
     String id,
     String supplier,
+    List<String> langs,
     models.ContentMediaItem item,
     RustLibApi api,
   ) {
     return _RustMediaItem._(
       id: id,
       supplier: supplier,
+      langs: langs,
       number: item.number,
       title: item.title,
       section: item.section,
@@ -292,6 +307,7 @@ class _RustMediaItem implements ContentMediaItem {
       return _sources ??= (await _api.crateApiLoadMediaItemSources(
         supplier: supplier,
         id: id,
+        langs: langs,
         params: _params,
       ))
           .map((item) => mapMediaItemSource(id, supplier, item, _api))

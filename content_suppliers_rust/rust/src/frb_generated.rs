@@ -378,14 +378,19 @@ fn wire__crate__api__load_media_item_sources_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_supplier = <String>::sse_decode(&mut deserializer);
             let api_id = <String>::sse_decode(&mut deserializer);
+            let api_langs = <Vec<String>>::sse_decode(&mut deserializer);
             let api_params = <Vec<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
-                        let output_ok =
-                            crate::api::load_media_item_sources(api_supplier, api_id, api_params)
-                                .await?;
+                        let output_ok = crate::api::load_media_item_sources(
+                            api_supplier,
+                            api_id,
+                            api_langs,
+                            api_params,
+                        )
+                        .await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -418,13 +423,19 @@ fn wire__crate__api__load_media_items_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_supplier = <String>::sse_decode(&mut deserializer);
             let api_id = <String>::sse_decode(&mut deserializer);
+            let api_langs = <Vec<String>>::sse_decode(&mut deserializer);
             let api_params = <Vec<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
-                        let output_ok =
-                            crate::api::load_media_items(api_supplier, api_id, api_params).await?;
+                        let output_ok = crate::api::load_media_items(
+                            api_supplier,
+                            api_id,
+                            api_langs,
+                            api_params,
+                        )
+                        .await?;
                         Ok(output_ok)
                     })()
                     .await,

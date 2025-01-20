@@ -28,15 +28,16 @@ class _SuppliersSettingsView extends StatelessWidget {
     final theme = Theme.of(context);
     final padding = getPadding(context);
 
-    return Center(
+    return Align(
+      alignment: Alignment.topCenter,
       child: Container(
         constraints: const BoxConstraints(maxWidth: 800),
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: padding),
+              child: Row(
                 children: [
                   if (!TVDetector.isTV) ...[
                     const BackNavButton(),
@@ -50,10 +51,9 @@ class _SuppliersSettingsView extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: padding),
-              const SuppliersSettingsSection()
-            ],
-          ),
+            ),
+            const Expanded(child: SingleChildScrollView(child: SuppliersSettingsSection()))
+          ],
         ),
       ),
     );

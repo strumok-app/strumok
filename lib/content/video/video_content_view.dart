@@ -67,6 +67,7 @@ class PlayerController {
 
       final itemIdx = progress.currentItem;
       final sourceName = progress.currentSourceName;
+      final subtitleName = progress.currentSubtitleName;
 
       final item = mediaItems[itemIdx];
       final sources = await item.sources;
@@ -110,11 +111,16 @@ class PlayerController {
 
       isLoading.value = false;
       errors.value = [];
-      await player.open(media);
 
-      currentSources = sources;
+      if (progress.currentItem == itemIdx && progress.currentSourceName == sourceName) {
+        logger.i("Starting video: $media");
+        await player.open(media);
+        currentSources = sources;
+      }
 
-      await setSubtitle(progress.currentSubtitleName);
+      if (progress.currentSubtitleName == subtitleName) {
+        await setSubtitle(sourceName);
+      }
     } on Exception catch (e, stackTrace) {
       if (e is ContentSuppliersException) {
         traceError(
@@ -157,7 +163,7 @@ class PlayerController {
 
   void nextItem() {
     if (AppPreferences.videoPlayerSettingShuffleMode) {
-      final shuffledPosition = _getShuffledPOsition();
+      final shuffledPosition = _getShuffledPosition();
       selectItem(shuffledPosition);
       return;
     }
@@ -206,7 +212,7 @@ class PlayerController {
     errors.value = [...errors.value, error];
   }
 
-  int _getShuffledPOsition() {
+  int _getShuffledPosition() {
     if (shuffledPositions.isEmpty) {
       final positions = List.generate(mediaItems.length, (i) => i);
       final rng = Random();

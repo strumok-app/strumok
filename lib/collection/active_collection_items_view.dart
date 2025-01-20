@@ -4,6 +4,7 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
+import 'package:strumok/collection/sync/collection_sync_provider.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/widgets/focus_indicator.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
@@ -17,14 +18,42 @@ class ActiveCollectionItemsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groups = ref.watch(collectionActiveItemsProvider);
+    final collectionSync = ref.watch(collectionSyncStatusProvider).valueOrNull ?? false;
+
+    if (collectionSync || groups.isLoading) {
+      return _renderLoading(context);
+    }
 
     return groups.maybeWhen(
-      data: (value) => _renderGroups(context, value),
+      data: (value) => _ActiveCollectionItems(groups: value),
       orElse: () => const SizedBox.shrink(),
     );
   }
 
-  Widget _renderGroups(BuildContext context, Map<MediaCollectionItemStatus, List<MediaCollectionItem>> groups) {
+  Widget _renderLoading(BuildContext context) {
+    return HorizontalList(
+      title: FocusIndicator(
+        child: Text(
+          AppLocalizations.of(context)!.collectionContinue,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ),
+      itemBuilder: (context, index) => HorizontalListCard(
+        onTap: () {},
+        child: const Center(child: CircularProgressIndicator()),
+      ),
+      itemCount: 1,
+    );
+  }
+}
+
+class _ActiveCollectionItems extends ConsumerWidget {
+  final Map<MediaCollectionItemStatus, List<MediaCollectionItem>> groups;
+
+  const _ActiveCollectionItems({required this.groups});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     List<MediaCollectionItem>? items;
     String? title;
 

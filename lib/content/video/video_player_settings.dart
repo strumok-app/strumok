@@ -93,9 +93,7 @@ class _OnVideoEndsActionSettingsSection extends ConsumerWidget {
               (index, value) => MenuItemButton(
                 focusNode: index == 0 ? focusNode : null,
                 onPressed: () {
-                  ref
-                      .read(onVideoEndsActionSettingsProvider.notifier)
-                      .select(value);
+                  ref.read(onVideoEndsActionSettingsProvider.notifier).select(value);
                 },
                 child: Text(videoPlayerSettingEndsAction(context, value)),
               ),
@@ -128,9 +126,7 @@ class _StarVideoPositionSettingsSection extends ConsumerWidget {
                   (index, value) => MenuItemButton(
                     focusNode: index == 0 ? focusNode : null,
                     onPressed: () {
-                      ref
-                          .read(starVideoPositionSettingsProvider.notifier)
-                          .select(value);
+                      ref.read(starVideoPositionSettingsProvider.notifier).select(value);
                     },
                     child: Text(videoPlayerSettingStarFrom(context, value)),
                   ),
@@ -168,9 +164,7 @@ class _FixedSecondInput extends HookConsumerWidget {
           focusNode: focusNode,
           initialValue: fixedPosition.toString(),
           onChanged: (value) {
-            ref
-                .read(fixedPositionSettingsProvider.notifier)
-                .select(int.parse(value));
+            ref.read(fixedPositionSettingsProvider.notifier).select(int.tryParse(value) ?? 0);
           },
           autofocus: true,
           keyboardType: TextInputType.number,
