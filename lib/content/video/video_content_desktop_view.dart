@@ -23,8 +23,7 @@ class VideoContentDesktopView extends StatefulWidget {
   });
 
   @override
-  State<VideoContentDesktopView> createState() =>
-      _VideoContentDesktopViewState();
+  State<VideoContentDesktopView> createState() => _VideoContentDesktopViewState();
 }
 
 class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
@@ -32,22 +31,14 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
   late final GlobalKey<VideoState> videoStateKey = GlobalKey<VideoState>();
 
   late final _keyboardShortcuts = {
-    const SingleActivator(LogicalKeyboardKey.mediaPlay): () =>
-        widget.player.play(),
-    const SingleActivator(LogicalKeyboardKey.mediaPause): () =>
-        widget.player.pause(),
-    const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () =>
-        widget.player.playOrPause(),
-    const SingleActivator(LogicalKeyboardKey.mediaTrackNext):
-        widget.playerController.nextItem,
-    const SingleActivator(LogicalKeyboardKey.bracketLeft):
-        widget.playerController.prevItem,
-    const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious):
-        widget.playerController.nextItem,
-    const SingleActivator(LogicalKeyboardKey.bracketRight):
-        widget.playerController.nextItem,
-    const SingleActivator(LogicalKeyboardKey.space): () =>
-        widget.player.playOrPause(),
+    const SingleActivator(LogicalKeyboardKey.mediaPlay): () => widget.player.play(),
+    const SingleActivator(LogicalKeyboardKey.mediaPause): () => widget.player.pause(),
+    const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () => widget.player.playOrPause(),
+    const SingleActivator(LogicalKeyboardKey.mediaTrackNext): widget.playerController.nextItem,
+    const SingleActivator(LogicalKeyboardKey.bracketLeft): widget.playerController.prevItem,
+    const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious): widget.playerController.nextItem,
+    const SingleActivator(LogicalKeyboardKey.bracketRight): widget.playerController.nextItem,
+    const SingleActivator(LogicalKeyboardKey.space): () => widget.player.playOrPause(),
     const SingleActivator(LogicalKeyboardKey.keyJ): () {
       widget.player.safeSeek(
         widget.player.state.position - const Duration(seconds: 60),
@@ -77,19 +68,17 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       widget.player.setVolume(volume.clamp(0.0, 100.0));
     },
     // dirty hack with video state...
-    const SingleActivator(LogicalKeyboardKey.keyF): () =>
-        videoStateKey.currentState?.toggleFullscreen(),
-    const SingleActivator(LogicalKeyboardKey.enter): () =>
-        videoStateKey.currentState?.toggleFullscreen(),
-    const SingleActivator(LogicalKeyboardKey.escape): () =>
-        videoStateKey.currentState?.exitFullscreen()
+    const SingleActivator(LogicalKeyboardKey.keyF): () => videoStateKey.currentState?.toggleFullscreen(),
+    const SingleActivator(LogicalKeyboardKey.enter): () => videoStateKey.currentState?.toggleFullscreen(),
+    const SingleActivator(LogicalKeyboardKey.escape): () => videoStateKey.currentState?.exitFullscreen()
   };
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return MaterialDesktopVideoControlsTheme(
-      normal: _createThemeData(false),
-      fullscreen: _createThemeData(true),
+      normal: _createThemeData(theme, false),
+      fullscreen: _createThemeData(theme, true),
       child: Video(
         key: videoStateKey,
         controller: widget.videoController,
@@ -104,14 +93,15 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
     );
   }
 
-  MaterialDesktopVideoControlsThemeData _createThemeData(bool fullscreen) {
-    const margin = EdgeInsets.symmetric(horizontal: 20.0);
+  MaterialDesktopVideoControlsThemeData _createThemeData(ThemeData theme, bool fullscreen) {
+    // const margin = EdgeInsets.symmetric(horizontal: 20.0);
     final playerController = widget.playerController;
+    final colorScheme = theme.colorScheme;
 
     return MaterialDesktopVideoControlsThemeData(
       buttonBarButtonColor: Colors.white,
-      topButtonBarMargin: margin.copyWith(top: 8),
-      bottomButtonBarMargin: margin,
+      topButtonBarMargin: const EdgeInsets.all(8),
+      bottomButtonBarMargin: const EdgeInsets.all(8),
       topButtonBar: [
         ExitButton(contentDetails: playerController.contentDetails),
         const SizedBox(width: 8),
@@ -126,6 +116,8 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
             contentDetails: playerController.contentDetails,
           )
       ],
+      seekBarThumbColor: colorScheme.primary,
+      seekBarPositionColor: colorScheme.primary,
       bottomButtonBar: [
         SkipPrevButton(playerController: playerController),
         const PlayOrPauseButton(),

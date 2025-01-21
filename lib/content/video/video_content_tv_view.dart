@@ -122,8 +122,7 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
 
   void seek(int sec) {
     var playerState = widget.player.state;
-    int targetPosition =
-        seekVisible ? seekPosition : playerState.position.inSeconds;
+    int targetPosition = seekVisible ? seekPosition : playerState.position.inSeconds;
     targetPosition += sec;
 
     if (targetPosition < 0) {
@@ -179,47 +178,46 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
           }
           return false;
         },
-        child: Focus(
-          autofocus: true,
-          child: Stack(
-            children: [
-              AnimatedOpacity(
-                curve: Curves.easeInOut,
-                opacity: visible ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 150),
-                onEnd: () {
-                  if (!visible) {
-                    setState(() {
-                      uiShown = false;
-                    });
-                  }
-                },
-                child: uiShown
-                    ? FocusScope(
-                        child: Column(
-                          children: [
-                            // top bar
-                            _renderTopBar(),
-                            const Spacer(),
-                            // bottom bar
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.0),
-                              child: MaterialSeekBar(),
-                            ),
-                            _AndroidTVBottomBar(
-                              contentDetails:
-                                  widget.playerController.contentDetails,
-                              playerController: widget.playerController,
-                              playPauseFocusNode: playPauseFocusNode,
-                            )
-                          ],
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              Positioned.fill(child: _renderBufferedIndicator()),
-              Positioned.fill(child: _renderSeekPosition()),
-            ],
+        child: MediaQuery(
+          data: MediaQuery.of(context).copyWith(navigationMode: NavigationMode.directional),
+          child: Focus(
+            autofocus: true,
+            child: Stack(
+              children: [
+                AnimatedOpacity(
+                  curve: Curves.easeInOut,
+                  opacity: visible ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 150),
+                  onEnd: () {
+                    if (!visible) {
+                      setState(() {
+                        uiShown = false;
+                      });
+                    }
+                  },
+                  child: uiShown
+                      ? FocusScope(
+                          child: Column(
+                            children: [
+                              // top bar
+                              _renderTopBar(),
+                              const Spacer(),
+                              // bottom bar
+                              const _AndroidTVSeekBar(),
+                              _AndroidTVBottomBar(
+                                contentDetails: widget.playerController.contentDetails,
+                                playerController: widget.playerController,
+                                playPauseFocusNode: playPauseFocusNode,
+                              )
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+                Positioned.fill(child: _renderBufferedIndicator()),
+                Positioned.fill(child: _renderSeekPosition()),
+              ],
+            ),
           ),
         ),
       ),
@@ -269,7 +267,7 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
           ],
         ),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+      padding: const EdgeInsets.all(8),
       child: Row(
         children: [
           const SizedBox(width: 8),
@@ -292,23 +290,20 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
   _renderSeekPosition() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 96),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            AnimatedOpacity(
-              opacity: seekVisible ? 1.0 : 0,
-              duration: const Duration(milliseconds: 200),
-              child: _renderSeekText(Duration(seconds: seekPosition).label()),
-              onEnd: () {
-                if (!seekVisible) {
-                  setState(() {
-                    seekPosition = 0;
-                  });
-                }
-              },
-            )
-          ]),
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.end, children: [
+        AnimatedOpacity(
+          opacity: seekVisible ? 1.0 : 0,
+          duration: const Duration(milliseconds: 200),
+          child: _renderSeekText(Duration(seconds: seekPosition).label()),
+          onEnd: () {
+            if (!seekVisible) {
+              setState(() {
+                seekPosition = 0;
+              });
+            }
+          },
+        )
+      ]),
     );
   }
 
@@ -345,8 +340,7 @@ class _AndroidTVBottomBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentProgress = ref.watch(collectionItemProvider(contentDetails));
 
-    final isLastItem = currentProgress.valueOrNull?.currentItem !=
-        playerController.mediaItems.length - 1;
+    final isLastItem = currentProgress.valueOrNull?.currentItem != playerController.mediaItems.length - 1;
 
     return Container(
       decoration: const BoxDecoration(
@@ -388,13 +382,93 @@ class _AndroidTVBottomBar extends ConsumerWidget {
   }
 }
 
-// class _TVKeyActivator extends ShortcutActivator {
-//   @override
-//   bool accepts(KeyEvent event, HardwareKeyboard state) {
-//     // TODO: implement accepts
-//     throw UnimplementedError();
-//   }
+class _AndroidTVSeekBar extends StatefulWidget {
+  const _AndroidTVSeekBar();
 
-//   @override
-//   String debugDescribeKeys() => "TV Key Activator";
-// }
+  @override
+  _AndroidTVSeekBarState createState() => _AndroidTVSeekBarState();
+}
+
+class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
+  late Duration position = controller(context).player.state.position;
+  late Duration duration = controller(context).player.state.duration;
+  late Duration buffer = controller(context).player.state.buffer;
+  double? slidePosition;
+  Timer? timer;
+
+  final List<StreamSubscription> subscriptions = [];
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  void listener() {
+    setState(() {
+      position = controller(context).player.state.position + Duration.zero;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (subscriptions.isEmpty) {
+      subscriptions.addAll(
+        [
+          controller(context).player.stream.position.listen((event) {
+            setState(() {
+              position = event;
+            });
+          }),
+          controller(context).player.stream.duration.listen((event) {
+            setState(() {
+              duration = event;
+            });
+          }),
+          controller(context).player.stream.buffer.listen((event) {
+            setState(() {
+              buffer = event;
+            });
+          }),
+        ],
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final subscription in subscriptions) {
+      subscription.cancel();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Slider(
+      allowedInteraction: SliderInteraction.slideOnly,
+      secondaryTrackValue: buffer.inSeconds.toDouble(),
+      value: slidePosition ?? position.inSeconds.toDouble(),
+      max: duration.inSeconds.toDouble(),
+      divisions: (duration.inSeconds.toDouble() / 5.0).round(),
+      onChanged: (value) {
+        setState(() {
+          slidePosition = value;
+        });
+      },
+      onChangeEnd: (value) {
+        timer?.cancel();
+        timer = Timer(const Duration(milliseconds: 300), () {
+          controller(context).player.seek(Duration(seconds: value.ceil()));
+          timer?.cancel();
+
+          setState(() {
+            slidePosition = null;
+          });
+        });
+      },
+    );
+  }
+}

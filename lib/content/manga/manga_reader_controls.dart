@@ -6,6 +6,7 @@ import 'package:strumok/utils/tv.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:strumok/utils/visual.dart';
 
 class MangaReaderControlsRoute<T> extends PopupRoute<T> {
   final ContentDetails contentDetails;
@@ -96,28 +97,12 @@ class MangaReaderControlTopBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final mobile = isMobile(context);
+
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: [
-            0.1,
-            1.0,
-          ],
-          colors: [
-            Colors.black45,
-            Colors.transparent,
-          ],
-        ),
-      ),
+      color: Colors.black45,
       child: Padding(
-        padding: const EdgeInsets.only(
-          top: 16.0,
-          bottom: 8,
-          right: 16,
-          left: 16,
-        ),
+        padding: EdgeInsets.only(left: mobile ? 8 : 20, right: 8, bottom: 8, top: 8),
         child: Row(children: [
           if (!TVDetector.isTV) ...[
             BackButton(
@@ -147,9 +132,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
       contentDetails: contentDetails,
       mediaItems: mediaItems,
       onSelect: (item) {
-        ref
-            .read(collectionItemProvider(contentDetails).notifier)
-            .setCurrentItem(item.number);
+        ref.read(collectionItemProvider(contentDetails).notifier).setCurrentItem(item.number);
         Navigator.of(context).pop();
       },
       autofocus: true,
@@ -158,7 +141,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
   }
 }
 
-class MangaReaderControlBottomBar extends ConsumerWidget {
+class MangaReaderControlBottomBar extends ConsumerStatefulWidget {
   final List<ContentMediaItem> mediaItems;
   final ContentDetails contentDetails;
   final ValueChanged<int> onPageChanged;
@@ -171,74 +154,71 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MangaReaderControlBottomBar> createState() => _MangaReaderControlBottomBarState();
+}
+
+class _MangaReaderControlBottomBarState extends ConsumerState<MangaReaderControlBottomBar> {
+  int? tragetPage;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final position = ref
-        .watch(collectionItemCurrentMediaItemPositionProvider(contentDetails))
-        .value;
+    final position = ref.watch(collectionItemCurrentMediaItemPositionProvider(widget.contentDetails)).value;
 
     if (position == null) {
       return const SizedBox.shrink();
     }
 
     final pageNumbers = position.length;
-    final pageIndex = position.position;
+    final pageIndex = tragetPage ?? position.position;
     final pageNumber = pageIndex + 1;
 
+    final mobile = isMobile(context);
+
     return MediaQuery(
-      data: MediaQuery.of(context)
-          .copyWith(navigationMode: NavigationMode.directional),
+      data: MediaQuery.of(context).copyWith(navigationMode: NavigationMode.directional),
       child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [
-              0.1,
-              1.0,
-            ],
-            colors: [
-              Colors.transparent,
-              Colors.black54,
-            ],
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Slider(
-              allowedInteraction: SliderInteraction.slideOnly,
-              max: pageNumbers.toDouble() - 1,
-              value: pageIndex.toDouble(),
-              label: pageNumber.toString(),
-              divisions: pageNumbers - 1,
-              onChanged: (value) {
-                onPageChanged(value.round());
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0, left: 16, right: 16),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Text(
-                    "$pageNumber / $pageNumbers",
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const Spacer(),
-                  MangaSettingsButton(
-                    contentDetails: contentDetails,
-                    mediaItems: mediaItems,
+        color: Colors.black45,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              if (!mobile)
+                Text(
+                  "$pageNumber / $pageNumbers",
+                  style: theme.textTheme.bodyMedium!.copyWith(
                     color: Colors.white,
                   ),
-                ],
+                ),
+              Expanded(
+                child: Slider(
+                  allowedInteraction: SliderInteraction.tapAndSlide,
+                  max: pageNumbers.toDouble() - 1,
+                  value: pageIndex.toDouble(),
+                  label: pageNumber.toString(),
+                  divisions: pageNumbers - 1,
+                  onChanged: (value) {
+                    setState(() {
+                      tragetPage = value.round();
+                    });
+                  },
+                  onChangeEnd: (value) {
+                    setState(() {
+                      tragetPage = value.round();
+                    });
+                    widget.onPageChanged(value.round());
+                  },
+                ),
               ),
-            )
-          ],
+              MangaSettingsButton(
+                contentDetails: widget.contentDetails,
+                mediaItems: widget.mediaItems,
+                color: Colors.white,
+              ),
+            ],
+          ),
         ),
       ),
     );

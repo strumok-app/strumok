@@ -385,6 +385,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
       color: Colors.black,
       child: Stack(
         children: [
+          // _renderTvView(),
           view,
           ValueListenableBuilder(
             valueListenable: playerController.isLoading,

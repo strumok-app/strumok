@@ -36,7 +36,7 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = _createThemeData();
+    final themeData = _createThemeData(Theme.of(context));
     return MaterialVideoControlsTheme(
       normal: themeData,
       fullscreen: themeData,
@@ -49,8 +49,13 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
     );
   }
 
-  MaterialVideoControlsThemeData _createThemeData() {
+  MaterialVideoControlsThemeData _createThemeData(ThemeData theme) {
+    final colorScheme = theme.colorScheme;
     return MaterialVideoControlsThemeData(
+      topButtonBarMargin: const EdgeInsets.only(left: 20, right: 8, bottom: 8, top: 8),
+      bottomButtonBarMargin: const EdgeInsets.all(8),
+      seekBarThumbColor: colorScheme.primary,
+      seekBarPositionColor: colorScheme.primary,
       buttonBarButtonColor: Colors.white,
       topButtonBar: [
         ExitButton(contentDetails: widget.playerController.contentDetails),
@@ -92,7 +97,6 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
         ),
         const MaterialFullscreenButton(),
       ],
-      bottomButtonBarMargin: const EdgeInsets.symmetric(horizontal: 16),
       seekGesture: true,
       seekOnDoubleTap: true,
       volumeGesture: true,
