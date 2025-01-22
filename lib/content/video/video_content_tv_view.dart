@@ -390,9 +390,13 @@ class _AndroidTVSeekBar extends StatefulWidget {
 }
 
 class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
-  late Duration position = controller(context).player.state.position;
-  late Duration duration = controller(context).player.state.duration;
-  late Duration buffer = controller(context).player.state.buffer;
+  static const _seekUnit = 10;
+
+  late double position = controller(context).player.state.position.inSeconds.toDouble();
+  late double duration = controller(context).player.state.duration.inSeconds.toDouble();
+  late double buffer = controller(context).player.state.buffer.inSeconds.toDouble();
+  late int divisions = (duration / _seekUnit).round();
+
   double? slidePosition;
   Timer? timer;
 
@@ -407,7 +411,7 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
 
   void listener() {
     setState(() {
-      position = controller(context).player.state.position + Duration.zero;
+      position = controller(context).player.state.position.inSeconds.toDouble();
     });
   }
 
@@ -419,17 +423,18 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
         [
           controller(context).player.stream.position.listen((event) {
             setState(() {
-              position = event;
+              position = event.inSeconds.toDouble();
             });
           }),
           controller(context).player.stream.duration.listen((event) {
             setState(() {
-              duration = event;
+              duration = event.inSeconds.toDouble();
+              divisions = (duration / _seekUnit).round();
             });
           }),
           controller(context).player.stream.buffer.listen((event) {
             setState(() {
-              buffer = event;
+              buffer = event.inSeconds.toDouble();
             });
           }),
         ],
@@ -449,10 +454,10 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
   Widget build(BuildContext context) {
     return Slider(
       allowedInteraction: SliderInteraction.slideOnly,
-      secondaryTrackValue: buffer.inSeconds.toDouble(),
-      value: slidePosition ?? position.inSeconds.toDouble(),
-      max: duration.inSeconds.toDouble(),
-      divisions: (duration.inSeconds.toDouble() / 5.0).round(),
+      secondaryTrackValue: buffer,
+      value: slidePosition ?? position,
+      max: duration,
+      divisions: divisions,
       onChanged: (value) {
         setState(() {
           slidePosition = value;

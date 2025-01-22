@@ -35,8 +35,7 @@ class AppVersionSettings extends ConsumerWidget {
             onPressed: null,
             label: Text(AppLocalizations.of(context)!.settingsCheckForUpdate),
           ),
-          error: (Object error, StackTrace stackTrace) =>
-              Text(error.toString()),
+          error: (Object error, StackTrace stackTrace) => Text(error.toString()),
         )
       ]),
       orElse: () => const SizedBox.shrink(),
@@ -49,8 +48,7 @@ class AppVersionSettings extends ConsumerWidget {
     LatestAppVersionInfo? latestAppVersionInfo,
     SemVer currentVersion,
   ) {
-    if (latestAppVersionInfo != null &&
-        latestAppVersionInfo.version.compareTo(currentVersion) > 0) {
+    if (latestAppVersionInfo != null && latestAppVersionInfo.version.compareTo(currentVersion) > 0) {
       return AppDownloadButton(info: latestAppVersionInfo);
     }
 
@@ -72,8 +70,7 @@ class AppDownloadButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(appDownloadProvider);
-    final label = Text(
-        AppLocalizations.of(context)!.settingsDownloadUpdate(info.version));
+    final label = Text(AppLocalizations.of(context)!.settingsDownloadUpdate(info.version));
 
     ref.listen(appDownloadProvider, (_, state) {
       if (state.error != null) {

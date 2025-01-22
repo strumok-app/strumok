@@ -109,6 +109,8 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
     ref.refresh(suppliersSettingsProvider);
     // cleanup old versions
     FFISuppliersBundleStorage.instance.cleanup(info);
+
+    state = state.done();
   }
 
   Future<String?> _downloadUrl(FFISupplierBundleInfo info) async {

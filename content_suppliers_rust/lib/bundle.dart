@@ -72,12 +72,7 @@ class _RustContentSupplier implements ContentSupplier {
   @override
   Future<ContentDetails?> detailsById(String id, Set<ContentLanguage> langs) async {
     try {
-      final langsCodes = langs
-          .where(
-            (lang) => supportedLanguages.contains(lang),
-          )
-          .map((lang) => lang.name)
-          .toList();
+      final langsCodes = langs.map((lang) => lang.name).toList();
 
       final result = await _api.crateApiGetContentDetails(supplier: name, id: id, langs: langsCodes);
 
@@ -128,22 +123,15 @@ class _RustContentSupplier implements ContentSupplier {
 
   @override
   Set<ContentLanguage> get supportedLanguages {
-    if (_supportedLanguage == null) {
-      final langs = _api.crateApiGetSupportedLanguages(supplier: name);
-
-      if (langs.firstOrNull == "multi") {
-        _supportedLanguage = ContentLanguage.values.toSet();
-      }
-
-      _supportedLanguage = langs
-          .map(
-            (lang) => ContentLanguage.values.firstWhereOrNull(
-              (v) => v.name == lang,
-            ),
-          )
-          .nonNulls
-          .toSet();
-    }
+    _supportedLanguage ??= _api
+        .crateApiGetSupportedLanguages(supplier: name)
+        .map(
+          (lang) => ContentLanguage.values.firstWhereOrNull(
+            (v) => v.name == lang,
+          ),
+        )
+        .nonNulls
+        .toSet();
 
     return _supportedLanguage!;
   }
