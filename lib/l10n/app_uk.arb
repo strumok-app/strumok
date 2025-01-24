@@ -88,6 +88,6 @@
     "errorReload": "Повторити",
     "ffiLibNotInstalled": "Модуль постачальників не встановлений",
     "ffiLibInstalled": "Модуль постачальників встановлений",
-    "ffiLibNotInstallationFailed": "Неможливо встановити модуль постачальників",
+    "ffiLibInstallationFailed": "Неможливо встановити модуль постачальників",
     "appUpdateFailed": "Неможливо встановити нову версію"
 }

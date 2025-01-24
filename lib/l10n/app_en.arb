@@ -87,6 +87,6 @@
     "errorReload": "Reload",
     "ffiLibNotInstalled": "Content suppliers module not installed",
     "ffiLibInstalled": "Content suppliers installed",
-    "ffiLibNotInstallationFailed": "Content suppliers module installation failed",
+    "ffiLibInstallationFailed": "Content suppliers module installation failed",
     "appUpdateFailed": "Application update failed"
 }

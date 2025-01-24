@@ -33,8 +33,8 @@ class DownloadState {
 
   DownloadState fail(String error) {
     return DownloadState(
-      downloading: downloading,
-      progress: progress,
+      downloading: false,
+      progress: 0.0,
       completed: true,
       error: error,
     );

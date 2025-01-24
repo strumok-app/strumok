@@ -17,8 +17,7 @@ class VersionGuard extends ConsumerWidget {
     return Scaffold(
       body: installedBundle.when(
         data: (info) => info != null ? child : _InstallSuppliersBundler(),
-        error: (error, stackTrace) => _Error(
-            error: AppLocalizations.of(context)!.ffiLibNotInstallationFailed),
+        error: (error, stackTrace) => _Error(error: AppLocalizations.of(context)!.ffiLibInstallationFailed),
         loading: () => _Loader(),
       ),
     );
@@ -32,8 +31,7 @@ class _InstallSuppliersBundler extends ConsumerWidget {
 
     return lattestBundle.when(
       data: (info) => info == null
-          ? _Error(
-              error: AppLocalizations.of(context)!.ffiLibNotInstallationFailed)
+          ? _Error(error: AppLocalizations.of(context)!.ffiLibInstallationFailed)
           : _buildInstall(context, info),
       error: (error, stackTrace) => _Error(error: error.toString()),
       loading: () => _Loader(),

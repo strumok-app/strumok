@@ -25,6 +25,10 @@ class SearchState extends Equatable {
     return copyWith(results: {...results, supplierName: supplierResults});
   }
 
+  SearchState done() {
+    return copyWith(isLoading: false);
+  }
+
   SearchState copyWith({
     Map<String, List<ContentInfo>>? results,
     bool? isLoading,

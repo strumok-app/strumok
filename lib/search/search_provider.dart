@@ -33,15 +33,11 @@ class Search extends _$Search {
 
     final stream = ContentSuppliers().search(query, contentSuppliers);
 
-    final subscription = stream.listen((event) {
-      final (supplierName, supplierResults) = event;
+    await for (final (supplierName, supplierResults) in stream) {
       state = state.addResults(supplierName, supplierResults);
-    });
+    }
 
-    subscription.onDone(() {
-      state = state.copyWith(isLoading: false);
-      subscription.cancel();
-    });
+    state = state.done();
   }
 }
 

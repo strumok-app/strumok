@@ -3,13 +3,14 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_download_manager/flutter_download_manager.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_secrets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:http/http.dart';
+import 'package:strumok/download/manager/manager.dart';
+import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/settings/models.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/sem_ver.dart';
@@ -133,12 +134,7 @@ class AppDownload extends _$AppDownload {
 
     logger.i("App download path: $filePath");
 
-    final task = await DownloadManager().addDownload(asset.browserDownloadUrl, filePath);
-
-    if (task == null) {
-      state = state.done();
-      return;
-    }
+    final task = DownloadManager().download(FileDownloadRequest(asset.browserDownloadUrl, filePath));
 
     task.progress.addListener(() {
       state = state.updateProgress(task.progress.value);

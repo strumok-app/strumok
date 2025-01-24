@@ -15,9 +15,8 @@ class SuppliersBundleVersionSettings extends ConsumerWidget {
     final installedBundle = ref.watch(installedSupplierBundleInfoProvider);
 
     return installedBundle.maybeWhen(
-      data: (installed) => installed == null
-          ? const _SuppliersBundleInstall()
-          : _SuppliersBundleUpdate(installedBundle: installed),
+      data: (installed) =>
+          installed == null ? const _SuppliersBundleInstall() : _SuppliersBundleUpdate(installedBundle: installed),
       orElse: () => const SizedBox.shrink(),
     );
   }
@@ -50,8 +49,7 @@ class _SuppliersBundleInstall extends ConsumerWidget {
             width: 16,
             child: CircularProgressIndicator.adaptive(),
           ),
-          error: (Object error, StackTrace stackTrace) =>
-              const _RefreshButton(),
+          error: (Object error, StackTrace stackTrace) => const _RefreshButton(),
         ),
       ],
     );
@@ -103,12 +101,10 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
     FFISupplierBundleInfo? latestInfo,
     FFISupplierBundleInfo installedInfo,
   ) {
-    if (latestInfo != null &&
-        latestInfo.version.compareTo(installedInfo.version) > 0) {
+    if (latestInfo != null && latestInfo.version.compareTo(installedInfo.version) > 0) {
       return SuppliersBundleDownloadButton(
         info: latestInfo,
-        label: Text(AppLocalizations.of(context)!
-            .settingsDownloadUpdate(latestInfo.version)),
+        label: Text(AppLocalizations.of(context)!.settingsDownloadUpdate(latestInfo.version)),
       );
     }
 
@@ -137,8 +133,8 @@ class SuppliersBundleDownloadButton extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
             state.error != null
-                ? AppLocalizations.of(context)!.ffiLibNotInstallationFailed
-                : AppLocalizations.of(context)!.ffiLibNotInstalled,
+                ? AppLocalizations.of(context)!.ffiLibInstallationFailed
+                : AppLocalizations.of(context)!.ffiLibInstalled,
           ),
           behavior: SnackBarBehavior.floating,
         ));

@@ -14,10 +14,12 @@ import 'package:strumok/settings/models.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter_download_manager/flutter_download_manager.dart';
 import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/utils/trace.dart';
+
+import '../../download/manager/manager.dart';
+import '../../download/manager/models.dart';
 
 part 'suppliers_bundle_version_provider.g.dart';
 
@@ -68,20 +70,19 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
       return;
     }
 
-    final task = await DownloadManager().addDownload(url, libPath);
-    if (task != null) {
-      task.progress.addListener(() {
-        state = state.updateProgress(task.progress.value);
-      });
-      task.status.addListener(() async {
-        if (task.status.value == DownloadStatus.completed) {
-          await _reloadSuppliersBundle(info);
-        } else if (task.status.value == DownloadStatus.failed) {
-          state = state.fail("Download failed");
-          logger.i("New FFI bundle version donwload failed");
-        }
-      });
-    }
+    final task = DownloadManager().download(FileDownloadRequest(url, libPath));
+
+    task.progress.addListener(() {
+      state = state.updateProgress(task.progress.value);
+    });
+    task.status.addListener(() async {
+      if (task.status.value == DownloadStatus.completed) {
+        await _reloadSuppliersBundle(info);
+      } else if (task.status.value == DownloadStatus.failed) {
+        state = state.fail("Download failed");
+        logger.i("New FFI bundle version donwload failed");
+      }
+    });
   }
 
   Future<void> _reloadSuppliersBundle(FFISupplierBundleInfo info) async {
