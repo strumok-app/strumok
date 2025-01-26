@@ -20,7 +20,7 @@ class CollectionSync {
 
   Future<void> run() async {
     // wait for user
-    final user = Auth.instance.currentUser;
+    final user = Auth().currentUser;
     if (user == null) {
       return;
     }
@@ -37,10 +37,7 @@ class CollectionSync {
 
     final lastSyncTimestamp = AppPreferences.lastSyncTimestamp;
     final nowTimestamp = DateTime.timestamp().millisecondsSinceEpoch;
-    final remoteSnapshot = await ref
-        .orderByChild("lastSeen")
-        .startAt(lastSyncTimestamp)
-        .once() as DataSnapshotImpl;
+    final remoteSnapshot = await ref.orderByChild("lastSeen").startAt(lastSyncTimestamp).once() as DataSnapshotImpl;
 
     final remoteCollection = remoteSnapshot.treeStructuredData.toJson(true);
 
@@ -59,8 +56,7 @@ class CollectionSync {
         );
 
         // store newer remote items
-        if (localItem == null ||
-            remoteItem.lastSeen!.isAfter(localItem.lastSeen!)) {
+        if (localItem == null || remoteItem.lastSeen!.isAfter(localItem.lastSeen!)) {
           if (localItem != null) {
             // set local internalId
             remoteItem.internalId = localItem.isarId;
@@ -68,8 +64,7 @@ class CollectionSync {
             _mergePositions(remoteItem, localItem);
           }
 
-          var isarMediaCollectionItem =
-              IsarMediaCollectionItem.fromMediaCollectionItem(remoteItem);
+          var isarMediaCollectionItem = IsarMediaCollectionItem.fromMediaCollectionItem(remoteItem);
 
           await localCollection.put(
             isarMediaCollectionItem,

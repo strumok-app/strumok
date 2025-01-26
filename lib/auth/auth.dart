@@ -53,9 +53,7 @@ class User {
   factory User.fromIdToken(String idToken) {
     final [_, encodedPayload, _] = idToken.split('.');
 
-    final payload =
-        json.decode(String.fromCharCodes(base64.decode(encodedPayload)))
-            as Map<String, dynamic>;
+    final payload = json.decode(String.fromCharCodes(base64.decode(encodedPayload))) as Map<String, dynamic>;
 
     return User(
       id: payload["sub"].toString(),
@@ -65,10 +63,7 @@ class User {
   }
 }
 
-const scopes = [
-  "https://www.googleapis.com/auth/userinfo.profile",
-  "https://www.googleapis.com/auth/userinfo.email"
-];
+const scopes = ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"];
 
 class Auth {
   final AuthTokenStore _tokenStore = PerferenceTokenStore();
@@ -78,7 +73,9 @@ class Auth {
   static ClientId? desktopClientId;
   User? _currentUser;
 
-  static final Auth instance = Auth._();
+  static final Auth _instance = Auth._();
+
+  factory Auth() => _instance;
 
   Auth._() {
     _userStream = _userStreamController.stream.asBroadcastStream();
@@ -146,8 +143,7 @@ class Auth {
 
       if (credentials != null) {
         if (credentials.accessToken.hasExpired) {
-          credentials =
-              await refreshCredentials(clientId, credentials, Client());
+          credentials = await refreshCredentials(clientId, credentials, Client());
         }
         _setAccessCredentials(credentials);
       }

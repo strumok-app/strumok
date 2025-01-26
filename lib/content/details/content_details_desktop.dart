@@ -154,24 +154,9 @@ class _ContentActionsButtons extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mainActionsFocusNode = useFocusNode();
-
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        mainActionsFocusNode.requestFocus();
-      });
-      return null;
-    }, [mainActionsFocusNode]);
-
     return switch (contentDetails.mediaType) {
-      MediaType.video => ContentDetailsVideoActions(
-          contentDetails,
-          focusNode: mainActionsFocusNode,
-        ),
-      MediaType.manga => ContentDetailsMangaActions(
-          contentDetails,
-          focusNode: mainActionsFocusNode,
-        ),
+      MediaType.video => ContentDetailsVideoActions(contentDetails),
+      MediaType.manga => ContentDetailsMangaActions(contentDetails),
     };
   }
 }

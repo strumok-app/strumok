@@ -7,11 +7,10 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/utils/nav.dart';
+import 'package:strumok/utils/tv.dart';
 
 class ContentDetailsVideoActions extends ContentDetailsActions {
-  final FocusNode? focusNode;
-
-  const ContentDetailsVideoActions(super.contentDetails, {super.key, this.focusNode});
+  const ContentDetailsVideoActions(super.contentDetails, {super.key});
 
   @override
   Widget renderActions(BuildContext context, List<ContentMediaItem> mediaItems) {
@@ -34,7 +33,6 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
     return SizedBox(
       width: 200,
       child: OutlinedButton.icon(
-        focusNode: focusNode,
         onPressed: () => navigateToContent(context, contentDetails),
         icon: const Icon(Icons.play_arrow_outlined),
         label: Text(AppLocalizations.of(context)!.watchButton),
@@ -69,6 +67,7 @@ class _ContentPlaylistButton extends ConsumerWidget {
     MediaCollectionItem? collectionItem,
   ) {
     return IconButton(
+      autofocus: TVDetector.isTV,
       onPressed: () {
         Navigator.of(context).push(
           MediaItemsListRoute(

@@ -4,14 +4,12 @@ import 'package:strumok/content/manga/widgets.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/utils/nav.dart';
+import 'package:strumok/utils/tv.dart';
 
 class ContentDetailsMangaActions extends ContentDetailsActions {
-  final FocusNode? focusNode;
-
   const ContentDetailsMangaActions(
     super.contentDetails, {
     super.key,
-    this.focusNode,
   });
 
   @override
@@ -32,7 +30,7 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
     return SizedBox(
       width: 200,
       child: OutlinedButton.icon(
-        focusNode: focusNode,
+        autofocus: TVDetector.isTV,
         onPressed: () => navigateToContent(context, contentDetails),
         icon: const Icon(Icons.menu_book_outlined),
         label: Text(AppLocalizations.of(context)!.readButton),

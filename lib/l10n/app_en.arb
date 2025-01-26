@@ -88,5 +88,6 @@
     "ffiLibNotInstalled": "Content suppliers module not installed",
     "ffiLibInstalled": "Content suppliers installed",
     "ffiLibInstallationFailed": "Content suppliers module installation failed",
-    "appUpdateFailed": "Application update failed"
+    "appUpdateFailed": "Application update failed",
+    "downloadsQueue": "Downloads"
 }

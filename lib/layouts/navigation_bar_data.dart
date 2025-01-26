@@ -1,8 +1,6 @@
-// ignore: implementation_imports
-import 'package:auto_route/src/route/page_route_info.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
-import 'package:strumok/widgets/settings_icon.dart';
 import 'package:flutter/material.dart';
 
 typedef LabelBuilder = String Function(BuildContext context);
@@ -37,16 +35,16 @@ class NavigationBarData {
     routeBuilder: () => const CollectionRoute(),
   );
 
-  static final settings = NavigationBarData._(
-    icon: const SettingsIcon(),
-    labelBuilder: (context) => AppLocalizations.of(context)!.settings,
-    routeBuilder: () => const SettingsRoute(),
-  );
+  // static final settings = NavigationBarData._(
+  //   icon: const SettingsIcon(),
+  //   labelBuilder: (context) => AppLocalizations.of(context)!.settings,
+  //   routeBuilder: () => const SettingsRoute(),
+  // );
 
   static final List<NavigationBarData> routes = [
     home,
     search,
     collection,
-    settings,
+    // settings,
   ];
 }

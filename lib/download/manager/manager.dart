@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:strumok/download/manager/download_file.dart';
@@ -9,7 +10,9 @@ import 'models.dart';
 class DownloadManager {
   static const int maxConcurrentTasks = 3;
 
+  final StreamController<Map<String, DownloadTask>> _downloadsUpdate = StreamController();
   int _runningTasks = 0;
+
   final Map<String, DownloadTask> _downloads = {};
   final Queue<DownloadRequest> _requests = Queue();
 
@@ -20,6 +23,8 @@ class DownloadManager {
   }
 
   DownloadManager._internal();
+
+  Stream<Map<String, DownloadTask>> get activeDownloads => _downloadsUpdate.stream;
 
   DownloadTask download(DownloadRequest req) {
     if (_downloads.containsKey(req.id)) {

@@ -55,7 +55,7 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
         await partialFile.delete();
         return;
       }
-      
+
       sink.add(chunk);
       task.progress.value = bytesDownloaded / res.contentLength!.toDouble();
     }

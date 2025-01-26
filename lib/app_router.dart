@@ -3,7 +3,6 @@ import 'package:strumok/app_router.gr.dart';
 
 @AutoRouterConfig()
 class AppRouter extends RootStackRouter {
-
   @override
   RouteType get defaultRouteType => const RouteType.custom();
 
@@ -17,5 +16,6 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: VideoContentRoute.page),
         AutoRoute(page: MangaContentRoute.page),
         AutoRoute(page: SuppliersSettingsRoute.page),
+        AutoRoute(page: DownloadsRoute.page),
       ];
 }

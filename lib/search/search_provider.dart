@@ -28,7 +28,7 @@ class Search extends _$Search {
     final enabledSuppliers = ref.read(enabledSuppliersProvider);
     final searchSettings = ref.read(searchSettingsProvider);
     final contentSuppliers = enabledSuppliers.intersection(
-      searchSettings.avaliableSuppliers,
+      searchSettings.searchSuppliersNames,
     );
 
     final stream = ContentSuppliers().search(query, contentSuppliers);
@@ -58,7 +58,6 @@ class SearchSettingsModel extends Equatable {
         .suppliers
         .where(
           (sup) =>
-              suppliersNames.contains(sup.name) &&
               languages.intersection(sup.supportedLanguages).isNotEmpty &&
               types.intersection(sup.supportedTypes).isNotEmpty,
         )

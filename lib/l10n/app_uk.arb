@@ -89,5 +89,6 @@
     "ffiLibNotInstalled": "Модуль постачальників не встановлений",
     "ffiLibInstalled": "Модуль постачальників встановлений",
     "ffiLibInstallationFailed": "Неможливо встановити модуль постачальників",
-    "appUpdateFailed": "Неможливо встановити нову версію"
+    "appUpdateFailed": "Неможливо встановити нову версію",
+    "downloadsQueue": "Черга завантажень"
 }

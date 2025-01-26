@@ -64,7 +64,7 @@ final latestAppVersionInfoProvider =
 // ignore: unused_element
 typedef LatestAppVersionInfoRef
     = AutoDisposeFutureProviderRef<LatestAppVersionInfo?>;
-String _$appDownloadHash() => r'719066050f75fd42bb64b44091cafee5a94305ae';
+String _$appDownloadHash() => r'a002d2e4ba904060b257b74a2c4236cf9df30ef1';
 
 /// See also [AppDownload].
 @ProviderFor(AppDownload)

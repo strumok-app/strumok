@@ -1,9 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:strumok/auth/auth.dart';
-import 'package:strumok/auth/auth_provider.dart';
-import 'package:strumok/auth/profile_navigation_dest.dart';
-import 'package:strumok/auth/user_dialog.dart';
 import 'package:strumok/layouts/navigation_bar_data.dart';
 import 'package:flutter/material.dart';
 
@@ -19,47 +16,53 @@ class BottomNavigationLayout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final routes = NavigationBarData.routes
-        .map(
-          (r) => NavigationDestination(
-            icon: r.icon,
-            label: r.labelBuilder(context),
-          ),
-        )
-        .toList();
-
-    final routesActions = NavigationBarData.routes
-        .map(
-          (r) => () => context.router.replace(r.routeBuilder()),
-        )
-        .toList();
-
-    final destinations = [
-      ...routes,
-      const ProfileNavigationDest(),
-    ];
-
-    final actions = [
-      ...routesActions,
-      () {
-        final user = ref.read(userProvider).valueOrNull;
-        if (user == null) {
-          Auth.instance.signIn();
-        } else {
-          showDialog(context: context, builder: (_) => UserDialog(user: user));
-        }
-      },
-    ];
-
     return Scaffold(
       body: child,
-      bottomNavigationBar: NavigationBar(
-        height: 56,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-        selectedIndex: selectedIndex ?? 0,
-        destinations: destinations,
-        onDestinationSelected: (index) => actions[index](),
+      bottomNavigationBar: BottomAppBar(
+        height: 48,
+        padding: EdgeInsets.zero,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ...NavigationBarData.routes.mapIndexed(
+              (idx, r) => buildButton(
+                () => context.router.replace(r.routeBuilder()),
+                r.icon,
+                idx == selectedIndex,
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget buildButton(VoidCallback onPressed, Widget icon, bool isSelected) {
+    // const iconSize = 18.0;
+    final style = ButtonStyle(
+      shape: WidgetStateProperty.all(RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      )),
+    );
+
+    final button = isSelected
+        ? IconButton.outlined(
+            padding: EdgeInsets.zero,
+            style: style,
+            onPressed: onPressed,
+            icon: icon,
+          )
+        : IconButton(
+            padding: EdgeInsets.zero,
+            style: style,
+            onPressed: onPressed,
+            icon: icon,
+          );
+
+    return SizedBox(
+      height: 32,
+      width: 64,
+      child: button,
     );
   }
 }

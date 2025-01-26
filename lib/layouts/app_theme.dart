@@ -31,10 +31,6 @@ class AppTheme extends ConsumerWidget {
             indicatorShape: navigationIndicatorShape,
             indicatorColor: Colors.transparent,
           ),
-          navigationBarTheme: NavigationBarThemeData(
-            indicatorShape: navigationIndicatorShape,
-            indicatorColor: Colors.transparent,
-          ),
           useMaterial3: true,
           iconButtonTheme: IconButtonThemeData(
             style: ButtonStyle(

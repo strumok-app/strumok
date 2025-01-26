@@ -47,7 +47,7 @@ final latestSupplierBundleInfoProvider =
 typedef LatestSupplierBundleInfoRef
     = AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
 String _$suppliersBundleDownloadHash() =>
-    r'4170048e68341a35d98826e51dff276d49c52662';
+    r'0a8857613ba84d4df813101f8c0f568c95256e6d';
 
 /// See also [SuppliersBundleDownload].
 @ProviderFor(SuppliersBundleDownload)

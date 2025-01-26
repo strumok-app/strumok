@@ -1,6 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
@@ -60,93 +58,15 @@ Widget playlistItemBuilder(
 ) {
   final progress = contentProgress?.positions[item.number]?.progress ?? 0;
 
-  return VideoItemsListItem(
+  return MediaItemsListItem(
     item: item,
     selected: item.number == contentProgress?.currentItem,
+    selectIcon: Icons.play_arrow_rounded,
     progress: progress,
     onTap: () {
       onSelect(item);
     },
   );
-}
-
-class VideoItemsListItem extends HookWidget {
-  final ContentMediaItem item;
-  final bool selected;
-  final double progress;
-  final VoidCallback onTap;
-
-  const VideoItemsListItem({
-    super.key,
-    required this.item,
-    required this.selected,
-    required this.progress,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final focused = useState(false);
-    final theme = Theme.of(context);
-    final title = item.title;
-    final image = item.image;
-    final colorScheme = theme.colorScheme;
-    final accentColor = colorScheme.surfaceTint.withOpacity(0.5);
-
-    return Card.filled(
-      shape: RoundedRectangleBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-        side: BorderSide(
-          color: focused.value ? colorScheme.onSurfaceVariant : accentColor,
-        ),
-      ),
-      clipBehavior: Clip.antiAlias,
-      color: Colors.transparent,
-      child: InkWell(
-        autofocus: selected,
-        mouseCursor: SystemMouseCursors.click,
-        onTap: onTap,
-        onFocusChange: (value) => focused.value = value,
-        child: Row(
-          children: [
-            Container(
-              width: 96,
-              height: 72,
-              decoration: BoxDecoration(
-                image: image != null
-                    ? DecorationImage(
-                        image: CachedNetworkImageProvider(image),
-                        fit: BoxFit.cover,
-                      )
-                    : null,
-                color: image == null ? accentColor : null,
-              ),
-              child: selected
-                  ? const Center(
-                      child: Icon(
-                        Icons.play_arrow_rounded,
-                        color: Colors.white,
-                        size: 48,
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-            Expanded(
-              child: ListTile(
-                mouseCursor: SystemMouseCursors.click,
-                title: Text(
-                  title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: LinearProgressIndicator(value: progress),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class PlayerErrorPopup extends StatelessWidget {

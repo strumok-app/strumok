@@ -14,14 +14,20 @@ enum DownloadStatus {
   const DownloadStatus(this.isCompleted);
 }
 
+enum DownloadType { video, manga, file }
+
 abstract interface class DownloadRequest {
   String get id;
+  DownloadType get type;
 }
 
 class VideoDownloadRequest implements DownloadRequest {
   final String url;
   final String fileSrc;
   final Map<String, String>? headers;
+
+  @override
+  final DownloadType type = DownloadType.video;
 
   @override
   String get id => url;
@@ -35,6 +41,9 @@ class MangaDownloadRequest implements DownloadRequest {
   final Map<String, String>? headers;
 
   @override
+  final DownloadType type = DownloadType.manga;
+
+  @override
   String get id => folder;
 
   MangaDownloadRequest(this.pages, this.folder, {this.headers});
@@ -44,6 +53,9 @@ class FileDownloadRequest implements DownloadRequest {
   final String url;
   final String fileSrc;
   final Map<String, String>? headers;
+
+  @override
+  final DownloadType type = DownloadType.file;
 
   @override
   String get id => url;
@@ -75,5 +87,9 @@ class DownloadTask {
     status.addListener(listener);
 
     return completer.future.timeout(timeout);
+  }
+
+  void cancel() {
+    status.value = DownloadStatus.canceled;
   }
 }

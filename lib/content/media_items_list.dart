@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/utils/visual.dart';
@@ -44,8 +45,7 @@ class MediaItemsListRoute<T> extends PopupRoute<T> {
   Duration get transitionDuration => const Duration(milliseconds: 500);
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation) {
+  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
     const begin = Offset(1.0, 0.0);
     const end = Offset.zero;
     const curve = Curves.ease;
@@ -254,6 +254,94 @@ class _MediaItemsListSection extends HookWidget {
         return itemBuilder(item, contentProgress, onSelect);
       },
       itemCount: list.length,
+    );
+  }
+}
+
+class MediaItemsListItem extends HookWidget {
+  final ContentMediaItem item;
+  final bool selected;
+  final double progress;
+  final VoidCallback onTap;
+  final IconData selectIcon;
+
+  const MediaItemsListItem({
+    super.key,
+    required this.item,
+    required this.selected,
+    required this.selectIcon,
+    required this.progress,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final focused = useState(false);
+    final theme = Theme.of(context);
+    final title = item.title;
+    final image = item.image;
+    final colorScheme = theme.colorScheme;
+    final accentColor = colorScheme.surfaceTint.withOpacity(0.5);
+
+    return Card.filled(
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        side: BorderSide(
+          color: focused.value ? colorScheme.onSurfaceVariant : accentColor,
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      color: Colors.transparent,
+      child: InkWell(
+        autofocus: selected,
+        mouseCursor: SystemMouseCursors.click,
+        onTap: onTap,
+        onFocusChange: (value) => focused.value = value,
+        child: Row(
+          children: [
+            if (image != null)
+              Container(
+                width: 80,
+                height: 72,
+                decoration: BoxDecoration(
+                  image: DecorationImage(image: CachedNetworkImageProvider(image), fit: BoxFit.cover),
+                ),
+                child: selected
+                    ? Center(
+                        child: Icon(selectIcon, color: Colors.white, size: 48),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            Expanded(
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                mouseCursor: SystemMouseCursors.click,
+                title: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (image == null && selected) ...[
+                      const SizedBox(width: 8),
+                      Icon(selectIcon),
+                    ],
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.download_rounded),
+                    )
+                  ],
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: LinearProgressIndicator(value: progress),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

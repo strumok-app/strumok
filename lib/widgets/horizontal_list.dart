@@ -18,25 +18,24 @@ class HorizontalList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: paddings),
-          child: title,
-        ),
-        SizedBox(
-          height: 260,
-          child: ListView.builder(
-            controller: scrollController,
-            padding:
-                EdgeInsets.only(bottom: 8, left: paddings, right: paddings),
-            scrollDirection: Axis.horizontal,
-            itemBuilder: itemBuilder,
-            itemCount: itemCount,
-          ),
-        )
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: paddings),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: title),
+          SizedBox(
+            height: 260,
+            child: ListView.builder(
+              controller: scrollController,
+              padding: const EdgeInsets.only(bottom: 8),
+              scrollDirection: Axis.horizontal,
+              itemBuilder: itemBuilder,
+              itemCount: itemCount,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

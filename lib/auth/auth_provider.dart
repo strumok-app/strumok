@@ -6,10 +6,10 @@ part 'auth_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 Auth auth(Ref ref) {
-  return Auth.instance;
+  return Auth();
 }
 
 @Riverpod(keepAlive: true)
 Stream<User?> user(Ref ref) {
-  return Auth.instance.userUpdate;
+  return Auth().userUpdate;
 }

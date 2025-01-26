@@ -26,7 +26,6 @@ class ContentDetailsScreen extends ConsumerWidget {
 
     return GeneralLayout(
       showBackButton: true,
-      selectedIndex: 2,
       child: details.when(
         data: (data) => ContentDetailsView(data),
         error: (error, stackTrace) => DisplayError(

@@ -73,52 +73,15 @@ Widget mangaChapterListItemBuilder(
 ) {
   final progress = contentProgress?.positions[item.number]?.progress ?? 0;
 
-  return MangaItemsListItem(
+  return MediaItemsListItem(
     item: item,
     selected: item.number == contentProgress?.currentItem,
+    selectIcon: Icons.menu_book,
     progress: progress,
     onTap: () {
       onSelect(item);
     },
   );
-}
-
-class MangaItemsListItem extends StatelessWidget {
-  final ContentMediaItem item;
-  final bool selected;
-  final double progress;
-  final VoidCallback onTap;
-
-  const MangaItemsListItem({
-    super.key,
-    required this.item,
-    required this.selected,
-    required this.progress,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final title = item.title;
-
-    return ListTile(
-      onTap: onTap,
-      autofocus: selected,
-      mouseCursor: SystemMouseCursors.click,
-      title: Row(
-        children: [
-          Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const Spacer(),
-          if (selected) const Icon(Icons.menu_book)
-        ],
-      ),
-      subtitle: LinearProgressIndicator(value: progress),
-    );
-  }
 }
 
 class MangaBackground extends ConsumerWidget {
