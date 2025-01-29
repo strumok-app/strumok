@@ -27,9 +27,7 @@ class Search extends _$Search {
 
     final enabledSuppliers = ref.read(enabledSuppliersProvider);
     final searchSettings = ref.read(searchSettingsProvider);
-    final contentSuppliers = enabledSuppliers.intersection(
-      searchSettings.searchSuppliersNames,
-    );
+    final contentSuppliers = enabledSuppliers.intersection(searchSettings.searchSuppliersNames);
 
     final stream = ContentSuppliers().search(query, contentSuppliers);
 
