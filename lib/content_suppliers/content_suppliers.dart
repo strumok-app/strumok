@@ -110,7 +110,7 @@ class ContentSuppliers {
       final bundleInfo = AppPreferences.ffiSupplierBundleInfo;
 
       if (bundleInfo != null) {
-        final installed = await FFISuppliersBundleStorage.instance.isInstalled(bundleInfo);
+        final installed = await FFISuppliersBundleStorage().isInstalled(bundleInfo);
 
         if (!installed) {
           return [];
@@ -125,7 +125,7 @@ class ContentSuppliers {
     //const required
     var libDirectory = const String.fromEnvironment("FFI_SUPPLIER_LIBS_DIR");
     if (libDirectory.isEmpty) {
-      libDirectory = FFISuppliersBundleStorage.instance.libsDir;
+      libDirectory = FFISuppliersBundleStorage().libsDir;
     }
 
     logger.i("FFI libs directory: $libDirectory");

@@ -8,13 +8,13 @@ import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/utils/logger.dart';
 
 class HLSStream {
-  final String url;
+  final Uri uri;
   final int bandwidth;
   final int? width;
   final int? height;
 
   HLSStream({
-    required this.url,
+    required this.uri,
     required this.bandwidth,
     this.width,
     this.height,
@@ -22,11 +22,13 @@ class HLSStream {
 }
 
 class HLSManifest {
+  final Uri uri;
   final bool encrypted;
   final List<HLSStream> streams;
-  final List<String> segments;
+  final List<Uri> segments;
 
   HLSManifest({
+    required this.uri,
     required this.encrypted,
     required this.streams,
     required this.segments,
@@ -48,7 +50,8 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
   }
 
   try {
-    final httpReq = Request('GET', Uri.parse(request.url));
+    final uri = Uri.parse(request.url);
+    final httpReq = Request('GET', uri);
     httpReq.headers.addAll(headers);
     final res = await Client().send(httpReq);
 
@@ -56,11 +59,11 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
       throw Exception("httpStatus: ${res.statusCode}");
     }
 
-    if (res.headers['content-type'] == 'application/vnd.apple.mpegurl') {
+    if (request.url.endsWith(".m3u8") || res.headers['content-type'] == 'application/vnd.apple.mpegurl') {
       final bytes = await res.stream.toBytes();
       final hls = utf8.decode(bytes);
 
-      final master = _parseHLSManifest(hls);
+      final master = _parseHLSManifest(uri, hls);
 
       if (master.encrypted) {
         throw Exception("stream encrypted");
@@ -70,7 +73,7 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
         final selectedStream = master.streams.reduce((a, b) => a.bandwidth > b.bandwidth ? a : b);
         await _downloadHLSStream(request, task, selectedStream, onDone);
       } else {
-        await _downloadStreamSegments(request, task, master.segments, onDone);
+        await _downloadStreamSegments(request, task, master, onDone);
       }
     } else {
       donwloadFile(FileDownloadRequest(request.url, request.fileSrc, headers: request.headers), task, onDone);
@@ -91,41 +94,28 @@ Future<void> _downloadHLSStream(
   HLSStream stream,
   VoidCallback onDone,
 ) async {
-  final masterUri = Uri.parse(request.url);
-  final streamUri = _relativeUri(masterUri, stream.url);
-
-  final res = await Client().get(streamUri, headers: request.headers);
+  final res = await Client().get(stream.uri, headers: request.headers);
 
   if (res.statusCode != HttpStatus.ok) {
-    throw Exception("stream: $streamUri httpError: ${res.statusCode}");
+    throw Exception("stream: ${stream.uri} httpError: ${res.statusCode}");
   }
 
   final hls = res.body;
-  final streamHls = _parseHLSManifest(hls);
+  final streamHls = _parseHLSManifest(stream.uri, hls);
 
   if (streamHls.encrypted) {
-    throw Exception("stream: $streamUri stream encrypted");
+    throw Exception("stream: ${stream.uri} stream encrypted");
   }
 
-  await _downloadStreamSegments(request, task, streamHls.segments, onDone);
-}
-
-Uri _relativeUri(Uri masterUri, String url) {
-  final streamUri = Uri.parse(url);
-  if (streamUri.isAbsolute) {
-    return streamUri;
-  }
-
-  return masterUri.resolve(url);
+  await _downloadStreamSegments(request, task, streamHls, onDone);
 }
 
 Future<void> _downloadStreamSegments(
   VideoDownloadRequest request,
   DownloadTask task,
-  List<String> segments,
+  HLSManifest manifets,
   VoidCallback onDone,
 ) async {
-  final masterUri = Uri.parse(request.url);
   final client = Client();
 
   final partialFilePath = request.fileSrc + partialExtension;
@@ -133,16 +123,15 @@ Future<void> _downloadStreamSegments(
 
   final sink = partialFile.openWrite(mode: FileMode.write);
 
-  for (var i = 0; i < segments.length; i++) {
+  for (var i = 0; i < manifets.segments.length; i++) {
     if (task.status.value == DownloadStatus.canceled) {
       sink.close();
       await partialFile.delete();
       return;
     }
 
-    final segment = segments[i];
-    final segmentUri = _relativeUri(masterUri, segment);
-    final segmentReq = Request('GET', segmentUri);
+    final segment = manifets.segments[i];
+    final segmentReq = Request('GET', segment);
     if (request.headers != null) {
       segmentReq.headers.addAll(request.headers!);
     }
@@ -157,7 +146,7 @@ Future<void> _downloadStreamSegments(
       sink.add(chunk);
     }
 
-    task.progress.value = i / segments.length;
+    task.progress.value = i / manifets.segments.length;
   }
 
   await sink.close();
@@ -165,9 +154,9 @@ Future<void> _downloadStreamSegments(
   await partialFile.rename(request.fileSrc);
 }
 
-HLSManifest _parseHLSManifest(String content) {
+HLSManifest _parseHLSManifest(Uri uri, String content) {
   final List<HLSStream> streams = [];
-  final List<String> segments = [];
+  final List<Uri> segments = [];
   bool encrypted = false;
   final lines = content.split('\n');
 
@@ -200,7 +189,7 @@ HLSManifest _parseHLSManifest(String content) {
 
         if (bandwidth != null && i < lines.length - 1) {
           streams.add(HLSStream(
-            url: lines[++i],
+            uri: _relativeUri(uri, lines[++i]),
             bandwidth: bandwidth,
             width: width,
             height: height,
@@ -208,9 +197,23 @@ HLSManifest _parseHLSManifest(String content) {
         }
       }
     } else {
-      segments.add(line);
+      segments.add(_relativeUri(uri, line));
     }
   }
 
-  return HLSManifest(encrypted: encrypted, streams: streams, segments: segments);
+  return HLSManifest(
+    uri: uri,
+    encrypted: encrypted,
+    streams: streams,
+    segments: segments,
+  );
+}
+
+Uri _relativeUri(Uri masterUri, String url) {
+  final streamUri = Uri.parse(url);
+  if (streamUri.isAbsolute) {
+    return streamUri;
+  }
+
+  return masterUri.resolve(url);
 }

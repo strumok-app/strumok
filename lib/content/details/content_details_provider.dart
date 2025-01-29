@@ -9,7 +9,7 @@ import 'package:strumok/settings/settings_provider.dart';
 part 'content_details_provider.g.dart';
 
 @riverpod
-Future<ContentDetails> details(Ref ref, String supplier, String id) {
+Future<ContentDetails> details(Ref ref, String supplier, String id) async {
   final langs = ref.watch(contentLanguageSettingsProvider);
   final link = ref.keepAlive();
 

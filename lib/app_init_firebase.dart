@@ -3,21 +3,26 @@ import 'package:firebase_dart/firebase_dart.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AppInitFirebase {
-  AppInitFirebase._();
+  AppInitFirebase._privateConstructor();
 
-  static Future<FirebaseOptions> loadOptions() async {
-    final firebaseOptionsJson = AppSecrets.getJson("firebase");
+  static final AppInitFirebase _instance = AppInitFirebase._privateConstructor();
+
+  factory AppInitFirebase() {
+    return _instance;
+  }
+
+  Future<FirebaseOptions> loadOptions() async {
+    final firebaseOptionsJson = AppSecrets().getJson("firebase");
     return FirebaseOptions.fromMap(
       firebaseOptionsJson,
     );
   }
 
-  static Future<FirebaseApp> init({
+  Future<FirebaseApp> init({
     isolated = true,
     FirebaseOptions? options,
   }) async {
-    final directory =
-        "${(await getApplicationSupportDirectory()).path}/firebase";
+    final directory = "${(await getApplicationSupportDirectory()).path}/firebase";
 
     FirebaseDart.setup(storagePath: directory, isolated: isolated);
 

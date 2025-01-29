@@ -9,13 +9,17 @@ const ffiSupplierBundleDir = "ffi";
 class FFISuppliersBundleStorage {
   static const minimalCompatibleVersion = SemVer(major: 1, minor: 4, inc: 0);
 
-  FFISuppliersBundleStorage._();
+  FFISuppliersBundleStorage._internal();
 
-  static final FFISuppliersBundleStorage instance = FFISuppliersBundleStorage._();
+  static final FFISuppliersBundleStorage _instance = FFISuppliersBundleStorage._internal();
+
+  factory FFISuppliersBundleStorage() {
+    return _instance;
+  }
 
   late String libsDir;
 
-  Future<void> setup() async {
+  Future<void> init() async {
     final basePath = (await getApplicationSupportDirectory()).path;
 
     libsDir = "$basePath${Platform.pathSeparator}$ffiSupplierBundleDir";

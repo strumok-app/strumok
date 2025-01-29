@@ -28,7 +28,7 @@ class CollectionSync {
     _syncStatus.sink.add(true);
 
     // obtain databases
-    final isar = AppDatabase.database();
+    final isar = AppDatabase().database;
     final firebase = FirebaseDatabase();
 
     // read local and remote collection

@@ -6,7 +6,7 @@ part of 'video_player_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sourceSelectorHash() => r'4751d5fcfff9d640b78ce3cfc65dc646379ccde9';
+String _$sourceSelectorHash() => r'b3d9994934390c45715949ca761df1128a31d292';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -34,8 +34,7 @@ class _SystemHash {
 const sourceSelectorProvider = SourceSelectorFamily();
 
 /// See also [sourceSelector].
-class SourceSelectorFamily extends Family<
-    AsyncValue<(List<ContentMediaItemSource>, String?, String?)>> {
+class SourceSelectorFamily extends Family<AsyncValue<SourceSelectorModel>> {
   /// See also [sourceSelector].
   const SourceSelectorFamily();
 
@@ -76,8 +75,8 @@ class SourceSelectorFamily extends Family<
 }
 
 /// See also [sourceSelector].
-class SourceSelectorProvider extends AutoDisposeFutureProvider<
-    (List<ContentMediaItemSource>, String?, String?)> {
+class SourceSelectorProvider
+    extends AutoDisposeFutureProvider<SourceSelectorModel> {
   /// See also [sourceSelector].
   SourceSelectorProvider(
     ContentDetails contentDetails,
@@ -117,9 +116,7 @@ class SourceSelectorProvider extends AutoDisposeFutureProvider<
 
   @override
   Override overrideWith(
-    FutureOr<(List<ContentMediaItemSource>, String?, String?)> Function(
-            SourceSelectorRef provider)
-        create,
+    FutureOr<SourceSelectorModel> Function(SourceSelectorRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -137,8 +134,7 @@ class SourceSelectorProvider extends AutoDisposeFutureProvider<
   }
 
   @override
-  AutoDisposeFutureProviderElement<
-      (List<ContentMediaItemSource>, String?, String?)> createElement() {
+  AutoDisposeFutureProviderElement<SourceSelectorModel> createElement() {
     return _SourceSelectorProviderElement(this);
   }
 
@@ -161,8 +157,7 @@ class SourceSelectorProvider extends AutoDisposeFutureProvider<
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin SourceSelectorRef on AutoDisposeFutureProviderRef<
-    (List<ContentMediaItemSource>, String?, String?)> {
+mixin SourceSelectorRef on AutoDisposeFutureProviderRef<SourceSelectorModel> {
   /// The parameter `contentDetails` of this provider.
   ContentDetails get contentDetails;
 
@@ -170,8 +165,9 @@ mixin SourceSelectorRef on AutoDisposeFutureProviderRef<
   List<ContentMediaItem> get mediaItems;
 }
 
-class _SourceSelectorProviderElement extends AutoDisposeFutureProviderElement<
-    (List<ContentMediaItemSource>, String?, String?)> with SourceSelectorRef {
+class _SourceSelectorProviderElement
+    extends AutoDisposeFutureProviderElement<SourceSelectorModel>
+    with SourceSelectorRef {
   _SourceSelectorProviderElement(super.provider);
 
   @override

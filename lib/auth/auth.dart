@@ -129,7 +129,7 @@ class Auth {
 
   static Future<ClientId> _loadDesktopClientId() async {
     if (desktopClientId == null) {
-      final clientSecretJson = AppSecrets.getJson("google_auth");
+      final clientSecretJson = AppSecrets().getJson("google_auth");
       desktopClientId = ClientId.fromJson(clientSecretJson);
     }
 

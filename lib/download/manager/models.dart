@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/foundation.dart';
 
 enum DownloadStatus {
@@ -25,6 +26,7 @@ class VideoDownloadRequest implements DownloadRequest {
   final String url;
   final String fileSrc;
   final Map<String, String>? headers;
+  final ContentInfo contentInfo;
 
   @override
   final DownloadType type = DownloadType.video;
@@ -32,13 +34,14 @@ class VideoDownloadRequest implements DownloadRequest {
   @override
   String get id => url;
 
-  VideoDownloadRequest(this.url, this.fileSrc, {this.headers});
+  VideoDownloadRequest(this.url, this.fileSrc, this.contentInfo, {this.headers});
 }
 
 class MangaDownloadRequest implements DownloadRequest {
   final List<String> pages;
   final String folder;
   final Map<String, String>? headers;
+  final ContentInfo contentInfo;
 
   @override
   final DownloadType type = DownloadType.manga;
@@ -46,7 +49,7 @@ class MangaDownloadRequest implements DownloadRequest {
   @override
   String get id => folder;
 
-  MangaDownloadRequest(this.pages, this.folder, {this.headers});
+  MangaDownloadRequest(this.pages, this.folder, this.contentInfo, {this.headers});
 }
 
 class FileDownloadRequest implements DownloadRequest {

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:strumok/layouts/account.dart';
 import 'package:strumok/layouts/navigation_bar_data.dart';
 import 'package:flutter/material.dart';
 
@@ -31,6 +32,7 @@ class BottomNavigationLayout extends ConsumerWidget {
                 idx == selectedIndex,
               ),
             ),
+            const AccountMenuIcon(),
           ],
         ),
       ),
@@ -38,7 +40,6 @@ class BottomNavigationLayout extends ConsumerWidget {
   }
 
   Widget buildButton(VoidCallback onPressed, Widget icon, bool isSelected) {
-    // const iconSize = 18.0;
     final style = ButtonStyle(
       shape: WidgetStateProperty.all(RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -61,7 +62,7 @@ class BottomNavigationLayout extends ConsumerWidget {
 
     return SizedBox(
       height: 32,
-      width: 64,
+      width: 56,
       child: button,
     );
   }

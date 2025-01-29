@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
+import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/utils/visual.dart';
 
@@ -47,28 +48,19 @@ class _SourceSelectDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sourceSelectorValue =
-        ref.watch(sourceSelectorProvider(contentDetails, mediaItems));
+    final sourceSelectorValue = ref.watch(sourceSelectorProvider(contentDetails, mediaItems));
 
     return Dialog(
       child: sourceSelectorValue.when(
-        data: (data) {
-          final (sources, currentSource, currentSubtitle) = data;
-
-          return _SourceSelectorContent(
-            sources: sources,
-            contentDetails: contentDetails,
-            currentSource: currentSource,
-            currentSubtitle: currentSubtitle,
-          );
+        data: (model) {
+          return _SourceSelectorContent(contentDetails: contentDetails, model: model);
         },
         loading: () => const SizedBox(
           width: 60,
           height: 60,
           child: Center(child: CircularProgressIndicator()),
         ),
-        error: (error, stackTrace) =>
-            Text(AppLocalizations.of(context)!.videoNoSources),
+        error: (error, stackTrace) => Text(AppLocalizations.of(context)!.videoNoSources),
       ),
     );
   }
@@ -76,21 +68,17 @@ class _SourceSelectDialog extends ConsumerWidget {
 
 class _SourceSelectorContent extends StatelessWidget {
   const _SourceSelectorContent({
-    required this.sources,
     required this.contentDetails,
-    required this.currentSource,
-    required this.currentSubtitle,
+    required this.model,
   });
 
-  final List<ContentMediaItemSource> sources;
   final ContentDetails contentDetails;
-  final String? currentSource;
-  final String? currentSubtitle;
+  final SourceSelectorModel model;
 
   @override
   Widget build(BuildContext context) {
-    final videos = sources.where((e) => e.kind == FileKind.video);
-    final subtitles = sources.where((e) => e.kind == FileKind.subtitle);
+    final videos = model.sources.where((e) => e.kind == FileKind.video);
+    final subtitles = model.sources.where((e) => e.kind == FileKind.subtitle);
 
     if (videos.isEmpty) {
       return Container(
@@ -112,13 +100,13 @@ class _SourceSelectorContent extends StatelessWidget {
               _VideoSources(
                 contentDetails: contentDetails,
                 sources: videos,
-                currentSourceName: currentSource,
+                currentSourceName: model.currentSource,
               ),
               if (subtitles.isNotEmpty)
                 _SubtitleSources(
                   contentDetails: contentDetails,
                   sources: subtitles,
-                  currentSubtitleName: currentSubtitle,
+                  currentSubtitleName: model.currentSubtitle,
                 ),
             ]),
           );
@@ -132,7 +120,7 @@ class _SourceSelectorContent extends StatelessWidget {
                   child: _VideoSources(
                     contentDetails: contentDetails,
                     sources: videos,
-                    currentSourceName: currentSource,
+                    currentSourceName: model.currentSource,
                   ),
                 ),
                 if (subtitles.isNotEmpty)
@@ -140,7 +128,7 @@ class _SourceSelectorContent extends StatelessWidget {
                     child: _SubtitleSources(
                       contentDetails: contentDetails,
                       sources: subtitles,
-                      currentSubtitleName: currentSubtitle,
+                      currentSubtitleName: model.currentSubtitle,
                     ),
                   ),
               ],
@@ -174,11 +162,9 @@ class _SubtitleSources extends ConsumerWidget {
           ListTile(
             visualDensity: VisualDensity.compact,
             leading: const Icon(Icons.subtitles),
-            trailing:
-                currentSubtitleName == null ? const Icon(Icons.check) : null,
+            trailing: currentSubtitleName == null ? const Icon(Icons.check) : null,
             onTap: () {
-              final notifier =
-                  ref.read(collectionItemProvider(contentDetails).notifier);
+              final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
               notifier.setCurrentSubtitle(null);
               Navigator.of(context).pop();
             },
@@ -188,12 +174,9 @@ class _SubtitleSources extends ConsumerWidget {
             (e) => ListTile(
               visualDensity: VisualDensity.compact,
               leading: const Icon(Icons.subtitles),
-              trailing: currentSubtitleName == e.description
-                  ? const Icon(Icons.check)
-                  : null,
+              trailing: currentSubtitleName == e.description ? const Icon(Icons.check) : null,
               onTap: () {
-                final notifier =
-                    ref.read(collectionItemProvider(contentDetails).notifier);
+                final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
                 notifier.setCurrentSubtitle(e.description);
                 Navigator.of(context).pop();
               },
@@ -233,9 +216,7 @@ class _VideoSources extends ConsumerWidget {
               (idx, e) => ListTile(
                 visualDensity: VisualDensity.compact,
                 leading: const Icon(Icons.music_note),
-                trailing: currentSourceName == e.description
-                    ? const Icon(Icons.check)
-                    : null,
+                trailing: currentSourceName == e.description ? const Icon(Icons.check) : null,
                 onTap: () {
                   Navigator.of(context).pop();
                   final notifier = ref.read(

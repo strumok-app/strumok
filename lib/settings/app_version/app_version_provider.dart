@@ -58,7 +58,7 @@ class LatestAppVersionInfo {
 @riverpod
 FutureOr<LatestAppVersionInfo?> latestAppVersionInfo(Ref ref) async {
   try {
-    final appVersionCheckURL = AppSecrets.getString("appVersionCheckURL");
+    final appVersionCheckURL = AppSecrets().getString("appVersionCheckURL");
     final res = await Client().get(Uri.parse(appVersionCheckURL));
 
     return LatestAppVersionInfo.fromJson(json.decode(res.body));

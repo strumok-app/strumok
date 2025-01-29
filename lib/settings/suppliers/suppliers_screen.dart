@@ -3,7 +3,6 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings.dart';
 import 'package:strumok/utils/tv.dart';
-import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +13,6 @@ class SuppliersSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const GeneralLayout(
-      selectedIndex: 3,
       child: _SuppliersSettingsView(),
     );
   }
@@ -26,7 +24,6 @@ class _SuppliersSettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final padding = getPadding(context);
 
     return Align(
       alignment: Alignment.topCenter,
@@ -36,12 +33,12 @@ class _SuppliersSettingsView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: padding),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Row(
                 children: [
                   if (!TVDetector.isTV) ...[
                     const BackNavButton(),
-                    SizedBox(width: padding),
+                    const SizedBox(width: 8),
                   ],
                   Flexible(
                     child: Text(

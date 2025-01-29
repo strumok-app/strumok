@@ -32,7 +32,7 @@ void main() async {
 }
 
 void appRunner() async {
-  await AppSecrets.init();
+  await AppSecrets().init();
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -43,15 +43,15 @@ void appRunner() async {
   // init media kit
   MediaKit.ensureInitialized();
 
-  await AppDatabase.init();
+  await AppDatabase().init();
   await AppPreferences.init();
   await TVDetector.detect();
 
   // init firebase
-  await AppInitFirebase.init();
+  await AppInitFirebase().init();
 
   // load suppliers
-  await FFISuppliersBundleStorage.instance.setup();
+  await FFISuppliersBundleStorage().init();
   await ContentSuppliers().load();
 
   // start ui

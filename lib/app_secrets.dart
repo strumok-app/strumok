@@ -3,18 +3,25 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
 class AppSecrets {
-  static late final Map<String, dynamic> _secrets;
+  static final AppSecrets _instance = AppSecrets._internal();
+  late final Map<String, dynamic> _secrets;
 
-  static Future<void> init() async {
-    final secretsContent = await rootBundle.loadString("secrets.json");
-    _secrets = await json.decode(secretsContent);
+  factory AppSecrets() {
+    return _instance;
   }
 
-  static String getString(String key) {
+  AppSecrets._internal();
+
+  Future<void> init() async {
+    final secretsContent = await rootBundle.loadString("secrets.json");
+    _instance._secrets = await json.decode(secretsContent);
+  }
+
+  String getString(String key) {
     return _secrets[key] as String;
   }
 
-  static Map<String, dynamic> getJson(String key) {
+  Map<String, dynamic> getJson(String key) {
     return _secrets[key] as Map<String, dynamic>;
   }
 }

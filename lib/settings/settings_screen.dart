@@ -16,10 +16,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GeneralLayout(
-      selectedIndex: 3,
-      child: _SettingsView(),
-    );
+    return const GeneralLayout(child: _SettingsView());
   }
 }
 
@@ -31,11 +28,12 @@ class _SettingsView extends StatelessWidget {
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 800),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
                 AppLocalizations.of(context)!.settings,
                 style: Theme.of(context).textTheme.headlineMedium,
@@ -70,7 +68,7 @@ class _SettingsView extends StatelessWidget {
                     const ContentLanguageSelector(),
                   ),
                   ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                    contentPadding: EdgeInsets.zero,
                     leading: const Icon(Icons.chevron_right),
                     horizontalTitleGap: 8,
                     title: Text(
@@ -94,7 +92,7 @@ class _SettingsView extends StatelessWidget {
       labelWidth: 200,
       label: Text(
         label,
-        style: Theme.of(context).textTheme.labelLarge,
+        style: Theme.of(context).textTheme.titleMedium,
       ),
       section: section,
     );

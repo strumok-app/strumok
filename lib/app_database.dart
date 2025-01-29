@@ -5,11 +5,17 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AppDatabase {
-  AppDatabase._();
+  AppDatabase._privateConstructor();
 
-  static late Isar _isar;
+  static final AppDatabase _instance = AppDatabase._privateConstructor();
 
-  static Future<void> init() async {
+  factory AppDatabase() {
+    return _instance;
+  }
+
+  late Isar _isar;
+
+  Future<void> init() async {
     final directory = (await getApplicationSupportDirectory()).path;
 
     logger.i("Database directory: $directory");
@@ -20,7 +26,7 @@ class AppDatabase {
     );
   }
 
-  static Isar database() {
+  Isar get database {
     return _isar;
   }
 }

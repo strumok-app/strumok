@@ -1,6 +1,5 @@
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
-import 'package:strumok/utils/visual.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +59,6 @@ class _RecommendationsSettingsItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final padding = getPadding(context);
     final config = ref.watch(
       suppliersSettingsProvider.select(
         (value) => value.getConfig(supplierName),
@@ -71,7 +69,7 @@ class _RecommendationsSettingsItem extends ConsumerWidget {
 
     return Card.outlined(
       child: Padding(
-        padding: EdgeInsets.all(padding),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

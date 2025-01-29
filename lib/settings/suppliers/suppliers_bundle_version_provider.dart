@@ -30,7 +30,7 @@ Future<FFISupplierBundleInfo?> installedSupplierBundleInfo(
   final info = AppPreferences.ffiSupplierBundleInfo;
 
   if (info != null) {
-    final installed = await FFISuppliersBundleStorage.instance.isInstalled(info);
+    final installed = await FFISuppliersBundleStorage().isInstalled(info);
 
     if (!installed) {
       return null;
@@ -43,7 +43,7 @@ Future<FFISupplierBundleInfo?> installedSupplierBundleInfo(
 @riverpod
 FutureOr<FFISupplierBundleInfo?> latestSupplierBundleInfo(Ref ref) async {
   try {
-    final latestVersionUrl = AppSecrets.getString("ffiLibVersionCheckURL");
+    final latestVersionUrl = AppSecrets().getString("ffiLibVersionCheckURL");
     final res = await Client().get(Uri.parse(latestVersionUrl));
     return FFISupplierBundleInfo.fromJson(json.decode(res.body));
   } catch (e) {
@@ -62,7 +62,7 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
   void download(FFISupplierBundleInfo info) async {
     state = state.start();
 
-    final libPath = FFISuppliersBundleStorage.instance.getLibFilePath(info);
+    final libPath = FFISuppliersBundleStorage().getLibFilePath(info);
     final url = await _downloadUrl(info);
 
     if (url == null) {
@@ -89,7 +89,7 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
     logger.i("New FFI bundle version donwloaded");
 
     final bundle = RustContentSuppliersBundle(
-      directory: FFISuppliersBundleStorage.instance.libsDir,
+      directory: FFISuppliersBundleStorage().libsDir,
       libName: info.libName,
     );
 
@@ -109,7 +109,7 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
     ref.refresh(installedSupplierBundleInfoProvider);
     ref.refresh(suppliersSettingsProvider);
     // cleanup old versions
-    FFISuppliersBundleStorage.instance.cleanup(info);
+    FFISuppliersBundleStorage().cleanup(info);
 
     state = state.done();
   }

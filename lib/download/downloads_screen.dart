@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/layouts/general_layout.dart';
@@ -18,7 +18,10 @@ class DownloadsScreen extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(AppLocalizations.of(context)!.downloadsQueue),
+              child: Text(
+                AppLocalizations.of(context)!.downloadsQueue,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
           ],
         ),

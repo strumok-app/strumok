@@ -131,7 +131,7 @@ abstract class CollectionRepository {
 }
 
 class IsarCollectionRepository extends CollectionRepository {
-  final Isar db = AppDatabase.database();
+  final Isar db = AppDatabase().database;
   late final IsarCollection<IsarMediaCollectionItem> collection = db.isarMediaCollectionItems;
 
   @override

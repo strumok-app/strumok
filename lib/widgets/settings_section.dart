@@ -15,8 +15,7 @@ class SettingsSection extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final padding =
-        EdgeInsets.only(top: contentPadding, bottom: contentPadding);
+    final padding = EdgeInsets.only(top: contentPadding, bottom: contentPadding);
     final labelBox = SizedBox(
       width: labelWidth,
       child: Padding(
@@ -33,26 +32,23 @@ class SettingsSection extends StatelessWidget {
       ),
     );
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: contentPadding),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 450) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [labelBox, sectionBox],
-            );
-          } else {
-            return Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                labelBox,
-                Flexible(child: sectionBox),
-              ],
-            );
-          }
-        },
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 450) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [labelBox, sectionBox],
+          );
+        } else {
+          return Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              labelBox,
+              Flexible(child: sectionBox),
+            ],
+          );
+        }
+      },
     );
   }
 }

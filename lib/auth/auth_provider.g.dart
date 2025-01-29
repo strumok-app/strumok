@@ -6,7 +6,7 @@ part of 'auth_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authHash() => r'0bb7fac45712e60414c669a90b422a1730154ea0';
+String _$authHash() => r'bdbda8b2b536217917227b604f9fd99bc2bb3527';
 
 /// See also [auth].
 @ProviderFor(auth)
@@ -22,7 +22,7 @@ final authProvider = Provider<Auth>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AuthRef = ProviderRef<Auth>;
-String _$userHash() => r'c19c193f6338006eb89427bec654ad7c6399cee6';
+String _$userHash() => r'a47fd82d15ea15bad0639df1c9d0764e5f285d6d';
 
 /// See also [user].
 @ProviderFor(user)

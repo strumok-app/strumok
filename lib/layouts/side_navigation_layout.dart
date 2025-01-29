@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:strumok/layouts/navigation_bar_data.dart';
+import 'package:strumok/layouts/account.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:flutter/material.dart';
 
@@ -33,12 +34,9 @@ class SideNavigationLayout extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: NavigationRail(
               leading: showBackButton ? const BackNavButton() : const SizedBox.square(dimension: 40),
-              trailing: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.settings),
-              ), //const SizedBox.square(dimension: 40),
+              trailing: const AccountMenuIcon(),
               selectedIndex: selectedIndex,
-              groupAlignment: 0.0,
+              // groupAlignment: 0.0,
               destinations: routes,
               onDestinationSelected: (index) {
                 final routeBuilder = NavigationBarData.routes[index].routeBuilder;

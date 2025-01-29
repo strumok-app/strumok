@@ -26,10 +26,9 @@ class SearchSuggestion {
       return;
     }
 
-    final db = AppDatabase.database();
+    final db = AppDatabase().database;
 
-    var suggestion =
-        await db.searchSuggestions.filter().textEqualTo(text).findFirst();
+    var suggestion = await db.searchSuggestions.filter().textEqualTo(text).findFirst();
 
     suggestion ??= SearchSuggestion(text: text, lastSeen: DateTime.now());
 
@@ -43,7 +42,7 @@ class SearchSuggestion {
     int limit = 10,
   }) async {
     final text = cleanupQuery(query);
-    final db = AppDatabase.database();
+    final db = AppDatabase().database;
 
     final words = Isar.splitWords(text);
 
@@ -67,7 +66,7 @@ class SearchSuggestion {
   }
 
   Future<void> delete() async {
-    final db = AppDatabase.database();
+    final db = AppDatabase().database;
 
     await db.writeTxn(() async {
       await db.searchSuggestions.delete(id!);

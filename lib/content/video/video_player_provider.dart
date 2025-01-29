@@ -60,7 +60,7 @@ class FixedPositionSettings extends _$FixedPositionSettings {
 }
 
 @riverpod
-Future<(List<ContentMediaItemSource>, String?, String?)> sourceSelector(
+Future<SourceSelectorModel> sourceSelector(
   Ref ref,
   ContentDetails contentDetails,
   List<ContentMediaItem> mediaItems,
@@ -77,5 +77,9 @@ Future<(List<ContentMediaItemSource>, String?, String?)> sourceSelector(
 
   final sources = await mediaItems[currentItem].sources;
 
-  return (sources, currentSource, currentSubtitle);
+  return SourceSelectorModel(
+    sources: sources,
+    currentSource: currentSource,
+    currentSubtitle: currentSubtitle,
+  );
 }
