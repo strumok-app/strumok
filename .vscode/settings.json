@@ -1,17 +1,20 @@
 {
-    "search.followSymlinks": false,
-    "[dart]": {
-        "editor.formatOnSave": true,
-        "editor.tabSize": 2,
-        "editor.insertSpaces": true,
-        "editor.detectIndentation": false,
-        "editor.suggest.insertMode": "insert",
-        "editor.defaultFormatter": "Dart-Code.dart-code",
-        "editor.inlayHints.enabled": "offUnlessPressed",
-        "editor.rulers": [120],
-    },
-    "dart.lineLength": 120,
-    "cSpell.enabledFileTypes": {
-        "yaml": false
-    },
+  "search.followSymlinks": false,
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.suggest.insertMode": "insert",
+    "editor.defaultFormatter": "Dart-Code.dart-code",
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "editor.rulers": [
+      120
+    ]
+  },
+  "dart.lineLength": 120,
+  "cSpell.enabledFileTypes": {
+    "yaml": false
+  },
+  "dart.flutterSdkPath": ".fvm/versions/stable"
 }

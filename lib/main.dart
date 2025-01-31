@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:strumok/app_database.dart';
 import 'package:strumok/app_init_firebase.dart';
 import 'package:strumok/app_localizations.dart';
@@ -21,20 +20,9 @@ import 'package:media_kit/media_kit.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
-  SentryFlutter.init(
-    (options) {
-      options
-        ..dsn = const String.fromEnvironment("SENTRY_DSN")
-        ..tracesSampleRate = 1.0;
-    },
-    appRunner: appRunner,
-  );
-}
-
-void appRunner() async {
-  await AppSecrets().init();
-
   WidgetsFlutterBinding.ensureInitialized();
+
+  await AppSecrets().init();
 
   if (isDesktopDevice()) {
     await windowManager.ensureInitialized();
@@ -78,13 +66,7 @@ class MainApp extends StatelessWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         scrollBehavior: const MaterialScrollBehavior()
             .copyWith(dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.trackpad}),
-        routerConfig: _appRouter.config(
-          navigatorObservers: () => [
-            SentryNavigatorObserver(
-              setRouteNameAsTransaction: true,
-            )
-          ],
-        ),
+        routerConfig: _appRouter.config(),
         builder: (context, child) => AppTheme(
           child: VersionGuard(child: child!),
         ),
