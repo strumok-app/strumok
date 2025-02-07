@@ -9,8 +9,6 @@ const partialExtension = ".part";
 const tempExtension = ".temp";
 
 void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback onDone) async {
-  task.status.value = DownloadStatus.started;
-
   try {
     final file = File(request.fileSrc);
 
@@ -47,6 +45,7 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
       throw Exception("httpStatus: ${res.statusCode}");
     }
 
+    await partialFile.create(recursive: true);
     final sink = partialFile.openWrite(mode: FileMode.writeOnlyAppend);
 
     await for (var chunk in res.stream) {

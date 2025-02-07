@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:content_suppliers_rust/bundle.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
@@ -124,7 +126,9 @@ class ContentSuppliers {
 
     //const required
     var libDirectory = const String.fromEnvironment("FFI_SUPPLIER_LIBS_DIR");
-    if (libDirectory.isEmpty) {
+    if (libDirectory.isNotEmpty) {
+      libDirectory = Directory.current.uri.resolve(libDirectory).path;
+    } else {
       libDirectory = FFISuppliersBundleStorage().libsDir;
     }
 

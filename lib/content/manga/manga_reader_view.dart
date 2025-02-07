@@ -34,6 +34,16 @@ class MangaReaderView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<AsyncValue<List<ImageProvider>>>(
+      _pagesProvider,
+      (previous, next) {
+        final images = next.valueOrNull;
+        if (images != null) {
+          ref.read(collectionItemProvider(contentDetails).notifier).setCurrentLength(images.length);
+        }
+      },
+    );
+
     return ref.watch(_pagesProvider).when(
           data: (pages) => _renderReader(context, ref, pages),
           error: (error, stackTrace) => DisplayError(

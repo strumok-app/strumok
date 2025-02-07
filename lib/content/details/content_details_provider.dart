@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:strumok/offline/offline_content_details.dart';
 import 'package:strumok/settings/settings_provider.dart';
 
 part 'content_details_provider.g.dart';
@@ -29,7 +30,9 @@ Future<ContentDetails> details(Ref ref, String supplier, String id) async {
     timer?.cancel();
   });
 
-  return ContentSuppliers().detailsById(supplier, id, langs);
+  final details = await ContentSuppliers().detailsById(supplier, id, langs);
+
+  return OfflineContentDetails(details);
 }
 
 class DetailsAndMediaItems {

@@ -463,11 +463,16 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
           slidePosition = value;
         });
       },
+      onChangeStart: (value) {
+        timer?.cancel();
+        timer = null;
+      },
       onChangeEnd: (value) {
         timer?.cancel();
         timer = Timer(const Duration(milliseconds: 300), () {
           controller(context).player.seek(Duration(seconds: value.ceil()));
           timer?.cancel();
+          timer = null;
 
           setState(() {
             slidePosition = null;

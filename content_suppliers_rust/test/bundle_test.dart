@@ -93,7 +93,7 @@ void main() async {
     expect(details!.id, equals(id));
     expect(details.supplier, equals("dummy"));
     expect(details.title, equals("dummy_title $id"));
-    expect(details.originalTitle, equals("original_dummy_title"));
+    expect(details.secondaryTitle, equals("original_dummy_title"));
     expect(details.image, equals("dummy_image"));
     expect(details.description, equals("dummy_description"));
     expect(details.mediaType, equals(MediaType.video));
@@ -141,17 +141,15 @@ void main() async {
     expect(sources[2], isA<MangaMediaItemSource>());
     final mangaSource = sources[2] as MangaMediaItemSource;
 
-    final pages = await mangaSource.allPages();
+    final pages = await mangaSource.images;
     expect(
         pages,
         equals([
           const CachedNetworkImageProvider("http://page1"),
           const CachedNetworkImageProvider("http://page2"),
         ]));
-    expect(mangaSource.pageNambers, 2);
     expect(mangaSource.kind, equals(FileKind.manga));
     expect(mangaSource.description, equals("$id 1,2,3"));
-    expect(mangaSource.pageNambers, equals(2));
   });
 
   test("should_load_manga_page_async", () async {
@@ -174,14 +172,12 @@ void main() async {
     expect(source, isA<MangaMediaItemSource>());
     final mangaSource = source as MangaMediaItemSource;
     expect(
-        await mangaSource.allPages(),
+        await mangaSource.images,
         equals([
           const CachedNetworkImageProvider("http://${id}_$id"),
         ]));
-    expect(mangaSource.pageNambers, 2);
     expect(mangaSource.kind, equals(FileKind.manga));
     expect(mangaSource.description, id);
-    expect(mangaSource.pageNambers, equals(2));
   });
 
   test("should load data eagerly", () async {

@@ -116,9 +116,9 @@ class _InfoBlock extends StatelessWidget {
             height: 1,
           ),
         ),
-        if (contentDetails.originalTitle != null)
+        if (contentDetails.secondaryTitle != null)
           SelectableText(
-            contentDetails.originalTitle!,
+            contentDetails.secondaryTitle!,
             style: theme.textTheme.bodyMedium,
           ),
       ],

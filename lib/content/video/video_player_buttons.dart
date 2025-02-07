@@ -10,6 +10,7 @@ import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
+import 'package:strumok/content/video/widgets.dart';
 
 class ExitButton extends StatelessWidget {
   final ContentDetails contentDetails;
@@ -50,8 +51,7 @@ class PlayerPlaylistButton extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    final collectionItem =
-        ref.watch(collectionItemProvider(contentDetails)).valueOrNull;
+    final collectionItem = ref.watch(collectionItemProvider(contentDetails)).valueOrNull;
 
     if (collectionItem == null) {
       return const SizedBox.shrink();
@@ -59,16 +59,19 @@ class PlayerPlaylistButton extends ConsumerWidget {
 
     return IconButton(
       onPressed: () {
-        Navigator.of(context).push(MediaItemsListRoute(
-          title: AppLocalizations.of(context)!.episodesList,
-          mediaItems: playerController.mediaItems,
-          contentProgress: collectionItem,
-          onSelect: (item) => playerController.selectItem(item.number),
-        ));
+        Navigator.of(context).push(
+          MediaItemsListRoute(
+            title: AppLocalizations.of(context)!.episodesList,
+            mediaItems: playerController.mediaItems,
+            contentProgress: collectionItem,
+            onSelect: (item) => playerController.selectItem(item.number),
+            itemBuilder: playlistItemBuilder(contentDetails),
+          ),
+        );
       },
       icon: const Icon(Icons.list),
       color: Colors.white,
-      disabledColor: Colors.white.withOpacity(0.7),
+      disabledColor: Colors.white.withValues(alpha: 0.7),
     );
   }
 }
@@ -90,10 +93,7 @@ class SkipPrevButton extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    final currentItem = ref
-        .watch(
-            collectionItemCurrentItemProvider(playerController.contentDetails))
-        .valueOrNull;
+    final currentItem = ref.watch(collectionItemCurrentItemProvider(playerController.contentDetails)).valueOrNull;
 
     final shuffleMode = ref.watch(shuffleModeSettingsProvider);
 
@@ -109,7 +109,7 @@ class SkipPrevButton extends ConsumerWidget {
       icon: const Icon(Icons.skip_previous),
       iconSize: iconSize,
       color: Colors.white,
-      disabledColor: Colors.white.withOpacity(0.7),
+      disabledColor: Colors.white.withValues(alpha: 0.7),
     );
   }
 }
@@ -131,10 +131,7 @@ class SkipNextButton extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    final currentItem = ref
-        .watch(
-            collectionItemCurrentItemProvider(playerController.contentDetails))
-        .valueOrNull;
+    final currentItem = ref.watch(collectionItemCurrentItemProvider(playerController.contentDetails)).valueOrNull;
 
     final shuffleMode = ref.watch(shuffleModeSettingsProvider);
 
@@ -142,8 +139,7 @@ class SkipNextButton extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final enabled =
-        currentItem < playerController.mediaItems.length - 1 || shuffleMode;
+    final enabled = currentItem < playerController.mediaItems.length - 1 || shuffleMode;
 
     return IconButton(
       onPressed: enabled ? () => playerController.nextItem() : null,
@@ -151,7 +147,7 @@ class SkipNextButton extends ConsumerWidget {
       icon: const Icon(Icons.skip_next),
       iconSize: iconSize,
       color: Colors.white,
-      disabledColor: Colors.white.withOpacity(0.7),
+      disabledColor: Colors.white.withValues(alpha: 0.7),
       focusNode: focusNode,
     );
   }
@@ -173,8 +169,7 @@ class PlayOrPauseButton extends StatefulWidget {
   PlayOrPauseButtonState createState() => PlayOrPauseButtonState();
 }
 
-class PlayOrPauseButtonState extends State<PlayOrPauseButton>
-    with SingleTickerProviderStateMixin {
+class PlayOrPauseButtonState extends State<PlayOrPauseButton> with SingleTickerProviderStateMixin {
   late final animation = AnimationController(
     vsync: this,
     value: controller(context).player.state.playing ? 1 : 0,

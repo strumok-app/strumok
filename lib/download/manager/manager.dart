@@ -10,7 +10,8 @@ import 'models.dart';
 class DownloadManager {
   static const int maxConcurrentTasks = 3;
 
-  final StreamController<Map<String, DownloadTask>> _downloadsUpdate = StreamController();
+  final StreamController<DownloadTask> _downloadsUpdate = StreamController();
+  late final activeDownloads = _downloadsUpdate.stream.asBroadcastStream();
   int _runningTasks = 0;
 
   final Map<String, DownloadTask> _downloads = {};
@@ -23,8 +24,6 @@ class DownloadManager {
   }
 
   DownloadManager._internal();
-
-  Stream<Map<String, DownloadTask>> get activeDownloads => _downloadsUpdate.stream;
 
   DownloadTask download(DownloadRequest req) {
     if (_downloads.containsKey(req.id)) {
@@ -40,6 +39,15 @@ class DownloadManager {
     return task;
   }
 
+  void cancel(String id) {
+    _requests.removeWhere((it) => it.id == id);
+    final task = _downloads.remove(id);
+    if (task != null) {
+      task.status.value = DownloadStatus.canceled;
+      _downloadsUpdate.sink.add(task);
+    }
+  }
+
   void _startExecution() {
     while (_requests.isNotEmpty && _runningTasks < maxConcurrentTasks) {
       _runningTasks++;
@@ -47,21 +55,28 @@ class DownloadManager {
       final request = _requests.removeFirst();
       final task = _downloads[request.id]!;
 
+      task.status.value = DownloadStatus.started;
+      _downloadsUpdate.add(task);
       if (request is FileDownloadRequest) {
         donwloadFile(request, task, () => downloadDone(request));
       } else if (request is VideoDownloadRequest) {
         downloadVideo(request, task, () => downloadDone(request));
       } else if (request is MangaDownloadRequest) {
         downloadManga(request, task, () => downloadDone(request));
-      } else {
-        throw Exception("Unsupported request type");
       }
     }
   }
 
   void downloadDone(DownloadRequest request) {
     _runningTasks--;
-    _downloads.remove(request.id);
+    final task = _downloads.remove(request.id);
+    if (task != null) {
+      _downloadsUpdate.add(task);
+    }
     _startExecution();
+  }
+
+  DownloadTask? getTask(String id) {
+    return _downloads[id];
   }
 }

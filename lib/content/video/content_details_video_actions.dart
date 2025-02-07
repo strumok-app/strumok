@@ -6,6 +6,7 @@ import 'package:strumok/content/media_items_list.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/utils/nav.dart';
 import 'package:strumok/utils/tv.dart';
 
@@ -78,6 +79,7 @@ class _ContentPlaylistButton extends ConsumerWidget {
               ref.read(provider.notifier).setCurrentItem(item.number);
               navigateToContent(context, contentDetails);
             },
+            itemBuilder: playlistItemBuilder(contentDetails),
           ),
         );
       },

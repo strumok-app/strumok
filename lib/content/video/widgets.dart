@@ -3,6 +3,8 @@ import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/offline/media_item_download.dart';
+import 'package:strumok/offline/offline_content_details.dart';
 import 'package:strumok/widgets/dropdown.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
@@ -51,22 +53,19 @@ class MediaTitle extends ConsumerWidget {
   }
 }
 
-Widget playlistItemBuilder(
-  ContentMediaItem item,
-  ContentProgress? contentProgress,
-  SelectCallback onSelect,
-) {
-  final progress = contentProgress?.positions[item.number]?.progress ?? 0;
+MediaItemsListBuilder playlistItemBuilder(ContentInfo contentInfo) {
+  return (ContentMediaItem item, ContentProgress? contentProgress, SelectCallback onSelect) {
+    final progress = contentProgress?.positions[item.number]?.progress ?? 0;
 
-  return MediaItemsListItem(
-    item: item,
-    selected: item.number == contentProgress?.currentItem,
-    selectIcon: Icons.play_arrow_rounded,
-    progress: progress,
-    onTap: () {
-      onSelect(item);
-    },
-  );
+    return MediaItemsListItem(
+      item: item,
+      selected: item.number == contentProgress?.currentItem,
+      selectIcon: Icons.play_arrow_rounded,
+      progress: progress,
+      onTap: () => onSelect(item),
+      trailing: MediaItemDownloadButton(contentInfo: contentInfo, item: item),
+    );
+  };
 }
 
 class PlayerErrorPopup extends StatelessWidget {
@@ -91,7 +90,7 @@ class PlayerErrorPopup extends StatelessWidget {
             onPressed: onPressed,
             icon: const Icon(Icons.warning_rounded),
             color: Colors.white,
-            disabledColor: Colors.white.withOpacity(0.7),
+            disabledColor: Colors.white.withValues(alpha: 0.7),
           ),
           menuChildrenBuilder: (focusNode) => [
             ...value.reversed.take(10).mapIndexed((idx, error) => MenuItemButton(

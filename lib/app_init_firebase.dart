@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:strumok/app_secrets.dart';
 import 'package:firebase_dart/firebase_dart.dart';
 import 'package:path_provider/path_provider.dart';
@@ -5,7 +7,8 @@ import 'package:path_provider/path_provider.dart';
 class AppInitFirebase {
   AppInitFirebase._privateConstructor();
 
-  static final AppInitFirebase _instance = AppInitFirebase._privateConstructor();
+  static final AppInitFirebase _instance =
+      AppInitFirebase._privateConstructor();
 
   factory AppInitFirebase() {
     return _instance;
@@ -22,7 +25,8 @@ class AppInitFirebase {
     isolated = true,
     FirebaseOptions? options,
   }) async {
-    final directory = "${(await getApplicationSupportDirectory()).path}/firebase";
+    final directory =
+        "${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}firebase";
 
     FirebaseDart.setup(storagePath: directory, isolated: isolated);
 

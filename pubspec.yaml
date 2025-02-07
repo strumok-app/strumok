@@ -64,16 +64,16 @@ dependencies:
 
 
 dev_dependencies:
-  analyzer: ^6.7.0
+  analyzer: ^6.11.0
   build_runner: ^2.4.11
   auto_route_generator: ^9.0.0
   isar_generator: 
     version: 3.1.8
     hosted: https://pub.isar-community.dev/
-  custom_lint: ^0.6.4
-  json_serializable: ^6.8.0
-  flutter_lints: ^4.0.0
-  riverpod_generator: ^2.4.0
+  custom_lint: ^0.7.0
+  json_serializable: ^6.9.0
+  flutter_lints: ^5.0.0
+  riverpod_generator: ^2.6.3
   flutter_launcher_icons: "^0.14.1"
   test: ^1.25.14
 

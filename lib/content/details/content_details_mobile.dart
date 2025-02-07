@@ -139,9 +139,9 @@ class _TitleBox extends StatelessWidget {
           contentDetails.title,
           style: textTheme.bodyLarge,
         ),
-        if (contentDetails.originalTitle != null)
+        if (contentDetails.secondaryTitle != null)
           Text(
-            contentDetails.originalTitle!,
+            contentDetails.secondaryTitle!,
             style: textTheme.bodyLarge,
           ),
         const SizedBox(height: 8),

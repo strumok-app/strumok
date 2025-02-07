@@ -70,7 +70,7 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
       return;
     }
 
-    final task = DownloadManager().download(FileDownloadRequest(url, libPath));
+    final task = DownloadManager().download(FileDownloadRequest("bunde_download", url, libPath));
 
     task.progress.addListener(() {
       state = state.updateProgress(task.progress.value);

@@ -13,8 +13,7 @@ Future<List<MangaMediaItemSource>> mangaChapterScans(
   ContentDetails contentDetails,
   List<ContentMediaItem> mediaItems,
 ) async {
-  final currentItem =
-      await ref.watch(collectionItemCurrentItemProvider(contentDetails).future);
+  final currentItem = await ref.watch(collectionItemCurrentItemProvider(contentDetails).future);
 
   final currentChapter = mediaItems.elementAtOrNull(currentItem);
 
@@ -31,15 +30,11 @@ Future<MangaMediaItemSource?> mangaChapterScan(
   ContentDetails contentDetails,
   List<ContentMediaItem> mediaItems,
 ) async {
-  final sources = await ref
-      .watch(mangaChapterScansProvider(contentDetails, mediaItems).future);
+  final sources = await ref.watch(mangaChapterScansProvider(contentDetails, mediaItems).future);
 
-  final currentSource = await ref
-      .watch(collectionItemCurrentSourceNameProvider(contentDetails).future);
+  final currentSource = await ref.watch(collectionItemCurrentSourceNameProvider(contentDetails).future);
 
-  return currentSource == null
-      ? sources.firstOrNull
-      : sources.firstWhereOrNull((s) => s.description == currentSource);
+  return currentSource == null ? sources.firstOrNull : sources.firstWhereOrNull((s) => s.description == currentSource);
 }
 
 @riverpod
@@ -48,14 +43,13 @@ Future<List<ImageProvider>> currentMangaPages(
   ContentDetails contentDetails,
   List<ContentMediaItem> mediaItems,
 ) async {
-  final currentSource = await ref
-      .watch(mangaChapterScanProvider(contentDetails, mediaItems).future);
+  final currentSource = await ref.watch(mangaChapterScanProvider(contentDetails, mediaItems).future);
 
   if (currentSource == null) {
     return [];
   }
 
-  final pages = await currentSource.allPages();
+  final pages = await currentSource.images;
 
   return pages;
 }

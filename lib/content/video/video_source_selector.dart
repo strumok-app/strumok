@@ -32,7 +32,7 @@ class SourceSelector extends StatelessWidget {
       },
       icon: const Icon(Icons.track_changes),
       color: Colors.white,
-      disabledColor: Colors.white.withOpacity(0.7),
+      disabledColor: Colors.white.withValues(alpha: 0.7),
     );
   }
 }
@@ -140,59 +140,6 @@ class _SourceSelectorContent extends StatelessWidget {
   }
 }
 
-class _SubtitleSources extends ConsumerWidget {
-  const _SubtitleSources({
-    required this.contentDetails,
-    required this.sources,
-    required this.currentSubtitleName,
-  });
-
-  final ContentDetails contentDetails;
-  final Iterable<ContentMediaItemSource> sources;
-  final String? currentSubtitleName;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      width: 320,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            visualDensity: VisualDensity.compact,
-            leading: const Icon(Icons.subtitles),
-            trailing: currentSubtitleName == null ? const Icon(Icons.check) : null,
-            onTap: () {
-              final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
-              notifier.setCurrentSubtitle(null);
-              Navigator.of(context).pop();
-            },
-            title: Text(AppLocalizations.of(context)!.videoSubtitlesOff),
-          ),
-          ...sources.map(
-            (e) => ListTile(
-              visualDensity: VisualDensity.compact,
-              leading: const Icon(Icons.subtitles),
-              trailing: currentSubtitleName == e.description ? const Icon(Icons.check) : null,
-              onTap: () {
-                final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
-                notifier.setCurrentSubtitle(e.description);
-                Navigator.of(context).pop();
-              },
-              title: Text(
-                e.description,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
 class _VideoSources extends ConsumerWidget {
   const _VideoSources({
     required this.contentDetails,
@@ -206,33 +153,100 @@ class _VideoSources extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    return _SourcesList(
+      sources: sources,
+      currentSourceName: currentSourceName,
+      onSelect: (source) {
+        Navigator.of(context).pop();
+        final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
+        notifier.setCurrentSource(source.description);
+      },
+      sourceIcon: const Icon(Icons.video_file_outlined),
+      autofocus: true,
+    );
+  }
+}
+
+class _SubtitleSources extends ConsumerWidget {
+  const _SubtitleSources({
+    required this.contentDetails,
+    required this.sources,
+    required this.currentSubtitleName,
+  });
+
+  final ContentDetails contentDetails;
+  final Iterable<ContentMediaItemSource> sources;
+  final String? currentSubtitleName;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _SourcesList(
+      sources: sources,
+      currentSourceName: currentSubtitleName,
+      onSelect: (source) {
+        Navigator.of(context).pop();
+        final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
+        notifier.setCurrentSource(source.description);
+      },
+      sourceIcon: const Icon(Icons.subtitles),
+      leading: ListTile(
+        visualDensity: VisualDensity.compact,
+        leading: const Icon(Icons.subtitles),
+        trailing: currentSubtitleName == null ? const Icon(Icons.check) : null,
+        onTap: () {
+          final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
+          notifier.setCurrentSubtitle(null);
+          Navigator.of(context).pop();
+        },
+        title: Text(AppLocalizations.of(context)!.videoSubtitlesOff),
+      ),
+    );
+  }
+}
+
+typedef _SourceCallback = void Function(ContentMediaItemSource source);
+
+class _SourcesList extends ConsumerWidget {
+  const _SourcesList({
+    required this.sources,
+    required this.currentSourceName,
+    required this.onSelect,
+    this.leading,
+    this.sourceIcon,
+    this.autofocus = false,
+  });
+
+  final Iterable<ContentMediaItemSource> sources;
+  final String? currentSourceName;
+  final _SourceCallback onSelect;
+  final Widget? leading;
+  final Widget? sourceIcon;
+  final bool autofocus;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: 320,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        children: sources
-            .mapIndexed(
-              (idx, e) => ListTile(
-                visualDensity: VisualDensity.compact,
-                leading: const Icon(Icons.music_note),
-                trailing: currentSourceName == e.description ? const Icon(Icons.check) : null,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  final notifier = ref.read(
-                    collectionItemProvider(contentDetails).notifier,
-                  );
-                  notifier.setCurrentSource(e.description);
-                },
-                title: Text(
-                  e.description,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
-                autofocus: idx == 0,
+        children: [
+          if (leading != null) leading!,
+          ...sources.mapIndexed(
+            (idx, source) => ListTile(
+              visualDensity: VisualDensity.compact,
+              leading: sourceIcon,
+              trailing: currentSourceName == source.description ? const Icon(Icons.check) : null,
+              onTap: () => onSelect(source),
+              title: Text(
+                source.description,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
-            )
-            .toList(),
+              autofocus: autofocus && idx == 0,
+            ),
+          )
+        ],
       ),
     );
   }

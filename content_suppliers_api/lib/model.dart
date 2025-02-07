@@ -74,16 +74,11 @@ abstract interface class MediaFileItemSource extends ContentMediaItemSource {
 }
 
 abstract interface class MangaMediaItemSource extends ContentMediaItemSource {
-  int get pageNambers;
-  FutureOr<List<ImageProvider>> allPages();
+  FutureOr<List<String>> get pages;
+  FutureOr<List<ImageProvider>> get images;
 }
 
-abstract interface class ContentDetails {
-  String get id;
-  String get supplier;
-  String get title;
-  String? get originalTitle;
-  String get image;
+abstract interface class ContentDetails extends ContentInfo {
   String get description;
   MediaType get mediaType;
   List<String> get additionalInfo;
@@ -132,7 +127,7 @@ abstract class AbstractContentDetails extends Equatable implements ContentDetail
   @override
   final String title;
   @override
-  final String? originalTitle;
+  final String? secondaryTitle;
   @override
   final String image;
   @override
@@ -155,7 +150,7 @@ abstract class AbstractContentDetails extends Equatable implements ContentDetail
     required this.id,
     required this.supplier,
     required this.title,
-    required this.originalTitle,
+    required this.secondaryTitle,
     required this.image,
     required this.description,
     required this.additionalInfo,
@@ -163,7 +158,7 @@ abstract class AbstractContentDetails extends Equatable implements ContentDetail
   });
 
   @override
-  List<Object?> get props => [id, supplier, title, originalTitle, image, description, additionalInfo, similar];
+  List<Object?> get props => [id, supplier, title, secondaryTitle, image, description, additionalInfo, similar];
 }
 
 @immutable

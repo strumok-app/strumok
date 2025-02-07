@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/foundation.dart';
 
 enum DownloadStatus {
@@ -22,34 +21,59 @@ abstract interface class DownloadRequest {
   DownloadType get type;
 }
 
+class DownloadInfo {
+  final String title;
+  final String image;
+
+  DownloadInfo({required this.title, required this.image});
+}
+
 class VideoDownloadRequest implements DownloadRequest {
+  @override
+  final String id;
+
   final String url;
   final String fileSrc;
   final Map<String, String>? headers;
-  final ContentInfo contentInfo;
+  final DownloadInfo info;
 
   @override
   final DownloadType type = DownloadType.video;
 
-  @override
-  String get id => url;
+  VideoDownloadRequest({
+    required this.id,
+    required this.url,
+    required this.fileSrc,
+    required this.info,
+    this.headers,
+  });
 
-  VideoDownloadRequest(this.url, this.fileSrc, this.contentInfo, {this.headers});
+  @override
+  String toString() => "VideoDownloadRequest[id: $id, url: $url, fileSrc: $fileSrc]";
 }
 
 class MangaDownloadRequest implements DownloadRequest {
+  @override
+  final String id;
+
   final List<String> pages;
   final String folder;
   final Map<String, String>? headers;
-  final ContentInfo contentInfo;
+  final DownloadInfo info;
 
   @override
   final DownloadType type = DownloadType.manga;
 
-  @override
-  String get id => folder;
+  MangaDownloadRequest({
+    required this.id,
+    required this.pages,
+    required this.folder,
+    required this.info,
+    this.headers,
+  });
 
-  MangaDownloadRequest(this.pages, this.folder, this.contentInfo, {this.headers});
+  @override
+  String toString() => "MangaDownloadRequest[id: $id, folder: $folder]";
 }
 
 class FileDownloadRequest implements DownloadRequest {
@@ -61,9 +85,12 @@ class FileDownloadRequest implements DownloadRequest {
   final DownloadType type = DownloadType.file;
 
   @override
-  String get id => url;
+  final String id;
 
-  FileDownloadRequest(this.url, this.fileSrc, {this.headers});
+  FileDownloadRequest(this.id, this.url, this.fileSrc, {this.headers});
+
+  @override
+  String toString() => "FileDownloadRequest[id: $id, url: $url, fileSrc: $fileSrc]";
 }
 
 class DownloadTask {

@@ -5,7 +5,6 @@ import 'package:http/http.dart';
 import 'package:strumok/download/manager/models.dart';
 
 void downloadManga(MangaDownloadRequest request, DownloadTask task, VoidCallback onDone) async {
-  task.status.value = DownloadStatus.started;
   try {
     await Directory(request.folder).create(recursive: true);
 
@@ -29,6 +28,7 @@ void downloadManga(MangaDownloadRequest request, DownloadTask task, VoidCallback
         return;
       }
 
+      await file.create(recursive: true);
       await file.writeAsBytes(httpReq.bodyBytes);
 
       task.progress.value = (i + 1) / request.pages.length;

@@ -3,6 +3,7 @@ import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/media_items_list.dart';
+import 'package:strumok/offline/media_item_download.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,7 @@ class VolumesButton extends ConsumerWidget {
                   ref.read(provider.notifier).setCurrentItem(item.number);
                   navigateToContent(context, contentDetails);
                 },
-            itemBuilder: mangaChapterListItemBuilder,
+            itemBuilder: mangaChapterListItemBuilder(contentDetails),
           ),
         );
       },
@@ -66,22 +67,25 @@ class VolumesButton extends ConsumerWidget {
   }
 }
 
-Widget mangaChapterListItemBuilder(
-  ContentMediaItem item,
-  ContentProgress? contentProgress,
-  SelectCallback onSelect,
-) {
-  final progress = contentProgress?.positions[item.number]?.progress ?? 0;
+MediaItemsListBuilder mangaChapterListItemBuilder(ContentInfo contentInfo) {
+  return (
+    ContentMediaItem item,
+    ContentProgress? contentProgress,
+    SelectCallback onSelect,
+  ) {
+    final progress = contentProgress?.positions[item.number]?.progress ?? 0;
 
-  return MediaItemsListItem(
-    item: item,
-    selected: item.number == contentProgress?.currentItem,
-    selectIcon: Icons.menu_book,
-    progress: progress,
-    onTap: () {
-      onSelect(item);
-    },
-  );
+    return MediaItemsListItem(
+      item: item,
+      selected: item.number == contentProgress?.currentItem,
+      selectIcon: Icons.menu_book,
+      progress: progress,
+      onTap: () {
+        onSelect(item);
+      },
+      trailing: MediaItemDownloadButton(contentInfo: contentInfo, item: item),
+    );
+  };
 }
 
 class MangaBackground extends ConsumerWidget {

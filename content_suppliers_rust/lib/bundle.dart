@@ -176,7 +176,7 @@ class _RustContentDetails extends AbstractContentDetails {
     required super.supplier,
     required this.langs,
     required super.title,
-    required super.originalTitle,
+    required super.secondaryTitle,
     required super.image,
     required super.description,
     required super.additionalInfo,
@@ -205,13 +205,20 @@ class _RustContentDetails extends AbstractContentDetails {
         orElse: () => MediaType.video,
       ),
       title: result.title,
-      originalTitle: result.originalTitle,
+      secondaryTitle: result.originalTitle,
       image: result.image,
       description: result.description,
       additionalInfo: result.additionalInfo,
       similar: result.similar.map((info) => ContentSearchResultExt.fromRust(supplier, info)).toList(),
-      mediaItems: result.mediaItems?.map(
-        (item) => _RustMediaItem.fromRust(id, supplier, langs, item, api),
+      mediaItems: result.mediaItems?.mapIndexed(
+        (idx, item) => _RustMediaItem.fromRust(
+          id,
+          supplier,
+          idx,
+          langs,
+          item,
+          api,
+        ),
       ),
       params: result.params,
       api: api,
@@ -227,7 +234,16 @@ class _RustContentDetails extends AbstractContentDetails {
         langs: langs,
         params: _params,
       ))
-          .map((item) => _RustMediaItem.fromRust(id, supplier, langs, item, _api));
+          .mapIndexed(
+        (idx, item) => _RustMediaItem.fromRust(
+          id,
+          supplier,
+          idx,
+          langs,
+          item,
+          _api,
+        ),
+      );
     } catch (e) {
       throw ContentSuppliersException(
         "FFI LoadMediaItems Failed [supplier=$supplier id=$id params: $_params] error: $e",
@@ -271,6 +287,7 @@ class _RustMediaItem implements ContentMediaItem {
   factory _RustMediaItem.fromRust(
     String id,
     String supplier,
+    int number,
     List<String> langs,
     models.ContentMediaItem item,
     RustLibApi api,
@@ -279,7 +296,7 @@ class _RustMediaItem implements ContentMediaItem {
       id: id,
       supplier: supplier,
       langs: langs,
-      number: item.number,
+      number: number,
       title: item.title,
       section: item.section,
       image: item.image,
@@ -335,10 +352,9 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
   final String supplier;
   @override
   final String description;
-  @override
-  final int pageNambers;
 
-  List<ImageProvider>? _pages;
+  List<String>? _pages;
+  List<ImageProvider<Object>>? _images;
   Map<String, String>? _headers;
   final RustLibApi _api;
   final List<String> _params;
@@ -347,8 +363,7 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
     required this.id,
     required this.supplier,
     required this.description,
-    required this.pageNambers,
-    required List<ImageProvider>? pages,
+    required List<String>? pages,
     required RustLibApi api,
     required List<String> params,
     Map<String, String>? headers,
@@ -366,10 +381,9 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
     return _RustMangaMediaItemSource._(
       id: id,
       supplier: supplier,
-      pageNambers: item.pageNumbers,
       description: item.description,
       headers: item.headers,
-      pages: item.pages?.map((link) => CachedNetworkImageProvider(link, headers: item.headers)).toList(),
+      pages: item.pages,
       params: item.params,
       api: api,
     );
@@ -379,13 +393,20 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
   FileKind get kind => FileKind.manga;
 
   @override
-  Future<List<ImageProvider<Object>>> allPages() async {
+  Future<List<String>> get pages async {
     return _pages ??= (await _api.crateApiLoadMangaPages(
       supplier: supplier,
       id: id,
       params: _params,
-    ))
-        .map((link) => CachedNetworkImageProvider(link, headers: _headers))
+    ));
+  }
+
+  @override
+  Future<List<ImageProvider<Object>>> get images async {
+    return _images ??= (await pages)
+        .map(
+          (link) => CachedNetworkImageProvider(link, headers: _headers),
+        )
         .toList();
   }
 }

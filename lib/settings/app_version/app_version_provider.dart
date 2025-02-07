@@ -134,7 +134,11 @@ class AppDownload extends _$AppDownload {
 
     logger.i("App download path: $filePath");
 
-    final task = DownloadManager().download(FileDownloadRequest(asset.browserDownloadUrl, filePath));
+    final task = DownloadManager().download(FileDownloadRequest(
+      "app_download",
+      asset.browserDownloadUrl,
+      filePath,
+    ));
 
     task.progress.addListener(() {
       state = state.updateProgress(task.progress.value);

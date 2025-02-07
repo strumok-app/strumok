@@ -9,19 +9,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 typedef SelectCallback = void Function(ContentMediaItem);
-typedef ItemBuilder = Widget Function(
+typedef MediaItemsListBuilder = Widget Function(
   ContentMediaItem,
   ContentProgress?,
   SelectCallback,
 );
 
-// todo: video items list
-
 class MediaItemsListRoute<T> extends PopupRoute<T> {
   final String title;
   final List<ContentMediaItem> mediaItems;
   final ContentProgress? contentProgress;
-  final ItemBuilder itemBuilder;
+  final MediaItemsListBuilder itemBuilder;
   final SelectCallback onSelect;
 
   MediaItemsListRoute({
@@ -32,7 +30,7 @@ class MediaItemsListRoute<T> extends PopupRoute<T> {
     required this.mediaItems,
     this.contentProgress,
     required this.onSelect,
-    this.itemBuilder = playlistItemBuilder,
+    required this.itemBuilder,
   });
 
   @override
@@ -83,7 +81,7 @@ class _MediaItemsListView extends StatelessWidget {
   final List<ContentMediaItem> mediaItems;
   final ContentProgress? contentProgress;
   final SelectCallback onSelect;
-  final ItemBuilder itemBuilder;
+  final MediaItemsListBuilder itemBuilder;
 
   const _MediaItemsListView({
     required this.title,
@@ -162,7 +160,7 @@ class _MediaItemsList extends HookWidget {
   final List<ContentMediaItem> mediaItems;
   final ContentProgress? contentProgress;
   final SelectCallback onSelect;
-  final ItemBuilder itemBuilder;
+  final MediaItemsListBuilder itemBuilder;
 
   const _MediaItemsList({
     required this.mediaItems,
@@ -229,7 +227,7 @@ class _MediaItemsListSection extends HookWidget {
   final List<ContentMediaItem> list;
   final ContentProgress? contentProgress;
   final SelectCallback onSelect;
-  final ItemBuilder itemBuilder;
+  final MediaItemsListBuilder itemBuilder;
 
   const _MediaItemsListSection({
     required this.list,
@@ -264,15 +262,16 @@ class MediaItemsListItem extends HookWidget {
   final double progress;
   final VoidCallback onTap;
   final IconData selectIcon;
+  final Widget? trailing;
 
-  const MediaItemsListItem({
-    super.key,
-    required this.item,
-    required this.selected,
-    required this.selectIcon,
-    required this.progress,
-    required this.onTap,
-  });
+  const MediaItemsListItem(
+      {super.key,
+      required this.item,
+      required this.selected,
+      required this.selectIcon,
+      required this.progress,
+      required this.onTap,
+      this.trailing});
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +280,7 @@ class MediaItemsListItem extends HookWidget {
     final title = item.title;
     final image = item.image;
     final colorScheme = theme.colorScheme;
-    final accentColor = colorScheme.surfaceTint.withOpacity(0.5);
+    final accentColor = colorScheme.surfaceTint.withValues(alpha: 0.5);
 
     return Card.filled(
       shape: RoundedRectangleBorder(
@@ -327,10 +326,7 @@ class MediaItemsListItem extends HookWidget {
                     Expanded(
                       child: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.download_rounded),
-                    )
+                    if (trailing != null) trailing!,
                   ],
                 ),
                 subtitle: Padding(

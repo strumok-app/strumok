@@ -45,7 +45,7 @@ final currentAppVersionProvider = FutureProvider<SemVer>.internal(
 // ignore: unused_element
 typedef CurrentAppVersionRef = FutureProviderRef<SemVer>;
 String _$latestAppVersionInfoHash() =>
-    r'4c76d353c1068e5706dd919366d998e14b4edbe1';
+    r'ca751369e9e53d419f029fd2b87007323bbfde53';
 
 /// See also [latestAppVersionInfo].
 @ProviderFor(latestAppVersionInfo)
@@ -64,7 +64,7 @@ final latestAppVersionInfoProvider =
 // ignore: unused_element
 typedef LatestAppVersionInfoRef
     = AutoDisposeFutureProviderRef<LatestAppVersionInfo?>;
-String _$appDownloadHash() => r'a002d2e4ba904060b257b74a2c4236cf9df30ef1';
+String _$appDownloadHash() => r'aa87e2e83fca84a146e5075fd91d596d85a51960';
 
 /// See also [AppDownload].
 @ProviderFor(AppDownload)

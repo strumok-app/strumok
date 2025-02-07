@@ -76,7 +76,11 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
         await _downloadStreamSegments(request, task, master, onDone);
       }
     } else {
-      donwloadFile(FileDownloadRequest(request.url, request.fileSrc, headers: request.headers), task, onDone);
+      donwloadFile(
+        FileDownloadRequest(request.url, request.url, request.fileSrc, headers: request.headers),
+        task,
+        onDone,
+      );
     }
 
     task.status.value = DownloadStatus.completed;
@@ -120,6 +124,8 @@ Future<void> _downloadStreamSegments(
 
   final partialFilePath = request.fileSrc + partialExtension;
   final partialFile = File(partialFilePath);
+
+  await partialFile.create(recursive: true);
 
   final sink = partialFile.openWrite(mode: FileMode.write);
 
