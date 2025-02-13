@@ -52,9 +52,7 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Android
-        run: flutter build apk --dart-define SENTRY_DSN="$SENTRY_DSN"
-        env:
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: flutter build apk --dart-define
       - name: Upload android outputs
         uses: actions/upload-artifact@v4
         with:
@@ -87,9 +85,7 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Linux
-        run: flutter build linux --dart-define SENTRY_DSN="$SENTRY_DSN" 
-        env:
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: flutter build linux --dart-define
       - name: Upload linux outputs
         uses: actions/upload-artifact@v4
         with:
@@ -120,10 +116,8 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Windows
-        run: flutter build windows --dart-define SENTRY_DSN="$SENTRY_DSN"
+        run: flutter build windows --dart-define
         shell: bash
-        env:
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       - name: Build Installer
         run: |
           VERSION=$(yq -r '.version' pubspec.yaml)
