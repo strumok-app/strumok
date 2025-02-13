@@ -21,15 +21,18 @@ class OfflineItemsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GeneralLayout(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _OfflineItemsTitle(),
-              _OfflineItemsView(),
-            ],
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _OfflineItemsTitle(),
+                _OfflineItemsView(),
+              ],
+            ),
           ),
         ),
       ),

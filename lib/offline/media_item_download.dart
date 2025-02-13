@@ -70,28 +70,28 @@ class _MediaItemDownloadIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox.square(
-        dimension: 40,
-        child: Stack(
-          children: [
-            ValueListenableBuilder(
-              valueListenable: state.downloadTask!.progress,
-              builder: (context, value, child) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
+      child: Stack(
+        children: [
+          ValueListenableBuilder(
+            valueListenable: state.downloadTask!.progress,
+            builder: (context, value, child) {
+              return SizedBox.square(
+                dimension: 40,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
                   child: CircularProgressIndicator(
                     value: value,
                     backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
                   ),
-                );
-              },
-            ),
-            IconButton(
-              onPressed: onCancel,
-              icon: Icon(Icons.cancel_outlined),
-            ),
-          ],
-        ),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            onPressed: onCancel,
+            icon: Icon(Icons.cancel_outlined),
+          ),
+        ],
       ),
     );
   }

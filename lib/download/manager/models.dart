@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+const httpTimeout = Duration(seconds: 30);
+
 enum DownloadStatus {
   queued(false),
   started(false),

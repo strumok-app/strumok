@@ -7,6 +7,7 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/content/video/widgets.dart';
+import 'package:strumok/offline/media_item_download.dart';
 import 'package:strumok/utils/nav.dart';
 import 'package:strumok/utils/tv.dart';
 
@@ -21,11 +22,15 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
       children: [
         _renderWatchButton(context),
         const SizedBox(width: 8),
-        if (showList)
-          _ContentPlaylistButton(
-            contentDetails: contentDetails,
-            mediaItems: mediaItems,
-          )
+        showList
+            ? _ContentPlaylistButton(
+                contentDetails: contentDetails,
+                mediaItems: mediaItems,
+              )
+            : MediaItemDownloadButton(
+                contentDetails: contentDetails,
+                item: mediaItems.first,
+              )
       ],
     );
   }

@@ -37,6 +37,7 @@ class AppTheme extends ConsumerWidget {
               shape: WidgetStateProperty.resolveWith((states) {
                 return states.contains(WidgetState.focused) ? CircleBorder(side: focusBorder) : null;
               }),
+              padding: WidgetStatePropertyAll(EdgeInsets.all(8)),
             ),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
@@ -49,6 +50,21 @@ class AppTheme extends ConsumerWidget {
                       )
                     : null;
               }),
+              padding: WidgetStatePropertyAll(EdgeInsets.all(8)),
+            ),
+          ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: ButtonStyle(
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.all(8),
+              ),
+            ),
+          ),
+          filledButtonTheme: FilledButtonThemeData(
+            style: ButtonStyle(
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.all(8),
+              ),
             ),
           ),
           searchBarTheme: SearchBarThemeData(

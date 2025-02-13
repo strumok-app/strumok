@@ -25,7 +25,8 @@ class _SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Align(
+      alignment: Alignment.topCenter,
       child: Container(
         constraints: const BoxConstraints(maxWidth: 800),
         padding: const EdgeInsets.symmetric(horizontal: 8.0),

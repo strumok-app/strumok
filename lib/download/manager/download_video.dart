@@ -52,8 +52,9 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
   try {
     final uri = Uri.parse(request.url);
     final httpReq = Request('GET', uri);
+
     httpReq.headers.addAll(headers);
-    final res = await Client().send(httpReq);
+    final res = await Client().send(httpReq).timeout(httpTimeout);
 
     if (res.statusCode != HttpStatus.ok) {
       throw Exception("httpStatus: ${res.statusCode}");
@@ -98,13 +99,19 @@ Future<void> _downloadHLSStream(
   HLSStream stream,
   VoidCallback onDone,
 ) async {
-  final res = await Client().get(stream.uri, headers: request.headers);
+  final req = Request('GET', stream.uri);
+
+  if (request.headers != null) {
+    req.headers.addAll(request.headers!);
+  }
+
+  final res = await Client().send(req).timeout(httpTimeout);
 
   if (res.statusCode != HttpStatus.ok) {
     throw Exception("stream: ${stream.uri} httpError: ${res.statusCode}");
   }
 
-  final hls = res.body;
+  final hls = await res.stream.bytesToString();
   final streamHls = _parseHLSManifest(stream.uri, hls);
 
   if (streamHls.encrypted) {
@@ -138,11 +145,12 @@ Future<void> _downloadStreamSegments(
 
     final segment = manifets.segments[i];
     final segmentReq = Request('GET', segment);
+
     if (request.headers != null) {
       segmentReq.headers.addAll(request.headers!);
     }
 
-    final res = await client.send(segmentReq);
+    final res = await client.send(segmentReq).timeout(httpTimeout);
 
     if (res.statusCode != HttpStatus.ok) {
       throw Exception("segment: $segment httpStatus: ${res.statusCode}");

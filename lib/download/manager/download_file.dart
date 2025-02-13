@@ -39,7 +39,8 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
     // fileExist
     final httpReq = Request('GET', Uri.parse(request.url));
     httpReq.headers.addAll(headers);
-    final res = await Client().send(httpReq);
+
+    final res = await Client().send(httpReq).timeout(httpTimeout);
 
     if (res.statusCode != HttpStatus.partialContent && res.statusCode != HttpStatus.ok) {
       throw Exception("httpStatus: ${res.statusCode}");

@@ -21,9 +21,16 @@ void downloadManga(MangaDownloadRequest request, DownloadTask task, VoidCallback
         continue;
       }
 
-      final httpReq = await Client().get(Uri.parse(page), headers: request.headers);
+      final httpReq = Request('GET', Uri.parse(page));
+      httpReq.followRedirects = true;
 
-      if (httpReq.statusCode != HttpStatus.ok) {
+      if (request.headers != null) {
+        httpReq.headers.addAll(request.headers!);
+      }
+
+      final httpRes = await Client().send(httpReq).timeout(httpTimeout);
+
+      if (httpRes.statusCode != HttpStatus.ok) {
         task.status.value = DownloadStatus.failed;
         return;
       }

@@ -49,7 +49,14 @@ class OfflineStorage {
             }
           }
 
-          result.add(OfflineContentInfo.create(id, supplier, detailsJson, diskUsage));
+          result.add(
+            OfflineContentInfo.create(
+              Uri.decodeComponent(id),
+              supplier,
+              detailsJson,
+              diskUsage,
+            ),
+          );
         }
       }
     }
