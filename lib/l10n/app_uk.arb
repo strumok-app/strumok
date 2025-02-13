@@ -91,5 +91,8 @@
     "ffiLibInstalled": "Модуль постачальників встановлений",
     "ffiLibInstallationFailed": "Неможливо встановити модуль постачальників",
     "appUpdateFailed": "Неможливо встановити нову версію",
-    "downloadsQueue": "Черга завантажень"
+    "downloads": "Завантаження",
+    "downloadsDeleteConfimation": "Видалии усі заванатжені дані для: {title}",
+    "confirmeDialogCancel": "Відмінити",
+    "confirmeDialogAccept": "Підтвердити"
 }

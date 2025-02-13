@@ -19,7 +19,7 @@ class DownloadsScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
-                AppLocalizations.of(context)!.downloadsQueue,
+                AppLocalizations.of(context)!.downloads,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),

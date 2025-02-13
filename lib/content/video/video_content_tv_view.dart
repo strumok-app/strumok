@@ -452,33 +452,40 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Slider(
-      allowedInteraction: SliderInteraction.slideOnly,
-      secondaryTrackValue: buffer,
-      value: slidePosition ?? position,
-      max: duration,
-      divisions: divisions,
-      onChanged: (value) {
-        setState(() {
-          slidePosition = value;
-        });
-      },
-      onChangeStart: (value) {
-        timer?.cancel();
-        timer = null;
-      },
-      onChangeEnd: (value) {
-        timer?.cancel();
-        timer = Timer(const Duration(milliseconds: 300), () {
-          controller(context).player.seek(Duration(seconds: value.ceil()));
+    if (duration.isNaN) {
+      return SizedBox.shrink();
+    }
+
+    return SliderTheme(
+      data: SliderThemeData(tickMarkShape: SliderTickMarkShape.noTickMark),
+      child: Slider(
+        allowedInteraction: SliderInteraction.slideOnly,
+        secondaryTrackValue: buffer,
+        value: slidePosition ?? position,
+        max: duration,
+        divisions: divisions,
+        onChanged: (value) {
+          setState(() {
+            slidePosition = value;
+          });
+        },
+        onChangeStart: (value) {
           timer?.cancel();
           timer = null;
+        },
+        onChangeEnd: (value) {
+          timer?.cancel();
+          timer = Timer(const Duration(milliseconds: 300), () {
+            controller(context).player.seek(Duration(seconds: value.ceil()));
+            timer?.cancel();
+            timer = null;
 
-          setState(() {
-            slidePosition = null;
+            setState(() {
+              slidePosition = null;
+            });
           });
-        });
-      },
+        },
+      ),
     );
   }
 }

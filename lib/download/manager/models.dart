@@ -21,6 +21,10 @@ abstract interface class DownloadRequest {
   DownloadType get type;
 }
 
+abstract interface class ContentDownloadRequest extends DownloadRequest {
+  DownloadInfo get info;
+}
+
 class DownloadInfo {
   final String title;
   final String image;
@@ -28,13 +32,14 @@ class DownloadInfo {
   DownloadInfo({required this.title, required this.image});
 }
 
-class VideoDownloadRequest implements DownloadRequest {
+class VideoDownloadRequest implements DownloadRequest, ContentDownloadRequest {
   @override
   final String id;
 
   final String url;
   final String fileSrc;
   final Map<String, String>? headers;
+  @override
   final DownloadInfo info;
 
   @override
@@ -52,13 +57,14 @@ class VideoDownloadRequest implements DownloadRequest {
   String toString() => "VideoDownloadRequest[id: $id, url: $url, fileSrc: $fileSrc]";
 }
 
-class MangaDownloadRequest implements DownloadRequest {
+class MangaDownloadRequest implements DownloadRequest, ContentDownloadRequest {
   @override
   final String id;
 
   final List<String> pages;
   final String folder;
   final Map<String, String>? headers;
+  @override
   final DownloadInfo info;
 
   @override

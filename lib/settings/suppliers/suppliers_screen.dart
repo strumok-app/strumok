@@ -29,28 +29,30 @@ class _SuppliersSettingsView extends StatelessWidget {
       alignment: Alignment.topCenter,
       child: Container(
         constraints: const BoxConstraints(maxWidth: 800),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                children: [
-                  if (!TVDetector.isTV) ...[
-                    const BackNavButton(),
-                    const SizedBox(width: 8),
-                  ],
-                  Flexible(
-                    child: Text(
-                      AppLocalizations.of(context)!.settingsSuppliersAndRecommendations,
-                      style: theme.textTheme.headlineSmall,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    if (!TVDetector.isTV) ...[
+                      const BackNavButton(),
+                      const SizedBox(width: 8),
+                    ],
+                    Flexible(
+                      child: Text(
+                        AppLocalizations.of(context)!.settingsSuppliersAndRecommendations,
+                        style: theme.textTheme.headlineSmall,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const Expanded(child: SingleChildScrollView(child: SuppliersSettingsSection()))
-          ],
+              SuppliersSettingsSection()
+            ],
+          ),
         ),
       ),
     );

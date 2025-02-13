@@ -11,7 +11,7 @@ class DownloadManager {
   static const int maxConcurrentTasks = 3;
 
   final StreamController<DownloadTask> _downloadsUpdate = StreamController();
-  late final activeDownloads = _downloadsUpdate.stream.asBroadcastStream();
+  late final downloadsUpdate = _downloadsUpdate.stream.asBroadcastStream();
   int _runningTasks = 0;
 
   final Map<String, DownloadTask> _downloads = {};
@@ -33,6 +33,7 @@ class DownloadManager {
     final task = DownloadTask(req);
     _requests.add(req);
     _downloads[req.id] = task;
+    _downloadsUpdate.add(task);
 
     _startExecution();
 
@@ -44,7 +45,7 @@ class DownloadManager {
     final task = _downloads.remove(id);
     if (task != null) {
       task.status.value = DownloadStatus.canceled;
-      _downloadsUpdate.sink.add(task);
+      _downloadsUpdate.add(task);
     }
   }
 
@@ -79,4 +80,7 @@ class DownloadManager {
   DownloadTask? getTask(String id) {
     return _downloads[id];
   }
+
+  List<DownloadTask> getDownloadTasksOfType(Set<DownloadType> types) =>
+      _downloads.values.where((t) => types.contains(t.request.type)).toList();
 }

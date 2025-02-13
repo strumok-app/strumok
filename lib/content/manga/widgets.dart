@@ -67,7 +67,7 @@ class VolumesButton extends ConsumerWidget {
   }
 }
 
-MediaItemsListBuilder mangaChapterListItemBuilder(ContentInfo contentInfo) {
+MediaItemsListBuilder mangaChapterListItemBuilder(ContentDetails contentDetails) {
   return (
     ContentMediaItem item,
     ContentProgress? contentProgress,
@@ -83,7 +83,7 @@ MediaItemsListBuilder mangaChapterListItemBuilder(ContentInfo contentInfo) {
       onTap: () {
         onSelect(item);
       },
-      trailing: MediaItemDownloadButton(contentInfo: contentInfo, item: item),
+      trailing: MediaItemDownloadButton(contentDetails: contentDetails, item: item),
     );
   };
 }

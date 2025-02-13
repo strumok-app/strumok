@@ -2,22 +2,24 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:strumok/app_localizations.dart';
 import 'package:strumok/download/manager/manager.dart';
 import 'package:strumok/offline/media_item_download_provider.dart';
 import 'package:strumok/offline/offline_content_details.dart';
-import 'package:strumok/offline/offline_files_storage.dart';
+import 'package:strumok/offline/offline_items_screen_provider.dart';
+import 'package:strumok/offline/offline_storage.dart';
 
 class MediaItemDownloadButton extends ConsumerWidget {
-  final ContentInfo contentInfo;
+  final ContentDetails contentDetails;
   final ContentMediaItem item;
 
-  const MediaItemDownloadButton({super.key, required this.contentInfo, required this.item});
+  const MediaItemDownloadButton({super.key, required this.contentDetails, required this.item});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = mediaItemDownloadProvider(
-      contentInfo.supplier,
-      contentInfo.id,
+      contentDetails.supplier,
+      contentDetails.id,
       item.number,
     );
     final state = ref.watch(provider).valueOrNull;
@@ -39,7 +41,6 @@ class MediaItemDownloadButton extends ConsumerWidget {
           state: state,
           onCancel: () {
             DownloadManager().cancel(state.downloadTask!.request.id);
-            ref.invalidate(provider);
           },
         ),
     };
@@ -49,7 +50,7 @@ class MediaItemDownloadButton extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => MediaItemDownloadDailog(
-        contentInfo: contentInfo,
+        contentDetails: contentDetails,
         item: item,
       ),
     );
@@ -68,40 +69,41 @@ class _MediaItemDownloadIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ValueListenableBuilder(
-          valueListenable: state.downloadTask!.progress,
-          builder: (context, value, child) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  value: value,
-                  backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
-                ),
-              ),
-            );
-          },
+    return Center(
+      child: SizedBox.square(
+        dimension: 40,
+        child: Stack(
+          children: [
+            ValueListenableBuilder(
+              valueListenable: state.downloadTask!.progress,
+              builder: (context, value, child) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(
+                    value: value,
+                    backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              onPressed: onCancel,
+              icon: Icon(Icons.cancel_outlined),
+            ),
+          ],
         ),
-        IconButton(
-          onPressed: onCancel,
-          icon: Icon(Icons.cancel_outlined),
-        )
-      ],
+      ),
     );
   }
 }
 
 class MediaItemDownloadDailog extends ConsumerWidget {
-  final ContentInfo contentInfo;
+  final ContentDetails contentDetails;
   final ContentMediaItem item;
 
   const MediaItemDownloadDailog({
     super.key,
-    required this.contentInfo,
+    required this.contentDetails,
     required this.item,
   });
 
@@ -123,8 +125,12 @@ class MediaItemDownloadDailog extends ConsumerWidget {
             (it) => it.kind == FileKind.video || it.kind == FileKind.manga,
           );
 
-          final supplier = contentInfo.supplier;
-          final id = contentInfo.id;
+          if (sources.isEmpty) {
+            return Text(AppLocalizations.of(context)!.videoNoSources);
+          }
+
+          final supplier = contentDetails.supplier;
+          final id = contentDetails.id;
           final number = item.number;
 
           return Container(
@@ -133,18 +139,16 @@ class MediaItemDownloadDailog extends ConsumerWidget {
             child: _SourceList(
               sources: sources,
               onDownload: (source) async {
-                final request = await createDownLoadRequest(contentInfo, number, source);
-                if (request != null) {
-                  DownloadManager().download(request);
-                  ref.invalidate(mediaItemDownloadProvider(supplier, id, number));
-                }
+                await OfflineStorage().storeSource(contentDetails, number, source);
+                ref.invalidate(mediaItemDownloadProvider(supplier, id, number));
                 if (context.mounted) {
                   Navigator.of(context).pop();
                 }
               },
               onDelete: (source) async {
-                await OfflineFilesStorage().deleteSource(supplier, id, number, source);
+                await OfflineStorage().deleteSource(supplier, id, number, source);
                 ref.invalidate(mediaItemDownloadProvider(supplier, id, number));
+                ref.invalidate(offlineContentProvider);
                 if (context.mounted) {
                   Navigator.of(context).pop();
                 }

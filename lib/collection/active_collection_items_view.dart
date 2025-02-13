@@ -35,7 +35,7 @@ class ActiveCollectionItemsView extends ConsumerWidget {
       title: FocusIndicator(
         child: Text(
           AppLocalizations.of(context)!.collectionContinue,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
       itemBuilder: (context, index) => HorizontalListCard(
@@ -73,7 +73,7 @@ class _ActiveCollectionItems extends ConsumerWidget {
       title: FocusIndicator(
         child: Text(
           title!,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
       itemBuilder: (context, index) {

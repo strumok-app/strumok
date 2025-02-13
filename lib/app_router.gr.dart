@@ -8,22 +8,23 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i10;
-import 'package:flutter/material.dart' as _i11;
+import 'package:auto_route/auto_route.dart' as _i11;
+import 'package:flutter/material.dart' as _i12;
 import 'package:strumok/collection/collection_screen.dart' as _i1;
 import 'package:strumok/content/details/content_details_screen.dart' as _i2;
 import 'package:strumok/content/manga/manga_content_screen.dart' as _i5;
-import 'package:strumok/content/video/video_content_screen.dart' as _i9;
+import 'package:strumok/content/video/video_content_screen.dart' as _i10;
 import 'package:strumok/download/downloads_screen.dart' as _i3;
 import 'package:strumok/home/home_screen.dart' as _i4;
-import 'package:strumok/search/search_screen.dart' as _i6;
-import 'package:strumok/settings/settings_screen.dart' as _i7;
-import 'package:strumok/settings/suppliers/suppliers_screen.dart' as _i8;
+import 'package:strumok/offline/offline_items_screen.dart' as _i6;
+import 'package:strumok/search/search_screen.dart' as _i7;
+import 'package:strumok/settings/settings_screen.dart' as _i8;
+import 'package:strumok/settings/suppliers/suppliers_screen.dart' as _i9;
 
 /// generated route for
 /// [_i1.CollectionScreen]
-class CollectionRoute extends _i10.PageRouteInfo<void> {
-  const CollectionRoute({List<_i10.PageRouteInfo>? children})
+class CollectionRoute extends _i11.PageRouteInfo<void> {
+  const CollectionRoute({List<_i11.PageRouteInfo>? children})
       : super(
           CollectionRoute.name,
           initialChildren: children,
@@ -31,7 +32,7 @@ class CollectionRoute extends _i10.PageRouteInfo<void> {
 
   static const String name = 'CollectionRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       return const _i1.CollectionScreen();
@@ -41,12 +42,12 @@ class CollectionRoute extends _i10.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.ContentDetailsScreen]
-class ContentDetailsRoute extends _i10.PageRouteInfo<ContentDetailsRouteArgs> {
+class ContentDetailsRoute extends _i11.PageRouteInfo<ContentDetailsRouteArgs> {
   ContentDetailsRoute({
-    _i11.Key? key,
+    _i12.Key? key,
     required String supplier,
     required String id,
-    List<_i10.PageRouteInfo>? children,
+    List<_i11.PageRouteInfo>? children,
   }) : super(
           ContentDetailsRoute.name,
           args: ContentDetailsRouteArgs(
@@ -59,7 +60,7 @@ class ContentDetailsRoute extends _i10.PageRouteInfo<ContentDetailsRouteArgs> {
 
   static const String name = 'ContentDetailsRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<ContentDetailsRouteArgs>();
@@ -79,7 +80,7 @@ class ContentDetailsRouteArgs {
     required this.id,
   });
 
-  final _i11.Key? key;
+  final _i12.Key? key;
 
   final String supplier;
 
@@ -93,8 +94,8 @@ class ContentDetailsRouteArgs {
 
 /// generated route for
 /// [_i3.DownloadsScreen]
-class DownloadsRoute extends _i10.PageRouteInfo<void> {
-  const DownloadsRoute({List<_i10.PageRouteInfo>? children})
+class DownloadsRoute extends _i11.PageRouteInfo<void> {
+  const DownloadsRoute({List<_i11.PageRouteInfo>? children})
       : super(
           DownloadsRoute.name,
           initialChildren: children,
@@ -102,7 +103,7 @@ class DownloadsRoute extends _i10.PageRouteInfo<void> {
 
   static const String name = 'DownloadsRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       return const _i3.DownloadsScreen();
@@ -112,8 +113,8 @@ class DownloadsRoute extends _i10.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.HomeScreen]
-class HomeRoute extends _i10.PageRouteInfo<void> {
-  const HomeRoute({List<_i10.PageRouteInfo>? children})
+class HomeRoute extends _i11.PageRouteInfo<void> {
+  const HomeRoute({List<_i11.PageRouteInfo>? children})
       : super(
           HomeRoute.name,
           initialChildren: children,
@@ -121,7 +122,7 @@ class HomeRoute extends _i10.PageRouteInfo<void> {
 
   static const String name = 'HomeRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       return const _i4.HomeScreen();
@@ -131,12 +132,12 @@ class HomeRoute extends _i10.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.MangaContentScreen]
-class MangaContentRoute extends _i10.PageRouteInfo<MangaContentRouteArgs> {
+class MangaContentRoute extends _i11.PageRouteInfo<MangaContentRouteArgs> {
   MangaContentRoute({
-    _i11.Key? key,
+    _i12.Key? key,
     required String supplier,
     required String id,
-    List<_i10.PageRouteInfo>? children,
+    List<_i11.PageRouteInfo>? children,
   }) : super(
           MangaContentRoute.name,
           args: MangaContentRouteArgs(
@@ -149,7 +150,7 @@ class MangaContentRoute extends _i10.PageRouteInfo<MangaContentRouteArgs> {
 
   static const String name = 'MangaContentRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<MangaContentRouteArgs>();
@@ -169,7 +170,7 @@ class MangaContentRouteArgs {
     required this.id,
   });
 
-  final _i11.Key? key;
+  final _i12.Key? key;
 
   final String supplier;
 
@@ -182,9 +183,28 @@ class MangaContentRouteArgs {
 }
 
 /// generated route for
-/// [_i6.SearchScreen]
-class SearchRoute extends _i10.PageRouteInfo<void> {
-  const SearchRoute({List<_i10.PageRouteInfo>? children})
+/// [_i6.OfflineItemsScreen]
+class OfflineItemsRoute extends _i11.PageRouteInfo<void> {
+  const OfflineItemsRoute({List<_i11.PageRouteInfo>? children})
+      : super(
+          OfflineItemsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'OfflineItemsRoute';
+
+  static _i11.PageInfo page = _i11.PageInfo(
+    name,
+    builder: (data) {
+      return const _i6.OfflineItemsScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [_i7.SearchScreen]
+class SearchRoute extends _i11.PageRouteInfo<void> {
+  const SearchRoute({List<_i11.PageRouteInfo>? children})
       : super(
           SearchRoute.name,
           initialChildren: children,
@@ -192,18 +212,18 @@ class SearchRoute extends _i10.PageRouteInfo<void> {
 
   static const String name = 'SearchRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
-      return const _i6.SearchScreen();
+      return const _i7.SearchScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i7.SettingsScreen]
-class SettingsRoute extends _i10.PageRouteInfo<void> {
-  const SettingsRoute({List<_i10.PageRouteInfo>? children})
+/// [_i8.SettingsScreen]
+class SettingsRoute extends _i11.PageRouteInfo<void> {
+  const SettingsRoute({List<_i11.PageRouteInfo>? children})
       : super(
           SettingsRoute.name,
           initialChildren: children,
@@ -211,18 +231,18 @@ class SettingsRoute extends _i10.PageRouteInfo<void> {
 
   static const String name = 'SettingsRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
-      return const _i7.SettingsScreen();
+      return const _i8.SettingsScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i8.SuppliersSettingsScreen]
-class SuppliersSettingsRoute extends _i10.PageRouteInfo<void> {
-  const SuppliersSettingsRoute({List<_i10.PageRouteInfo>? children})
+/// [_i9.SuppliersSettingsScreen]
+class SuppliersSettingsRoute extends _i11.PageRouteInfo<void> {
+  const SuppliersSettingsRoute({List<_i11.PageRouteInfo>? children})
       : super(
           SuppliersSettingsRoute.name,
           initialChildren: children,
@@ -230,22 +250,22 @@ class SuppliersSettingsRoute extends _i10.PageRouteInfo<void> {
 
   static const String name = 'SuppliersSettingsRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
-      return const _i8.SuppliersSettingsScreen();
+      return const _i9.SuppliersSettingsScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i9.VideoContentScreen]
-class VideoContentRoute extends _i10.PageRouteInfo<VideoContentRouteArgs> {
+/// [_i10.VideoContentScreen]
+class VideoContentRoute extends _i11.PageRouteInfo<VideoContentRouteArgs> {
   VideoContentRoute({
-    _i11.Key? key,
+    _i12.Key? key,
     required String supplier,
     required String id,
-    List<_i10.PageRouteInfo>? children,
+    List<_i11.PageRouteInfo>? children,
   }) : super(
           VideoContentRoute.name,
           args: VideoContentRouteArgs(
@@ -258,11 +278,11 @@ class VideoContentRoute extends _i10.PageRouteInfo<VideoContentRouteArgs> {
 
   static const String name = 'VideoContentRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<VideoContentRouteArgs>();
-      return _i9.VideoContentScreen(
+      return _i10.VideoContentScreen(
         key: args.key,
         supplier: args.supplier,
         id: args.id,
@@ -278,7 +298,7 @@ class VideoContentRouteArgs {
     required this.id,
   });
 
-  final _i11.Key? key;
+  final _i12.Key? key;
 
   final String supplier;
 

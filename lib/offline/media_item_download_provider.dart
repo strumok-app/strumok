@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/download/manager/manager.dart';
 import 'package:strumok/download/manager/models.dart';
-import 'package:strumok/offline/offline_files_storage.dart';
+import 'package:strumok/offline/offline_storage.dart';
 
 part 'media_item_download_provider.g.dart';
 
@@ -25,7 +25,7 @@ class MediaItemDownloadState {
 class MediaItemDownload extends _$MediaItemDownload {
   @override
   Future<MediaItemDownloadState> build(String supplier, String id, int number) async {
-    final isStored = await OfflineFilesStorage().isSourceExists(supplier, id, number);
+    final isStored = await OfflineStorage().sourceExists(supplier, id, number);
     final downloadTask = DownloadManager().getTask(getMediaItemId(supplier, id, number));
 
     MediaItemDownloadStatus status = MediaItemDownloadStatus.notStored;

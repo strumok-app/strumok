@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 
+// TODO: remove this and use build envs
 class AppSecrets {
   static final AppSecrets _instance = AppSecrets._internal();
   late final Map<String, dynamic> _secrets;

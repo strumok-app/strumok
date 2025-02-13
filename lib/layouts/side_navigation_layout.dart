@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:strumok/download/downloading_indicator.dart';
 import 'package:strumok/layouts/navigation_bar_data.dart';
 import 'package:strumok/layouts/account.dart';
 import 'package:strumok/layouts/widgets.dart';
+import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +30,10 @@ class SideNavigationLayout extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                showBackButton ? const BackNavButton() : const SizedBox.square(dimension: 40),
+                SizedBox.square(
+                  dimension: 40,
+                  child: showBackButton ? const BackNavButton() : null,
+                ),
                 ...NavigationBarData.routes.mapIndexed(
                   (idx, r) => Padding(
                     padding: const EdgeInsets.all(4.0),
@@ -41,13 +46,7 @@ class SideNavigationLayout extends StatelessWidget {
                 ),
                 const AccountMenuIcon(),
                 const Spacer(),
-                Badge.count(
-                  count: 5,
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.downloading_outlined),
-                  ),
-                ),
+                if (!isMobileDevice()) const DownloadingIndicator(),
               ],
             ),
           ),

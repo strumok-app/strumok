@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
-import 'package:strumok/offline/offline_files_storage.dart';
+import 'package:strumok/offline/offline_storage.dart';
 
 class OfflineContentDetails extends Equatable implements ContentDetails {
   const OfflineContentDetails(this._actualDetails);
@@ -69,7 +69,7 @@ class OfflineContentMediaItem extends Equatable implements ContentMediaItem {
   @override
   Future<List<ContentMediaItemSource>> get sources async {
     final merged = <ContentMediaItemSource>[];
-    final offlieSources = await OfflineFilesStorage().getSources(
+    final offlieSources = await OfflineStorage().getSources(
       supplier,
       id,
       number,
@@ -94,6 +94,44 @@ class OfflineContentMediaItem extends Equatable implements ContentMediaItem {
 
   @override
   List<Object?> get props => [supplier, id, number];
+}
+
+class OfflineContentInfo implements ContentInfo {
+  @override
+  final String id;
+  @override
+  final String supplier;
+  @override
+  final String title;
+  @override
+  final String? secondaryTitle;
+  @override
+  final String image;
+  final int diskUsage;
+
+  OfflineContentInfo({
+    required this.id,
+    required this.supplier,
+    required this.title,
+    required this.secondaryTitle,
+    required this.image,
+    required this.diskUsage,
+  });
+
+  factory OfflineContentInfo.create(
+    String id,
+    String supplier,
+    Map<String, Object?>? json,
+    int diskUsage,
+  ) {
+    return OfflineContentInfo(
+        id: id,
+        supplier: supplier,
+        title: json?["title"]?.toString() ?? "Unknown",
+        secondaryTitle: json?["secondaryTitle"]?.toString(),
+        image: json?["image"]?.toString() ?? "",
+        diskUsage: diskUsage);
+  }
 }
 
 // marker interface

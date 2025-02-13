@@ -9,8 +9,9 @@ import 'package:strumok/app_secrets.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/layouts/app_theme.dart';
+import 'package:strumok/layouts/global_notifications.dart';
 import 'package:strumok/layouts/version_guard.dart';
-import 'package:strumok/offline/offline_files_storage.dart';
+import 'package:strumok/offline/offline_storage.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/error_observer.dart';
 import 'package:strumok/utils/visual.dart';
@@ -40,7 +41,7 @@ void main() async {
   await AppInitFirebase().init();
 
   // Downloaded files
-  await OfflineFilesStorage().init();
+  await OfflineStorage().init();
   // load suppliers
   await FFISuppliersBundleStorage().init();
   await ContentSuppliers().load();
@@ -70,11 +71,11 @@ class MainApp extends StatelessWidget {
         scrollBehavior: const MaterialScrollBehavior().copyWith(dragDevices: {
           PointerDeviceKind.mouse,
           PointerDeviceKind.touch,
-          PointerDeviceKind.trackpad
+          PointerDeviceKind.trackpad,
         }),
         routerConfig: _appRouter.config(),
         builder: (context, child) => AppTheme(
-          child: VersionGuard(child: child!),
+          child: VersionGuard(child: GlobalNotifications(child: child!)),
         ),
       ),
     );

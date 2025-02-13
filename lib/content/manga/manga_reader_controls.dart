@@ -193,23 +193,26 @@ class _MangaReaderControlBottomBarState extends ConsumerState<MangaReaderControl
                   ),
                 ),
               Expanded(
-                child: Slider(
-                  allowedInteraction: SliderInteraction.tapAndSlide,
-                  max: pageNumbers.toDouble() - 1,
-                  value: pageIndex.toDouble(),
-                  label: pageNumber.toString(),
-                  divisions: pageNumbers - 1,
-                  onChanged: (value) {
-                    setState(() {
-                      tragetPage = value.round();
-                    });
-                  },
-                  onChangeEnd: (value) {
-                    setState(() {
-                      tragetPage = value.round();
-                    });
-                    widget.onPageChanged(value.round());
-                  },
+                child: SliderTheme(
+                  data: SliderThemeData(tickMarkShape: SliderTickMarkShape.noTickMark),
+                  child: Slider(
+                    allowedInteraction: SliderInteraction.tapAndSlide,
+                    max: pageNumbers.toDouble() - 1,
+                    value: pageIndex.toDouble(),
+                    label: pageNumber.toString(),
+                    divisions: pageNumbers - 1,
+                    onChanged: (value) {
+                      setState(() {
+                        tragetPage = value.round();
+                      });
+                    },
+                    onChangeEnd: (value) {
+                      setState(() {
+                        tragetPage = value.round();
+                      });
+                      widget.onPageChanged(value.round());
+                    },
+                  ),
                 ),
               ),
               MangaSettingsButton(

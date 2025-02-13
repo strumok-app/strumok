@@ -54,9 +54,9 @@ class AccountMenu extends StatelessWidget {
             const SyncMenuItem(),
             ListTile(
               leading: const Icon(Icons.download_for_offline),
-              title: Text(AppLocalizations.of(context)!.downloadsQueue),
+              title: Text(AppLocalizations.of(context)!.downloads),
               onTap: () {
-                context.router.popAndPush(const DownloadsRoute());
+                context.router.popAndPush(const OfflineItemsRoute());
               },
             ),
             ListTile(

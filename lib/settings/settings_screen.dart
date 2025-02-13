@@ -29,59 +29,55 @@ class _SettingsView extends StatelessWidget {
       child: Container(
         constraints: const BoxConstraints(maxWidth: 800),
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                AppLocalizations.of(context)!.settings,
-                style: Theme.of(context).textTheme.headlineMedium,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  AppLocalizations.of(context)!.settings,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ),
-            ),
-            Expanded(
-              child: ListView(
-                children: [
-                  _renderSection(
-                    context,
-                    AppLocalizations.of(context)!.settingsTheme,
-                    const BrightnessSwitcher(),
-                  ),
-                  _renderSection(
-                    context,
-                    AppLocalizations.of(context)!.settingsColor,
-                    const ColorSwitcher(),
-                  ),
-                  _renderSection(
-                    context,
-                    AppLocalizations.of(context)!.settingsVersion,
-                    const AppVersionSettings(),
-                  ),
-                  _renderSection(
-                    context,
-                    AppLocalizations.of(context)!.settingsSuppliersVersion,
-                    const SuppliersBundleVersionSettings(),
-                  ),
-                  _renderSection(
-                    context,
-                    AppLocalizations.of(context)!.contentLanguage,
-                    const ContentLanguageSelector(),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.chevron_right),
-                    horizontalTitleGap: 8,
-                    title: Text(
-                      AppLocalizations.of(context)!.settingsSuppliersAndRecommendations,
-                    ),
-                    onTap: () {
-                      context.router.push(const SuppliersSettingsRoute());
-                    },
-                  )
-                ],
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsTheme,
+                const BrightnessSwitcher(),
               ),
-            )
-          ],
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsColor,
+                const ColorSwitcher(),
+              ),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsVersion,
+                const AppVersionSettings(),
+              ),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsSuppliersVersion,
+                const SuppliersBundleVersionSettings(),
+              ),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.contentLanguage,
+                const ContentLanguageSelector(),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.chevron_right),
+                horizontalTitleGap: 8,
+                title: Text(
+                  AppLocalizations.of(context)!.settingsSuppliersAndRecommendations,
+                ),
+                onTap: () {
+                  context.router.push(const SuppliersSettingsRoute());
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

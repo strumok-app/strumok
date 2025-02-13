@@ -16,6 +16,6 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: VideoContentRoute.page),
         AutoRoute(page: MangaContentRoute.page),
         AutoRoute(page: SuppliersSettingsRoute.page),
-        AutoRoute(page: DownloadsRoute.page),
+        AutoRoute(page: OfflineItemsRoute.page),
       ];
 }

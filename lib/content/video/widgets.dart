@@ -4,7 +4,6 @@ import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/offline/media_item_download.dart';
-import 'package:strumok/offline/offline_content_details.dart';
 import 'package:strumok/widgets/dropdown.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +52,7 @@ class MediaTitle extends ConsumerWidget {
   }
 }
 
-MediaItemsListBuilder playlistItemBuilder(ContentInfo contentInfo) {
+MediaItemsListBuilder playlistItemBuilder(ContentDetails contentDetails) {
   return (ContentMediaItem item, ContentProgress? contentProgress, SelectCallback onSelect) {
     final progress = contentProgress?.positions[item.number]?.progress ?? 0;
 
@@ -63,7 +62,7 @@ MediaItemsListBuilder playlistItemBuilder(ContentInfo contentInfo) {
       selectIcon: Icons.play_arrow_rounded,
       progress: progress,
       onTap: () => onSelect(item),
-      trailing: MediaItemDownloadButton(contentInfo: contentInfo, item: item),
+      trailing: MediaItemDownloadButton(contentDetails: contentDetails, item: item),
     );
   };
 }

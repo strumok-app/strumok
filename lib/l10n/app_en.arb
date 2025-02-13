@@ -90,5 +90,8 @@
     "ffiLibInstalled": "Content suppliers installed",
     "ffiLibInstallationFailed": "Content suppliers module installation failed",
     "appUpdateFailed": "Application update failed",
-    "downloadsQueue": "Downloads"
+    "downloads": "Downloads",
+    "downloadsDeleteConfimation": "Delete all stored data for: {title}?",
+    "confirmeDialogCancel": "Cancel",
+    "confirmeDialogAccept": "Accept"
 }
