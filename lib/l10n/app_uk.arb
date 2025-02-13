@@ -93,6 +93,7 @@
     "appUpdateFailed": "Неможливо встановити нову версію",
     "downloads": "Завантаження",
     "downloadsDeleteConfimation": "Видалии усі заванатжені дані для: {title}",
+    "downloadsFailed": "Неможливо завантажити: {title}?",
     "confirmeDialogCancel": "Відмінити",
     "confirmeDialogAccept": "Підтвердити"
 }

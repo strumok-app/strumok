@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:strumok/app_localizations.dart';
 import 'package:strumok/download/downloading_provider.dart';
 import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/utils/visual.dart';
@@ -60,7 +61,7 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
         if (request is ContentDownloadRequest) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("Download faild: ${request.info.title}"),
+              content: Text(AppLocalizations.of(context)!.downloadsFailed(request.info.title)),
               behavior: SnackBarBehavior.floating,
             ),
           );
