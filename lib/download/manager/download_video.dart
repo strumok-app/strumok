@@ -138,7 +138,7 @@ Future<void> _downloadStreamSegments(
 
   for (var i = 0; i < manifets.segments.length; i++) {
     if (task.status.value == DownloadStatus.canceled) {
-      sink.close();
+      await sink.close();
       await partialFile.delete();
       return;
     }

@@ -371,6 +371,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
 
   @override
   Widget build(BuildContext context) {
+    // final view = _renderTvView();
     final view = switch (Theme.of(context).platform) {
       TargetPlatform.android => TVDetector.isTV ? _renderTvView() : _renderMobileView(),
       TargetPlatform.iOS => _renderMobileView(),
@@ -385,7 +386,6 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
       color: Colors.black,
       child: Stack(
         children: [
-          // _renderTvView(),
           view,
           ValueListenableBuilder(
             valueListenable: playerController.isLoading,

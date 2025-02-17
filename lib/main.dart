@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:strumok/app_database.dart';
 import 'package:strumok/app_init_firebase.dart';
 import 'package:strumok/app_localizations.dart';

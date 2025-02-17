@@ -34,6 +34,7 @@ class MediaItemDownloadButton extends ConsumerWidget {
           icon: Icon(Icons.file_download),
         ),
       MediaItemDownloadStatus.stored => IconButton(
+          padding: EdgeInsets.all(8),
           onPressed: () => _showDialog(context),
           icon: Icon(Symbols.folder_check),
         ),
@@ -88,6 +89,7 @@ class _MediaItemDownloadIndicator extends StatelessWidget {
             },
           ),
           IconButton(
+            padding: EdgeInsets.all(8),
             onPressed: onCancel,
             icon: Icon(Icons.cancel_outlined),
           ),

@@ -10,6 +10,7 @@ void downloadManga(MangaDownloadRequest request, DownloadTask task, VoidCallback
 
     for (var i = 0; i < request.pages.length; i++) {
       if (task.status.value == DownloadStatus.canceled) {
+        await Directory(request.folder).delete(recursive: true);
         return;
       }
 

@@ -35,12 +35,6 @@ class NavigationBarData {
     routeBuilder: () => const CollectionRoute(),
   );
 
-  // static final settings = NavigationBarData._(
-  //   icon: const SettingsIcon(),
-  //   labelBuilder: (context) => AppLocalizations.of(context)!.settings,
-  //   routeBuilder: () => const SettingsRoute(),
-  // );
-
   static final List<NavigationBarData> routes = [
     home,
     search,

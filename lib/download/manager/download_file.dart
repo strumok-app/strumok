@@ -38,6 +38,7 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
 
     // fileExist
     final httpReq = Request('GET', Uri.parse(request.url));
+    httpReq.followRedirects = false;
     httpReq.headers.addAll(headers);
 
     final res = await Client().send(httpReq).timeout(httpTimeout);
@@ -51,7 +52,7 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
 
     await for (var chunk in res.stream) {
       if (task.status.value == DownloadStatus.canceled) {
-        sink.close();
+        await sink.close();
         await partialFile.delete();
         return;
       }

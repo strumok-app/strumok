@@ -395,7 +395,7 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
   late double position = controller(context).player.state.position.inSeconds.toDouble();
   late double duration = controller(context).player.state.duration.inSeconds.toDouble();
   late double buffer = controller(context).player.state.buffer.inSeconds.toDouble();
-  late int divisions = (duration / _seekUnit).round();
+  late int? divisions = _calcDivisions();
 
   double? slidePosition;
   Timer? timer;
@@ -429,7 +429,7 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
           controller(context).player.stream.duration.listen((event) {
             setState(() {
               duration = event.inSeconds.toDouble();
-              divisions = (duration / _seekUnit).round();
+              divisions = _calcDivisions();
             });
           }),
           controller(context).player.stream.buffer.listen((event) {
@@ -450,12 +450,10 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
     super.dispose();
   }
 
+  int? _calcDivisions() => duration == 0 ? null : (duration / _seekUnit).ceil();
+
   @override
   Widget build(BuildContext context) {
-    if (duration.isNaN) {
-      return SizedBox.shrink();
-    }
-
     return SliderTheme(
       data: SliderThemeData(tickMarkShape: SliderTickMarkShape.noTickMark),
       child: Slider(
@@ -465,20 +463,19 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
         max: duration,
         divisions: divisions,
         onChanged: (value) {
+          timer?.cancel();
+          timer = null;
           setState(() {
             slidePosition = value;
           });
         },
-        onChangeStart: (value) {
-          timer?.cancel();
-          timer = null;
-        },
         onChangeEnd: (value) {
           timer?.cancel();
-          timer = Timer(const Duration(milliseconds: 300), () {
-            controller(context).player.seek(Duration(seconds: value.ceil()));
+          timer = Timer(const Duration(milliseconds: 500), () async {
             timer?.cancel();
             timer = null;
+
+            await controller(context).player.seek(Duration(seconds: value.ceil()));
 
             setState(() {
               slidePosition = null;

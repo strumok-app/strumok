@@ -8,6 +8,7 @@ import 'package:strumok/auth/auth_provider.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/collection/sync/collection_sync.dart';
 import 'package:strumok/collection/sync/collection_sync_provider.dart';
+import 'package:strumok/widgets/new_version_icon.dart';
 
 class AccountMenuIcon extends StatelessWidget {
   const AccountMenuIcon({super.key});
@@ -32,7 +33,7 @@ class AccountMenuIcon extends StatelessWidget {
             builder: (context) => const AccountMenu(),
           );
         },
-        icon: const Icon(Icons.account_circle_outlined),
+        icon: const NewVersionIcon(Icons.account_circle_outlined),
       ),
     );
   }
@@ -60,7 +61,7 @@ class AccountMenu extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.settings),
+              leading: const NewVersionIcon(Icons.settings),
               title: Text(AppLocalizations.of(context)!.settings),
               onTap: () {
                 context.router.popAndPush(const SettingsRoute());
