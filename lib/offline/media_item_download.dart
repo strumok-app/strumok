@@ -28,23 +28,26 @@ class MediaItemDownloadButton extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    return switch (state.status) {
-      MediaItemDownloadStatus.notStored => IconButton(
-          onPressed: () => _showDialog(context),
-          icon: Icon(Icons.file_download),
-        ),
-      MediaItemDownloadStatus.stored => IconButton(
-          padding: EdgeInsets.all(8),
-          onPressed: () => _showDialog(context),
-          icon: Icon(Symbols.folder_check),
-        ),
-      MediaItemDownloadStatus.downloading => _MediaItemDownloadIndicator(
-          state: state,
-          onCancel: () {
-            DownloadManager().cancel(state.downloadTask!.request.id);
-          },
-        ),
-    };
+    return SizedBox.square(
+      dimension: 40,
+      child: switch (state.status) {
+        MediaItemDownloadStatus.notStored => IconButton(
+            onPressed: () => _showDialog(context),
+            icon: Icon(Icons.file_download),
+          ),
+        MediaItemDownloadStatus.stored => IconButton(
+            padding: EdgeInsets.all(8),
+            onPressed: () => _showDialog(context),
+            icon: Icon(Symbols.folder_check),
+          ),
+        MediaItemDownloadStatus.downloading => _MediaItemDownloadIndicator(
+            state: state,
+            onCancel: () {
+              DownloadManager().cancel(state.downloadTask!.request.id);
+            },
+          ),
+      },
+    );
   }
 
   void _showDialog(BuildContext context) {
@@ -71,29 +74,26 @@ class _MediaItemDownloadIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox.square(
-        dimension: 40,
-        child: Stack(
-          children: [
-            ValueListenableBuilder(
-              valueListenable: state.downloadTask!.progress,
-              builder: (context, value, child) {
-                return Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: CircularProgressIndicator(
-                    value: value,
-                    backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
-                  ),
-                );
-              },
-            ),
-            IconButton(
-              padding: EdgeInsets.all(8),
-              onPressed: onCancel,
-              icon: Icon(Icons.cancel_outlined),
-            ),
-          ],
-        ),
+      child: Stack(
+        children: [
+          ValueListenableBuilder(
+            valueListenable: state.downloadTask!.progress,
+            builder: (context, value, child) {
+              return Padding(
+                padding: const EdgeInsets.all(8),
+                child: CircularProgressIndicator(
+                  value: value,
+                  backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
+                ),
+              );
+            },
+          ),
+          IconButton(
+            padding: EdgeInsets.all(8),
+            onPressed: onCancel,
+            icon: Icon(Icons.cancel_outlined),
+          ),
+        ],
       ),
     );
   }

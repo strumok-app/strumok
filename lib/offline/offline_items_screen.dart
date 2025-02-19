@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:strumok/app_localizations.dart';
-import 'package:strumok/download/downloading_indicator.dart';
+import 'package:strumok/download/downloading_queue.dart';
 import 'package:strumok/download/downloading_provider.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/offline/offline_content_details.dart';

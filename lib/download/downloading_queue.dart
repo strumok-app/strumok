@@ -4,8 +4,8 @@ import 'package:strumok/download/downloading_provider.dart';
 import 'package:strumok/download/manager/manager.dart';
 import 'package:strumok/download/manager/models.dart';
 
-class DownloadingIndicator extends ConsumerWidget {
-  const DownloadingIndicator({super.key});
+class DownloadingQueue extends ConsumerWidget {
+  const DownloadingQueue({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

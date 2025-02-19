@@ -8,6 +8,7 @@ import 'package:strumok/auth/auth_provider.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/collection/sync/collection_sync.dart';
 import 'package:strumok/collection/sync/collection_sync_provider.dart';
+import 'package:strumok/download/downloading_icon.dart';
 import 'package:strumok/widgets/new_version_icon.dart';
 
 class AccountMenuIcon extends StatelessWidget {
@@ -54,7 +55,7 @@ class AccountMenu extends StatelessWidget {
             const UserMenuItem(),
             const SyncMenuItem(),
             ListTile(
-              leading: const Icon(Icons.download_for_offline),
+              leading: const DownloadingIcon(Icons.download_for_offline),
               title: Text(AppLocalizations.of(context)!.downloads),
               onTap: () {
                 context.router.popAndPush(const OfflineItemsRoute());

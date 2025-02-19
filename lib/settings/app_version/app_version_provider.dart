@@ -115,9 +115,9 @@ class AppDownload extends _$AppDownload {
   ) async {
     state = state.start();
 
-    final tmpDir = await getDownloadsDirectory();
+    final tmpDir = await getApplicationCacheDirectory();
 
-    final installDirPath = "${tmpDir!.path}${Platform.pathSeparator}strumok_installs${Platform.pathSeparator}";
+    final installDirPath = "${tmpDir.path}${Platform.pathSeparator}install${Platform.pathSeparator}";
     final installDir = await Directory(installDirPath).create(recursive: true);
 
     final fileName = "${info.version}.apk";

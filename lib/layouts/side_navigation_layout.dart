@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
-import 'package:strumok/download/downloading_indicator.dart';
+import 'package:strumok/download/downloading_queue.dart';
 import 'package:strumok/layouts/navigation_bar_data.dart';
 import 'package:strumok/layouts/account.dart';
 import 'package:strumok/layouts/widgets.dart';
@@ -46,7 +46,7 @@ class SideNavigationLayout extends StatelessWidget {
                 ),
                 const AccountMenuIcon(),
                 const Spacer(),
-                if (!isMobileDevice()) const DownloadingIndicator(),
+                if (!isMobileDevice()) const DownloadingQueue(),
               ],
             ),
           ),
