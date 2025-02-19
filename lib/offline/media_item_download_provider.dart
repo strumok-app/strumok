@@ -26,7 +26,7 @@ class MediaItemDownload extends _$MediaItemDownload {
   @override
   Future<MediaItemDownloadState> build(String supplier, String id, int number) async {
     final isStored = await OfflineStorage().sourceExists(supplier, id, number);
-    final downloadTask = DownloadManager().getTask(getMediaItemId(supplier, id, number));
+    final downloadTask = DownloadManager().getTask(getMediaItemDownloadId(supplier, id, number));
 
     MediaItemDownloadStatus status = MediaItemDownloadStatus.notStored;
 

@@ -233,7 +233,7 @@ class OfflineStorage {
       final sourcePath = OfflineStorage()._getMediaItemSourcePath(supplier, id, number, source);
 
       return VideoDownloadRequest(
-        id: getMediaItemId(supplier, id, number),
+        id: getMediaItemDownloadId(supplier, id, number),
         url: link.toString(),
         fileSrc: sourcePath,
         info: info,
@@ -246,7 +246,7 @@ class OfflineStorage {
       final sourcePath = OfflineStorage()._getMediaItemSourcePath(supplier, id, number, source);
 
       return MangaDownloadRequest(
-        id: getMediaItemId(supplier, id, number),
+        id: getMediaItemDownloadId(supplier, id, number),
         pages: pages,
         folder: sourcePath,
         info: info,
@@ -257,6 +257,16 @@ class OfflineStorage {
   }
 }
 
-String getMediaItemId(String supplier, String id, int number) {
-  return [supplier, id, number.toString()].join("_");
+bool hasAnyDownloadingAitems(String supplier, String id) {
+  final prefix = getContentDownloadIdPrefix(supplier, id);
+
+  return DownloadManager().getTasks().where((task) => task.request.id.startsWith(prefix)).isNotEmpty;
+}
+
+String getContentDownloadIdPrefix(String supplier, String id) {
+  return "${supplier}_$id";
+}
+
+String getMediaItemDownloadId(String supplier, String id, int number) {
+  return "${getContentDownloadIdPrefix(supplier, id)}_$number";
 }

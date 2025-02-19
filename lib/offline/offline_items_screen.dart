@@ -124,6 +124,10 @@ class OfflineItem extends ConsumerWidget {
                   AppLocalizations.of(context)!.downloadsDeleteConfimation(info.title),
                 ),
                 confimAction: () async {
+                  if (hasAnyDownloadingAitems(info.supplier, info.id)) {
+                    return;
+                  }
+
                   await OfflineStorage().deleteAll(info.supplier, info.id);
                   ref.invalidate(offlineContentProvider);
                 },

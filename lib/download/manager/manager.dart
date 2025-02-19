@@ -81,6 +81,10 @@ class DownloadManager {
     return _downloads[id];
   }
 
+  Iterable<DownloadTask> getTasks() {
+    return _downloads.values.toList();
+  }
+
   List<DownloadTask> getDownloadTasksOfType(Set<DownloadType> types) =>
       _downloads.values.where((t) => types.contains(t.request.type)).toList();
 }
