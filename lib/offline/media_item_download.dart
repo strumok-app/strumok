@@ -128,7 +128,10 @@ class MediaItemDownloadDailog extends ConsumerWidget {
           );
 
           if (sources.isEmpty) {
-            return Text(AppLocalizations.of(context)!.videoNoSources);
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(AppLocalizations.of(context)!.videoNoSources),
+            );
           }
 
           final supplier = contentDetails.supplier;

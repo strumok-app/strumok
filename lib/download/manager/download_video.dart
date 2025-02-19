@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:strumok/download/manager/download_file.dart';
 import 'package:strumok/download/manager/models.dart';
@@ -71,8 +72,19 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
       }
 
       if (master.streams.isNotEmpty) {
-        final selectedStream = master.streams.reduce((a, b) => a.bandwidth > b.bandwidth ? a : b);
-        await _downloadHLSStream(request, task, selectedStream, onDone);
+        final sortedStreams = master.streams.sorted((a, b) => b.bandwidth.compareTo(a.bandwidth));
+        for (int i = 0; i < sortedStreams.length; i++) {
+          final selectedStream = sortedStreams[i];
+          try {
+            await _downloadHLSStream(request, task, selectedStream, onDone);
+            break;
+          } catch (e) {
+            logger.w("download video failed for request: $request, selectedStream: $selectedStream, error: $e");
+            if (i == sortedStreams.length - 1) {
+              rethrow;
+            }
+          }
+        }
       } else {
         await _downloadStreamSegments(request, task, master, onDone);
       }
@@ -153,6 +165,7 @@ Future<void> _downloadStreamSegments(
     final res = await client.send(segmentReq).timeout(httpTimeout);
 
     if (res.statusCode != HttpStatus.ok) {
+      await sink.close();
       throw Exception("segment: $segment httpStatus: ${res.statusCode}");
     }
 

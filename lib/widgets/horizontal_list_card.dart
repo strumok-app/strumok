@@ -30,20 +30,17 @@ class HorizontalListCard extends HookWidget {
     final theme = Theme.of(context);
     final focused = useState(false);
 
-    var imageWidth = isMobile(context) ? 165.0 : 195.0;
-    final imageHeight = imageWidth * 1.5;
+    final imageWidth = isMobile(context) ? _calcMobileSize(context) : 200.0;
 
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
-        side: focused.value
-            ? BorderSide(color: theme.colorScheme.primary, width: 1)
-            : BorderSide.none,
+        side: focused.value ? BorderSide(color: theme.colorScheme.primary, width: 1) : BorderSide.none,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Stack(
         children: [
-          _buildBackground(imageHeight, imageWidth),
+          _buildBackground(imageWidth),
           if (badge != null) _buildBadge(),
           _buildContent(focused),
         ],
@@ -75,12 +72,9 @@ class HorizontalListCard extends HookWidget {
     );
   }
 
-  Widget _buildBackground(double imageHeight, double imageWidth) {
+  Widget _buildBackground(double imageWidth) {
     return Container(
-      constraints: BoxConstraints(
-        maxHeight: imageHeight,
-        maxWidth: imageWidth,
-      ),
+      constraints: BoxConstraints(maxWidth: imageWidth),
       decoration: decoration,
       child: SizedBox.expand(child: child),
     );
@@ -96,5 +90,10 @@ class HorizontalListCard extends HookWidget {
         ),
       ),
     );
+  }
+
+  double _calcMobileSize(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return (screenWidth - 36) / 2;
   }
 }

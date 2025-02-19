@@ -37,7 +37,9 @@ void downloadManga(MangaDownloadRequest request, DownloadTask task, VoidCallback
       }
 
       await file.create(recursive: true);
-      await file.writeAsBytes(httpReq.bodyBytes);
+
+      final responseBytes = await httpRes.stream.toBytes();
+      await file.writeAsBytes(responseBytes);
 
       task.progress.value = (i + 1) / request.pages.length;
     }

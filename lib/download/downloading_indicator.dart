@@ -33,31 +33,42 @@ class DownloadingIndicator extends ConsumerWidget {
       menuChildren: [
         Container(
           constraints: BoxConstraints(minWidth: 320),
-          child: Column(
-            children: tasks
-                .map((task) => ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                      title: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(child: Text((task.request as ContentDownloadRequest).info.title)),
-                          IconButton(
-                            onPressed: () {
-                              DownloadManager().cancel(task.request.id);
-                            },
-                            icon: Icon(Icons.cancel_outlined),
-                          ),
-                        ],
-                      ),
-                      subtitle: ValueListenableBuilder(
-                        valueListenable: task.progress,
-                        builder: (context, value, child) => LinearProgressIndicator(value: value),
-                      ),
-                    ))
-                .toList(),
-          ),
+          child: DownloadsTasksList(tasks: tasks),
         ),
       ],
+    );
+  }
+}
+
+class DownloadsTasksList extends StatelessWidget {
+  final Iterable<DownloadTask> tasks;
+
+  const DownloadsTasksList({super.key, required this.tasks});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: tasks
+          .map((task) => ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                title: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(child: Text((task.request as ContentDownloadRequest).info.title)),
+                    IconButton(
+                      onPressed: () {
+                        DownloadManager().cancel(task.request.id);
+                      },
+                      icon: Icon(Icons.cancel_outlined),
+                    ),
+                  ],
+                ),
+                subtitle: ValueListenableBuilder(
+                  valueListenable: task.progress,
+                  builder: (context, value, child) => LinearProgressIndicator(value: value),
+                ),
+              ))
+          .toList(),
     );
   }
 }

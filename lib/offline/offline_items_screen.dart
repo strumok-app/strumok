@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:strumok/app_localizations.dart';
+import 'package:strumok/download/downloading_indicator.dart';
 import 'package:strumok/download/downloading_provider.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/offline/offline_content_details.dart';
@@ -11,6 +12,7 @@ import 'package:strumok/offline/offline_items_screen_provider.dart';
 import 'package:strumok/offline/offline_storage.dart';
 import 'package:strumok/utils/nav.dart';
 import 'package:strumok/utils/text.dart';
+import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/confirm_dialog.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
 
@@ -30,6 +32,7 @@ class OfflineItemsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _OfflineItemsTitle(),
+                if (isMobile(context)) _InprogressDownloads(),
                 _OfflineItemsView(),
               ],
             ),
@@ -86,6 +89,19 @@ class _OfflineItemsView extends ConsumerWidget {
             ),
         loading: () => Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text(error.toString())));
+  }
+}
+
+class _InprogressDownloads extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tasks = ref.watch(downloadTasksProvider);
+
+    if (tasks.isEmpty) {
+      return SizedBox.shrink();
+    }
+
+    return DownloadsTasksList(tasks: tasks);
   }
 }
 

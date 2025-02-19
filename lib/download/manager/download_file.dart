@@ -32,13 +32,14 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
 
     var bytesDownloaded = 0;
     if (partialFileExist) {
-      headers[HttpHeaders.rangeHeader] = 'bytes=${await partialFile.length()}-';
-      bytesDownloaded = await partialFile.length();
+      final bytesDownloaded = await partialFile.length();
+      if (bytesDownloaded > 0) {
+        headers[HttpHeaders.rangeHeader] = 'bytes=$bytesDownloaded-';
+      }
     }
 
     // fileExist
     final httpReq = Request('GET', Uri.parse(request.url));
-    httpReq.followRedirects = false;
     httpReq.headers.addAll(headers);
 
     final res = await Client().send(httpReq).timeout(httpTimeout);
@@ -61,7 +62,7 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
       task.progress.value = bytesDownloaded / res.contentLength!.toDouble();
     }
 
-    sink.close();
+    await sink.close();
 
     await partialFile.rename(request.fileSrc);
     task.status.value = DownloadStatus.completed;
