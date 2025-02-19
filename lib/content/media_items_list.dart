@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:strumok/collection/collection_item_model.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -280,62 +281,65 @@ class MediaItemsListItem extends HookWidget {
     final image = item.image;
     final colorScheme = theme.colorScheme;
     final accentColor = colorScheme.surfaceTint.withValues(alpha: 0.5);
+    final focusColor = focused.value ? colorScheme.onSurfaceVariant : accentColor;
+    final isTv = TVDetector.isTV;
 
     return Card.filled(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(16)),
-        side: BorderSide(
-          color: focused.value ? colorScheme.onSurfaceVariant : accentColor,
-        ),
+        side: BorderSide(color: focusColor),
       ),
       clipBehavior: Clip.antiAlias,
       color: Colors.transparent,
-      child: InkWell(
-        autofocus: selected,
-        mouseCursor: SystemMouseCursors.click,
-        onTap: onTap,
-        onFocusChange: (value) => focused.value = value,
-        child: Row(
-          children: [
-            if (image != null)
-              Container(
-                width: 80,
-                height: 72,
-                decoration: BoxDecoration(
-                  image: DecorationImage(image: CachedNetworkImageProvider(image), fit: BoxFit.cover),
-                ),
-                child: selected
-                    ? Center(
-                        child: Icon(selectIcon, color: Colors.white, size: 48),
-                      )
-                    : const SizedBox.shrink(),
+      child: Row(
+        children: [
+          if (image != null)
+            Container(
+              width: 80,
+              height: 70,
+              decoration: BoxDecoration(
+                image: DecorationImage(image: CachedNetworkImageProvider(image), fit: BoxFit.cover),
               ),
-            Expanded(
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                mouseCursor: SystemMouseCursors.click,
-                title: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (image == null && selected) ...[
-                      const SizedBox(width: 8),
-                      Icon(selectIcon),
-                    ],
+              child: selected
+                  ? Center(
+                      child: Icon(selectIcon, color: Colors.white, size: 48),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          Expanded(
+            child: ListTile(
+              autofocus: selected,
+              onFocusChange: (value) => focused.value = value,
+              onTap: onTap,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+              mouseCursor: SystemMouseCursors.click,
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (image == null && selected) ...[
                     const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
-                    ),
-                    if (trailing != null) trailing!,
+                    Icon(selectIcon),
                   ],
-                ),
-                subtitle: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: LinearProgressIndicator(value: progress),
-                ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
+                  ),
+                  if (!isTv && trailing != null) trailing!,
+                ],
               ),
-            )
-          ],
-        ),
+              subtitle: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: LinearProgressIndicator(value: progress),
+              ),
+            ),
+          ),
+          if (isTv && trailing != null)
+            Container(
+              height: 70,
+              color: accentColor,
+              child: trailing!,
+            ),
+        ],
       ),
     );
   }
