@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Strumok"
-#define MyAppVersion "1.7.5"
+#define MyAppVersion ""
 #define MyAppPublisher "Strumok Apk"
 #define MyAppURL "https://github.com/strumok-app/strumok"
 #define MyAppExeName "strumok.exe"
