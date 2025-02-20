@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -152,11 +153,24 @@ class OfflineMangaMediaItemSource implements MangaMediaItemSource, OfflineConten
 
   @override
   FutureOr<List<String>> get pages async {
-    return _pages ??= await Directory(dir)
-        .list()
-        .where((entry) => entry is File && entry.path.endsWith(".jpg"))
-        .map((entry) => entry.path)
-        .toList();
+    return _pages ??= await _loadPages();
+  }
+
+  Future<List<String>> _loadPages() async {
+    final orderedPages = SplayTreeMap<int, String>();
+
+    await for (final entry in Directory(dir).list()) {
+      if (entry is File && entry.path.endsWith(".jpg")) {
+        final [numStr, _] = entry.uri.pathSegments.last.split(".");
+        final num = int.tryParse(numStr);
+
+        if (num != null) {
+          orderedPages[num] = entry.path;
+        }
+      }
+    }
+
+    return orderedPages.values.toList();
   }
 
   @override
