@@ -291,55 +291,57 @@ class MediaItemsListItem extends HookWidget {
       ),
       clipBehavior: Clip.antiAlias,
       color: Colors.transparent,
-      child: Row(
-        children: [
-          if (image != null)
-            Container(
-              width: 80,
-              height: 64,
-              decoration: BoxDecoration(
-                image: DecorationImage(image: CachedNetworkImageProvider(image), fit: BoxFit.cover),
+      child: SizedBox(
+        height: 64,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (image != null)
+              Container(
+                width: 80,
+                decoration: BoxDecoration(
+                  image: DecorationImage(image: CachedNetworkImageProvider(image), fit: BoxFit.cover),
+                ),
+                child: selected
+                    ? Center(
+                        child: Icon(selectIcon, color: Colors.white, size: 48),
+                      )
+                    : const SizedBox.shrink(),
               ),
-              child: selected
-                  ? Center(
-                      child: Icon(selectIcon, color: Colors.white, size: 48),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          Expanded(
-            child: ListTile(
-              autofocus: selected,
-              onFocusChange: (value) => focused.value = value,
-              onTap: onTap,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-              mouseCursor: SystemMouseCursors.click,
-              title: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (image == null && selected) ...[
+            Expanded(
+              child: ListTile(
+                autofocus: selected,
+                onFocusChange: (value) => focused.value = value,
+                onTap: onTap,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                mouseCursor: SystemMouseCursors.click,
+                title: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (image == null && selected) ...[
+                      const SizedBox(width: 8),
+                      Icon(selectIcon),
+                    ],
                     const SizedBox(width: 8),
-                    Icon(selectIcon),
+                    Expanded(
+                      child: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    ),
+                    if (!isTv && trailing != null) trailing!,
                   ],
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
-                  ),
-                  if (!isTv && trailing != null) trailing!,
-                ],
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: LinearProgressIndicator(value: progress),
+                ),
+                subtitle: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: LinearProgressIndicator(value: progress),
+                ),
               ),
             ),
-          ),
-          if (isTv && trailing != null)
-            Container(
-              height: 64,
-              color: accentColor,
-              child: trailing!,
-            ),
-        ],
+            if (isTv && trailing != null)
+              Container(
+                color: accentColor,
+                child: Center(child: trailing!),
+              ),
+          ],
+        ),
       ),
     );
   }
