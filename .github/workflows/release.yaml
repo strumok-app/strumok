@@ -52,7 +52,7 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Android
-        run: flutter build apk
+        run: flutter build apk --dart-define-from-file=secrets.json
       - name: Upload android outputs
         uses: actions/upload-artifact@v4
         with:
@@ -85,7 +85,7 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Linux
-        run: flutter build linux
+        run: flutter build linux --dart-define-from-file=secrets.json
       - name: Upload linux outputs
         uses: actions/upload-artifact@v4
         with:
@@ -116,7 +116,7 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
       - name: Build Flutter for Windows
-        run: flutter build windows
+        run: flutter build windows --dart-define-from-file=secrets.json
         shell: bash
       - name: Build Installer
         run: |

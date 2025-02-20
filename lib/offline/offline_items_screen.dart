@@ -15,6 +15,7 @@ import 'package:strumok/utils/text.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/confirm_dialog.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
+import 'package:strumok/widgets/nothing_to_show.dart';
 
 @RoutePage()
 class OfflineItemsScreen extends StatelessWidget {
@@ -30,6 +31,7 @@ class OfflineItemsScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 _OfflineItemsTitle(),
                 if (isMobile(context)) _InprogressDownloads(),
@@ -81,14 +83,24 @@ class _OfflineItemsView extends ConsumerWidget {
     });
 
     return offlineContentAsync.when(
-        data: (data) => SingleChildScrollView(
-              child: Wrap(
-                runSpacing: 4,
-                children: data.map((info) => OfflineItem(info: info)).toList(),
-              ),
-            ),
+        data: (data) => _buildItems(data),
         loading: () => Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text(error.toString())));
+  }
+
+  Widget _buildItems(List<OfflineContentInfo> data) {
+    if (data.isEmpty) {
+      return Center(
+        child: NothingToShow(),
+      );
+    }
+
+    return SingleChildScrollView(
+      child: Wrap(
+        runSpacing: 4,
+        children: data.map((info) => OfflineItem(info: info)).toList(),
+      ),
+    );
   }
 }
 

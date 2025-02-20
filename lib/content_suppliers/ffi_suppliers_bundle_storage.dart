@@ -7,7 +7,7 @@ import 'package:strumok/utils/sem_ver.dart';
 const ffiSupplierBundleDir = "ffi";
 
 class FFISuppliersBundleStorage {
-  static const minimalCompatibleVersion = SemVer(major: 1, minor: 4, inc: 0);
+  static const minimalCompatibleVersion = SemVer(major: 1, minor: 4, inc: 3);
 
   FFISuppliersBundleStorage._internal();
 

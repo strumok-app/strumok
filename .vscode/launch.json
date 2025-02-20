@@ -8,7 +8,14 @@
             "name": "strumok",
             "request": "launch",
             "type": "dart",
-            "program": "${workspaceFolder}/lib/main.dart"
+            "program": "${workspaceFolder}/lib/main.dart",
+            "toolArgs": [
+                "--dart-define-from-file",
+                "secrets.json"
+            ],
+            "env": {
+                "RUST_LOG": "info"
+            }
         },
         {
             "name": "strumok external lib",
@@ -20,6 +27,8 @@
                 "FFI_SUPPLIER_LIBS_DIR=../suppliers/target/release/",
                 "--dart-define",
                 "FFI_SUPPLIER_LIB_NAME=strumok_suppliers",
+                "--dart-define-from-file",
+                "secrets.json"
             ],
             "env": {
                 "RUST_LOG": "info"

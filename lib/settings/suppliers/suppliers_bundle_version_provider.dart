@@ -6,7 +6,6 @@ import 'dart:io';
 import 'package:content_suppliers_rust/bundle.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
-import 'package:strumok/app_secrets.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/content_suppliers/ffi_supplier_bundle_info.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
@@ -43,7 +42,7 @@ Future<FFISupplierBundleInfo?> installedSupplierBundleInfo(
 @riverpod
 FutureOr<FFISupplierBundleInfo?> latestSupplierBundleInfo(Ref ref) async {
   try {
-    final latestVersionUrl = AppSecrets().getString("ffiLibVersionCheckURL");
+    const latestVersionUrl = String.fromEnvironment("FFI_LIB_VERSION_CHECK_URL");
     final res = await Client().get(Uri.parse(latestVersionUrl));
     return FFISupplierBundleInfo.fromJson(json.decode(res.body));
   } catch (e) {

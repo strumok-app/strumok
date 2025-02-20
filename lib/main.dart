@@ -4,7 +4,6 @@ import 'package:strumok/app_init_firebase.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/app_router.dart';
-import 'package:strumok/app_secrets.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/layouts/app_theme.dart';
@@ -22,8 +21,6 @@ import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await AppSecrets().init();
 
   if (isDesktopDevice()) {
     await windowManager.ensureInitialized();

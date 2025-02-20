@@ -39,7 +39,6 @@ pub struct ContentDetails {
 
 #[derive(Debug)]
 pub struct ContentMediaItem {
-    pub number: u32,
     pub title: String,
     pub section: Option<String>,
     pub image: Option<String>,

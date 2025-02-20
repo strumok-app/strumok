@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:strumok/app_secrets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -58,7 +57,7 @@ class LatestAppVersionInfo {
 @riverpod
 FutureOr<LatestAppVersionInfo?> latestAppVersionInfo(Ref ref) async {
   try {
-    final appVersionCheckURL = AppSecrets().getString("appVersionCheckURL");
+    const appVersionCheckURL = String.fromEnvironment("APP_VERSION_CHECK_URL");
     final res = await Client().get(Uri.parse(appVersionCheckURL));
 
     return LatestAppVersionInfo.fromJson(json.decode(res.body));

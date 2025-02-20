@@ -12,7 +12,7 @@ publish_to: none
 dependencies:
   flutter:
     sdk: flutter
-  flutter_rust_bridge: 2.7.0
+  flutter_rust_bridge: 2.8.0
   plugin_platform_interface: ^2.0.2
   content_suppliers_api:
     path: ../content_suppliers_api

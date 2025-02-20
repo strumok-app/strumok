@@ -296,7 +296,7 @@ class MediaItemsListItem extends HookWidget {
           if (image != null)
             Container(
               width: 80,
-              height: 70,
+              height: 64,
               decoration: BoxDecoration(
                 image: DecorationImage(image: CachedNetworkImageProvider(image), fit: BoxFit.cover),
               ),
@@ -335,7 +335,7 @@ class MediaItemsListItem extends HookWidget {
           ),
           if (isTv && trailing != null)
             Container(
-              height: 70,
+              height: 64,
               color: accentColor,
               child: trailing!,
             ),

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:strumok/app_preferences.dart';
-import 'package:strumok/app_secrets.dart';
 import 'package:firebase_dart/firebase_dart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
@@ -128,8 +127,9 @@ class Auth {
   }
 
   static Future<ClientId> _loadDesktopClientId() async {
+    const clientSecret = String.fromEnvironment("GOOGLE_AUTH");
     if (desktopClientId == null) {
-      final clientSecretJson = AppSecrets().getJson("google_auth");
+      final clientSecretJson = json.decode(clientSecret);
       desktopClientId = ClientId.fromJson(clientSecretJson);
     }
 
