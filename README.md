@@ -10,6 +10,10 @@ Watch movies, tv shows, anime and read manga in one app on android, windows and 
 
 </div>
 
+<div align="center" markdown> 
+    <a href="https://github.com/strumok-app/strumok/releases/">Releases</a>
+</div>
+
 ## Features
 * AdFree
 * English and ukrainian content
