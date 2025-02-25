@@ -16,18 +16,24 @@ Watch movies, tv shows, anime and read manga in one app on android, windows and 
 * Customizable recommendations
 * Collection synchronized across devices
 * Android TV remote control support
+* Downloads
 
 ## Screenshots
 
 ### Home page
+![desktop](data/screenshoots/desktop/Home.png)
 
 ### Collection
+![desktop](data/screenshoots/desktop/Collection.png)
 
 ### Details
+![desktop](data/screenshoots/desktop/Details.png)
 
 ### Video player
+![desktop](data/screenshoots/desktop/Video.png)
 
 ### Manga reader
+![desktop](data/screenshoots/desktop/Manga.png)
 
 ## Installation
 
