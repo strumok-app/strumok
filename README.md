@@ -1,11 +1,66 @@
-# Strumok
+<div align="center" markdown>
+ <img width=200px height=200px src="data/icons/app.cloud_hook.Strumok.svg"/>
+</div>
 
-Дивись фільми, серіали та аніме, читай мангу. Усе в одному додатку для Android(та AndroidTV), Windows та linux. 
+<div align="center" markdown> 
 
-## Функції
-* Пошук по фільмів, серіали та аніме в українській та англійській озвучці
-* Зручний відео плеєр оптимізований під усі платформи з підтримкою субтитрів
-* Manga reader з широким вибором режимів
-* Організована колекція з пріоритетами
-* Синхронізація прогресу між пристроями через акаунт google
-  
+# Strumok 
+
+Watch movies, tv shows, anime and read manga in one app on android, windows and linux.
+
+</div>
+
+## Features
+* AdFree
+* English and ukrainian content
+* Customizable recommendations
+* Collection synchronized across devices
+* Android TV remote control support
+* Downloads
+
+## Screenshots
+
+### Home page
+|||
+|--|--|
+|[![mobile](data/screenshoots/mobile/Home.jpg)](data/screenshoots/mobile/Home.jpg)|[![desktop](data/screenshoots/desktop/Home.png)](data/screenshoots/desktop/Home.png)|
+
+### Collection
+|||
+|--|--|
+|[![mobile](data/screenshoots/mobile/Collection.jpg)](data/screenshoots/mobile/Collection.jpg)|[![desktop](data/screenshoots/desktop/Collection.png)](data/screenshoots/desktop/Collection.png)|
+
+### Details
+|||
+|--|--|
+|[![mobile](data/screenshoots/mobile/Details.jpg)](data/screenshoots/mobile/Details.jpg)|[![desktop](data/screenshoots/desktop/Details.png)](data/screenshoots/desktop/Details.png)|
+
+### Video player
+|||
+|--|--|
+|[![mobile](data/screenshoots/mobile/Video.jpg)](data/screenshoots/mobile/Video.jpg)|[![desktop](data/screenshoots/desktop/Video.png)](data/screenshoots/desktop/Video.png)|
+
+### Manga reader
+|||
+|--|--|
+|[![mobile](data/screenshoots/mobile/Manga.jpg)](data/screenshoots/mobile/Manga.jpg)|[![desktop](data/screenshoots/desktop/Manga.png)](data/screenshoots/desktop/Manga.png)|
+
+## Installation
+
+### Android / Android TV
+
+[Download](https://github.com/strumok-app/strumok/releases/download/latest/app-release.apk) android universal apk
+
+### Windows
+
+[Download](https://github.com/strumok-app/strumok/releases/download/latest/StrumokSetup.exe) windows installer
+
+### Linux
+
+Install [libmpv](https://mpv.io/installation/)
+
+[Download](https://github.com/strumok-app/strumok/releases/download/latest/strumok-linux.tar.gz) archive and unpack
+
+### Disclaimer
+
+The developer of this application does not have any affiliation with the content providers available.
