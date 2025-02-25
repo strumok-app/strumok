@@ -88,6 +88,9 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
       } else {
         await _downloadStreamSegments(request, task, master, onDone);
       }
+
+      task.status.value = DownloadStatus.completed;
+      onDone();
     } else {
       donwloadFile(
         FileDownloadRequest(request.url, request.url, request.fileSrc, headers: request.headers),
@@ -95,12 +98,9 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
         onDone,
       );
     }
-
-    task.status.value = DownloadStatus.completed;
   } catch (e) {
     logger.w("download video failed for request: $request error: $e");
     task.status.value = DownloadStatus.failed;
-  } finally {
     onDone();
   }
 }
