@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -5,6 +7,9 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/download/downloading_provider.dart';
 import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/utils/visual.dart';
+
+const channelName = "downloads";
+const channelTitle = "Downloads";
 
 class GlobalNotifications extends ConsumerStatefulWidget {
   final Widget child;
@@ -31,6 +36,21 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
       );
 
       localNotificationsPlugin.initialize(initializationSettings);
+
+      _requestPermissions();
+    }
+  }
+
+  Future<void> _requestPermissions() async {
+    if (Platform.isAndroid) {
+      final androidImplementation =
+          localNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+      final granted = await androidImplementation?.areNotificationsEnabled() ?? false;
+
+      if (!granted) {
+        await androidImplementation?.requestNotificationsPermission();
+      }
     }
   }
 
@@ -104,8 +124,8 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
   void _showNotification(int id, ContentDownloadRequest request, double progress) {
     final notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
-        'download',
-        'Downloads',
+        channelName,
+        channelTitle,
         maxProgress: 100,
         onlyAlertOnce: true,
         autoCancel: false,

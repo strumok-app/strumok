@@ -43,7 +43,17 @@
         </provider>
 
         <!-- notifications -->
-        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
+        <receiver 
+        android:exported="false" 
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
+        
+        <service
+            android:name="com.dexterous.flutterlocalnotifications.ForegroundService"        
+            android:exported="false"
+            android:stopWithTask="false"
+            android:foregroundServiceType="dataSync"
+        />
+    
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and
@@ -60,19 +70,6 @@
       Internet access permissions.
       -->
     <uses-permission android:name="android.permission.INTERNET" />
-<!--    &lt;!&ndash;-->
-<!--      Media access permissions.-->
-<!--      Android 13 or higher.-->
-<!--      https://developer.android.com/about/versions/13/behavior-changes-13#granular-media-permissions-->
-<!--      &ndash;&gt;-->
-<!--    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />-->
-<!--    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />-->
-<!--    &lt;!&ndash;-->
-<!--      Storage access permissions.-->
-<!--      Android 12 or lower.-->
-<!--      &ndash;&gt;-->
-<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
-<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
 
     <!-- for player -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
