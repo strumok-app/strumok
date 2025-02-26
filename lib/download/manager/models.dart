@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:strumok/utils/text.dart';
 
 const httpTimeout = Duration(seconds: 30);
 
@@ -103,6 +104,10 @@ class FileDownloadRequest implements DownloadRequest {
 
 class DownloadTask {
   final DownloadRequest request;
+
+  DateTime? startedTS;
+  int bytesDownloaded = 0;
+
   ValueNotifier<DownloadStatus> status = ValueNotifier(DownloadStatus.queued);
   ValueNotifier<double> progress = ValueNotifier(0);
 
@@ -129,5 +134,18 @@ class DownloadTask {
 
   void cancel() {
     status.value = DownloadStatus.canceled;
+  }
+
+  String? speed() {
+    if (startedTS != null) {
+      final seconds = DateTime.now().difference(startedTS!).inSeconds;
+      if (seconds > 0) {
+        final bytesInSec = bytesDownloaded / seconds;
+
+        return formatBytes(bytesInSec.floor());
+      }
+    }
+
+    return null;
   }
 }

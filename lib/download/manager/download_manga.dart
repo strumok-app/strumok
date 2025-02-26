@@ -42,6 +42,7 @@ void downloadManga(MangaDownloadRequest request, DownloadTask task, VoidCallback
       await file.writeAsBytes(responseBytes);
 
       task.progress.value = (i + 1) / request.pages.length;
+      task.bytesDownloaded += responseBytes.length;
     }
 
     task.status.value = DownloadStatus.completed;

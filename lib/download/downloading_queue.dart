@@ -49,26 +49,37 @@ class DownloadsTasksList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: tasks
-          .map((task) => ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                title: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(child: Text((task.request as ContentDownloadRequest).info.title)),
-                    IconButton(
-                      onPressed: () {
-                        DownloadManager().cancel(task.request.id);
-                      },
-                      icon: Icon(Icons.cancel_outlined),
-                    ),
-                  ],
-                ),
-                subtitle: ValueListenableBuilder(
-                  valueListenable: task.progress,
-                  builder: (context, value, child) => LinearProgressIndicator(value: value),
+          .map((task) => ValueListenableBuilder(
+                valueListenable: task.progress,
+                builder: (context, value, child) => ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                  title: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(child: Text(getTaskDescription(task))),
+                      IconButton(
+                        onPressed: () {
+                          DownloadManager().cancel(task.request.id);
+                        },
+                        icon: Icon(Icons.cancel_outlined),
+                      ),
+                    ],
+                  ),
+                  subtitle: LinearProgressIndicator(value: value),
                 ),
               ))
           .toList(),
     );
+  }
+
+  String getTaskDescription(DownloadTask task) {
+    final title = (task.request as ContentDownloadRequest).info.title;
+    final speed = task.speed();
+
+    if (speed != null) {
+      return "$title $speed/s";
+    }
+
+    return title;
   }
 }

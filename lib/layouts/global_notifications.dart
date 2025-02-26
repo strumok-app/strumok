@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
+import 'package:strumok/app_router.dart';
 import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/download/downloading_provider.dart';
 import 'package:strumok/download/manager/models.dart';
-import 'package:strumok/offline/offline_items_screen.dart';
-import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/text.dart';
 import 'package:strumok/utils/visual.dart';
 
 const downloadChannelName = "downloads";
@@ -17,7 +17,13 @@ const downloadChannelTitle = "Downloads";
 
 class GlobalNotifications extends ConsumerStatefulWidget {
   final Widget child;
-  const GlobalNotifications({super.key, required this.child});
+  final AppRouter router;
+
+  const GlobalNotifications({
+    super.key,
+    required this.child,
+    required this.router,
+  });
 
   @override
   ConsumerState<GlobalNotifications> createState() => _GlobalNotificationsState();
@@ -60,14 +66,6 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
         notificationsGranted = await androidImplementation?.requestNotificationsPermission() ?? false;
       }
     }
-  }
-
-  @override
-  void dispose() {
-    if (isMobileDevice()) {
-      localNotificationsPlugin.cancelAll();
-    }
-    super.dispose();
   }
 
   @override
@@ -118,11 +116,10 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
       } else if (downloadTask.status.value == DownloadStatus.started) {
         final id = notificationsIds.putIfAbsent(request.id, () => nextId++);
 
-        print("NID>>>>>> ${id}, request id: ${request.id}");
-        _showDownloadingNotification(id, request, 0);
+        _showDownloadingNotification(id, downloadTask);
 
         if (!listeners.containsKey(request.id)) {
-          void listener() => _showDownloadingNotification(id, request, downloadTask.progress.value);
+          void listener() => _showDownloadingNotification(id, downloadTask);
           listeners[request.id] = listener;
           downloadTask.progress.addListener(listener);
         }
@@ -130,8 +127,8 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
     }
   }
 
-  void _showDownloadingNotification(int id, ContentDownloadRequest request, double progress) {
-    if (!notificationsIds.containsKey(request.id)) {
+  void _showDownloadingNotification(int id, DownloadTask taks) {
+    if (!notificationsIds.containsKey(taks.request.id)) {
       return;
     }
 
@@ -143,21 +140,21 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
         onlyAlertOnce: true,
         autoCancel: false,
         showProgress: true,
-        progress: (progress * 100).ceil(),
+        progress: (taks.progress.value * 100).ceil(),
         ongoing: true,
       ),
     );
 
     localNotificationsPlugin.show(
       id,
-      request.info.title,
+      downloadTaskDescription(taks),
       null,
       notificationDetails,
-      payload: request.id,
+      payload: taks.request.id,
     );
   }
 
   void _onNotificationTap(NotificationResponse details) async {
-    context.navigateTo(const OfflineItemsRoute());
+    widget.router.navigate(const OfflineItemsRoute());
   }
 }

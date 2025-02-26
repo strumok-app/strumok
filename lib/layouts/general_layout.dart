@@ -1,5 +1,4 @@
 import 'package:strumok/layouts/bottom_navigation_layout.dart';
-import 'package:strumok/layouts/global_notifications.dart';
 import 'package:strumok/layouts/side_navigation_layout.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
@@ -19,24 +18,22 @@ class GeneralLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlobalNotifications(
-      child: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            if (constraints.maxWidth < mobileWidth) {
-              return BottomNavigationLayout(
-                selectedIndex: selectedIndex,
-                child: child,
-              );
-            } else {
-              return SideNavigationLayout(
-                selectedIndex: selectedIndex,
-                showBackButton: TVDetector.isTV ? false : showBackButton,
-                child: child,
-              );
-            }
-          },
-        ),
+    return SafeArea(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < mobileWidth) {
+            return BottomNavigationLayout(
+              selectedIndex: selectedIndex,
+              child: child,
+            );
+          } else {
+            return SideNavigationLayout(
+              selectedIndex: selectedIndex,
+              showBackButton: TVDetector.isTV ? false : showBackButton,
+              child: child,
+            );
+          }
+        },
       ),
     );
   }

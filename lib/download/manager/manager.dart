@@ -57,6 +57,7 @@ class DownloadManager {
       final task = _downloads[request.id]!;
 
       task.status.value = DownloadStatus.started;
+      task.startedTS = DateTime.now();
       _downloadsUpdate.add(task);
       if (request is FileDownloadRequest) {
         donwloadFile(request, task, () => downloadDone(request));

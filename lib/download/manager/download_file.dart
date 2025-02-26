@@ -62,6 +62,7 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
 
       bytesDownloaded += chunk.length;
       task.progress.value = bytesDownloaded / res.contentLength!.toDouble();
+      task.bytesDownloaded = bytesDownloaded;
     }
 
     await sink.close();

@@ -171,9 +171,10 @@ Future<void> _downloadStreamSegments(
 
     await for (var chunk in res.stream) {
       sink.add(chunk);
-    }
 
-    task.progress.value = i / manifets.segments.length;
+      task.progress.value = i / manifets.segments.length;
+      task.bytesDownloaded += chunk.length;
+    }
   }
 
   await sink.close();
