@@ -3,68 +3,73 @@
 </div>
 
 <div align="center" markdown> 
+    <a href="README.en.md">English</a> |
+    <span>Українська</span>
+</div>
+
+<div align="center" markdown> 
 
 # Strumok 
 
-Watch movies, tv shows, anime and read manga in one app on android, windows and linux.
+Дивись фільми, серіали, аніме та читай мангу у единому додатку на телефоні, телевізорі чи ПК.
 
 </div>
 
 <div align="center" markdown> 
-    <a href="https://github.com/strumok-app/strumok/releases/">Releases</a>
+    <a href="https://github.com/strumok-app/strumok/releases/">Релізи</a>
 </div>
 
-## Features
-* AdFree
-* English and ukrainian content
-* Customizable recommendations
-* Collection synchronized across devices
-* Android TV remote control support
-* Downloads
+## Функції
+* Без реклами
+* Українска озвучка та англомовний контент
+* Рекомендації
+* Синхронизація колекції між пристроями
+* Підтримка Android телефонів, Android TV, windows та linux ПК
+* Завантаження
 
-## Screenshots
+## Знімки екрана
 
-### Home page
+### Гловна
 |||
 |--|--|
 |[![mobile](data/screenshoots/mobile/Home.jpg)](data/screenshoots/mobile/Home.jpg)|[![desktop](data/screenshoots/desktop/Home.png)](data/screenshoots/desktop/Home.png)|
 
-### Collection
+### Коллекція
 |||
 |--|--|
 |[![mobile](data/screenshoots/mobile/Collection.jpg)](data/screenshoots/mobile/Collection.jpg)|[![desktop](data/screenshoots/desktop/Collection.png)](data/screenshoots/desktop/Collection.png)|
 
-### Details
+### Опис
 |||
 |--|--|
 |[![mobile](data/screenshoots/mobile/Details.jpg)](data/screenshoots/mobile/Details.jpg)|[![desktop](data/screenshoots/desktop/Details.png)](data/screenshoots/desktop/Details.png)|
 
-### Video player
+### Відео плеер
 |||
 |--|--|
 |[![mobile](data/screenshoots/mobile/Video.jpg)](data/screenshoots/mobile/Video.jpg)|[![desktop](data/screenshoots/desktop/Video.png)](data/screenshoots/desktop/Video.png)|
 
-### Manga reader
+### Читалка манги
 |||
 |--|--|
 |[![mobile](data/screenshoots/mobile/Manga.jpg)](data/screenshoots/mobile/Manga.jpg)|[![desktop](data/screenshoots/desktop/Manga.png)](data/screenshoots/desktop/Manga.png)|
 
-## Installation
+## Встановлення
 
 ### Android / Android TV
 
-[Download](https://github.com/strumok-app/strumok/releases/download/latest/app-release.apk) android universal apk
+[Завантажити](https://github.com/strumok-app/strumok/releases/download/latest/app-release.apk) універсальний android apk
 
 ### Windows
 
-[Download](https://github.com/strumok-app/strumok/releases/download/latest/StrumokSetup.exe) windows installer
+[Завантажити](https://github.com/strumok-app/strumok/releases/download/latest/StrumokSetup.exe) windows інсталятор
 
 ### Linux
 
-Install [libmpv](https://mpv.io/installation/)
+Встановити [libmpv](https://mpv.io/installation/)
 
-[Download](https://github.com/strumok-app/strumok/releases/download/latest/strumok-linux.tar.gz) archive and unpack
+[Завантажити](https://github.com/strumok-app/strumok/releases/download/latest/strumok-linux.tar.gz) архів та розпакувати
 
 ### Disclaimer
 
-The developer of this application does not have any affiliation with the content providers available.
+Розробник цієї програми не має жодного відношення до доступних постачальників контенту.
