@@ -38,7 +38,7 @@ class SideNavigationLayout extends StatelessWidget {
                   (idx, r) => Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: NavigationButton(
-                      onPressed: () => context.router.replace(r.routeBuilder()),
+                      onPressed: () => context.navigateTo(r.routeBuilder()),
                       icon: r.icon,
                       isSelected: idx == selectedIndex,
                     ),

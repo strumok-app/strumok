@@ -28,7 +28,7 @@ class BottomNavigationLayout extends ConsumerWidget {
           children: [
             ...NavigationBarData.routes.mapIndexed(
               (idx, r) => NavigationButton(
-                onPressed: () => context.router.replace(r.routeBuilder()),
+                onPressed: () => context.navigateTo(r.routeBuilder()),
                 icon: r.icon,
                 isSelected: idx == selectedIndex,
               ),

@@ -1,15 +1,19 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
+import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/download/downloading_provider.dart';
 import 'package:strumok/download/manager/models.dart';
+import 'package:strumok/offline/offline_items_screen.dart';
+import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/visual.dart';
 
-const channelName = "downloads";
-const channelTitle = "Downloads";
+const downloadChannelName = "downloads";
+const downloadChannelTitle = "Downloads";
 
 class GlobalNotifications extends ConsumerStatefulWidget {
   final Widget child;
@@ -23,6 +27,7 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
   final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   int nextId = 0;
+  bool notificationsGranted = false;
   final Map<String, int> notificationsIds = {};
   final Map<String, VoidCallback> listeners = {};
 
@@ -35,7 +40,10 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
         android: AndroidInitializationSettings('ic_launcher_foreground'),
       );
 
-      localNotificationsPlugin.initialize(initializationSettings);
+      localNotificationsPlugin.initialize(
+        initializationSettings,
+        onDidReceiveNotificationResponse: _onNotificationTap,
+      );
 
       _requestPermissions();
     }
@@ -46,10 +54,10 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
       final androidImplementation =
           localNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
-      final granted = await androidImplementation?.areNotificationsEnabled() ?? false;
+      notificationsGranted = await androidImplementation?.areNotificationsEnabled() ?? false;
 
-      if (!granted) {
-        await androidImplementation?.requestNotificationsPermission();
+      if (!notificationsGranted) {
+        notificationsGranted = await androidImplementation?.requestNotificationsPermission() ?? false;
       }
     }
   }
@@ -89,7 +97,7 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
       }
     }
 
-    if (isMobileDevice()) {
+    if (isMobileDevice() && notificationsGranted) {
       _handleLocalNotificaionDownloadTask(context, downloadTask);
     }
   }
@@ -103,17 +111,18 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
           localNotificationsPlugin.cancel(id);
         }
 
-        final listener = listeners[request.id];
+        final listener = listeners.remove(request.id);
         if (listener != null) {
           downloadTask.progress.removeListener(listener);
         }
-      } else {
+      } else if (downloadTask.status.value == DownloadStatus.started) {
         final id = notificationsIds.putIfAbsent(request.id, () => nextId++);
 
-        _showNotification(id, request, 0);
+        print("NID>>>>>> ${id}, request id: ${request.id}");
+        _showDownloadingNotification(id, request, 0);
 
-        if (downloadTask.status.value == DownloadStatus.started) {
-          void listener() => _showNotification(id, request, downloadTask.progress.value);
+        if (!listeners.containsKey(request.id)) {
+          void listener() => _showDownloadingNotification(id, request, downloadTask.progress.value);
           listeners[request.id] = listener;
           downloadTask.progress.addListener(listener);
         }
@@ -121,16 +130,21 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
     }
   }
 
-  void _showNotification(int id, ContentDownloadRequest request, double progress) {
+  void _showDownloadingNotification(int id, ContentDownloadRequest request, double progress) {
+    if (!notificationsIds.containsKey(request.id)) {
+      return;
+    }
+
     final notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
-        channelName,
-        channelTitle,
+        downloadChannelName,
+        downloadChannelTitle,
         maxProgress: 100,
         onlyAlertOnce: true,
         autoCancel: false,
         showProgress: true,
         progress: (progress * 100).ceil(),
+        ongoing: true,
       ),
     );
 
@@ -141,5 +155,9 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
       notificationDetails,
       payload: request.id,
     );
+  }
+
+  void _onNotificationTap(NotificationResponse details) async {
+    context.navigateTo(const OfflineItemsRoute());
   }
 }

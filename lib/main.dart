@@ -70,9 +70,7 @@ class MainApp extends StatelessWidget {
           PointerDeviceKind.trackpad,
         }),
         routerConfig: _appRouter.config(),
-        builder: (context, child) => AppTheme(
-          child: VersionGuard(child: GlobalNotifications(child: child!)),
-        ),
+        builder: (context, child) => AppTheme(child: VersionGuard(child: child!)),
       ),
     );
   }
