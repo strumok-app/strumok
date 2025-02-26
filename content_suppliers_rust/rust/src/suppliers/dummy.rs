@@ -61,7 +61,6 @@ impl ContentSupplier for DummyContentSupplier {
                 additional_info: vec![],
                 similar: vec![],
                 media_items: Some(vec![ContentMediaItem {
-                    number: 1,
                     title: format!("dummy_title {id}"),
                     section: None,
                     image: None,
@@ -107,7 +106,6 @@ impl ContentSupplier for DummyContentSupplier {
         new_params.push(String::from("3"));
 
         Ok(vec![ContentMediaItem {
-            number: 42,
             title: id,
             section: Some(new_params.join(",")),
             image: Some("dummy_image".to_owned()),

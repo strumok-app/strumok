@@ -22,13 +22,13 @@ pub fn get_default_channels(supplier: String) -> anyhow::Result<Vec<String>> {
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn get_supported_types(supplier: &String) -> anyhow::Result<Vec<ContentType>> {
+pub fn get_supported_types(supplier: String) -> anyhow::Result<Vec<ContentType>> {
     let sup = get_supplier(&supplier)?;
     Ok(AllContentSuppliers::get_supported_types(&sup))
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn get_supported_languages(supplier: &String) -> anyhow::Result<Vec<String>> {
+pub fn get_supported_languages(supplier: String) -> anyhow::Result<Vec<String>> {
     let sup = get_supplier(&supplier)?;
     Ok(AllContentSuppliers::get_supported_languages(&sup))
 }

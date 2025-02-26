@@ -203,7 +203,7 @@ fn wire__crate__api__get_supported_languages_impl(
             deserializer.end();
             transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                 (move || {
-                    let output_ok = crate::api::get_supported_languages(&api_supplier)?;
+                    let output_ok = crate::api::get_supported_languages(api_supplier)?;
                     Ok(output_ok)
                 })(),
             )
@@ -235,7 +235,7 @@ fn wire__crate__api__get_supported_types_impl(
             deserializer.end();
             transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                 (move || {
-                    let output_ok = crate::api::get_supported_types(&api_supplier)?;
+                    let output_ok = crate::api::get_supported_types(api_supplier)?;
                     Ok(output_ok)
                 })(),
             )
