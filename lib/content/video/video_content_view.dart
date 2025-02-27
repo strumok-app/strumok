@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:http/http.dart' as http;
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
@@ -67,7 +68,6 @@ class PlayerController {
 
       final itemIdx = progress.currentItem;
       final sourceName = progress.currentSourceName;
-      final subtitleName = progress.currentSubtitleName;
 
       final item = mediaItems[itemIdx];
       final sources = await item.sources;
@@ -118,9 +118,7 @@ class PlayerController {
         currentSources = sources;
       }
 
-      if (progress.currentSubtitleName == subtitleName) {
-        await setSubtitle(sourceName);
-      }
+      await setSubtitle(progress);
     } on Exception catch (e, stackTrace) {
       if (e is ContentSuppliersException) {
         traceError(
@@ -139,10 +137,9 @@ class PlayerController {
     }
   }
 
-  Future<void> setSubtitle(String? currentSubtitle) async {
-    if (currentSources == null) {
-      return;
-    }
+  Future<void> setSubtitle(ContentProgress progress) async {
+    final itemIdx = progress.currentItem;
+    final currentSubtitle = progress.currentSubtitleName;
 
     if (currentSubtitle == null) {
       await player.setSubtitleTrack(SubtitleTrack.no());
@@ -150,14 +147,20 @@ class PlayerController {
     }
 
     final subtitles = currentSources!.where((s) => s.kind == FileKind.subtitle).toList();
-
     final subtitle = subtitles.firstWhereOrNull((s) => s.description == currentSubtitle) as MediaFileItemSource?;
 
     if (subtitle != null) {
-      await player.setSubtitleTrack(SubtitleTrack.uri(
-        subtitle.link.toString(),
-        title: subtitle.description,
-      ));
+      final link = await subtitle.link;
+      final subtitleRes = await http.get(link, headers: subtitle.headers);
+
+      if (progress.currentItem == itemIdx && currentSubtitle == progress.currentSubtitleName) {
+        logger.i("Subtitle: $subtitle");
+        await player.setSubtitleTrack(SubtitleTrack.data(
+          subtitleRes.body,
+          title: subtitle.description,
+          language: "auto",
+        ));
+      }
     }
   }
 
@@ -292,7 +295,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
               previousValue?.currentSourceName != nextValue.currentSourceName)) {
             await _playMediaItems(nextValue);
           } else if (previousValue?.currentSubtitleName != nextValue.currentSubtitleName) {
-            await playerController.setSubtitle(nextValue.currentSubtitleName);
+            await playerController.setSubtitle(nextValue);
           }
         }
       },

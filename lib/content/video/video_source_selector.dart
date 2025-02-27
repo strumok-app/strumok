@@ -186,7 +186,7 @@ class _SubtitleSources extends ConsumerWidget {
       onSelect: (source) {
         Navigator.of(context).pop();
         final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
-        notifier.setCurrentSource(source.description);
+        notifier.setCurrentSubtitle(source.description);
       },
       sourceIcon: const Icon(Icons.subtitles),
       leading: ListTile(
