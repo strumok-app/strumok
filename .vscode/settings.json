@@ -8,11 +8,7 @@
     "editor.suggest.insertMode": "insert",
     "editor.defaultFormatter": "Dart-Code.dart-code",
     "editor.inlayHints.enabled": "offUnlessPressed",
-    "editor.rulers": [
-      120
-    ]
   },
-  "dart.lineLength": 120,
   "cSpell.enabledFileTypes": {
     "yaml": false
   },

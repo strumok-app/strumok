@@ -2,6 +2,7 @@ import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
+import 'package:strumok/content/video/video_subtitles.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
@@ -44,7 +45,11 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
         key: videoStateKey,
         pauseUponEnteringBackgroundMode: false,
         controller: widget.videoController,
-        controls: (state) => MaterialVideoControls(state),
+        controls:
+            (state) => WithSubtitles(
+              playerController: widget.playerController,
+              child: MaterialVideoControls(state),
+            ),
       ),
     );
   }
@@ -52,7 +57,12 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
   MaterialVideoControlsThemeData _createThemeData(ThemeData theme) {
     final colorScheme = theme.colorScheme;
     return MaterialVideoControlsThemeData(
-      topButtonBarMargin: const EdgeInsets.only(left: 20, right: 8, bottom: 8, top: 8),
+      topButtonBarMargin: const EdgeInsets.only(
+        left: 20,
+        right: 8,
+        bottom: 8,
+        top: 8,
+      ),
       bottomButtonBarMargin: const EdgeInsets.all(8),
       seekBarThumbColor: colorScheme.primary,
       seekBarPositionColor: colorScheme.primary,
@@ -70,7 +80,7 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
           PlayerPlaylistButton(
             playerController: widget.playerController,
             contentDetails: widget.playerController.contentDetails,
-          )
+          ),
       ],
       primaryButtonBar: [
         const Spacer(flex: 2),

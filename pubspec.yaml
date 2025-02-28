@@ -4,8 +4,8 @@ publish_to: 'none'
 version: 1.9.9
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: "3.27.3"
+  sdk: ">=3.7.0 <4.0.0"
+  flutter: "3.29.0"
 
 dependencies:
   flutter:
@@ -14,7 +14,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   #routing
-  auto_route: ^9.2.2
+  auto_route: ^10.0.0
   # auth + firebase
   googleapis_auth: ^1.6.0
   google_sign_in: ^6.2.2
@@ -33,6 +33,7 @@ dependencies:
   media_kit: ^1.1.11                              
   media_kit_video: ^1.2.5                         
   media_kit_libs_video: ^1.0.5
+  subtitle: ^0.1.4
   # Utility widgets
   scrollable_positioned_list: ^0.3.8
   readmore: ^3.0.0
@@ -40,7 +41,7 @@ dependencies:
   # state managment
   riverpod_annotation: ^2.3.5
   hooks_riverpod: ^2.5.2
-  flutter_hooks: ^0.20.5
+  flutter_hooks: ^0.21.2
   flutter_riverpod: ^2.5.1
   # utillity
   logger: ^2.5.0
@@ -51,8 +52,10 @@ dependencies:
   device_info_plus: ^11.3.0
   package_info_plus: ^8.2.1
   window_manager: ^0.4.2
+  flutter_local_notifications: ^18.0.1
   cached_network_image: ^3.4.1
   wakelock_plus: ^1.1.1 # same as media_kit have
+  rounded_background_text: ^0.5.0
   #tracing
   # sentry_flutter: ^8.10.1
 
@@ -61,16 +64,11 @@ dependencies:
 
   content_suppliers_rust:
     path: content_suppliers_rust
-  flutter_local_notifications: ^18.0.1
-
 
 dev_dependencies:
-  analyzer: ^6.11.0
+  analyzer: ^7.3.0
   build_runner: ^2.4.13
-  auto_route_generator: ^9.0.0
-  isar_generator: 
-    version: 3.1.8
-    hosted: https://pub.isar-community.dev/
+  auto_route_generator: ^10.0.1
   custom_lint: ^0.7.0
   json_serializable: ^6.9.0
   flutter_lints: ^5.0.0

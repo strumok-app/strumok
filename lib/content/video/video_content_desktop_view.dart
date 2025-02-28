@@ -2,6 +2,7 @@ import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
+import 'package:strumok/content/video/video_subtitles.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +24,8 @@ class VideoContentDesktopView extends StatefulWidget {
   });
 
   @override
-  State<VideoContentDesktopView> createState() => _VideoContentDesktopViewState();
+  State<VideoContentDesktopView> createState() =>
+      _VideoContentDesktopViewState();
 }
 
 class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
@@ -31,14 +33,22 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
   late final GlobalKey<VideoState> videoStateKey = GlobalKey<VideoState>();
 
   late final _keyboardShortcuts = {
-    const SingleActivator(LogicalKeyboardKey.mediaPlay): () => widget.player.play(),
-    const SingleActivator(LogicalKeyboardKey.mediaPause): () => widget.player.pause(),
-    const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () => widget.player.playOrPause(),
-    const SingleActivator(LogicalKeyboardKey.mediaTrackNext): widget.playerController.nextItem,
-    const SingleActivator(LogicalKeyboardKey.bracketLeft): widget.playerController.prevItem,
-    const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious): widget.playerController.nextItem,
-    const SingleActivator(LogicalKeyboardKey.bracketRight): widget.playerController.nextItem,
-    const SingleActivator(LogicalKeyboardKey.space): () => widget.player.playOrPause(),
+    const SingleActivator(LogicalKeyboardKey.mediaPlay):
+        () => widget.player.play(),
+    const SingleActivator(LogicalKeyboardKey.mediaPause):
+        () => widget.player.pause(),
+    const SingleActivator(LogicalKeyboardKey.mediaPlayPause):
+        () => widget.player.playOrPause(),
+    const SingleActivator(LogicalKeyboardKey.mediaTrackNext):
+        widget.playerController.nextItem,
+    const SingleActivator(LogicalKeyboardKey.bracketLeft):
+        widget.playerController.prevItem,
+    const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious):
+        widget.playerController.nextItem,
+    const SingleActivator(LogicalKeyboardKey.bracketRight):
+        widget.playerController.nextItem,
+    const SingleActivator(LogicalKeyboardKey.space):
+        () => widget.player.playOrPause(),
     const SingleActivator(LogicalKeyboardKey.keyJ): () {
       widget.player.safeSeek(
         widget.player.state.position - const Duration(seconds: 60),
@@ -68,9 +78,12 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       widget.player.setVolume(volume.clamp(0.0, 100.0));
     },
     // dirty hack with video state...
-    const SingleActivator(LogicalKeyboardKey.keyF): () => videoStateKey.currentState?.toggleFullscreen(),
-    const SingleActivator(LogicalKeyboardKey.enter): () => videoStateKey.currentState?.toggleFullscreen(),
-    const SingleActivator(LogicalKeyboardKey.escape): () => videoStateKey.currentState?.exitFullscreen()
+    const SingleActivator(LogicalKeyboardKey.keyF):
+        () => videoStateKey.currentState?.toggleFullscreen(),
+    const SingleActivator(LogicalKeyboardKey.enter):
+        () => videoStateKey.currentState?.toggleFullscreen(),
+    const SingleActivator(LogicalKeyboardKey.escape):
+        () => videoStateKey.currentState?.exitFullscreen(),
   };
 
   @override
@@ -82,18 +95,22 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       child: Video(
         key: videoStateKey,
         controller: widget.videoController,
-        controls: (state) => pipMode
-            ? PipVideoControls(
-                state,
-                onPipExit: _switchToPipMode,
-              )
-            : MaterialDesktopVideoControls(state),
-        subtitleViewConfiguration: subtitleViewConfiguration,
+        controls:
+            (state) => WithSubtitles(
+              playerController: widget.playerController,
+              child:
+                  pipMode
+                      ? PipVideoControls(state, onPipExit: _switchToPipMode)
+                      : MaterialDesktopVideoControls(state),
+            ),
       ),
     );
   }
 
-  MaterialDesktopVideoControlsThemeData _createThemeData(ThemeData theme, bool fullscreen) {
+  MaterialDesktopVideoControlsThemeData _createThemeData(
+    ThemeData theme,
+    bool fullscreen,
+  ) {
     // const margin = EdgeInsets.symmetric(horizontal: 20.0);
     final playerController = widget.playerController;
     final colorScheme = theme.colorScheme;
@@ -114,7 +131,7 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
           PlayerPlaylistButton(
             playerController: playerController,
             contentDetails: playerController.contentDetails,
-          )
+          ),
       ],
       seekBarThumbColor: colorScheme.primary,
       seekBarPositionColor: colorScheme.primary,
@@ -169,11 +186,7 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
 class PipVideoControls extends StatefulWidget {
   final VideoState state;
   final VoidCallback onPipExit;
-  const PipVideoControls(
-    this.state, {
-    super.key,
-    required this.onPipExit,
-  });
+  const PipVideoControls(this.state, {super.key, required this.onPipExit});
 
   @override
   State<PipVideoControls> createState() => _PipVideoControlsState();
@@ -193,13 +206,15 @@ class _PipVideoControlsState extends State<PipVideoControls> {
         onExit: (_) => _onExit(),
         child: Stack(
           children: [
-            LayoutBuilder(builder: (context, constraints) {
-              return Container(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight,
-                color: Colors.transparent,
-              );
-            }),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return Container(
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                  color: Colors.transparent,
+                );
+              },
+            ),
             if (uiVisible) ...[
               Positioned.fill(
                 child: Align(
@@ -215,8 +230,8 @@ class _PipVideoControlsState extends State<PipVideoControls> {
               ),
               const Positioned.fill(
                 child: Center(child: PlayOrPauseButton(iconSize: 48)),
-              )
-            ]
+              ),
+            ],
           ],
         ),
       ),

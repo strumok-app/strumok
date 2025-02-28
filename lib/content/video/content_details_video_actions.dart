@@ -23,14 +23,8 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
         _renderWatchButton(context),
         const SizedBox(width: 8),
         showList
-            ? _ContentPlaylistButton(
-                contentDetails: contentDetails,
-                mediaItems: mediaItems,
-              )
-            : MediaItemDownloadButton(
-                contentDetails: contentDetails,
-                item: mediaItems.first,
-              )
+            ? _ContentPlaylistButton(contentDetails: contentDetails, mediaItems: mediaItems)
+            : MediaItemDownloadButton(contentDetails: contentDetails, item: mediaItems.first),
       ],
     );
   }
@@ -48,10 +42,8 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
 }
 
 class _ContentPlaylistButton extends ConsumerWidget {
-  _ContentPlaylistButton({
-    required this.contentDetails,
-    required this.mediaItems,
-  }) : provider = collectionItemProvider(contentDetails);
+  _ContentPlaylistButton({required this.contentDetails, required this.mediaItems})
+    : provider = collectionItemProvider(contentDetails);
 
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
@@ -67,13 +59,8 @@ class _ContentPlaylistButton extends ConsumerWidget {
     );
   }
 
-  IconButton _renderButton(
-    BuildContext context,
-    WidgetRef ref,
-    MediaCollectionItem? collectionItem,
-  ) {
+  IconButton _renderButton(BuildContext context, WidgetRef ref, MediaCollectionItem? collectionItem) {
     return IconButton(
-      autofocus: TVDetector.isTV,
       onPressed: () {
         Navigator.of(context).push(
           MediaItemsListRoute(

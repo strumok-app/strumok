@@ -22,15 +22,7 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-
-const subtitleViewConfiguration = SubtitleViewConfiguration(
-  style: TextStyle(
-      height: 1.4,
-      fontSize: 48.0,
-      color: Color(0xffffffff),
-      fontWeight: FontWeight.normal,
-      backgroundColor: Color(0xaa000000)),
-);
+import 'package:subtitle/subtitle.dart';
 
 extension PlayerExt on Player {
   void safeSeek(Duration position) {
@@ -48,9 +40,10 @@ class PlayerController {
   final List<ContentMediaItem> mediaItems;
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
   final ValueNotifier<List<String>> errors = ValueNotifier([]);
+  final ValueNotifier<SubtitleController?> subtitlesController = ValueNotifier(null);
 
-  List<ContentMediaItemSource>? currentSources;
-  List<int> shuffledPositions = [];
+  List<ContentMediaItemSource>? _currentSources;
+  final List<int> _shuffledPositions = [];
 
   final WidgetRef _ref;
 
@@ -73,9 +66,10 @@ class PlayerController {
       final sources = await item.sources;
       final videos = sources.where((s) => s.kind == FileKind.video).toList();
 
-      var video = sourceName == null
-          ? videos.firstOrNull as MediaFileItemSource?
-          : videos.firstWhereOrNull((s) => s.description == sourceName) as MediaFileItemSource?;
+      var video =
+          sourceName == null
+              ? videos.firstOrNull as MediaFileItemSource?
+              : videos.firstWhereOrNull((s) => s.description == sourceName) as MediaFileItemSource?;
 
       if (video == null && sourceName != null) {
         addError("Video source $sourceName not avalaible");
@@ -103,11 +97,7 @@ class PlayerController {
         start = 0;
       }
 
-      final media = Media(
-        link.toString(),
-        httpHeaders: video.headers,
-        start: Duration(seconds: start),
-      );
+      final media = Media(link.toString(), httpHeaders: video.headers, start: Duration(seconds: start));
 
       isLoading.value = false;
       errors.value = [];
@@ -115,17 +105,13 @@ class PlayerController {
       if (progress.currentItem == itemIdx && progress.currentSourceName == sourceName) {
         logger.i("Starting video: $media");
         await player.open(media);
-        currentSources = sources;
+        _currentSources = sources;
       }
 
       await setSubtitle(progress);
     } on Exception catch (e, stackTrace) {
       if (e is ContentSuppliersException) {
-        traceError(
-          error: e,
-          stackTrace: stackTrace,
-          message: "fail to start video",
-        );
+        traceError(error: e, stackTrace: stackTrace, message: "fail to start video");
       } else {
         logger.e("Fail to start video", error: e, stackTrace: stackTrace);
       }
@@ -142,24 +128,22 @@ class PlayerController {
     final currentSubtitle = progress.currentSubtitleName;
 
     if (currentSubtitle == null) {
-      await player.setSubtitleTrack(SubtitleTrack.no());
+      subtitlesController.value = null;
       return;
     }
 
-    final subtitles = currentSources!.where((s) => s.kind == FileKind.subtitle).toList();
+    final subtitles = _currentSources!.where((s) => s.kind == FileKind.subtitle).toList();
     final subtitle = subtitles.firstWhereOrNull((s) => s.description == currentSubtitle) as MediaFileItemSource?;
 
     if (subtitle != null) {
       final link = await subtitle.link;
-      final subtitleRes = await http.get(link, headers: subtitle.headers);
 
       if (progress.currentItem == itemIdx && currentSubtitle == progress.currentSubtitleName) {
         logger.i("Subtitle: $subtitle");
-        await player.setSubtitleTrack(SubtitleTrack.data(
-          subtitleRes.body,
-          title: subtitle.description,
-          language: "auto",
-        ));
+
+        final controller = SubtitleController(provider: NetworkSubtitle(link, headers: subtitle.headers));
+        await controller.initial();
+        subtitlesController.value = controller;
       }
     }
   }
@@ -216,17 +200,15 @@ class PlayerController {
   }
 
   int _getShuffledPosition() {
-    if (shuffledPositions.isEmpty) {
+    if (_shuffledPositions.isEmpty) {
       final positions = List.generate(mediaItems.length, (i) => i);
       final rng = Random();
       while (positions.isNotEmpty) {
-        shuffledPositions.add(
-          positions.removeAt(rng.nextInt(positions.length)),
-        );
+        _shuffledPositions.add(positions.removeAt(rng.nextInt(positions.length)));
       }
     }
 
-    return shuffledPositions.removeAt(0);
+    return _shuffledPositions.removeAt(0);
   }
 }
 
@@ -234,48 +216,39 @@ class VideoContentView extends ConsumerStatefulWidget {
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
 
-  const VideoContentView({
-    super.key,
-    required this.contentDetails,
-    required this.mediaItems,
-  });
+  const VideoContentView({super.key, required this.contentDetails, required this.mediaItems});
 
   @override
   ConsumerState<VideoContentView> createState() => _VideoContentViewState();
 }
 
 class _VideoContentViewState extends ConsumerState<VideoContentView> {
-  final player = Player();
-  late final VideoController videoController;
-  late final PlayerController playerController;
-  late ProviderSubscription subscription;
+  final _player = Player();
+  late final VideoController _videoController;
+  late final PlayerController _playerController;
+  late ProviderSubscription _subscription;
+  late List<StreamSubscription> _streamSubscriptions;
 
   @override
   void initState() {
     super.initState();
 
-    traceAction(
-      "load_video",
-      description: "supplier: ${widget.contentDetails.supplier}, id: ${widget.contentDetails.id}",
-    );
-
-    if (player.platform is NativePlayer) {
-      (player.platform as NativePlayer).setProperty("force-seekable", "yes");
+    if (_player.platform is NativePlayer) {
+      var platform = _player.platform as NativePlayer;
+      platform.setProperty("force-seekable", "yes");
     }
 
-    videoController = Platform.isAndroid
-        ? VideoController(
-            player,
-            configuration: const VideoControllerConfiguration(
-              vo: "mediacodec_embed",
-              hwdec: "mediacodec",
-            ),
-          )
-        : VideoController(player);
+    _videoController =
+        Platform.isAndroid
+            ? VideoController(
+              _player,
+              configuration: const VideoControllerConfiguration(vo: "mediacodec_embed", hwdec: "mediacodec"),
+            )
+            : VideoController(_player);
 
-    playerController = PlayerController(
+    _playerController = PlayerController(
       contentDetails: widget.contentDetails,
-      player: player,
+      player: _player,
       mediaItems: widget.mediaItems,
       ref: ref,
     );
@@ -284,84 +257,69 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
     final notifier = ref.read(provider.notifier);
 
     // track current episode
-    subscription = ref.listenManual<AsyncValue<MediaCollectionItem>>(
-      provider,
-      (previous, next) async {
-        final previousValue = previous?.value;
-        final nextValue = next.value;
+    _subscription = ref.listenManual<AsyncValue<MediaCollectionItem>>(provider, (previous, next) async {
+      final previousValue = previous?.value;
+      final nextValue = next.value;
 
-        if (nextValue != null) {
-          if ((previousValue?.currentItem != nextValue.currentItem ||
-              previousValue?.currentSourceName != nextValue.currentSourceName)) {
-            await _playMediaItems(nextValue);
-          } else if (previousValue?.currentSubtitleName != nextValue.currentSubtitleName) {
-            await playerController.setSubtitle(nextValue);
-          }
+      if (nextValue != null) {
+        if ((previousValue?.currentItem != nextValue.currentItem ||
+            previousValue?.currentSourceName != nextValue.currentSourceName)) {
+          await _playMediaItems(nextValue);
+        } else if (previousValue?.currentSubtitleName != nextValue.currentSubtitleName) {
+          await _playerController.setSubtitle(nextValue);
         }
-      },
-      fireImmediately: true,
-    );
-
-    // track video end
-    player.stream.completed.listen((event) {
-      if (event) {
-        playerController.onVideoEnds();
       }
-    });
+    }, fireImmediately: true);
 
     // track video position and duration
-    player.stream.position.listen((event) {
-      final position = event.inSeconds;
-      final duration = player.state.duration.inSeconds;
 
-      if (position > 0 && duration > 0) {
-        notifier.setCurrentPosition(position, duration);
-      }
-    });
+    _streamSubscriptions = [
+      // track video end
+      _player.stream.completed.listen((event) {
+        if (event) {
+          _playerController.onVideoEnds();
+        }
+      }),
+      _player.stream.position.listen((event) {
+        final position = event.inSeconds;
+        final duration = _player.state.duration.inSeconds;
 
-    player.setVolume(AppPreferences.volume);
-    player.stream.volume.listen((event) => AppPreferences.volume = event);
+        if (position > 0 && duration > 0) {
+          notifier.setCurrentPosition(position, duration);
+        }
+      }),
+      _player.stream.volume.listen((event) => AppPreferences.volume = event),
+      _player.stream.error.listen((event) {
+        _playerController.addError(event);
+        logger.e("[player]: $event");
+      }),
+    ];
 
-    player.stream.error.listen((event) {
-      playerController.addError(event);
-      logger.e("[player]: $event");
-    });
+    _player.setVolume(AppPreferences.volume);
 
     if (isMobileDevice()) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     }
   }
 
   Future<void> _playMediaItems(MediaCollectionItem nextValue) async {
     try {
-      await playerController.play(nextValue);
+      await _playerController.play(nextValue);
     } catch (_) {
       // show error snackbar
       if (mounted) {
         final error = AppLocalizations.of(context)!.videoSourceFailed;
-        playerController.addError(error);
+        _playerController.addError(error);
 
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(error),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+          ..showSnackBar(SnackBar(content: Text(error), behavior: SnackBarBehavior.floating));
       }
     }
   }
 
   @override
   void dispose() {
-    subscription.close();
-    player.dispose();
-    super.dispose();
-
     if (isMobileDevice()) {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeLeft,
@@ -370,15 +328,22 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
         DeviceOrientation.portraitDown,
       ]);
     }
+
+    for (var sub in _streamSubscriptions) {
+      sub.cancel();
+    }
+    _subscription.close();
+    _player.dispose();
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final view = _renderTvView();
     final view = switch (Theme.of(context).platform) {
       TargetPlatform.android => TVDetector.isTV ? _renderTvView() : _renderMobileView(),
       TargetPlatform.iOS => _renderMobileView(),
-      _ => _renderDesktopView()
+      _ => _renderDesktopView(),
     };
 
     final size = MediaQuery.sizeOf(context);
@@ -391,41 +356,35 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
         children: [
           view,
           ValueListenableBuilder(
-            valueListenable: playerController.isLoading,
+            valueListenable: _playerController.isLoading,
             builder: (context, value, child) {
               return value
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    )
+                  ? const Center(child: CircularProgressIndicator(color: Colors.white))
                   : const SizedBox.shrink();
             },
-          )
+          ),
         ],
       ),
     );
   }
 
   Widget _renderTvView() {
-    return VideoContentTVView(
-      player: player,
-      videoController: videoController,
-      playerController: playerController,
-    );
+    return VideoContentTVView(player: _player, videoController: _videoController, playerController: _playerController);
   }
 
   Widget _renderMobileView() {
     return VideoContentMobileView(
-      player: player,
-      videoController: videoController,
-      playerController: playerController,
+      player: _player,
+      videoController: _videoController,
+      playerController: _playerController,
     );
   }
 
   Widget _renderDesktopView() {
     return VideoContentDesktopView(
-      player: player,
-      videoController: videoController,
-      playerController: playerController,
+      player: _player,
+      videoController: _videoController,
+      playerController: _playerController,
     );
   }
 

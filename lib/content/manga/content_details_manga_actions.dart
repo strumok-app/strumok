@@ -4,13 +4,9 @@ import 'package:strumok/content/manga/widgets.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/utils/nav.dart';
-import 'package:strumok/utils/tv.dart';
 
 class ContentDetailsMangaActions extends ContentDetailsActions {
-  const ContentDetailsMangaActions(
-    super.contentDetails, {
-    super.key,
-  });
+  const ContentDetailsMangaActions(super.contentDetails, {super.key});
 
   @override
   Widget renderActions(BuildContext context, List<ContentMediaItem> mediaItems) {
@@ -18,10 +14,7 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
       children: [
         _renderReadButton(context),
         const SizedBox(width: 8),
-        VolumesButton(
-          contentDetails: contentDetails,
-          mediaItems: mediaItems,
-        )
+        VolumesButton(contentDetails: contentDetails, mediaItems: mediaItems),
       ],
     );
   }
@@ -30,7 +23,6 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
     return SizedBox(
       width: 200,
       child: OutlinedButton.icon(
-        autofocus: TVDetector.isTV,
         onPressed: () => navigateToContent(context, contentDetails),
         icon: const Icon(Icons.menu_book_outlined),
         label: Text(AppLocalizations.of(context)!.readButton),
