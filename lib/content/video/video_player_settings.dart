@@ -46,6 +46,7 @@ class PlayerSettingsDialog extends StatelessWidget {
               _ShuffleModeSwitcher(),
               _OnVideoEndsActionSettingsSection(),
               _StarVideoPositionSettingsSection(),
+              _SubtitleTimeSyncSection(),
             ],
           ),
         ),
@@ -88,17 +89,23 @@ class _OnVideoEndsActionSettingsSection extends ConsumerWidget {
       ),
       section: Dropdown.button(
         label: videoPlayerSettingEndsAction(context, action),
-        menuChildrenBulder: (focusNode) => OnVideoEndsAction.values
-            .mapIndexed(
-              (index, value) => MenuItemButton(
-                focusNode: index == 0 ? focusNode : null,
-                onPressed: () {
-                  ref.read(onVideoEndsActionSettingsProvider.notifier).select(value);
-                },
-                child: Text(videoPlayerSettingEndsAction(context, value)),
-              ),
-            )
-            .toList(),
+        menuChildrenBulder:
+            (focusNode) =>
+                OnVideoEndsAction.values
+                    .mapIndexed(
+                      (index, value) => MenuItemButton(
+                        focusNode: index == 0 ? focusNode : null,
+                        onPressed: () {
+                          ref
+                              .read(onVideoEndsActionSettingsProvider.notifier)
+                              .select(value);
+                        },
+                        child: Text(
+                          videoPlayerSettingEndsAction(context, value),
+                        ),
+                      ),
+                    )
+                    .toList(),
       ),
     );
   }
@@ -121,22 +128,30 @@ class _StarVideoPositionSettingsSection extends ConsumerWidget {
         children: [
           Dropdown.button(
             label: videoPlayerSettingStarFrom(context, starVideoPosition),
-            menuChildrenBulder: (focusNode) => StarVideoPosition.values
-                .mapIndexed(
-                  (index, value) => MenuItemButton(
-                    focusNode: index == 0 ? focusNode : null,
-                    onPressed: () {
-                      ref.read(starVideoPositionSettingsProvider.notifier).select(value);
-                    },
-                    child: Text(videoPlayerSettingStarFrom(context, value)),
-                  ),
-                )
-                .toList(),
+            menuChildrenBulder:
+                (focusNode) =>
+                    StarVideoPosition.values
+                        .mapIndexed(
+                          (index, value) => MenuItemButton(
+                            focusNode: index == 0 ? focusNode : null,
+                            onPressed: () {
+                              ref
+                                  .read(
+                                    starVideoPositionSettingsProvider.notifier,
+                                  )
+                                  .select(value);
+                            },
+                            child: Text(
+                              videoPlayerSettingStarFrom(context, value),
+                            ),
+                          ),
+                        )
+                        .toList(),
           ),
           if (starVideoPosition == StarVideoPosition.fromFixedPosition) ...[
             const SizedBox(width: 8),
-            _FixedSecondInput(fixedPosition: fixedPosition)
-          ]
+            _FixedSecondInput(fixedPosition: fixedPosition),
+          ],
         ],
       ),
     );
@@ -164,25 +179,46 @@ class _FixedSecondInput extends HookConsumerWidget {
           focusNode: focusNode,
           initialValue: fixedPosition.toString(),
           onChanged: (value) {
-            ref.read(fixedPositionSettingsProvider.notifier).select(int.tryParse(value) ?? 0);
+            ref
+                .read(fixedPositionSettingsProvider.notifier)
+                .select(int.tryParse(value) ?? 0);
           },
           autofocus: true,
           keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-          ],
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           maxLength: 4,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
           ),
-          buildCounter: (
-            context, {
-            required currentLength,
-            required isFocused,
-            required maxLength,
-          }) =>
-              const SizedBox.shrink(),
+          buildCounter:
+              (
+                context, {
+                required currentLength,
+                required isFocused,
+                required maxLength,
+              }) => const SizedBox.shrink(),
+        ),
+      ),
+    );
+  }
+}
+
+class _SubtitleTimeSyncSection extends StatelessWidget {
+  const _SubtitleTimeSyncSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return SettingsSection(
+      label: Text("Змішення субтитрів"),
+      section: TextFormField(
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        maxLength: 3,
+        initialValue: "0",
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         ),
       ),
     );

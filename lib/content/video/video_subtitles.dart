@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:subtitle/subtitle.dart';
@@ -27,7 +28,7 @@ class WithSubtitles extends StatelessWidget {
                   value != null
                       ? Positioned.fill(
                         child: SubtitleView(
-                          player: playerController.player,
+                          player: controller(context).player,
                           subtitlesSync: playerController.subtitSync,
                           subtitleController: value,
                         ),

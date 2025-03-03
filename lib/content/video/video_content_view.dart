@@ -34,7 +34,7 @@ extension PlayerExt on Player {
 }
 
 class PlayerController {
-  final Player player;
+  final Player _player;
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
@@ -52,16 +52,17 @@ class PlayerController {
   final WidgetRef _ref;
 
   PlayerController({
-    required this.player,
+    required Player player,
     required this.contentDetails,
     required this.mediaItems,
     required WidgetRef ref,
-  }) : _ref = ref;
+  }) : _player = player,
+       _ref = ref;
 
   Future<void> play(ContentProgress progress) async {
     try {
       isLoading.value = true;
-      await player.stop();
+      await _player.stop();
 
       final itemIdx = progress.currentItem;
       final sourceName = progress.currentSourceName;
@@ -116,7 +117,7 @@ class PlayerController {
       if (progress.currentItem == itemIdx &&
           progress.currentSourceName == sourceName) {
         logger.i("Starting video: $media");
-        await player.open(media);
+        await _player.open(media);
         _currentSources = sources;
       }
 
@@ -132,7 +133,7 @@ class PlayerController {
         logger.e("Fail to start video", error: e, stackTrace: stackTrace);
       }
       addError("Fail to start video: $e");
-      player.stop();
+      _player.stop();
       rethrow;
     } finally {
       isLoading.value = false;
@@ -197,8 +198,8 @@ class PlayerController {
       case OnVideoEndsAction.playNext:
         nextItem();
       case OnVideoEndsAction.playAgain:
-        await player.seek(Duration.zero);
-        await player.play();
+        await _player.seek(Duration.zero);
+        await _player.play();
       case OnVideoEndsAction.doNothing: // do nothing
     }
   }
