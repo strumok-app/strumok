@@ -4,7 +4,6 @@ import 'package:strumok/download/downloading_queue.dart';
 import 'package:strumok/layouts/navigation_bar_data.dart';
 import 'package:strumok/layouts/account.dart';
 import 'package:strumok/layouts/widgets.dart';
-import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:flutter/material.dart';
 
@@ -46,11 +45,11 @@ class SideNavigationLayout extends StatelessWidget {
                 ),
                 const AccountMenuIcon(),
                 const Spacer(),
-                if (!isMobileDevice()) const DownloadingQueue(),
+                const DownloadingQueue(),
               ],
             ),
           ),
-          Expanded(child: child)
+          Expanded(child: child),
         ],
       ),
     );

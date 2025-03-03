@@ -9,13 +9,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/offline/media_item_download.dart';
 import 'package:strumok/utils/nav.dart';
-import 'package:strumok/utils/tv.dart';
 
 class ContentDetailsVideoActions extends ContentDetailsActions {
   const ContentDetailsVideoActions(super.contentDetails, {super.key});
 
   @override
-  Widget renderActions(BuildContext context, List<ContentMediaItem> mediaItems) {
+  Widget renderActions(
+    BuildContext context,
+    List<ContentMediaItem> mediaItems,
+  ) {
     final showList = mediaItems.firstOrNull?.title.isNotEmpty ?? false;
 
     return Row(
@@ -23,8 +25,14 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
         _renderWatchButton(context),
         const SizedBox(width: 8),
         showList
-            ? _ContentPlaylistButton(contentDetails: contentDetails, mediaItems: mediaItems)
-            : MediaItemDownloadButton(contentDetails: contentDetails, item: mediaItems.first),
+            ? _ContentPlaylistButton(
+              contentDetails: contentDetails,
+              mediaItems: mediaItems,
+            )
+            : MediaItemDownloadButton(
+              contentDetails: contentDetails,
+              item: mediaItems.first,
+            ),
       ],
     );
   }
@@ -42,8 +50,10 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
 }
 
 class _ContentPlaylistButton extends ConsumerWidget {
-  _ContentPlaylistButton({required this.contentDetails, required this.mediaItems})
-    : provider = collectionItemProvider(contentDetails);
+  _ContentPlaylistButton({
+    required this.contentDetails,
+    required this.mediaItems,
+  }) : provider = collectionItemProvider(contentDetails);
 
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
@@ -59,7 +69,11 @@ class _ContentPlaylistButton extends ConsumerWidget {
     );
   }
 
-  IconButton _renderButton(BuildContext context, WidgetRef ref, MediaCollectionItem? collectionItem) {
+  IconButton _renderButton(
+    BuildContext context,
+    WidgetRef ref,
+    MediaCollectionItem? collectionItem,
+  ) {
     return IconButton(
       onPressed: () {
         Navigator.of(context).push(

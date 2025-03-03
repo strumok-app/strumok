@@ -28,12 +28,13 @@ class ColorSwitcher extends ConsumerWidget {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: colors
-          .map(
-            (color) =>
-                _ColorSelector(color: color, selected: selected, ref: ref),
-          )
-          .toList(),
+      children:
+          colors
+              .map(
+                (color) =>
+                    _ColorSelector(color: color, selected: selected, ref: ref),
+              )
+              .toList(),
     );
   }
 }
@@ -54,18 +55,14 @@ class _ColorSelector extends HookWidget {
     final focused = useState(false);
     final colorSchema = Theme.of(context).colorScheme;
 
-    final icon = color.value == selected.value
-        ? const Icon(
-            color: Colors.white,
-            shadows: [
-              Shadow(
-                blurRadius: 4,
-                color: Colors.black,
-              )
-            ],
-            Icons.check,
-          )
-        : null;
+    final icon =
+        color == selected
+            ? const Icon(
+              color: Colors.white,
+              shadows: [Shadow(blurRadius: 4, color: Colors.black)],
+              Icons.check,
+            )
+            : null;
 
     return InkResponse(
       onTap: () {
@@ -87,10 +84,7 @@ class _ColorSelector extends HookWidget {
               ),
               height: focused.value ? 32 : 26,
               width: focused.value ? 32 : 26,
-              child: CircleAvatar(
-                backgroundColor: color,
-                child: icon,
-              ),
+              child: CircleAvatar(backgroundColor: color, child: icon),
             ),
           ),
         ),

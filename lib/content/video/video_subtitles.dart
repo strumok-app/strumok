@@ -28,6 +28,7 @@ class WithSubtitles extends StatelessWidget {
                       ? Positioned.fill(
                         child: SubtitleView(
                           player: playerController.player,
+                          subtitlesSync: playerController.subtitSync,
                           subtitleController: value,
                         ),
                       )
@@ -41,11 +42,13 @@ class WithSubtitles extends StatelessWidget {
 
 class SubtitleView extends StatefulWidget {
   final Player player;
+  final ValueNotifier<Duration> subtitlesSync;
   final SubtitleController subtitleController;
 
   const SubtitleView({
     super.key,
     required this.player,
+    required this.subtitlesSync,
     required this.subtitleController,
   });
 
@@ -54,19 +57,21 @@ class SubtitleView extends StatefulWidget {
 }
 
 class _SubtitleViewState extends State<SubtitleView> {
-  late final StreamSubscription subscription;
+  late final StreamSubscription _subscription;
   Subtitle? _subtitle;
 
   @override
   void initState() {
     super.initState();
 
-    subscription = widget.player.stream.position.listen((position) {
-      if (_subtitle?.inRange(position) == true) {
+    _subscription = widget.player.stream.position.listen((position) {
+      final time = position + widget.subtitlesSync.value;
+
+      if (_subtitle?.inRange(time) == true) {
         return;
       }
 
-      final sub = widget.subtitleController.durationSearch(position);
+      final sub = widget.subtitleController.durationSearch(time);
 
       setState(() {
         _subtitle = sub;
@@ -76,7 +81,7 @@ class _SubtitleViewState extends State<SubtitleView> {
 
   @override
   void dispose() {
-    subscription.cancel();
+    _subscription.cancel();
 
     super.dispose();
   }

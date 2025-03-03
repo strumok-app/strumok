@@ -25,7 +25,8 @@ class GlobalNotifications extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<GlobalNotifications> createState() => _GlobalNotificationsState();
+  ConsumerState<GlobalNotifications> createState() =>
+      _GlobalNotificationsState();
 }
 
 class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
@@ -57,12 +58,18 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
   Future<void> _requestPermissions() async {
     if (Platform.isAndroid) {
       final androidImplementation =
-          localNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+          localNotificationsPlugin
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
 
-      notificationsGranted = await androidImplementation?.areNotificationsEnabled() ?? false;
+      notificationsGranted =
+          await androidImplementation?.areNotificationsEnabled() ?? false;
 
       if (!notificationsGranted) {
-        notificationsGranted = await androidImplementation?.requestNotificationsPermission() ?? false;
+        notificationsGranted =
+            await androidImplementation?.requestNotificationsPermission() ??
+            false;
       }
     }
   }
@@ -86,7 +93,11 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
         if (request is ContentDownloadRequest) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(AppLocalizations.of(context)!.downloadsFailed(request.info.title)),
+              content: Text(
+                AppLocalizations.of(
+                  context,
+                )!.downloadsFailed(request.info.title),
+              ),
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -99,7 +110,10 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
     }
   }
 
-  void _handleLocalNotificaionDownloadTask(BuildContext context, DownloadTask downloadTask) {
+  void _handleLocalNotificaionDownloadTask(
+    BuildContext context,
+    DownloadTask downloadTask,
+  ) {
     final request = downloadTask.request;
     if (request is ContentDownloadRequest) {
       if (downloadTask.status.value.isCompleted) {
@@ -138,9 +152,10 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
         maxProgress: 100,
         onlyAlertOnce: true,
         autoCancel: false,
+        ongoing: true,
         showProgress: true,
         progress: (taks.progress.value * 100).ceil(),
-        ongoing: true,
+        groupKey: downloadChannelName,
       ),
     );
 

@@ -12,10 +12,7 @@ import 'package:strumok/widgets/focus_indicator.dart';
 
 class ContentDetailsDesktopView extends StatelessWidget {
   final ContentDetails contentDetails;
-  const ContentDetailsDesktopView({
-    super.key,
-    required this.contentDetails,
-  });
+  const ContentDetailsDesktopView({super.key, required this.contentDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +25,9 @@ class ContentDetailsDesktopView extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Flexible(child: _InfoBlock(contentDetails: contentDetails, compact: compact)),
+          Flexible(
+            child: _InfoBlock(contentDetails: contentDetails, compact: compact),
+          ),
           if (!compact)
             Padding(
               padding: const EdgeInsets.only(left: 8),
@@ -37,7 +36,7 @@ class ContentDetailsDesktopView extends StatelessWidget {
                 child: CachedNetworkImage(
                   imageUrl: contentDetails.image,
                   height: screanHeight,
-                  fit: BoxFit.fitHeight,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
@@ -50,10 +49,7 @@ class ContentDetailsDesktopView extends StatelessWidget {
 class _InfoBlock extends StatelessWidget {
   final bool compact;
   final ContentDetails contentDetails;
-  const _InfoBlock({
-    required this.contentDetails,
-    required this.compact,
-  });
+  const _InfoBlock({required this.contentDetails, required this.compact});
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +69,9 @@ class _InfoBlock extends StatelessWidget {
                       _renderTitleBox(context),
                       const SizedBox(height: 8),
                       _ContentActionsButtons(contentDetails: contentDetails),
-                      MediaCollectionItemButtons(contentDetails: contentDetails),
+                      MediaCollectionItemButtons(
+                        contentDetails: contentDetails,
+                      ),
                       const SizedBox(height: 8),
                       AdditionalInfoBlock(contentDetails: contentDetails),
                     ],
@@ -82,14 +80,16 @@ class _InfoBlock extends StatelessWidget {
                 if (compact) ...[
                   const SizedBox(width: 8),
                   Container(
-                    decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(16))),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                    ),
                     clipBehavior: Clip.antiAlias,
                     child: CachedNetworkImage(
                       imageUrl: contentDetails.image,
                       width: 250,
                     ),
                   ),
-                ]
+                ],
               ],
             ),
             const SizedBox(height: 8),
@@ -97,7 +97,7 @@ class _InfoBlock extends StatelessWidget {
             if (contentDetails.similar.isNotEmpty) ...[
               const SizedBox(height: 8),
               SimilarBlock(contentDetails: contentDetails),
-            ]
+            ],
           ],
         ),
       ),
@@ -112,9 +112,7 @@ class _InfoBlock extends StatelessWidget {
       children: [
         SelectableText(
           contentDetails.title,
-          style: theme.textTheme.headlineLarge?.copyWith(
-            height: 1,
-          ),
+          style: theme.textTheme.headlineLarge?.copyWith(height: 1),
         ),
         if (contentDetails.secondaryTitle != null)
           SelectableText(
@@ -131,10 +129,7 @@ class _InfoBlock extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (TVDetector.isTV || compact) {
-      return Text(
-        contentDetails.description,
-        style: theme.textTheme.bodyLarge,
-      );
+      return Text(contentDetails.description, style: theme.textTheme.bodyLarge);
     }
 
     return ReadMoreText(

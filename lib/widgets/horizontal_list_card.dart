@@ -29,44 +29,45 @@ class HorizontalListCard extends HookWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final focused = useState(false);
-
-    final imageWidth = isMobile(context) ? _calcMobileSize(context) : 200.0;
+    final mobile = isMobile(context);
+    final imageWidth = mobile ? _calcMobileSize(context) : 200.0;
 
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
-        side: focused.value ? BorderSide(color: theme.colorScheme.primary, width: 1) : BorderSide.none,
+        side:
+            !mobile && focused.value
+                ? BorderSide(color: theme.colorScheme.primary, width: 1)
+                : BorderSide.none,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Stack(
         children: [
           _buildBackground(imageWidth),
           if (badge != null) _buildBadge(),
-          _buildContent(focused),
+          _buildContent(mobile, focused),
         ],
       ),
     );
   }
 
-  Widget _buildContent(ValueNotifier<bool> focused) {
+  Widget _buildContent(bool mobile, ValueNotifier<bool> focused) {
     return Positioned.fill(
       child: InkWell(
         focusNode: focusNode,
         onTap: onTap,
         onLongPress: onLongPress,
         onHover: onHover,
-        onFocusChange: (value) => focused.value = value,
+        onFocusChange: mobile ? null : (value) => focused.value = value,
         child: Material(
           color: Colors.transparent,
-          child: corner != null
-              ? Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: corner,
-                  ),
-                )
-              : null,
+          child:
+              corner != null
+                  ? Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Align(alignment: Alignment.topRight, child: corner),
+                  )
+                  : null,
         ),
       ),
     );
@@ -84,10 +85,7 @@ class HorizontalListCard extends HookWidget {
     return Positioned.fill(
       child: Align(
         alignment: Alignment.topLeft,
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: badge,
-        ),
+        child: Padding(padding: const EdgeInsets.all(4.0), child: badge),
       ),
     );
   }

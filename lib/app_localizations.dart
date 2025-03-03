@@ -5,25 +5,18 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/content/video/model.dart';
 
-export 'package:flutter_gen/gen_l10n/app_localizations.dart'
-    show AppLocalizations;
+export 'package:strumok/l10n/app_localizations.dart' show AppLocalizations;
 
-String priorityLabel(
-  BuildContext context,
-  int priority,
-) {
+String priorityLabel(BuildContext context, int priority) {
   final localization = AppLocalizations.of(context)!;
   return switch (priority) {
     0 => localization.priorityLow,
     1 => localization.priorityNormal,
-    _ => localization.priorityHight
+    _ => localization.priorityHight,
   };
 }
 
-String mediaTypeLabel(
-  BuildContext context,
-  MediaType mediaType,
-) {
+String mediaTypeLabel(BuildContext context, MediaType mediaType) {
   final localization = AppLocalizations.of(context)!;
   return switch (mediaType) {
     MediaType.video => localization.mediaTypeVideo,
@@ -31,10 +24,7 @@ String mediaTypeLabel(
   };
 }
 
-String statusLabel(
-  BuildContext context,
-  MediaCollectionItemStatus status,
-) {
+String statusLabel(BuildContext context, MediaCollectionItemStatus status) {
   final localization = AppLocalizations.of(context)!;
   return switch (status) {
     MediaCollectionItemStatus.inProgress => localization.statusLabelWatchingNow,
@@ -80,7 +70,9 @@ String mangaReaderScaleLabel(BuildContext context, MangaReaderScale mode) {
 }
 
 String mangaReaderBackgroundLabel(
-    BuildContext context, MangaReaderBackground background) {
+  BuildContext context,
+  MangaReaderBackground background,
+) {
   final localization = AppLocalizations.of(context)!;
   return switch (background) {
     MangaReaderBackground.light => localization.mangaReaderBackgroundLight,

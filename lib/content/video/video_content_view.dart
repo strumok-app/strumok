@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:http/http.dart' as http;
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
@@ -40,7 +39,12 @@ class PlayerController {
   final List<ContentMediaItem> mediaItems;
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
   final ValueNotifier<List<String>> errors = ValueNotifier([]);
-  final ValueNotifier<SubtitleController?> subtitlesController = ValueNotifier(null);
+  final ValueNotifier<SubtitleController?> subtitlesController = ValueNotifier(
+    null,
+  );
+  final ValueNotifier<Duration> subtitSync = ValueNotifier(
+    Duration(seconds: 0),
+  );
 
   List<ContentMediaItemSource>? _currentSources;
   final List<int> _shuffledPositions = [];
@@ -69,7 +73,8 @@ class PlayerController {
       var video =
           sourceName == null
               ? videos.firstOrNull as MediaFileItemSource?
-              : videos.firstWhereOrNull((s) => s.description == sourceName) as MediaFileItemSource?;
+              : videos.firstWhereOrNull((s) => s.description == sourceName)
+                  as MediaFileItemSource?;
 
       if (video == null && sourceName != null) {
         addError("Video source $sourceName not avalaible");
@@ -88,21 +93,28 @@ class PlayerController {
       int start = switch (startPosition) {
         StarVideoPosition.fromBeginning => 0,
         StarVideoPosition.fromRemembered => progress.currentPosition,
-        StarVideoPosition.fromFixedPosition => AppPreferences.videoPlayerSettingFixedPosition,
+        StarVideoPosition.fromFixedPosition =>
+          AppPreferences.videoPlayerSettingFixedPosition,
       };
 
-      if (currentItemPosition.length > 0 && start > currentItemPosition.length - 60) {
+      if (currentItemPosition.length > 0 &&
+          start > currentItemPosition.length - 60) {
         start = start - 60;
       } else if (start < 0) {
         start = 0;
       }
 
-      final media = Media(link.toString(), httpHeaders: video.headers, start: Duration(seconds: start));
+      final media = Media(
+        link.toString(),
+        httpHeaders: video.headers,
+        start: Duration(seconds: start),
+      );
 
       isLoading.value = false;
       errors.value = [];
 
-      if (progress.currentItem == itemIdx && progress.currentSourceName == sourceName) {
+      if (progress.currentItem == itemIdx &&
+          progress.currentSourceName == sourceName) {
         logger.i("Starting video: $media");
         await player.open(media);
         _currentSources = sources;
@@ -111,7 +123,11 @@ class PlayerController {
       await setSubtitle(progress);
     } on Exception catch (e, stackTrace) {
       if (e is ContentSuppliersException) {
-        traceError(error: e, stackTrace: stackTrace, message: "fail to start video");
+        traceError(
+          error: e,
+          stackTrace: stackTrace,
+          message: "fail to start video",
+        );
       } else {
         logger.e("Fail to start video", error: e, stackTrace: stackTrace);
       }
@@ -132,16 +148,22 @@ class PlayerController {
       return;
     }
 
-    final subtitles = _currentSources!.where((s) => s.kind == FileKind.subtitle).toList();
-    final subtitle = subtitles.firstWhereOrNull((s) => s.description == currentSubtitle) as MediaFileItemSource?;
+    final subtitles =
+        _currentSources!.where((s) => s.kind == FileKind.subtitle).toList();
+    final subtitle =
+        subtitles.firstWhereOrNull((s) => s.description == currentSubtitle)
+            as MediaFileItemSource?;
 
     if (subtitle != null) {
       final link = await subtitle.link;
 
-      if (progress.currentItem == itemIdx && currentSubtitle == progress.currentSubtitleName) {
+      if (progress.currentItem == itemIdx &&
+          currentSubtitle == progress.currentSubtitleName) {
         logger.i("Subtitle: $subtitle");
 
-        final controller = SubtitleController(provider: NetworkSubtitle(link, headers: subtitle.headers));
+        final controller = SubtitleController(
+          provider: NetworkSubtitle(link, headers: subtitle.headers),
+        );
         await controller.initial();
         subtitlesController.value = controller;
       }
@@ -204,7 +226,9 @@ class PlayerController {
       final positions = List.generate(mediaItems.length, (i) => i);
       final rng = Random();
       while (positions.isNotEmpty) {
-        _shuffledPositions.add(positions.removeAt(rng.nextInt(positions.length)));
+        _shuffledPositions.add(
+          positions.removeAt(rng.nextInt(positions.length)),
+        );
       }
     }
 
@@ -216,7 +240,11 @@ class VideoContentView extends ConsumerStatefulWidget {
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
 
-  const VideoContentView({super.key, required this.contentDetails, required this.mediaItems});
+  const VideoContentView({
+    super.key,
+    required this.contentDetails,
+    required this.mediaItems,
+  });
 
   @override
   ConsumerState<VideoContentView> createState() => _VideoContentViewState();
@@ -242,7 +270,10 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
         Platform.isAndroid
             ? VideoController(
               _player,
-              configuration: const VideoControllerConfiguration(vo: "mediacodec_embed", hwdec: "mediacodec"),
+              configuration: const VideoControllerConfiguration(
+                vo: "mediacodec_embed",
+                hwdec: "mediacodec",
+              ),
             )
             : VideoController(_player);
 
@@ -257,19 +288,25 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
     final notifier = ref.read(provider.notifier);
 
     // track current episode
-    _subscription = ref.listenManual<AsyncValue<MediaCollectionItem>>(provider, (previous, next) async {
-      final previousValue = previous?.value;
-      final nextValue = next.value;
+    _subscription = ref.listenManual<AsyncValue<MediaCollectionItem>>(
+      provider,
+      (previous, next) async {
+        final previousValue = previous?.value;
+        final nextValue = next.value;
 
-      if (nextValue != null) {
-        if ((previousValue?.currentItem != nextValue.currentItem ||
-            previousValue?.currentSourceName != nextValue.currentSourceName)) {
-          await _playMediaItems(nextValue);
-        } else if (previousValue?.currentSubtitleName != nextValue.currentSubtitleName) {
-          await _playerController.setSubtitle(nextValue);
+        if (nextValue != null) {
+          if ((previousValue?.currentItem != nextValue.currentItem ||
+              previousValue?.currentSourceName !=
+                  nextValue.currentSourceName)) {
+            await _playMediaItems(nextValue);
+          } else if (previousValue?.currentSubtitleName !=
+              nextValue.currentSubtitleName) {
+            await _playerController.setSubtitle(nextValue);
+          }
         }
-      }
-    }, fireImmediately: true);
+      },
+      fireImmediately: true,
+    );
 
     // track video position and duration
 
@@ -298,7 +335,10 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
     _player.setVolume(AppPreferences.volume);
 
     if (isMobileDevice()) {
-      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
     }
   }
 
@@ -313,7 +353,9 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
 
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
-          ..showSnackBar(SnackBar(content: Text(error), behavior: SnackBarBehavior.floating));
+          ..showSnackBar(
+            SnackBar(content: Text(error), behavior: SnackBarBehavior.floating),
+          );
       }
     }
   }
@@ -341,7 +383,8 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
   @override
   Widget build(BuildContext context) {
     final view = switch (Theme.of(context).platform) {
-      TargetPlatform.android => TVDetector.isTV ? _renderTvView() : _renderMobileView(),
+      TargetPlatform.android =>
+        TVDetector.isTV ? _renderTvView() : _renderMobileView(),
       TargetPlatform.iOS => _renderMobileView(),
       _ => _renderDesktopView(),
     };
@@ -359,7 +402,9 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
             valueListenable: _playerController.isLoading,
             builder: (context, value, child) {
               return value
-                  ? const Center(child: CircularProgressIndicator(color: Colors.white))
+                  ? const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  )
                   : const SizedBox.shrink();
             },
           ),
@@ -369,7 +414,11 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
   }
 
   Widget _renderTvView() {
-    return VideoContentTVView(player: _player, videoController: _videoController, playerController: _playerController);
+    return VideoContentTVView(
+      player: _player,
+      videoController: _videoController,
+      playerController: _playerController,
+    );
   }
 
   Widget _renderMobileView() {
