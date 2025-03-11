@@ -14,9 +14,10 @@ String _$collectionSyncStatusHash() =>
 final collectionSyncStatusProvider = StreamProvider<bool>.internal(
   collectionSyncStatus,
   name: r'collectionSyncStatusProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$collectionSyncStatusHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$collectionSyncStatusHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

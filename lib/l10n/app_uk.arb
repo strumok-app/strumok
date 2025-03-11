@@ -55,6 +55,7 @@
     "videoSourceFailed": "Помилка відтворення відео",
     "videoNoSources": "Немає доступних джерел відео",
     "videoSubtitlesOff": "Вимкнути субтитрів",
+    "videoSubtitlesOffset": "Змішення субтитрів",
     "videoPlayerSettingShuffleMode": "Випадковий порядок",
     "videoPlayerSettingEndsAction": "Дія по закінченню відео",
     "videoPlayerEndsActionPlayNextLabel": "Перейти до наступного",

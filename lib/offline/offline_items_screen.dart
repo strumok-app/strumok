@@ -7,7 +7,7 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/download/downloading_queue.dart';
 import 'package:strumok/download/downloading_provider.dart';
 import 'package:strumok/layouts/general_layout.dart';
-import 'package:strumok/offline/offline_content_details.dart';
+import 'package:strumok/offline/models.dart';
 import 'package:strumok/offline/offline_items_screen_provider.dart';
 import 'package:strumok/offline/offline_storage.dart';
 import 'package:strumok/utils/nav.dart';
@@ -63,7 +63,7 @@ class _OfflineItemsTitle extends ConsumerWidget {
               ref.invalidate(offlineContentProvider);
             },
             icon: Icon(Icons.refresh_rounded),
-          )
+          ),
         ],
       ),
     );
@@ -83,16 +83,15 @@ class _OfflineItemsView extends ConsumerWidget {
     });
 
     return offlineContentAsync.when(
-        data: (data) => _buildItems(data),
-        loading: () => Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text(error.toString())));
+      data: (data) => _buildItems(data),
+      loading: () => Center(child: CircularProgressIndicator()),
+      error: (error, _) => Center(child: Text(error.toString())),
+    );
   }
 
   Widget _buildItems(List<OfflineContentInfo> data) {
     if (data.isEmpty) {
-      return Center(
-        child: NothingToShow(),
-      );
+      return Center(child: NothingToShow());
     }
 
     return SingleChildScrollView(
@@ -147,19 +146,22 @@ class OfflineItem extends ConsumerWidget {
           onPressed: () {
             showDialog(
               context: context,
-              builder: (context) => ConfirmDialog(
-                content: Text(
-                  AppLocalizations.of(context)!.downloadsDeleteConfimation(info.title),
-                ),
-                confimAction: () async {
-                  if (hasAnyDownloadingAitems(info.supplier, info.id)) {
-                    return;
-                  }
+              builder:
+                  (context) => ConfirmDialog(
+                    content: Text(
+                      AppLocalizations.of(
+                        context,
+                      )!.downloadsDeleteConfimation(info.title),
+                    ),
+                    confimAction: () async {
+                      if (hasAnyDownloadingAitems(info.supplier, info.id)) {
+                        return;
+                      }
 
-                  await OfflineStorage().deleteAll(info.supplier, info.id);
-                  ref.invalidate(offlineContentProvider);
-                },
-              ),
+                      await OfflineStorage().deleteAll(info.supplier, info.id);
+                      ref.invalidate(offlineContentProvider);
+                    },
+                  ),
             );
           },
           icon: Icon(Icons.delete),
@@ -186,7 +188,7 @@ class OfflineItem extends ConsumerWidget {
                 ),
                 subtitle: Text(formatBytes(info.diskUsage)),
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/offline/media_item_download.dart';
 import 'package:strumok/widgets/dropdown.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -21,11 +22,11 @@ class MediaTitle extends ConsumerWidget {
   });
 
   @override
-  Widget build(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
-    final currentItem = ref.watch(collectionItemCurrentItemProvider(contentDetails)).valueOrNull;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentItem =
+        ref
+            .watch(collectionItemCurrentItemProvider(contentDetails))
+            .valueOrNull;
 
     if (currentItem == null) {
       return const SizedBox.shrink();
@@ -53,7 +54,11 @@ class MediaTitle extends ConsumerWidget {
 }
 
 MediaItemsListBuilder playlistItemBuilder(ContentDetails contentDetails) {
-  return (ContentMediaItem item, ContentProgress? contentProgress, SelectCallback onSelect) {
+  return (
+    ContentMediaItem item,
+    ContentProgress? contentProgress,
+    SelectCallback onSelect,
+  ) {
     final progress = contentProgress?.positions[item.number]?.progress ?? 0;
 
     return MediaItemsListItem(
@@ -62,43 +67,44 @@ MediaItemsListBuilder playlistItemBuilder(ContentDetails contentDetails) {
       selectIcon: Icons.play_arrow_rounded,
       progress: progress,
       onTap: () => onSelect(item),
-      trailing: MediaItemDownloadButton(contentDetails: contentDetails, item: item),
+      trailing: MediaItemDownloadButton(
+        contentDetails: contentDetails,
+        item: item,
+      ),
     );
   };
 }
 
-class PlayerErrorPopup extends StatelessWidget {
-  final PlayerController playerController;
-
-  const PlayerErrorPopup({
-    super.key,
-    required this.playerController,
-  });
+class PlayerErrorPopup extends ConsumerWidget {
+  const PlayerErrorPopup({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: playerController.errors,
-      builder: (context, value, child) {
-        if (value.isEmpty) {
-          return const SizedBox.shrink();
-        }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final errors = ref.watch(playerErrorsProvider);
 
-        return Dropdown(
-          anchorBuilder: (context, onPressed, child) => IconButton(
+    if (errors.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Dropdown(
+      anchorBuilder:
+          (context, onPressed, child) => IconButton(
             onPressed: onPressed,
             icon: const Icon(Icons.warning_rounded),
             color: Colors.white,
             disabledColor: Colors.white.withValues(alpha: 0.7),
           ),
-          menuChildrenBuilder: (focusNode) => [
-            ...value.reversed.take(10).mapIndexed((idx, error) => MenuItemButton(
-                  focusNode: idx == 0 ? focusNode : null,
-                  child: Text(error),
-                ))
+      menuChildrenBuilder:
+          (focusNode) => [
+            ...errors.reversed
+                .take(10)
+                .mapIndexed(
+                  (idx, error) => MenuItemButton(
+                    focusNode: idx == 0 ? focusNode : null,
+                    child: Text(error),
+                  ),
+                ),
           ],
-        );
-      },
     );
   }
 }

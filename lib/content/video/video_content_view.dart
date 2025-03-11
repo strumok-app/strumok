@@ -10,6 +10,7 @@ import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_content_desktop_view.dart';
 import 'package:strumok/content/video/video_content_mobile_view.dart';
 import 'package:strumok/content/video/video_content_tv_view.dart';
+import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/utils/trace.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/logger.dart';
@@ -33,18 +34,12 @@ extension PlayerExt on Player {
   }
 }
 
+// TODO: this smells bad need to figureout how to make it better
 class PlayerController {
   final Player _player;
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
-  final ValueNotifier<List<String>> errors = ValueNotifier([]);
-  final ValueNotifier<SubtitleController?> subtitlesController = ValueNotifier(
-    null,
-  );
-  final ValueNotifier<Duration> subtitSync = ValueNotifier(
-    Duration(seconds: 0),
-  );
 
   List<ContentMediaItemSource>? _currentSources;
   final List<int> _shuffledPositions = [];
@@ -78,7 +73,9 @@ class PlayerController {
                   as MediaFileItemSource?;
 
       if (video == null && sourceName != null) {
-        addError("Video source $sourceName not avalaible");
+        _ref
+            .read(playerErrorsProvider.notifier)
+            .addError("Video source $sourceName not avalaible");
         video = videos.firstOrNull as MediaFileItemSource?;
       }
 
@@ -112,7 +109,7 @@ class PlayerController {
       );
 
       isLoading.value = false;
-      errors.value = [];
+      _ref.read(playerErrorsProvider.notifier).reset();
 
       if (progress.currentItem == itemIdx &&
           progress.currentSourceName == sourceName) {
@@ -132,7 +129,9 @@ class PlayerController {
       } else {
         logger.e("Fail to start video", error: e, stackTrace: stackTrace);
       }
-      addError("Fail to start video: $e");
+      _ref
+          .read(playerErrorsProvider.notifier)
+          .addError("Fail to start video: $e");
       _player.stop();
       rethrow;
     } finally {
@@ -145,7 +144,7 @@ class PlayerController {
     final currentSubtitle = progress.currentSubtitleName;
 
     if (currentSubtitle == null) {
-      subtitlesController.value = null;
+      _ref.read(currentSubtitleControllerProvider.notifier).setController(null);
       return;
     }
 
@@ -166,7 +165,10 @@ class PlayerController {
           provider: NetworkSubtitle(link, headers: subtitle.headers),
         );
         await controller.initial();
-        subtitlesController.value = controller;
+
+        _ref
+            .read(currentSubtitleControllerProvider.notifier)
+            .setController(controller);
       }
     }
   }
@@ -216,10 +218,6 @@ class PlayerController {
 
   bool _isValidItemIdx(int itemIdx) {
     return itemIdx < mediaItems.length && itemIdx >= 0;
-  }
-
-  void addError(String error) {
-    errors.value = [...errors.value, error];
   }
 
   int _getShuffledPosition() {
@@ -328,7 +326,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
       }),
       _player.stream.volume.listen((event) => AppPreferences.volume = event),
       _player.stream.error.listen((event) {
-        _playerController.addError(event);
+        ref.read(playerErrorsProvider.notifier).addError(event);
         logger.e("[player]: $event");
       }),
     ];
@@ -350,7 +348,8 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
       // show error snackbar
       if (mounted) {
         final error = AppLocalizations.of(context)!.videoSourceFailed;
-        _playerController.addError(error);
+
+        ref.read(playerErrorsProvider.notifier).addError(error);
 
         ScaffoldMessenger.of(context)
           ..clearSnackBars()

@@ -39,24 +39,13 @@ class DetailsFamily extends Family<AsyncValue<ContentDetails>> {
   const DetailsFamily();
 
   /// See also [details].
-  DetailsProvider call(
-    String supplier,
-    String id,
-  ) {
-    return DetailsProvider(
-      supplier,
-      id,
-    );
+  DetailsProvider call(String supplier, String id) {
+    return DetailsProvider(supplier, id);
   }
 
   @override
-  DetailsProvider getProviderOverride(
-    covariant DetailsProvider provider,
-  ) {
-    return call(
-      provider.supplier,
-      provider.id,
-    );
+  DetailsProvider getProviderOverride(covariant DetailsProvider provider) {
+    return call(provider.supplier, provider.id);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -77,26 +66,20 @@ class DetailsFamily extends Family<AsyncValue<ContentDetails>> {
 /// See also [details].
 class DetailsProvider extends AutoDisposeFutureProvider<ContentDetails> {
   /// See also [details].
-  DetailsProvider(
-    String supplier,
-    String id,
-  ) : this._internal(
-          (ref) => details(
-            ref as DetailsRef,
-            supplier,
-            id,
-          ),
-          from: detailsProvider,
-          name: r'detailsProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$detailsHash,
-          dependencies: DetailsFamily._dependencies,
-          allTransitiveDependencies: DetailsFamily._allTransitiveDependencies,
-          supplier: supplier,
-          id: id,
-        );
+  DetailsProvider(String supplier, String id)
+    : this._internal(
+        (ref) => details(ref as DetailsRef, supplier, id),
+        from: detailsProvider,
+        name: r'detailsProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$detailsHash,
+        dependencies: DetailsFamily._dependencies,
+        allTransitiveDependencies: DetailsFamily._allTransitiveDependencies,
+        supplier: supplier,
+        id: id,
+      );
 
   DetailsProvider._internal(
     super._createNotifier, {
@@ -164,7 +147,8 @@ mixin DetailsRef on AutoDisposeFutureProviderRef<ContentDetails> {
 }
 
 class _DetailsProviderElement
-    extends AutoDisposeFutureProviderElement<ContentDetails> with DetailsRef {
+    extends AutoDisposeFutureProviderElement<ContentDetails>
+    with DetailsRef {
   _DetailsProviderElement(super.provider);
 
   @override
@@ -185,24 +169,15 @@ class DetailsAndMediaFamily extends Family<AsyncValue<DetailsAndMediaItems>> {
   const DetailsAndMediaFamily();
 
   /// See also [detailsAndMedia].
-  DetailsAndMediaProvider call(
-    String supplier,
-    String id,
-  ) {
-    return DetailsAndMediaProvider(
-      supplier,
-      id,
-    );
+  DetailsAndMediaProvider call(String supplier, String id) {
+    return DetailsAndMediaProvider(supplier, id);
   }
 
   @override
   DetailsAndMediaProvider getProviderOverride(
     covariant DetailsAndMediaProvider provider,
   ) {
-    return call(
-      provider.supplier,
-      provider.id,
-    );
+    return call(provider.supplier, provider.id);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -224,27 +199,21 @@ class DetailsAndMediaFamily extends Family<AsyncValue<DetailsAndMediaItems>> {
 class DetailsAndMediaProvider
     extends AutoDisposeFutureProvider<DetailsAndMediaItems> {
   /// See also [detailsAndMedia].
-  DetailsAndMediaProvider(
-    String supplier,
-    String id,
-  ) : this._internal(
-          (ref) => detailsAndMedia(
-            ref as DetailsAndMediaRef,
-            supplier,
-            id,
-          ),
-          from: detailsAndMediaProvider,
-          name: r'detailsAndMediaProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$detailsAndMediaHash,
-          dependencies: DetailsAndMediaFamily._dependencies,
-          allTransitiveDependencies:
-              DetailsAndMediaFamily._allTransitiveDependencies,
-          supplier: supplier,
-          id: id,
-        );
+  DetailsAndMediaProvider(String supplier, String id)
+    : this._internal(
+        (ref) => detailsAndMedia(ref as DetailsAndMediaRef, supplier, id),
+        from: detailsAndMediaProvider,
+        name: r'detailsAndMediaProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$detailsAndMediaHash,
+        dependencies: DetailsAndMediaFamily._dependencies,
+        allTransitiveDependencies:
+            DetailsAndMediaFamily._allTransitiveDependencies,
+        supplier: supplier,
+        id: id,
+      );
 
   DetailsAndMediaProvider._internal(
     super._createNotifier, {
@@ -321,5 +290,6 @@ class _DetailsAndMediaProviderElement
   @override
   String get id => (origin as DetailsAndMediaProvider).id;
 }
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

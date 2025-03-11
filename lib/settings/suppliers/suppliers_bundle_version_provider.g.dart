@@ -13,39 +13,41 @@ String _$installedSupplierBundleInfoHash() =>
 @ProviderFor(installedSupplierBundleInfo)
 final installedSupplierBundleInfoProvider =
     AutoDisposeFutureProvider<FFISupplierBundleInfo?>.internal(
-  installedSupplierBundleInfo,
-  name: r'installedSupplierBundleInfoProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$installedSupplierBundleInfoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      installedSupplierBundleInfo,
+      name: r'installedSupplierBundleInfoProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$installedSupplierBundleInfoHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef InstalledSupplierBundleInfoRef
-    = AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
+typedef InstalledSupplierBundleInfoRef =
+    AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
 String _$latestSupplierBundleInfoHash() =>
-    r'081d7d45e711bb1d479446475b00481a40c7525a';
+    r'b99b01b7a7f96a4e5f93f2f149d54951d393da78';
 
 /// See also [latestSupplierBundleInfo].
 @ProviderFor(latestSupplierBundleInfo)
 final latestSupplierBundleInfoProvider =
     AutoDisposeFutureProvider<FFISupplierBundleInfo?>.internal(
-  latestSupplierBundleInfo,
-  name: r'latestSupplierBundleInfoProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$latestSupplierBundleInfoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      latestSupplierBundleInfo,
+      name: r'latestSupplierBundleInfoProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$latestSupplierBundleInfoHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef LatestSupplierBundleInfoRef
-    = AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
+typedef LatestSupplierBundleInfoRef =
+    AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
 String _$suppliersBundleDownloadHash() =>
     r'c46a7d123eb1a1f5b8e1202879dede57c211c341';
 
@@ -53,14 +55,15 @@ String _$suppliersBundleDownloadHash() =>
 @ProviderFor(SuppliersBundleDownload)
 final suppliersBundleDownloadProvider =
     NotifierProvider<SuppliersBundleDownload, DownloadState>.internal(
-  SuppliersBundleDownload.new,
-  name: r'suppliersBundleDownloadProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$suppliersBundleDownloadHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      SuppliersBundleDownload.new,
+      name: r'suppliersBundleDownloadProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$suppliersBundleDownloadHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$SuppliersBundleDownload = Notifier<DownloadState>;
 // ignore_for_file: type=lint

@@ -75,7 +75,7 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
           contentDetails: widget.playerController.contentDetails,
         ),
         const Spacer(),
-        PlayerErrorPopup(playerController: widget.playerController),
+        PlayerErrorPopup(),
         if (widget.playerController.mediaItems.length > 1)
           PlayerPlaylistButton(
             playerController: widget.playerController,

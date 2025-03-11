@@ -71,10 +71,14 @@ dev_dependencies:
   auto_route_generator: ^10.0.1
   custom_lint: ^0.7.0
   json_serializable: ^6.9.0
+  isar_generator:
+    git:
+      url: https://github.com/mdddj/isar
+      ref: v3
+      path: packages/isar_generator/
   flutter_lints: ^5.0.0
   riverpod_generator: ^2.6.3
   flutter_launcher_icons: "^0.14.3"
-  test: ^1.25.14
 
 flutter:
   uses-material-design: true

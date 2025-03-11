@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -24,10 +25,7 @@ import 'package:strumok/settings/suppliers/suppliers_screen.dart' as _i8;
 /// [_i1.CollectionScreen]
 class CollectionRoute extends _i10.PageRouteInfo<void> {
   const CollectionRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          CollectionRoute.name,
-          initialChildren: children,
-        );
+    : super(CollectionRoute.name, initialChildren: children);
 
   static const String name = 'CollectionRoute';
 
@@ -48,14 +46,10 @@ class ContentDetailsRoute extends _i10.PageRouteInfo<ContentDetailsRouteArgs> {
     required String id,
     List<_i10.PageRouteInfo>? children,
   }) : super(
-          ContentDetailsRoute.name,
-          args: ContentDetailsRouteArgs(
-            key: key,
-            supplier: supplier,
-            id: id,
-          ),
-          initialChildren: children,
-        );
+         ContentDetailsRoute.name,
+         args: ContentDetailsRouteArgs(key: key, supplier: supplier, id: id),
+         initialChildren: children,
+       );
 
   static const String name = 'ContentDetailsRoute';
 
@@ -95,10 +89,7 @@ class ContentDetailsRouteArgs {
 /// [_i3.HomeScreen]
 class HomeRoute extends _i10.PageRouteInfo<void> {
   const HomeRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          HomeRoute.name,
-          initialChildren: children,
-        );
+    : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
@@ -119,14 +110,10 @@ class MangaContentRoute extends _i10.PageRouteInfo<MangaContentRouteArgs> {
     required String id,
     List<_i10.PageRouteInfo>? children,
   }) : super(
-          MangaContentRoute.name,
-          args: MangaContentRouteArgs(
-            key: key,
-            supplier: supplier,
-            id: id,
-          ),
-          initialChildren: children,
-        );
+         MangaContentRoute.name,
+         args: MangaContentRouteArgs(key: key, supplier: supplier, id: id),
+         initialChildren: children,
+       );
 
   static const String name = 'MangaContentRoute';
 
@@ -166,10 +153,7 @@ class MangaContentRouteArgs {
 /// [_i5.OfflineItemsScreen]
 class OfflineItemsRoute extends _i10.PageRouteInfo<void> {
   const OfflineItemsRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          OfflineItemsRoute.name,
-          initialChildren: children,
-        );
+    : super(OfflineItemsRoute.name, initialChildren: children);
 
   static const String name = 'OfflineItemsRoute';
 
@@ -185,10 +169,7 @@ class OfflineItemsRoute extends _i10.PageRouteInfo<void> {
 /// [_i6.SearchScreen]
 class SearchRoute extends _i10.PageRouteInfo<void> {
   const SearchRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          SearchRoute.name,
-          initialChildren: children,
-        );
+    : super(SearchRoute.name, initialChildren: children);
 
   static const String name = 'SearchRoute';
 
@@ -204,10 +185,7 @@ class SearchRoute extends _i10.PageRouteInfo<void> {
 /// [_i7.SettingsScreen]
 class SettingsRoute extends _i10.PageRouteInfo<void> {
   const SettingsRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          SettingsRoute.name,
-          initialChildren: children,
-        );
+    : super(SettingsRoute.name, initialChildren: children);
 
   static const String name = 'SettingsRoute';
 
@@ -223,10 +201,7 @@ class SettingsRoute extends _i10.PageRouteInfo<void> {
 /// [_i8.SuppliersSettingsScreen]
 class SuppliersSettingsRoute extends _i10.PageRouteInfo<void> {
   const SuppliersSettingsRoute({List<_i10.PageRouteInfo>? children})
-      : super(
-          SuppliersSettingsRoute.name,
-          initialChildren: children,
-        );
+    : super(SuppliersSettingsRoute.name, initialChildren: children);
 
   static const String name = 'SuppliersSettingsRoute';
 
@@ -247,14 +222,10 @@ class VideoContentRoute extends _i10.PageRouteInfo<VideoContentRouteArgs> {
     required String id,
     List<_i10.PageRouteInfo>? children,
   }) : super(
-          VideoContentRoute.name,
-          args: VideoContentRouteArgs(
-            key: key,
-            supplier: supplier,
-            id: id,
-          ),
-          initialChildren: children,
-        );
+         VideoContentRoute.name,
+         args: VideoContentRouteArgs(key: key, supplier: supplier, id: id),
+         initialChildren: children,
+       );
 
   static const String name = 'VideoContentRoute';
 

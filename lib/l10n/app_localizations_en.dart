@@ -176,6 +176,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoSubtitlesOff => 'Subtitles off';
 
   @override
+  String get videoSubtitlesOffset => 'Subtitles offset';
+
+  @override
   String get videoPlayerSettingShuffleMode => 'Shuffle playlist mode';
 
   @override

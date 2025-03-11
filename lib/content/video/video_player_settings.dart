@@ -46,7 +46,7 @@ class PlayerSettingsDialog extends StatelessWidget {
               _ShuffleModeSwitcher(),
               _OnVideoEndsActionSettingsSection(),
               _StarVideoPositionSettingsSection(),
-              _SubtitleTimeSyncSection(),
+              _SubtitlesOffsetSection(),
             ],
           ),
         ),
@@ -64,7 +64,7 @@ class _ShuffleModeSwitcher extends ConsumerWidget {
     return SettingsSection(
       label: Text(
         AppLocalizations.of(context)!.videoPlayerSettingShuffleMode,
-        style: theme.textTheme.headlineSmall,
+        style: theme.textTheme.bodyLarge,
       ),
       section: Switch(
         value: shuffleMode,
@@ -85,7 +85,7 @@ class _OnVideoEndsActionSettingsSection extends ConsumerWidget {
     return SettingsSection(
       label: Text(
         AppLocalizations.of(context)!.videoPlayerSettingEndsAction,
-        style: theme.textTheme.headlineSmall,
+        style: theme.textTheme.bodyLarge,
       ),
       section: Dropdown.button(
         label: videoPlayerSettingEndsAction(context, action),
@@ -121,7 +121,7 @@ class _StarVideoPositionSettingsSection extends ConsumerWidget {
     return SettingsSection(
       label: Text(
         AppLocalizations.of(context)!.videoPlayerSettingStarFrom,
-        style: theme.textTheme.headlineSmall,
+        style: theme.textTheme.bodyLarge,
       ),
       section: Row(
         mainAxisSize: MainAxisSize.min,
@@ -204,22 +204,48 @@ class _FixedSecondInput extends HookConsumerWidget {
   }
 }
 
-class _SubtitleTimeSyncSection extends StatelessWidget {
-  const _SubtitleTimeSyncSection();
+class _SubtitlesOffsetSection extends ConsumerWidget {
+  const _SubtitlesOffsetSection();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final subtitlesOffset = ref.watch(subtitlesOffsetProvider);
+
     return SettingsSection(
-      label: Text("Змішення субтитрів"),
-      section: TextFormField(
-        keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        maxLength: 3,
-        initialValue: "0",
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-        ),
+      label: Text(
+        AppLocalizations.of(context)!.videoSubtitlesOffset,
+        style: theme.textTheme.bodyLarge,
+      ),
+      section: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            onPressed: () {
+              ref
+                  .read(subtitlesOffsetProvider.notifier)
+                  .setOffset(subtitlesOffset.inSeconds - 1);
+            },
+            icon: Icon(Icons.remove_circle),
+          ),
+          SizedBox(width: 8),
+          Text(subtitlesOffset.inSeconds.toString()),
+          SizedBox(width: 8),
+          IconButton(
+            onPressed: () {
+              ref
+                  .read(subtitlesOffsetProvider.notifier)
+                  .setOffset(subtitlesOffset.inSeconds + 1);
+            },
+            icon: Icon(Icons.add_circle),
+          ),
+          IconButton(
+            onPressed: () {
+              ref.read(subtitlesOffsetProvider.notifier).setOffset(0);
+            },
+            icon: Icon(Icons.restore),
+          ),
+        ],
       ),
     );
   }

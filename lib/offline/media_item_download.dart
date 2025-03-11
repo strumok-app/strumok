@@ -5,7 +5,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/download/manager/manager.dart';
 import 'package:strumok/offline/media_item_download_provider.dart';
-import 'package:strumok/offline/offline_content_details.dart';
+import 'package:strumok/offline/models.dart';
 import 'package:strumok/offline/offline_items_screen_provider.dart';
 import 'package:strumok/offline/offline_storage.dart';
 
@@ -13,7 +13,11 @@ class MediaItemDownloadButton extends ConsumerWidget {
   final ContentDetails contentDetails;
   final ContentMediaItem item;
 
-  const MediaItemDownloadButton({super.key, required this.contentDetails, required this.item});
+  const MediaItemDownloadButton({
+    super.key,
+    required this.contentDetails,
+    required this.item,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,20 +36,20 @@ class MediaItemDownloadButton extends ConsumerWidget {
       dimension: 40,
       child: switch (state.status) {
         MediaItemDownloadStatus.notStored => IconButton(
-            onPressed: () => _showDialog(context),
-            icon: Icon(Icons.file_download),
-          ),
+          onPressed: () => _showDialog(context),
+          icon: Icon(Icons.file_download),
+        ),
         MediaItemDownloadStatus.stored => IconButton(
-            padding: EdgeInsets.all(8),
-            onPressed: () => _showDialog(context),
-            icon: Icon(Symbols.folder_check),
-          ),
+          padding: EdgeInsets.all(8),
+          onPressed: () => _showDialog(context),
+          icon: Icon(Symbols.folder_check),
+        ),
         MediaItemDownloadStatus.downloading => _MediaItemDownloadIndicator(
-            state: state,
-            onCancel: () {
-              DownloadManager().cancel(state.downloadTask!.request.id);
-            },
-          ),
+          state: state,
+          onCancel: () {
+            DownloadManager().cancel(state.downloadTask!.request.id);
+          },
+        ),
       },
     );
   }
@@ -53,10 +57,11 @@ class MediaItemDownloadButton extends ConsumerWidget {
   void _showDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => MediaItemDownloadDailog(
-        contentDetails: contentDetails,
-        item: item,
-      ),
+      builder:
+          (context) => MediaItemDownloadDailog(
+            contentDetails: contentDetails,
+            item: item,
+          ),
     );
   }
 }
@@ -83,7 +88,8 @@ class _MediaItemDownloadIndicator extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: CircularProgressIndicator(
                   value: value,
-                  backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.onInverseSurface,
                 ),
               );
             },
@@ -144,14 +150,23 @@ class MediaItemDownloadDailog extends ConsumerWidget {
             child: _SourceList(
               sources: sources,
               onDownload: (source) async {
-                await OfflineStorage().storeSource(contentDetails, number, source);
+                await OfflineStorage().storeSource(
+                  contentDetails,
+                  number,
+                  source,
+                );
                 ref.invalidate(mediaItemDownloadProvider(supplier, id, number));
                 if (context.mounted) {
                   Navigator.of(context).pop();
                 }
               },
               onDelete: (source) async {
-                await OfflineStorage().deleteSource(supplier, id, number, source);
+                await OfflineStorage().deleteSource(
+                  supplier,
+                  id,
+                  number,
+                  source,
+                );
                 ref.invalidate(mediaItemDownloadProvider(supplier, id, number));
                 ref.invalidate(offlineContentProvider);
                 if (context.mounted) {
@@ -196,15 +211,16 @@ class _SourceList extends ConsumerWidget {
       contentPadding: EdgeInsets.only(left: 16, right: 8),
       visualDensity: VisualDensity.compact,
       leading: Icon(_getIconData(source)),
-      trailing: avalaibleOffline
-          ? IconButton(
-              onPressed: () => onDelete(source),
-              icon: const Icon(Icons.delete_outline),
-            )
-          : IconButton(
-              onPressed: () => onDownload(source),
-              icon: const Icon(Icons.download),
-            ),
+      trailing:
+          avalaibleOffline
+              ? IconButton(
+                onPressed: () => onDelete(source),
+                icon: const Icon(Icons.delete_outline),
+              )
+              : IconButton(
+                onPressed: () => onDownload(source),
+                icon: const Icon(Icons.download),
+              ),
       title: Text(
         source.description,
         overflow: TextOverflow.ellipsis,

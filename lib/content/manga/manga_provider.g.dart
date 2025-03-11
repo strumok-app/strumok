@@ -44,20 +44,14 @@ class MangaChapterScansFamily
     ContentDetails contentDetails,
     List<ContentMediaItem> mediaItems,
   ) {
-    return MangaChapterScansProvider(
-      contentDetails,
-      mediaItems,
-    );
+    return MangaChapterScansProvider(contentDetails, mediaItems);
   }
 
   @override
   MangaChapterScansProvider getProviderOverride(
     covariant MangaChapterScansProvider provider,
   ) {
-    return call(
-      provider.contentDetails,
-      provider.mediaItems,
-    );
+    return call(provider.contentDetails, provider.mediaItems);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -83,23 +77,23 @@ class MangaChapterScansProvider
     ContentDetails contentDetails,
     List<ContentMediaItem> mediaItems,
   ) : this._internal(
-          (ref) => mangaChapterScans(
-            ref as MangaChapterScansRef,
-            contentDetails,
-            mediaItems,
-          ),
-          from: mangaChapterScansProvider,
-          name: r'mangaChapterScansProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$mangaChapterScansHash,
-          dependencies: MangaChapterScansFamily._dependencies,
-          allTransitiveDependencies:
-              MangaChapterScansFamily._allTransitiveDependencies,
-          contentDetails: contentDetails,
-          mediaItems: mediaItems,
-        );
+        (ref) => mangaChapterScans(
+          ref as MangaChapterScansRef,
+          contentDetails,
+          mediaItems,
+        ),
+        from: mangaChapterScansProvider,
+        name: r'mangaChapterScansProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$mangaChapterScansHash,
+        dependencies: MangaChapterScansFamily._dependencies,
+        allTransitiveDependencies:
+            MangaChapterScansFamily._allTransitiveDependencies,
+        contentDetails: contentDetails,
+        mediaItems: mediaItems,
+      );
 
   MangaChapterScansProvider._internal(
     super._createNotifier, {
@@ -118,7 +112,7 @@ class MangaChapterScansProvider
   @override
   Override overrideWith(
     FutureOr<List<MangaMediaItemSource>> Function(MangaChapterScansRef provider)
-        create,
+    create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -197,20 +191,14 @@ class MangaChapterScanFamily extends Family<AsyncValue<MangaMediaItemSource?>> {
     ContentDetails contentDetails,
     List<ContentMediaItem> mediaItems,
   ) {
-    return MangaChapterScanProvider(
-      contentDetails,
-      mediaItems,
-    );
+    return MangaChapterScanProvider(contentDetails, mediaItems);
   }
 
   @override
   MangaChapterScanProvider getProviderOverride(
     covariant MangaChapterScanProvider provider,
   ) {
-    return call(
-      provider.contentDetails,
-      provider.mediaItems,
-    );
+    return call(provider.contentDetails, provider.mediaItems);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -236,23 +224,23 @@ class MangaChapterScanProvider
     ContentDetails contentDetails,
     List<ContentMediaItem> mediaItems,
   ) : this._internal(
-          (ref) => mangaChapterScan(
-            ref as MangaChapterScanRef,
-            contentDetails,
-            mediaItems,
-          ),
-          from: mangaChapterScanProvider,
-          name: r'mangaChapterScanProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$mangaChapterScanHash,
-          dependencies: MangaChapterScanFamily._dependencies,
-          allTransitiveDependencies:
-              MangaChapterScanFamily._allTransitiveDependencies,
-          contentDetails: contentDetails,
-          mediaItems: mediaItems,
-        );
+        (ref) => mangaChapterScan(
+          ref as MangaChapterScanRef,
+          contentDetails,
+          mediaItems,
+        ),
+        from: mangaChapterScanProvider,
+        name: r'mangaChapterScanProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$mangaChapterScanHash,
+        dependencies: MangaChapterScanFamily._dependencies,
+        allTransitiveDependencies:
+            MangaChapterScanFamily._allTransitiveDependencies,
+        contentDetails: contentDetails,
+        mediaItems: mediaItems,
+      );
 
   MangaChapterScanProvider._internal(
     super._createNotifier, {
@@ -271,7 +259,7 @@ class MangaChapterScanProvider
   @override
   Override overrideWith(
     FutureOr<MangaMediaItemSource?> Function(MangaChapterScanRef provider)
-        create,
+    create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -350,20 +338,14 @@ class CurrentMangaPagesFamily extends Family<AsyncValue<List<ImageProvider>>> {
     ContentDetails contentDetails,
     List<ContentMediaItem> mediaItems,
   ) {
-    return CurrentMangaPagesProvider(
-      contentDetails,
-      mediaItems,
-    );
+    return CurrentMangaPagesProvider(contentDetails, mediaItems);
   }
 
   @override
   CurrentMangaPagesProvider getProviderOverride(
     covariant CurrentMangaPagesProvider provider,
   ) {
-    return call(
-      provider.contentDetails,
-      provider.mediaItems,
-    );
+    return call(provider.contentDetails, provider.mediaItems);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -389,23 +371,23 @@ class CurrentMangaPagesProvider
     ContentDetails contentDetails,
     List<ContentMediaItem> mediaItems,
   ) : this._internal(
-          (ref) => currentMangaPages(
-            ref as CurrentMangaPagesRef,
-            contentDetails,
-            mediaItems,
-          ),
-          from: currentMangaPagesProvider,
-          name: r'currentMangaPagesProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$currentMangaPagesHash,
-          dependencies: CurrentMangaPagesFamily._dependencies,
-          allTransitiveDependencies:
-              CurrentMangaPagesFamily._allTransitiveDependencies,
-          contentDetails: contentDetails,
-          mediaItems: mediaItems,
-        );
+        (ref) => currentMangaPages(
+          ref as CurrentMangaPagesRef,
+          contentDetails,
+          mediaItems,
+        ),
+        from: currentMangaPagesProvider,
+        name: r'currentMangaPagesProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$currentMangaPagesHash,
+        dependencies: CurrentMangaPagesFamily._dependencies,
+        allTransitiveDependencies:
+            CurrentMangaPagesFamily._allTransitiveDependencies,
+        contentDetails: contentDetails,
+        mediaItems: mediaItems,
+      );
 
   CurrentMangaPagesProvider._internal(
     super._createNotifier, {
@@ -424,7 +406,7 @@ class CurrentMangaPagesProvider
   @override
   Override overrideWith(
     FutureOr<List<ImageProvider>> Function(CurrentMangaPagesRef provider)
-        create,
+    create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -486,5 +468,6 @@ class _CurrentMangaPagesProviderElement
   List<ContentMediaItem> get mediaItems =>
       (origin as CurrentMangaPagesProvider).mediaItems;
 }
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

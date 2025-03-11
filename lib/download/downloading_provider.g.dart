@@ -13,14 +13,15 @@ String _$downloadsUpdateStreamHash() =>
 @ProviderFor(downloadsUpdateStream)
 final downloadsUpdateStreamProvider =
     AutoDisposeStreamProvider<DownloadTask>.internal(
-  downloadsUpdateStream,
-  name: r'downloadsUpdateStreamProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$downloadsUpdateStreamHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      downloadsUpdateStream,
+      name: r'downloadsUpdateStreamProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$downloadsUpdateStreamHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
@@ -32,9 +33,10 @@ String _$downloadTasksHash() => r'88e6eee94e0796c957855d319f37b00e9f8ae489';
 final downloadTasksProvider = AutoDisposeProvider<List<DownloadTask>>.internal(
   downloadTasks,
   name: r'downloadTasksProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$downloadTasksHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$downloadTasksHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

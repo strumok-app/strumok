@@ -10,8 +10,10 @@ String _$suggestionsHash() => r'3121b84d54c8a3ce22837ce62533bec7c9d12123';
 
 /// See also [Suggestions].
 @ProviderFor(Suggestions)
-final suggestionsProvider = AutoDisposeAsyncNotifierProvider<Suggestions,
-    List<SearchSuggestion>>.internal(
+final suggestionsProvider = AutoDisposeAsyncNotifierProvider<
+  Suggestions,
+  List<SearchSuggestion>
+>.internal(
   Suggestions.new,
   name: r'suggestionsProvider',
   debugGetCreateSourceHash:

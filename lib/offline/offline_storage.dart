@@ -5,7 +5,7 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:strumok/download/manager/manager.dart';
 import 'package:strumok/download/manager/models.dart';
-import 'package:strumok/offline/offline_content_details.dart';
+import 'package:strumok/offline/models.dart';
 import 'package:strumok/utils/logger.dart';
 
 class OfflineStorage {
@@ -20,7 +20,8 @@ class OfflineStorage {
   OfflineStorage._internal();
 
   Future<void> init() async {
-    _downloadsDir = "${(await getDownloadsDirectory())!.path}${Platform.pathSeparator}strumok";
+    _downloadsDir =
+        "${(await getDownloadsDirectory())!.path}${Platform.pathSeparator}strumok";
 
     logger.i("Downloads directory: $_downloadsDir");
   }
@@ -40,7 +41,7 @@ class OfflineStorage {
         final fsEntryNameParts = fsEntryName.split("_");
         if (fsEntryNameParts.length == 2) {
           final [supplier, id] = fsEntryNameParts;
-          final detailsJson = await _readContentDetailsJson(fsEntry);
+          final detailsJson = await _readContentDetailsJson(fsEntry.path);
 
           int diskUsage = 0;
           await for (var entity in fsEntry.list(recursive: true)) {
@@ -95,19 +96,23 @@ class OfflineStorage {
           };
 
           if (kind != null) {
-            sources.add(OfflineContentMediaItemSource(
-              description: Uri.decodeComponent(name),
-              link: fsEntry.uri,
-            ));
+            sources.add(
+              OfflineContentMediaItemSource(
+                description: Uri.decodeComponent(name),
+                link: fsEntry.uri,
+              ),
+            );
           }
         }
       } else if (fsEntry is Directory) {
         if (fsEntryName.startsWith("pages_")) {
           final name = fsEntryName.substring(6);
-          sources.add(OfflineMangaMediaItemSource(
-            description: Uri.decodeComponent(name),
-            dir: fsEntryPath,
-          ));
+          sources.add(
+            OfflineMangaMediaItemSource(
+              description: Uri.decodeComponent(name),
+              dir: fsEntryPath,
+            ),
+          );
         }
       }
     }
@@ -115,7 +120,11 @@ class OfflineStorage {
     return sources;
   }
 
-  Future<void> storeSource(ContentDetails details, int number, ContentMediaItemSource source) async {
+  Future<void> storeSource(
+    ContentDetails details,
+    int number,
+    ContentMediaItemSource source,
+  ) async {
     await storeDetails(details);
 
     final request = await _createDownLoadRequest(details, number, source);
@@ -125,7 +134,10 @@ class OfflineStorage {
   }
 
   Future<void> storeDetails(ContentDetails details, {overrride = false}) async {
-    final contentDetailsPath = _getContentDetailsPath(details.supplier, details.id);
+    final contentDetailsPath = _getContentDetailsPath(
+      details.supplier,
+      details.id,
+    );
     final contentDetailsFile = File(contentDetailsPath);
     if (!await contentDetailsFile.exists() || overrride) {
       await contentDetailsFile.create(recursive: true);
@@ -136,12 +148,30 @@ class OfflineStorage {
     }
   }
 
+  Future<ContentDetails> getDetails(String supplier, String id) async {
+    final contentDetailsPath = _getContentDetailsPath(supplier, id);
+    final contentDetailsJson = await _readContentDetailsJson(
+      contentDetailsPath,
+    );
+
+    if (contentDetailsJson == null) {
+      throw Exception("Content details not found");
+    }
+
+    throw UnimplementedError();
+  }
+
   Future<void> deleteAll(String supplier, String id) async {
     final contentDetailsPath = _getContentRootPath(supplier, id);
     await Directory(contentDetailsPath).delete(recursive: true);
   }
 
-  Future<void> deleteSource(String supplier, String id, int number, ContentMediaItemSource source) async {
+  Future<void> deleteSource(
+    String supplier,
+    String id,
+    int number,
+    ContentMediaItemSource source,
+  ) async {
     final sourcePath = _getMediaItemSourcePath(supplier, id, number, source);
 
     if (source.kind == FileKind.manga) {
@@ -152,15 +182,13 @@ class OfflineStorage {
 
     final sourcesLeft = await getSources(supplier, id, number);
     if (sourcesLeft.isEmpty) {
-      await Directory(_getMediaItemPath(supplier, id, number)).delete(recursive: true);
+      await Directory(
+        _getMediaItemPath(supplier, id, number),
+      ).delete(recursive: true);
     }
   }
 
-  Future<bool> sourceExists(
-    String supplier,
-    String id,
-    int number,
-  ) async {
+  Future<bool> sourceExists(String supplier, String id, int number) async {
     final sources = await getSources(supplier, id, number);
     return sources.isNotEmpty;
   }
@@ -174,9 +202,15 @@ class OfflineStorage {
   String _getContentRootPath(String supplier, String id) =>
       "$_downloadsDir${Platform.pathSeparator}${_getContentDetailsFolderName(supplier, id)}";
 
-  String _getContentDetailsFolderName(String supplier, String id) => "${supplier}_${Uri.encodeComponent(id)}";
+  String _getContentDetailsFolderName(String supplier, String id) =>
+      "${supplier}_${Uri.encodeComponent(id)}";
 
-  String _getMediaItemSourcePath(String supplier, String id, int number, ContentMediaItemSource source) {
+  String _getMediaItemSourcePath(
+    String supplier,
+    String id,
+    int number,
+    ContentMediaItemSource source,
+  ) {
     final mediaItemPath = _getMediaItemPath(supplier, id, number);
     final sanitize = Uri.encodeComponent(source.description);
     final finalPart = switch (source.kind) {
@@ -198,8 +232,12 @@ class OfflineStorage {
     });
   }
 
-  Future<Map<String, Object?>?> _readContentDetailsJson(Directory fsEntry) async {
-    final detailsFile = File("${fsEntry.path}${Platform.pathSeparator}details.json");
+  Future<Map<String, Object?>?> _readContentDetailsJson(
+    String contentDetailsPath,
+  ) async {
+    final detailsFile = File(
+      "$contentDetailsPath${Platform.pathSeparator}details.json",
+    );
 
     Map<String, Object?>? detailsJson;
     if (await detailsFile.exists()) {
@@ -230,7 +268,12 @@ class OfflineStorage {
     if (source.kind == FileKind.video) {
       final mediaSource = source as MediaFileItemSource;
       final link = await mediaSource.link;
-      final sourcePath = OfflineStorage()._getMediaItemSourcePath(supplier, id, number, source);
+      final sourcePath = OfflineStorage()._getMediaItemSourcePath(
+        supplier,
+        id,
+        number,
+        source,
+      );
 
       return VideoDownloadRequest(
         id: getMediaItemDownloadId(supplier, id, number),
@@ -243,7 +286,12 @@ class OfflineStorage {
       final mediaSource = source as MangaMediaItemSource;
       final pages = await mediaSource.pages;
 
-      final sourcePath = OfflineStorage()._getMediaItemSourcePath(supplier, id, number, source);
+      final sourcePath = OfflineStorage()._getMediaItemSourcePath(
+        supplier,
+        id,
+        number,
+        source,
+      );
 
       return MangaDownloadRequest(
         id: getMediaItemDownloadId(supplier, id, number),
@@ -260,7 +308,10 @@ class OfflineStorage {
 bool hasAnyDownloadingAitems(String supplier, String id) {
   final prefix = getContentDownloadIdPrefix(supplier, id);
 
-  return DownloadManager().getTasks().where((task) => task.request.id.startsWith(prefix)).isNotEmpty;
+  return DownloadManager()
+      .getTasks()
+      .where((task) => task.request.id.startsWith(prefix))
+      .isNotEmpty;
 }
 
 String getContentDownloadIdPrefix(String supplier, String id) {

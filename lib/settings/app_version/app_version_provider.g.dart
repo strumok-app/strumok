@@ -7,21 +7,23 @@ part of 'app_version_provider.dart';
 // **************************************************************************
 
 AppVersionDownloadAssets _$AppVersionDownloadAssetsFromJson(
-        Map<String, dynamic> json) =>
-    AppVersionDownloadAssets(
-      browserDownloadUrl: json['browser_download_url'] as String,
-      name: json['name'] as String,
-    );
+  Map<String, dynamic> json,
+) => AppVersionDownloadAssets(
+  browserDownloadUrl: json['browser_download_url'] as String,
+  name: json['name'] as String,
+);
 
 LatestAppVersionInfo _$LatestAppVersionInfoFromJson(
-        Map<String, dynamic> json) =>
-    LatestAppVersionInfo(
-      name: json['name'] as String,
-      assets: (json['assets'] as List<dynamic>)
-          .map((e) =>
-              AppVersionDownloadAssets.fromJson(e as Map<String, dynamic>))
+  Map<String, dynamic> json,
+) => LatestAppVersionInfo(
+  name: json['name'] as String,
+  assets:
+      (json['assets'] as List<dynamic>)
+          .map(
+            (e) => AppVersionDownloadAssets.fromJson(e as Map<String, dynamic>),
+          )
           .toList(),
-    );
+);
 
 // **************************************************************************
 // RiverpodGenerator
@@ -34,9 +36,10 @@ String _$currentAppVersionHash() => r'1b8be778347ea0923da209174409af1bdd9b6add';
 final currentAppVersionProvider = FutureProvider<SemVer>.internal(
   currentAppVersion,
   name: r'currentAppVersionProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$currentAppVersionHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$currentAppVersionHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -45,38 +48,41 @@ final currentAppVersionProvider = FutureProvider<SemVer>.internal(
 // ignore: unused_element
 typedef CurrentAppVersionRef = FutureProviderRef<SemVer>;
 String _$latestAppVersionInfoHash() =>
-    r'ca751369e9e53d419f029fd2b87007323bbfde53';
+    r'e75cffaac55d5f35152d7cbfc17417f0a7e415dc';
 
 /// See also [latestAppVersionInfo].
 @ProviderFor(latestAppVersionInfo)
 final latestAppVersionInfoProvider =
     AutoDisposeFutureProvider<LatestAppVersionInfo?>.internal(
-  latestAppVersionInfo,
-  name: r'latestAppVersionInfoProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$latestAppVersionInfoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      latestAppVersionInfo,
+      name: r'latestAppVersionInfoProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$latestAppVersionInfoHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef LatestAppVersionInfoRef
-    = AutoDisposeFutureProviderRef<LatestAppVersionInfo?>;
+typedef LatestAppVersionInfoRef =
+    AutoDisposeFutureProviderRef<LatestAppVersionInfo?>;
 String _$appDownloadHash() => r'aa87e2e83fca84a146e5075fd91d596d85a51960';
 
 /// See also [AppDownload].
 @ProviderFor(AppDownload)
 final appDownloadProvider =
     NotifierProvider<AppDownload, DownloadState>.internal(
-  AppDownload.new,
-  name: r'appDownloadProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$appDownloadHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      AppDownload.new,
+      name: r'appDownloadProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$appDownloadHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$AppDownload = Notifier<DownloadState>;
 // ignore_for_file: type=lint

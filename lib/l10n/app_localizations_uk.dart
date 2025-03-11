@@ -176,6 +176,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get videoSubtitlesOff => 'Вимкнути субтитрів';
 
   @override
+  String get videoSubtitlesOffset => 'Змішення субтитрів';
+
+  @override
   String get videoPlayerSettingShuffleMode => 'Випадковий порядок';
 
   @override

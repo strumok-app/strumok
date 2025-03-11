@@ -126,7 +126,7 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
           playlistSize: playerController.mediaItems.length,
           contentDetails: playerController.contentDetails,
         ),
-        PlayerErrorPopup(playerController: playerController),
+        PlayerErrorPopup(),
         if (playerController.mediaItems.length > 1)
           PlayerPlaylistButton(
             playerController: playerController,

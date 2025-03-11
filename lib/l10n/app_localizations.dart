@@ -425,6 +425,12 @@ abstract class AppLocalizations {
   /// **'Subtitles off'**
   String get videoSubtitlesOff;
 
+  /// No description provided for @videoSubtitlesOffset.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitles offset'**
+  String get videoSubtitlesOffset;
+
   /// No description provided for @videoPlayerSettingShuffleMode.
   ///
   /// In en, this message translates to:

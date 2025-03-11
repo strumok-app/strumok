@@ -39,24 +39,15 @@ class HasCollectionItemFamily extends Family<AsyncValue<bool>> {
   const HasCollectionItemFamily();
 
   /// See also [hasCollectionItem].
-  HasCollectionItemProvider call(
-    String supplier,
-    String id,
-  ) {
-    return HasCollectionItemProvider(
-      supplier,
-      id,
-    );
+  HasCollectionItemProvider call(String supplier, String id) {
+    return HasCollectionItemProvider(supplier, id);
   }
 
   @override
   HasCollectionItemProvider getProviderOverride(
     covariant HasCollectionItemProvider provider,
   ) {
-    return call(
-      provider.supplier,
-      provider.id,
-    );
+    return call(provider.supplier, provider.id);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -77,27 +68,21 @@ class HasCollectionItemFamily extends Family<AsyncValue<bool>> {
 /// See also [hasCollectionItem].
 class HasCollectionItemProvider extends AutoDisposeFutureProvider<bool> {
   /// See also [hasCollectionItem].
-  HasCollectionItemProvider(
-    String supplier,
-    String id,
-  ) : this._internal(
-          (ref) => hasCollectionItem(
-            ref as HasCollectionItemRef,
-            supplier,
-            id,
-          ),
-          from: hasCollectionItemProvider,
-          name: r'hasCollectionItemProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$hasCollectionItemHash,
-          dependencies: HasCollectionItemFamily._dependencies,
-          allTransitiveDependencies:
-              HasCollectionItemFamily._allTransitiveDependencies,
-          supplier: supplier,
-          id: id,
-        );
+  HasCollectionItemProvider(String supplier, String id)
+    : this._internal(
+        (ref) => hasCollectionItem(ref as HasCollectionItemRef, supplier, id),
+        from: hasCollectionItemProvider,
+        name: r'hasCollectionItemProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$hasCollectionItemHash,
+        dependencies: HasCollectionItemFamily._dependencies,
+        allTransitiveDependencies:
+            HasCollectionItemFamily._allTransitiveDependencies,
+        supplier: supplier,
+        id: id,
+      );
 
   HasCollectionItemProvider._internal(
     super._createNotifier, {
@@ -165,7 +150,8 @@ mixin HasCollectionItemRef on AutoDisposeFutureProviderRef<bool> {
 }
 
 class _HasCollectionItemProviderElement
-    extends AutoDisposeFutureProviderElement<bool> with HasCollectionItemRef {
+    extends AutoDisposeFutureProviderElement<bool>
+    with HasCollectionItemRef {
   _HasCollectionItemProviderElement(super.provider);
 
   @override
@@ -187,21 +173,15 @@ class CollectionItemCurrentItemFamily extends Family<AsyncValue<int>> {
   const CollectionItemCurrentItemFamily();
 
   /// See also [collectionItemCurrentItem].
-  CollectionItemCurrentItemProvider call(
-    ContentDetails contentDetails,
-  ) {
-    return CollectionItemCurrentItemProvider(
-      contentDetails,
-    );
+  CollectionItemCurrentItemProvider call(ContentDetails contentDetails) {
+    return CollectionItemCurrentItemProvider(contentDetails);
   }
 
   @override
   CollectionItemCurrentItemProvider getProviderOverride(
     covariant CollectionItemCurrentItemProvider provider,
   ) {
-    return call(
-      provider.contentDetails,
-    );
+    return call(provider.contentDetails);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -222,24 +202,23 @@ class CollectionItemCurrentItemFamily extends Family<AsyncValue<int>> {
 /// See also [collectionItemCurrentItem].
 class CollectionItemCurrentItemProvider extends AutoDisposeFutureProvider<int> {
   /// See also [collectionItemCurrentItem].
-  CollectionItemCurrentItemProvider(
-    ContentDetails contentDetails,
-  ) : this._internal(
-          (ref) => collectionItemCurrentItem(
-            ref as CollectionItemCurrentItemRef,
-            contentDetails,
-          ),
-          from: collectionItemCurrentItemProvider,
-          name: r'collectionItemCurrentItemProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$collectionItemCurrentItemHash,
-          dependencies: CollectionItemCurrentItemFamily._dependencies,
-          allTransitiveDependencies:
-              CollectionItemCurrentItemFamily._allTransitiveDependencies,
-          contentDetails: contentDetails,
-        );
+  CollectionItemCurrentItemProvider(ContentDetails contentDetails)
+    : this._internal(
+        (ref) => collectionItemCurrentItem(
+          ref as CollectionItemCurrentItemRef,
+          contentDetails,
+        ),
+        from: collectionItemCurrentItemProvider,
+        name: r'collectionItemCurrentItemProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$collectionItemCurrentItemHash,
+        dependencies: CollectionItemCurrentItemFamily._dependencies,
+        allTransitiveDependencies:
+            CollectionItemCurrentItemFamily._allTransitiveDependencies,
+        contentDetails: contentDetails,
+      );
 
   CollectionItemCurrentItemProvider._internal(
     super._createNotifier, {
@@ -323,21 +302,15 @@ class CollectionItemCurrentSourceNameFamily
   const CollectionItemCurrentSourceNameFamily();
 
   /// See also [collectionItemCurrentSourceName].
-  CollectionItemCurrentSourceNameProvider call(
-    ContentDetails contentDetails,
-  ) {
-    return CollectionItemCurrentSourceNameProvider(
-      contentDetails,
-    );
+  CollectionItemCurrentSourceNameProvider call(ContentDetails contentDetails) {
+    return CollectionItemCurrentSourceNameProvider(contentDetails);
   }
 
   @override
   CollectionItemCurrentSourceNameProvider getProviderOverride(
     covariant CollectionItemCurrentSourceNameProvider provider,
   ) {
-    return call(
-      provider.contentDetails,
-    );
+    return call(provider.contentDetails);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -359,24 +332,23 @@ class CollectionItemCurrentSourceNameFamily
 class CollectionItemCurrentSourceNameProvider
     extends AutoDisposeFutureProvider<String?> {
   /// See also [collectionItemCurrentSourceName].
-  CollectionItemCurrentSourceNameProvider(
-    ContentDetails contentDetails,
-  ) : this._internal(
-          (ref) => collectionItemCurrentSourceName(
-            ref as CollectionItemCurrentSourceNameRef,
-            contentDetails,
-          ),
-          from: collectionItemCurrentSourceNameProvider,
-          name: r'collectionItemCurrentSourceNameProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$collectionItemCurrentSourceNameHash,
-          dependencies: CollectionItemCurrentSourceNameFamily._dependencies,
-          allTransitiveDependencies:
-              CollectionItemCurrentSourceNameFamily._allTransitiveDependencies,
-          contentDetails: contentDetails,
-        );
+  CollectionItemCurrentSourceNameProvider(ContentDetails contentDetails)
+    : this._internal(
+        (ref) => collectionItemCurrentSourceName(
+          ref as CollectionItemCurrentSourceNameRef,
+          contentDetails,
+        ),
+        from: collectionItemCurrentSourceNameProvider,
+        name: r'collectionItemCurrentSourceNameProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$collectionItemCurrentSourceNameHash,
+        dependencies: CollectionItemCurrentSourceNameFamily._dependencies,
+        allTransitiveDependencies:
+            CollectionItemCurrentSourceNameFamily._allTransitiveDependencies,
+        contentDetails: contentDetails,
+      );
 
   CollectionItemCurrentSourceNameProvider._internal(
     super._createNotifier, {
@@ -393,7 +365,7 @@ class CollectionItemCurrentSourceNameProvider
   @override
   Override overrideWith(
     FutureOr<String?> Function(CollectionItemCurrentSourceNameRef provider)
-        create,
+    create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -465,18 +437,14 @@ class CollectionItemCurrentSubtitleNameFamily
   CollectionItemCurrentSubtitleNameProvider call(
     ContentDetails contentDetails,
   ) {
-    return CollectionItemCurrentSubtitleNameProvider(
-      contentDetails,
-    );
+    return CollectionItemCurrentSubtitleNameProvider(contentDetails);
   }
 
   @override
   CollectionItemCurrentSubtitleNameProvider getProviderOverride(
     covariant CollectionItemCurrentSubtitleNameProvider provider,
   ) {
-    return call(
-      provider.contentDetails,
-    );
+    return call(provider.contentDetails);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -498,24 +466,23 @@ class CollectionItemCurrentSubtitleNameFamily
 class CollectionItemCurrentSubtitleNameProvider
     extends AutoDisposeFutureProvider<String?> {
   /// See also [collectionItemCurrentSubtitleName].
-  CollectionItemCurrentSubtitleNameProvider(
-    ContentDetails contentDetails,
-  ) : this._internal(
-          (ref) => collectionItemCurrentSubtitleName(
-            ref as CollectionItemCurrentSubtitleNameRef,
-            contentDetails,
-          ),
-          from: collectionItemCurrentSubtitleNameProvider,
-          name: r'collectionItemCurrentSubtitleNameProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$collectionItemCurrentSubtitleNameHash,
-          dependencies: CollectionItemCurrentSubtitleNameFamily._dependencies,
-          allTransitiveDependencies: CollectionItemCurrentSubtitleNameFamily
-              ._allTransitiveDependencies,
-          contentDetails: contentDetails,
-        );
+  CollectionItemCurrentSubtitleNameProvider(ContentDetails contentDetails)
+    : this._internal(
+        (ref) => collectionItemCurrentSubtitleName(
+          ref as CollectionItemCurrentSubtitleNameRef,
+          contentDetails,
+        ),
+        from: collectionItemCurrentSubtitleNameProvider,
+        name: r'collectionItemCurrentSubtitleNameProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$collectionItemCurrentSubtitleNameHash,
+        dependencies: CollectionItemCurrentSubtitleNameFamily._dependencies,
+        allTransitiveDependencies:
+            CollectionItemCurrentSubtitleNameFamily._allTransitiveDependencies,
+        contentDetails: contentDetails,
+      );
 
   CollectionItemCurrentSubtitleNameProvider._internal(
     super._createNotifier, {
@@ -532,7 +499,7 @@ class CollectionItemCurrentSubtitleNameProvider
   @override
   Override overrideWith(
     FutureOr<String?> Function(CollectionItemCurrentSubtitleNameRef provider)
-        create,
+    create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -600,21 +567,15 @@ class CollectionItemCurrentPositionFamily extends Family<AsyncValue<int>> {
   const CollectionItemCurrentPositionFamily();
 
   /// See also [collectionItemCurrentPosition].
-  CollectionItemCurrentPositionProvider call(
-    ContentDetails contentDetails,
-  ) {
-    return CollectionItemCurrentPositionProvider(
-      contentDetails,
-    );
+  CollectionItemCurrentPositionProvider call(ContentDetails contentDetails) {
+    return CollectionItemCurrentPositionProvider(contentDetails);
   }
 
   @override
   CollectionItemCurrentPositionProvider getProviderOverride(
     covariant CollectionItemCurrentPositionProvider provider,
   ) {
-    return call(
-      provider.contentDetails,
-    );
+    return call(provider.contentDetails);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -636,24 +597,23 @@ class CollectionItemCurrentPositionFamily extends Family<AsyncValue<int>> {
 class CollectionItemCurrentPositionProvider
     extends AutoDisposeFutureProvider<int> {
   /// See also [collectionItemCurrentPosition].
-  CollectionItemCurrentPositionProvider(
-    ContentDetails contentDetails,
-  ) : this._internal(
-          (ref) => collectionItemCurrentPosition(
-            ref as CollectionItemCurrentPositionRef,
-            contentDetails,
-          ),
-          from: collectionItemCurrentPositionProvider,
-          name: r'collectionItemCurrentPositionProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$collectionItemCurrentPositionHash,
-          dependencies: CollectionItemCurrentPositionFamily._dependencies,
-          allTransitiveDependencies:
-              CollectionItemCurrentPositionFamily._allTransitiveDependencies,
-          contentDetails: contentDetails,
-        );
+  CollectionItemCurrentPositionProvider(ContentDetails contentDetails)
+    : this._internal(
+        (ref) => collectionItemCurrentPosition(
+          ref as CollectionItemCurrentPositionRef,
+          contentDetails,
+        ),
+        from: collectionItemCurrentPositionProvider,
+        name: r'collectionItemCurrentPositionProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$collectionItemCurrentPositionHash,
+        dependencies: CollectionItemCurrentPositionFamily._dependencies,
+        allTransitiveDependencies:
+            CollectionItemCurrentPositionFamily._allTransitiveDependencies,
+        contentDetails: contentDetails,
+      );
 
   CollectionItemCurrentPositionProvider._internal(
     super._createNotifier, {
@@ -740,18 +700,14 @@ class CollectionItemCurrentMediaItemPositionFamily
   CollectionItemCurrentMediaItemPositionProvider call(
     ContentDetails contentDetails,
   ) {
-    return CollectionItemCurrentMediaItemPositionProvider(
-      contentDetails,
-    );
+    return CollectionItemCurrentMediaItemPositionProvider(contentDetails);
   }
 
   @override
   CollectionItemCurrentMediaItemPositionProvider getProviderOverride(
     covariant CollectionItemCurrentMediaItemPositionProvider provider,
   ) {
-    return call(
-      provider.contentDetails,
-    );
+    return call(provider.contentDetails);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -773,26 +729,25 @@ class CollectionItemCurrentMediaItemPositionFamily
 class CollectionItemCurrentMediaItemPositionProvider
     extends AutoDisposeFutureProvider<MediaItemPosition> {
   /// See also [collectionItemCurrentMediaItemPosition].
-  CollectionItemCurrentMediaItemPositionProvider(
-    ContentDetails contentDetails,
-  ) : this._internal(
-          (ref) => collectionItemCurrentMediaItemPosition(
-            ref as CollectionItemCurrentMediaItemPositionRef,
-            contentDetails,
-          ),
-          from: collectionItemCurrentMediaItemPositionProvider,
-          name: r'collectionItemCurrentMediaItemPositionProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$collectionItemCurrentMediaItemPositionHash,
-          dependencies:
-              CollectionItemCurrentMediaItemPositionFamily._dependencies,
-          allTransitiveDependencies:
-              CollectionItemCurrentMediaItemPositionFamily
-                  ._allTransitiveDependencies,
-          contentDetails: contentDetails,
-        );
+  CollectionItemCurrentMediaItemPositionProvider(ContentDetails contentDetails)
+    : this._internal(
+        (ref) => collectionItemCurrentMediaItemPosition(
+          ref as CollectionItemCurrentMediaItemPositionRef,
+          contentDetails,
+        ),
+        from: collectionItemCurrentMediaItemPositionProvider,
+        name: r'collectionItemCurrentMediaItemPositionProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$collectionItemCurrentMediaItemPositionHash,
+        dependencies:
+            CollectionItemCurrentMediaItemPositionFamily._dependencies,
+        allTransitiveDependencies:
+            CollectionItemCurrentMediaItemPositionFamily
+                ._allTransitiveDependencies,
+        contentDetails: contentDetails,
+      );
 
   CollectionItemCurrentMediaItemPositionProvider._internal(
     super._createNotifier, {
@@ -809,8 +764,9 @@ class CollectionItemCurrentMediaItemPositionProvider
   @override
   Override overrideWith(
     FutureOr<MediaItemPosition> Function(
-            CollectionItemCurrentMediaItemPositionRef provider)
-        create,
+      CollectionItemCurrentMediaItemPositionRef provider,
+    )
+    create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -870,9 +826,7 @@ abstract class _$CollectionItem
     extends BuildlessAutoDisposeAsyncNotifier<MediaCollectionItem> {
   late final ContentDetails details;
 
-  FutureOr<MediaCollectionItem> build(
-    ContentDetails details,
-  );
+  FutureOr<MediaCollectionItem> build(ContentDetails details);
 }
 
 /// See also [CollectionItem].
@@ -885,21 +839,15 @@ class CollectionItemFamily extends Family<AsyncValue<MediaCollectionItem>> {
   const CollectionItemFamily();
 
   /// See also [CollectionItem].
-  CollectionItemProvider call(
-    ContentDetails details,
-  ) {
-    return CollectionItemProvider(
-      details,
-    );
+  CollectionItemProvider call(ContentDetails details) {
+    return CollectionItemProvider(details);
   }
 
   @override
   CollectionItemProvider getProviderOverride(
     covariant CollectionItemProvider provider,
   ) {
-    return call(
-      provider.details,
-    );
+    return call(provider.details);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -918,24 +866,27 @@ class CollectionItemFamily extends Family<AsyncValue<MediaCollectionItem>> {
 }
 
 /// See also [CollectionItem].
-class CollectionItemProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    CollectionItem, MediaCollectionItem> {
+class CollectionItemProvider
+    extends
+        AutoDisposeAsyncNotifierProviderImpl<
+          CollectionItem,
+          MediaCollectionItem
+        > {
   /// See also [CollectionItem].
-  CollectionItemProvider(
-    ContentDetails details,
-  ) : this._internal(
-          () => CollectionItem()..details = details,
-          from: collectionItemProvider,
-          name: r'collectionItemProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$collectionItemHash,
-          dependencies: CollectionItemFamily._dependencies,
-          allTransitiveDependencies:
-              CollectionItemFamily._allTransitiveDependencies,
-          details: details,
-        );
+  CollectionItemProvider(ContentDetails details)
+    : this._internal(
+        () => CollectionItem()..details = details,
+        from: collectionItemProvider,
+        name: r'collectionItemProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$collectionItemHash,
+        dependencies: CollectionItemFamily._dependencies,
+        allTransitiveDependencies:
+            CollectionItemFamily._allTransitiveDependencies,
+        details: details,
+      );
 
   CollectionItemProvider._internal(
     super._createNotifier, {
@@ -953,9 +904,7 @@ class CollectionItemProvider extends AutoDisposeAsyncNotifierProviderImpl<
   FutureOr<MediaCollectionItem> runNotifierBuild(
     covariant CollectionItem notifier,
   ) {
-    return notifier.build(
-      details,
-    );
+    return notifier.build(details);
   }
 
   @override
@@ -976,7 +925,7 @@ class CollectionItemProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
   @override
   AutoDisposeAsyncNotifierProviderElement<CollectionItem, MediaCollectionItem>
-      createElement() {
+  createElement() {
     return _CollectionItemProviderElement(this);
   }
 
@@ -1003,12 +952,17 @@ mixin CollectionItemRef
 }
 
 class _CollectionItemProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<CollectionItem,
-        MediaCollectionItem> with CollectionItemRef {
+    extends
+        AutoDisposeAsyncNotifierProviderElement<
+          CollectionItem,
+          MediaCollectionItem
+        >
+    with CollectionItemRef {
   _CollectionItemProviderElement(super.provider);
 
   @override
   ContentDetails get details => (origin as CollectionItemProvider).details;
 }
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

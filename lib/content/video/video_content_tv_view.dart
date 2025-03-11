@@ -269,7 +269,7 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
             playlistSize: playerController.mediaItems.length,
           ),
           const Spacer(),
-          PlayerErrorPopup(playerController: playerController),
+          PlayerErrorPopup(),
           if (widget.playerController.mediaItems.length > 1)
             PlayerPlaylistButton(
               playerController: playerController,

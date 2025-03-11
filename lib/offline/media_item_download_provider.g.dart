@@ -6,7 +6,7 @@ part of 'media_item_download_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$mediaItemDownloadHash() => r'17046153ebdbf5ab2fe7eb576135427a10e9f37e';
+String _$mediaItemDownloadHash() => r'f4ac58802eac64a4fb0cc830068307aeeffddc8a';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -53,27 +53,15 @@ class MediaItemDownloadFamily
   const MediaItemDownloadFamily();
 
   /// See also [MediaItemDownload].
-  MediaItemDownloadProvider call(
-    String supplier,
-    String id,
-    int number,
-  ) {
-    return MediaItemDownloadProvider(
-      supplier,
-      id,
-      number,
-    );
+  MediaItemDownloadProvider call(String supplier, String id, int number) {
+    return MediaItemDownloadProvider(supplier, id, number);
   }
 
   @override
   MediaItemDownloadProvider getProviderOverride(
     covariant MediaItemDownloadProvider provider,
   ) {
-    return call(
-      provider.supplier,
-      provider.id,
-      provider.number,
-    );
+    return call(provider.supplier, provider.id, provider.number);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -92,31 +80,33 @@ class MediaItemDownloadFamily
 }
 
 /// See also [MediaItemDownload].
-class MediaItemDownloadProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    MediaItemDownload, MediaItemDownloadState> {
+class MediaItemDownloadProvider
+    extends
+        AutoDisposeAsyncNotifierProviderImpl<
+          MediaItemDownload,
+          MediaItemDownloadState
+        > {
   /// See also [MediaItemDownload].
-  MediaItemDownloadProvider(
-    String supplier,
-    String id,
-    int number,
-  ) : this._internal(
-          () => MediaItemDownload()
-            ..supplier = supplier
-            ..id = id
-            ..number = number,
-          from: mediaItemDownloadProvider,
-          name: r'mediaItemDownloadProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$mediaItemDownloadHash,
-          dependencies: MediaItemDownloadFamily._dependencies,
-          allTransitiveDependencies:
-              MediaItemDownloadFamily._allTransitiveDependencies,
-          supplier: supplier,
-          id: id,
-          number: number,
-        );
+  MediaItemDownloadProvider(String supplier, String id, int number)
+    : this._internal(
+        () =>
+            MediaItemDownload()
+              ..supplier = supplier
+              ..id = id
+              ..number = number,
+        from: mediaItemDownloadProvider,
+        name: r'mediaItemDownloadProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$mediaItemDownloadHash,
+        dependencies: MediaItemDownloadFamily._dependencies,
+        allTransitiveDependencies:
+            MediaItemDownloadFamily._allTransitiveDependencies,
+        supplier: supplier,
+        id: id,
+        number: number,
+      );
 
   MediaItemDownloadProvider._internal(
     super._createNotifier, {
@@ -138,11 +128,7 @@ class MediaItemDownloadProvider extends AutoDisposeAsyncNotifierProviderImpl<
   FutureOr<MediaItemDownloadState> runNotifierBuild(
     covariant MediaItemDownload notifier,
   ) {
-    return notifier.build(
-      supplier,
-      id,
-      number,
-    );
+    return notifier.build(supplier, id, number);
   }
 
   @override
@@ -150,10 +136,11 @@ class MediaItemDownloadProvider extends AutoDisposeAsyncNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: MediaItemDownloadProvider._internal(
-        () => create()
-          ..supplier = supplier
-          ..id = id
-          ..number = number,
+        () =>
+            create()
+              ..supplier = supplier
+              ..id = id
+              ..number = number,
         from: from,
         name: null,
         dependencies: null,
@@ -167,8 +154,11 @@ class MediaItemDownloadProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<MediaItemDownload,
-      MediaItemDownloadState> createElement() {
+  AutoDisposeAsyncNotifierProviderElement<
+    MediaItemDownload,
+    MediaItemDownloadState
+  >
+  createElement() {
     return _MediaItemDownloadProviderElement(this);
   }
 
@@ -206,8 +196,12 @@ mixin MediaItemDownloadRef
 }
 
 class _MediaItemDownloadProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<MediaItemDownload,
-        MediaItemDownloadState> with MediaItemDownloadRef {
+    extends
+        AutoDisposeAsyncNotifierProviderElement<
+          MediaItemDownload,
+          MediaItemDownloadState
+        >
+    with MediaItemDownloadRef {
   _MediaItemDownloadProviderElement(super.provider);
 
   @override
@@ -217,5 +211,6 @@ class _MediaItemDownloadProviderElement
   @override
   int get number => (origin as MediaItemDownloadProvider).number;
 }
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

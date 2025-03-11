@@ -12,44 +12,48 @@ MediaCollectionItem _$MediaCollectionItemFromJson(Map<String, dynamic> json) =>
       supplier: json['supplier'] as String,
       title: json['title'] as String,
       image: json['image'] as String,
-      mediaType: $enumDecodeNullable(_$MediaTypeEnumMap, json['mediaType']) ??
+      mediaType:
+          $enumDecodeNullable(_$MediaTypeEnumMap, json['mediaType']) ??
           MediaType.video,
       currentItem: (json['currentItem'] as num?)?.toInt() ?? 0,
       currentSourceName: json['currentSourceName'] as String?,
       currentSubtitleName: json['currentSubtitleName'] as String?,
-      positions: (json['positions'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(int.parse(k),
-                MediaItemPosition.fromJson(e as Map<String, dynamic>)),
+      positions:
+          (json['positions'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(
+              int.parse(k),
+              MediaItemPosition.fromJson(e as Map<String, dynamic>),
+            ),
           ) ??
           const {},
-      status: $enumDecodeNullable(
-              _$MediaCollectionItemStatusEnumMap, json['status']) ??
+      status:
+          $enumDecodeNullable(
+            _$MediaCollectionItemStatusEnumMap,
+            json['status'],
+          ) ??
           MediaCollectionItemStatus.none,
       priority: (json['priority'] as num?)?.toInt() ?? 1,
       lastSeen: _dateTimeFormMilli(json['lastSeen']),
     );
 
 Map<String, dynamic> _$MediaCollectionItemToJson(
-        MediaCollectionItem instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'supplier': instance.supplier,
-      'title': instance.title,
-      'image': instance.image,
-      'mediaType': _$MediaTypeEnumMap[instance.mediaType]!,
-      'currentItem': instance.currentItem,
-      'currentSourceName': instance.currentSourceName,
-      'currentSubtitleName': instance.currentSubtitleName,
-      'positions': instance.positions.map((k, e) => MapEntry(k.toString(), e)),
-      'status': _$MediaCollectionItemStatusEnumMap[instance.status]!,
-      'priority': instance.priority,
-      'lastSeen': _dateTimeToMilli(instance.lastSeen),
-    };
-
-const _$MediaTypeEnumMap = {
-  MediaType.video: 'video',
-  MediaType.manga: 'manga',
+  MediaCollectionItem instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'supplier': instance.supplier,
+  'title': instance.title,
+  'image': instance.image,
+  'mediaType': _$MediaTypeEnumMap[instance.mediaType]!,
+  'currentItem': instance.currentItem,
+  'currentSourceName': instance.currentSourceName,
+  'currentSubtitleName': instance.currentSubtitleName,
+  'positions': instance.positions.map((k, e) => MapEntry(k.toString(), e)),
+  'status': _$MediaCollectionItemStatusEnumMap[instance.status]!,
+  'priority': instance.priority,
+  'lastSeen': _dateTimeToMilli(instance.lastSeen),
 };
+
+const _$MediaTypeEnumMap = {MediaType.video: 'video', MediaType.manga: 'manga'};
 
 const _$MediaCollectionItemStatusEnumMap = {
   MediaCollectionItemStatus.none: 'none',
@@ -66,7 +70,4 @@ MediaItemPosition _$MediaItemPositionFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$MediaItemPositionToJson(MediaItemPosition instance) =>
-    <String, dynamic>{
-      'position': instance.position,
-      'length': instance.length,
-    };
+    <String, dynamic>{'position': instance.position, 'length': instance.length};

@@ -26,14 +26,15 @@ String _$searchSettingsHash() => r'7030f15b26f51cfbf0d5caeb7dfef8ffa8bf3fbe';
 @ProviderFor(SearchSettings)
 final searchSettingsProvider =
     AutoDisposeNotifierProvider<SearchSettings, SearchSettingsModel>.internal(
-  SearchSettings.new,
-  name: r'searchSettingsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$searchSettingsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      SearchSettings.new,
+      name: r'searchSettingsProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$searchSettingsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$SearchSettings = AutoDisposeNotifier<SearchSettingsModel>;
 // ignore_for_file: type=lint

@@ -8,8 +8,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:strumok/offline/offline_storage.dart';
 
-class OfflineContentDetails extends Equatable implements ContentDetails {
-  const OfflineContentDetails(this._actualDetails);
+class ContentDetailsWithOfflineMedia extends Equatable
+    implements ContentDetails {
+  const ContentDetailsWithOfflineMedia(this._actualDetails);
 
   final ContentDetails _actualDetails;
 
@@ -29,7 +30,11 @@ class OfflineContentDetails extends Equatable implements ContentDetails {
   Future<Iterable<ContentMediaItem>> get mediaItems async {
     final onlineMediaItems = await _actualDetails.mediaItems;
 
-    return onlineMediaItems.map((it) => OfflineContentMediaItem(supplier, id, it)).toList();
+    return onlineMediaItems
+        .mapIndexed(
+          (index, it) => OfflineContentMediaItem(supplier, id, it, index),
+        )
+        .toList();
   }
 
   @override
@@ -54,44 +59,57 @@ class OfflineContentDetails extends Equatable implements ContentDetails {
 class OfflineContentMediaItem extends Equatable implements ContentMediaItem {
   final String supplier;
   final String id;
-  final ContentMediaItem _actualMediaItem;
-
-  const OfflineContentMediaItem(this.supplier, this.id, this._actualMediaItem);
+  final ContentMediaItem? _actualMediaItem;
 
   @override
-  String? get image => _actualMediaItem.image;
+  final int number;
+
+  const OfflineContentMediaItem(
+    this.supplier,
+    this.id,
+    this._actualMediaItem,
+    this.number,
+  );
 
   @override
-  int get number => _actualMediaItem.number;
+  String? get image => _actualMediaItem?.image;
 
   @override
-  String? get section => _actualMediaItem.section;
+  String? get section => _actualMediaItem?.section;
 
   @override
   Future<List<ContentMediaItemSource>> get sources async {
     final merged = <ContentMediaItemSource>[];
-    final offlieSources = await OfflineStorage().getSources(
+    final offlineSources = await OfflineStorage().getSources(
       supplier,
       id,
       number,
     );
 
-    merged.addAll(offlieSources);
-    final onlineSources = await _actualMediaItem.sources;
+    if (_actualMediaItem != null) {
+      merged.addAll(offlineSources);
 
-    for (final source in onlineSources) {
-      final notAvalaibleOffline = offlieSources.where((it) => it.description == source.description).firstOrNull == null;
+      final onlineSources = await _actualMediaItem.sources;
 
-      if (notAvalaibleOffline) {
-        merged.add(source);
+      for (final source in onlineSources) {
+        final notAvalaibleOffline =
+            offlineSources
+                .where((it) => it.description == source.description)
+                .firstOrNull ==
+            null;
+
+        if (notAvalaibleOffline) {
+          merged.add(source);
+        }
       }
-    }
 
-    return merged;
+      return merged;
+    }
+    return offlineSources;
   }
 
   @override
-  String get title => _actualMediaItem.title;
+  String get title => _actualMediaItem?.title ?? "Episode $number";
 
   @override
   List<Object?> get props => [supplier, id, number];
@@ -126,23 +144,29 @@ class OfflineContentInfo implements ContentInfo {
     int diskUsage,
   ) {
     return OfflineContentInfo(
-        id: id,
-        supplier: supplier,
-        title: json?["title"]?.toString() ?? "Unknown",
-        secondaryTitle: json?["secondaryTitle"]?.toString(),
-        image: json?["image"]?.toString() ?? "",
-        diskUsage: diskUsage);
+      id: id,
+      supplier: supplier,
+      title: json?["title"]?.toString() ?? "Unknown",
+      secondaryTitle: json?["secondaryTitle"]?.toString(),
+      image: json?["image"]?.toString() ?? "",
+      diskUsage: diskUsage,
+    );
   }
 }
 
 // marker interface
 interface class OfflineContenItemSource {}
 
-class OfflineContentMediaItemSource extends SimpleContentMediaItemSource implements OfflineContenItemSource {
-  const OfflineContentMediaItemSource({required super.description, required super.link});
+class OfflineContentMediaItemSource extends SimpleContentMediaItemSource
+    implements OfflineContenItemSource {
+  const OfflineContentMediaItemSource({
+    required super.description,
+    required super.link,
+  });
 }
 
-class OfflineMangaMediaItemSource implements MangaMediaItemSource, OfflineContenItemSource {
+class OfflineMangaMediaItemSource
+    implements MangaMediaItemSource, OfflineContenItemSource {
   @override
   final String description;
   final String dir;
@@ -175,11 +199,7 @@ class OfflineMangaMediaItemSource implements MangaMediaItemSource, OfflineConten
 
   @override
   FutureOr<List<ImageProvider<Object>>> get images async {
-    return (await pages)
-        .map(
-          (path) => FileImage(File(path)),
-        )
-        .toList();
+    return (await pages).map((path) => FileImage(File(path))).toList();
   }
 
   @override

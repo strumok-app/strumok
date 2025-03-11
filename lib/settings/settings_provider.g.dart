@@ -12,14 +12,15 @@ String _$brightnessSettingHash() => r'4d0273e61824588f50629dfe214f1915c43841b8';
 @ProviderFor(BrightnessSetting)
 final brightnessSettingProvider =
     AutoDisposeNotifierProvider<BrightnessSetting, Brightness?>.internal(
-  BrightnessSetting.new,
-  name: r'brightnessSettingProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$brightnessSettingHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      BrightnessSetting.new,
+      name: r'brightnessSettingProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$brightnessSettingHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$BrightnessSetting = AutoDisposeNotifier<Brightness?>;
 String _$colorSettingsHash() => r'b73ce6f6b4e78ee51f330e974cd9f0ffecf5826f';
@@ -28,14 +29,15 @@ String _$colorSettingsHash() => r'b73ce6f6b4e78ee51f330e974cd9f0ffecf5826f';
 @ProviderFor(ColorSettings)
 final colorSettingsProvider =
     AutoDisposeNotifierProvider<ColorSettings, Color>.internal(
-  ColorSettings.new,
-  name: r'colorSettingsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$colorSettingsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      ColorSettings.new,
+      name: r'colorSettingsProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$colorSettingsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$ColorSettings = AutoDisposeNotifier<Color>;
 String _$mangaReaderScaleSettingsHash() =>
@@ -44,12 +46,15 @@ String _$mangaReaderScaleSettingsHash() =>
 /// See also [MangaReaderScaleSettings].
 @ProviderFor(MangaReaderScaleSettings)
 final mangaReaderScaleSettingsProvider = AutoDisposeNotifierProvider<
-    MangaReaderScaleSettings, MangaReaderScale>.internal(
+  MangaReaderScaleSettings,
+  MangaReaderScale
+>.internal(
   MangaReaderScaleSettings.new,
   name: r'mangaReaderScaleSettingsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$mangaReaderScaleSettingsHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$mangaReaderScaleSettingsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -61,30 +66,36 @@ String _$mangaReaderBackgroundSettingsHash() =>
 /// See also [MangaReaderBackgroundSettings].
 @ProviderFor(MangaReaderBackgroundSettings)
 final mangaReaderBackgroundSettingsProvider = AutoDisposeNotifierProvider<
-    MangaReaderBackgroundSettings, MangaReaderBackground>.internal(
+  MangaReaderBackgroundSettings,
+  MangaReaderBackground
+>.internal(
   MangaReaderBackgroundSettings.new,
   name: r'mangaReaderBackgroundSettingsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$mangaReaderBackgroundSettingsHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$mangaReaderBackgroundSettingsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$MangaReaderBackgroundSettings
-    = AutoDisposeNotifier<MangaReaderBackground>;
+typedef _$MangaReaderBackgroundSettings =
+    AutoDisposeNotifier<MangaReaderBackground>;
 String _$mangaReaderModeSettingsHash() =>
     r'fb5a09f84b61be79da352c0275511c3f0b1e1a08';
 
 /// See also [MangaReaderModeSettings].
 @ProviderFor(MangaReaderModeSettings)
 final mangaReaderModeSettingsProvider = AutoDisposeNotifierProvider<
-    MangaReaderModeSettings, MangaReaderMode>.internal(
+  MangaReaderModeSettings,
+  MangaReaderMode
+>.internal(
   MangaReaderModeSettings.new,
   name: r'mangaReaderModeSettingsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$mangaReaderModeSettingsHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$mangaReaderModeSettingsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -96,12 +107,15 @@ String _$contentLanguageSettingsHash() =>
 /// See also [ContentLanguageSettings].
 @ProviderFor(ContentLanguageSettings)
 final contentLanguageSettingsProvider = AutoDisposeNotifierProvider<
-    ContentLanguageSettings, Set<ContentLanguage>>.internal(
+  ContentLanguageSettings,
+  Set<ContentLanguage>
+>.internal(
   ContentLanguageSettings.new,
   name: r'contentLanguageSettingsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$contentLanguageSettingsHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$contentLanguageSettingsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
