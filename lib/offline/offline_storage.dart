@@ -65,6 +65,64 @@ class OfflineStorage {
     return result;
   }
 
+  Future<void> storeDetails(ContentDetails details, {overrride = false}) async {
+    final contentDetailsPath = _getContentDetailsPath(
+      details.supplier,
+      details.id,
+    );
+    final contentDetailsFile = File(contentDetailsPath);
+    if (!await contentDetailsFile.exists() || overrride) {
+      await contentDetailsFile.create(recursive: true);
+      await contentDetailsFile.writeAsString(
+        _contentDetailsToJson(details),
+        mode: FileMode.write,
+      );
+    }
+  }
+
+  Future<ContentDetails> getDetails(String supplier, String id) async {
+    final contentDetailsPath = _getContentRootPath(supplier, id);
+    final contentDetailsJson = await _readContentDetailsJson(
+      contentDetailsPath,
+    );
+
+    if (contentDetailsJson == null) {
+      throw Exception("Content details not found");
+    }
+
+    return OfflineContentDetails.create(id, supplier, contentDetailsJson);
+  }
+
+  Future<List<ContentMediaItem>> getMediaItems(
+    String supplier,
+    String id,
+  ) async {
+    final contentDetailsPath = _getContentRootPath(supplier, id);
+    final contentDetailsDir = Directory(contentDetailsPath);
+    final mediaItems = <ContentMediaItem>[];
+
+    int index = 0;
+
+    await for (final fsEntry in contentDetailsDir.list()) {
+      if (fsEntry is Directory) {
+        final fsEntryPath = fsEntry.path;
+        final fsEntryName = fsEntryPath.substring(
+          contentDetailsPath.length + 1,
+        );
+
+        final num = int.tryParse(fsEntryName);
+
+        if (num != null) {
+          mediaItems.add(
+            OfflineContenMediaItem(supplier, id, "${num + 1}", index, num),
+          );
+        }
+      }
+    }
+
+    return mediaItems;
+  }
+
   Future<List<ContentMediaItemSource>> getSources(
     String supplier,
     String id,
@@ -131,34 +189,6 @@ class OfflineStorage {
     if (request != null) {
       DownloadManager().download(request);
     }
-  }
-
-  Future<void> storeDetails(ContentDetails details, {overrride = false}) async {
-    final contentDetailsPath = _getContentDetailsPath(
-      details.supplier,
-      details.id,
-    );
-    final contentDetailsFile = File(contentDetailsPath);
-    if (!await contentDetailsFile.exists() || overrride) {
-      await contentDetailsFile.create(recursive: true);
-      await contentDetailsFile.writeAsString(
-        _contentDetailsToJson(details),
-        mode: FileMode.write,
-      );
-    }
-  }
-
-  Future<ContentDetails> getDetails(String supplier, String id) async {
-    final contentDetailsPath = _getContentDetailsPath(supplier, id);
-    final contentDetailsJson = await _readContentDetailsJson(
-      contentDetailsPath,
-    );
-
-    if (contentDetailsJson == null) {
-      throw Exception("Content details not found");
-    }
-
-    throw UnimplementedError();
   }
 
   Future<void> deleteAll(String supplier, String id) async {
@@ -229,6 +259,7 @@ class OfflineStorage {
       "image": contentDetails.image,
       "mediaType": contentDetails.mediaType.name,
       "additionalInfo": contentDetails.additionalInfo,
+      "description": contentDetails.description,
     });
   }
 

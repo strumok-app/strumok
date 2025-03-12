@@ -8,9 +8,99 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:strumok/offline/offline_storage.dart';
 
-class ContentDetailsWithOfflineMedia extends Equatable
-    implements ContentDetails {
-  const ContentDetailsWithOfflineMedia(this._actualDetails);
+class OfflineContentDetails implements ContentDetails {
+  @override
+  final String id;
+  @override
+  final String supplier;
+  @override
+  final String title;
+  @override
+  final String? secondaryTitle;
+  @override
+  final String image;
+  @override
+  final String description;
+  @override
+  final MediaType mediaType;
+
+  List<ContentMediaItem>? _mediaItems;
+
+  OfflineContentDetails._({
+    required this.id,
+    required this.supplier,
+    required this.title,
+    required this.secondaryTitle,
+    required this.image,
+    required this.description,
+    required this.mediaType,
+  });
+
+  factory OfflineContentDetails.create(
+    String id,
+    String supplier,
+    Map<String, Object?>? json,
+  ) {
+    final mediaTypeJson = json?["mediaType"]?.toString();
+    final mediaType =
+        MediaType.values.where((i) => i.name == mediaTypeJson).firstOrNull ??
+        MediaType.video;
+
+    return OfflineContentDetails._(
+      id: id,
+      supplier: supplier,
+      title: json?["title"]?.toString() ?? "Unknown",
+      secondaryTitle: json?["secondaryTitle"]?.toString(),
+      image: json?["image"]?.toString() ?? "",
+      description: json?["description"]?.toString() ?? "",
+      mediaType: mediaType,
+    );
+  }
+
+  @override
+  List<String> get additionalInfo => const [];
+
+  @override
+  Future<Iterable<ContentMediaItem>> get mediaItems async =>
+      _mediaItems ??= await OfflineStorage().getMediaItems(supplier, id);
+
+  @override
+  List<ContentInfo> get similar => const [];
+}
+
+class OfflineContenMediaItem extends Equatable implements ContentMediaItem {
+  final String supplier;
+  final String id;
+  @override
+  final String title;
+  @override
+  final int number;
+  final int _folderNumber;
+
+  const OfflineContenMediaItem(
+    this.supplier,
+    this.id,
+    this.title,
+    this.number,
+    this._folderNumber,
+  );
+
+  @override
+  List<Object?> get props => [supplier, id, number];
+
+  @override
+  String? get image => null;
+
+  @override
+  String? get section => null;
+
+  @override
+  Future<List<ContentMediaItemSource>> get sources async =>
+      await OfflineStorage().getSources(supplier, id, _folderNumber);
+}
+
+class ContentDetailsWithOffline extends Equatable implements ContentDetails {
+  const ContentDetailsWithOffline(this._actualDetails);
 
   final ContentDetails _actualDetails;
 
@@ -32,7 +122,7 @@ class ContentDetailsWithOfflineMedia extends Equatable
 
     return onlineMediaItems
         .mapIndexed(
-          (index, it) => OfflineContentMediaItem(supplier, id, it, index),
+          (index, it) => ContentMediaItemWithOfflline(supplier, id, it),
         )
         .toList();
   }
@@ -56,60 +146,57 @@ class ContentDetailsWithOfflineMedia extends Equatable
   List<Object?> get props => [supplier, id];
 }
 
-class OfflineContentMediaItem extends Equatable implements ContentMediaItem {
+class ContentMediaItemWithOfflline extends Equatable
+    implements ContentMediaItem {
   final String supplier;
   final String id;
-  final ContentMediaItem? _actualMediaItem;
+  final ContentMediaItem _actualMediaItem;
 
-  @override
-  final int number;
-
-  const OfflineContentMediaItem(
+  const ContentMediaItemWithOfflline(
     this.supplier,
     this.id,
     this._actualMediaItem,
-    this.number,
   );
 
   @override
-  String? get image => _actualMediaItem?.image;
+  String? get image => _actualMediaItem.image;
 
   @override
-  String? get section => _actualMediaItem?.section;
+  String? get section => _actualMediaItem.section;
+
+  @override
+  int get number => _actualMediaItem.number;
+
+  @override
+  String get title => _actualMediaItem.title;
 
   @override
   Future<List<ContentMediaItemSource>> get sources async {
-    final merged = <ContentMediaItemSource>[];
     final offlineSources = await OfflineStorage().getSources(
       supplier,
       id,
       number,
     );
 
-    if (_actualMediaItem != null) {
-      merged.addAll(offlineSources);
+    final merged = <ContentMediaItemSource>[];
+    merged.addAll(offlineSources);
 
-      final onlineSources = await _actualMediaItem.sources;
+    final onlineSources = await _actualMediaItem.sources;
 
-      for (final source in onlineSources) {
-        final notAvalaibleOffline =
-            offlineSources
-                .where((it) => it.description == source.description)
-                .firstOrNull ==
-            null;
+    for (final source in onlineSources) {
+      final notAvalaibleOffline =
+          offlineSources
+              .where((it) => it.description == source.description)
+              .firstOrNull ==
+          null;
 
-        if (notAvalaibleOffline) {
-          merged.add(source);
-        }
+      if (notAvalaibleOffline) {
+        merged.add(source);
       }
-
-      return merged;
     }
-    return offlineSources;
-  }
 
-  @override
-  String get title => _actualMediaItem?.title ?? "Episode $number";
+    return merged;
+  }
 
   @override
   List<Object?> get props => [supplier, id, number];
@@ -128,7 +215,7 @@ class OfflineContentInfo implements ContentInfo {
   final String image;
   final int diskUsage;
 
-  OfflineContentInfo({
+  OfflineContentInfo._({
     required this.id,
     required this.supplier,
     required this.title,
@@ -143,7 +230,7 @@ class OfflineContentInfo implements ContentInfo {
     Map<String, Object?>? json,
     int diskUsage,
   ) {
-    return OfflineContentInfo(
+    return OfflineContentInfo._(
       id: id,
       supplier: supplier,
       title: json?["title"]?.toString() ?? "Unknown",

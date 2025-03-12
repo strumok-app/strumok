@@ -1,6 +1,7 @@
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:strumok/settings/settings_provider.dart';
 
 part 'recommendations_provider.g.dart';
 
@@ -35,8 +36,20 @@ class RecommendationChannelState {
 @Riverpod(keepAlive: true)
 class RecommendationChannel extends _$RecommendationChannel {
   @override
-  FutureOr<RecommendationChannelState> build(String supplierName, String channel) async {
-    final recommendations = await ContentSuppliers().loadRecommendationsChannel(supplierName, channel);
+  FutureOr<RecommendationChannelState> build(
+    String supplierName,
+    String channel,
+  ) async {
+    final offlineMode = ref.watch(offlineModeProvider);
+    if (offlineMode) {
+      return RecommendationChannelState(recommendations: []);
+    }
+
+    final recommendations = await ContentSuppliers().loadRecommendationsChannel(
+      supplierName,
+      channel,
+    );
+
     return RecommendationChannelState(recommendations: recommendations);
   }
 
@@ -47,21 +60,14 @@ class RecommendationChannel extends _$RecommendationChannel {
       return;
     }
 
-    state = AsyncValue.data(
-      current.copyWith(loading: true),
-    );
+    state = AsyncValue.data(current.copyWith(loading: true));
 
     final nextPage = current.page + 1;
-    final nextRecommendations =
-        await ContentSuppliers().loadRecommendationsChannel(supplierName, channel, page: nextPage);
+    final nextRecommendations = await ContentSuppliers()
+        .loadRecommendationsChannel(supplierName, channel, page: nextPage);
 
     if (nextRecommendations.isEmpty) {
-      state = AsyncValue.data(
-        current.copyWith(
-          loading: false,
-          hasNext: false,
-        ),
-      );
+      state = AsyncValue.data(current.copyWith(loading: false, hasNext: false));
     } else {
       state = AsyncValue.data(
         current.copyWith(

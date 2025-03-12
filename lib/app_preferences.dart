@@ -220,6 +220,10 @@ class AppPreferences {
   static set videoPlayerSettingFixedPosition(int pos) =>
       instance.setInt("video_player_setting_fixed_position", pos);
 
+  static bool get offlineMode => instance.getBool("offline_mode") ?? false;
+
+  static set offlineMode(bool mode) => instance.setBool("offline_mode", mode);
+
   static set ffiSupplierBundleInfo(FFISupplierBundleInfo? info) {
     if (info == null) {
       instance.remove("ffi_supplier_bundle_info");

@@ -8,6 +8,19 @@ import 'package:strumok/utils/collections.dart';
 part 'settings_provider.g.dart';
 
 @riverpod
+class OfflineMode extends _$OfflineMode {
+  @override
+  bool build() {
+    return AppPreferences.offlineMode;
+  }
+
+  void select(bool mode) {
+    AppPreferences.offlineMode = mode;
+    state = mode;
+  }
+}
+
+@riverpod
 class BrightnessSetting extends _$BrightnessSetting {
   @override
   Brightness? build() {
@@ -76,7 +89,8 @@ class MangaReaderModeSettings extends _$MangaReaderModeSettings {
 class ContentLanguageSettings extends _$ContentLanguageSettings {
   @override
   Set<ContentLanguage> build() {
-    return AppPreferences.selectedContentLanguage ?? ContentLanguage.values.toSet();
+    return AppPreferences.selectedContentLanguage ??
+        ContentLanguage.values.toSet();
   }
 
   void toggleLanguage(ContentLanguage lang) {

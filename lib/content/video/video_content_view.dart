@@ -34,7 +34,7 @@ extension PlayerExt on Player {
   }
 }
 
-// TODO: this smells bad need to figureout how to make it better
+// TODO: this smells, bad need to figureout how to make it better
 class PlayerController {
   final Player _player;
   final ContentDetails contentDetails;
@@ -108,13 +108,13 @@ class PlayerController {
         start: Duration(seconds: start),
       );
 
-      isLoading.value = false;
       _ref.read(playerErrorsProvider.notifier).reset();
 
       if (progress.currentItem == itemIdx &&
           progress.currentSourceName == sourceName) {
         logger.i("Starting video: $media");
         await _player.open(media);
+        isLoading.value = false;
         _currentSources = sources;
       }
 

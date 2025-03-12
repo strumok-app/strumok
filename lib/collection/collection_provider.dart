@@ -3,6 +3,7 @@ import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_repository.dart';
 import 'package:strumok/collection/collection_service.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
+import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/utils/collections.dart';
 import 'package:collection/collection.dart';
@@ -44,11 +45,13 @@ class CollectionState {
 @Riverpod(keepAlive: true)
 CollectionService collectionService(Ref ref) {
   final user = ref.watch(userProvider).valueOrNull;
+  final offlineMode = ref.read(offlineModeProvider);
 
-  final repository = FirebaseRepository(
-    downstream: IsarCollectionRepository(),
-    user: user,
-  );
+  final localRepository = IsarCollectionRepository();
+  final repository =
+      offlineMode
+          ? localRepository
+          : FirebaseRepository(downstream: localRepository, user: user);
 
   return CollectionService(repository: repository);
 }
@@ -64,7 +67,9 @@ class CollectionChanges extends _$CollectionChanges {
 final collectionFilterQueryProvider = StateProvider<String>((ref) => "");
 
 @riverpod
-FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collection(Ref ref) async {
+FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collection(
+  Ref ref,
+) async {
   ref.watch(collectionChangesProvider);
 
   final repository = ref.watch(collectionServiceProvider);
@@ -83,18 +88,23 @@ FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collection(R
 }
 
 @riverpod
-FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collectionActiveItems(Ref ref) async {
+FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>
+collectionActiveItems(Ref ref) async {
   ref.watch(collectionChangesProvider);
 
   final repository = ref.watch(collectionServiceProvider);
   final suppliers = ref.watch(enabledSuppliersProvider);
 
-  final collectionItems = await repository.search(status: {
-    MediaCollectionItemStatus.inProgress,
-    MediaCollectionItemStatus.latter,
-  });
+  final collectionItems = await repository.search(
+    status: {
+      MediaCollectionItemStatus.inProgress,
+      MediaCollectionItemStatus.latter,
+    },
+  );
 
-  final activeItems = collectionItems.where((item) => suppliers.contains(item.supplier)).groupListsBy((e) => e.status);
+  final activeItems = collectionItems
+      .where((item) => suppliers.contains(item.supplier))
+      .groupListsBy((e) => e.status);
 
   return activeItems;
 }
@@ -154,7 +164,8 @@ class CollectionFilter extends _$CollectionFilter {
   }
 
   void toggleAllSuppliers(bool select) {
-    final newSupplierNames = select ? ContentSuppliers().suppliersName : <String>{};
+    final newSupplierNames =
+        select ? ContentSuppliers().suppliersName : <String>{};
     state = state.copyWith(suppliersNames: newSupplierNames);
   }
 }

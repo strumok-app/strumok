@@ -8,28 +8,25 @@ class SettingsSection extends StatelessWidget {
 
   const SettingsSection({
     super.key,
-    this.contentPadding = 8,
+    this.contentPadding = 4,
     this.labelWidth = 300,
     required this.label,
     required this.section,
   });
   @override
   Widget build(BuildContext context) {
-    final padding = EdgeInsets.only(top: contentPadding, bottom: contentPadding);
+    final padding = EdgeInsets.only(
+      top: contentPadding,
+      bottom: contentPadding,
+    );
     final labelBox = SizedBox(
       width: labelWidth,
-      child: Padding(
-        padding: padding,
-        child: label,
-      ),
+      child: Padding(padding: padding, child: label),
     );
 
     final sectionBox = Align(
       alignment: Alignment.centerRight,
-      child: Padding(
-        padding: padding,
-        child: section,
-      ),
+      child: Padding(padding: padding, child: section),
     );
 
     return LayoutBuilder(
@@ -42,10 +39,7 @@ class SettingsSection extends StatelessWidget {
         } else {
           return Row(
             mainAxisSize: MainAxisSize.max,
-            children: [
-              labelBox,
-              Flexible(child: sectionBox),
-            ],
+            children: [labelBox, Flexible(child: sectionBox)],
           );
         }
       },

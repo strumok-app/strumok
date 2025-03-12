@@ -6,6 +6,23 @@ part of 'settings_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$offlineModeHash() => r'b5d82eb4eb63c37fe4f39938bb169149042d12ba';
+
+/// See also [OfflineMode].
+@ProviderFor(OfflineMode)
+final offlineModeProvider =
+    AutoDisposeNotifierProvider<OfflineMode, bool>.internal(
+      OfflineMode.new,
+      name: r'offlineModeProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$offlineModeHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$OfflineMode = AutoDisposeNotifier<bool>;
 String _$brightnessSettingHash() => r'4d0273e61824588f50629dfe214f1915c43841b8';
 
 /// See also [BrightnessSetting].

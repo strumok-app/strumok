@@ -9,6 +9,7 @@ import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/collection/sync/collection_sync.dart';
 import 'package:strumok/collection/sync/collection_sync_provider.dart';
 import 'package:strumok/download/downloading_icon.dart';
+import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/widgets/new_version_icon.dart';
 
 class AccountMenuIcon extends StatelessWidget {
@@ -23,9 +24,7 @@ class AccountMenuIcon extends StatelessWidget {
         padding: EdgeInsets.zero,
         style: ButtonStyle(
           shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           ),
         ),
         onPressed: () {
@@ -54,6 +53,7 @@ class AccountMenu extends StatelessWidget {
           children: [
             const UserMenuItem(),
             const SyncMenuItem(),
+            const OfllineModeItem(),
             ListTile(
               leading: const DownloadingIcon(Icons.download_for_offline),
               title: Text(AppLocalizations.of(context)!.downloads),
@@ -75,38 +75,67 @@ class AccountMenu extends StatelessWidget {
   }
 }
 
+class OfllineModeItem extends ConsumerWidget {
+  const OfllineModeItem({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mode = ref.watch(offlineModeProvider);
+
+    return ListTile(
+      contentPadding: EdgeInsets.only(left: 16, right: 8),
+      leading: const Icon(Icons.wifi_off),
+      title: Text("Режим офлайн"),
+      trailing: Switch(
+        value: mode,
+        onChanged: (value) {
+          ref.read(offlineModeProvider.notifier).select(value);
+        },
+      ),
+    );
+  }
+}
+
 class SyncMenuItem extends ConsumerWidget {
   const SyncMenuItem({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final offlineMode = ref.watch(offlineModeProvider);
     final enabled = ref.watch(userProvider).valueOrNull != null;
-    final syncStatus = ref.watch(collectionSyncStatusProvider).valueOrNull ?? false;
+    final syncStatus =
+        ref.watch(collectionSyncStatusProvider).valueOrNull ?? false;
 
-    if (!enabled) {
+    if (offlineMode || !enabled) {
       return const SizedBox.shrink();
     }
 
     return ListTile(
-        enabled: !syncStatus,
-        leading: syncStatus
-            ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator())
-            : const Icon(Icons.refresh_rounded),
-        title: Text(AppLocalizations.of(context)!.collectionSync),
-        onTap: () async {
-          await CollectionSync.instance.run();
+      enabled: !syncStatus,
+      leading:
+          syncStatus
+              ? const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(),
+              )
+              : const Icon(Icons.refresh_rounded),
+      title: Text(AppLocalizations.of(context)!.collectionSync),
+      onTap: () async {
+        await CollectionSync.instance.run();
 
-          ref.invalidate(collectionItemProvider);
+        ref.invalidate(collectionItemProvider);
 
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(AppLocalizations.of(context)!.collectionSyncDone),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          }
-        });
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.collectionSyncDone),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      },
+    );
   }
 }
 
@@ -115,36 +144,45 @@ class UserMenuItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final offlineMode = ref.watch(offlineModeProvider);
     final user = ref.watch(userProvider);
+
+    if (offlineMode) {
+      return SizedBox.shrink();
+    }
 
     return user.maybeWhen(
       data: (user) {
         return user != null
             ? ListTile(
-                contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                leading: SizedBox(
-                  height: 48,
-                  width: 48,
-                  child: CircleAvatar(
-                    backgroundImage: user.picture != null ? NetworkImage(user.picture!) : null,
-                  ),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 8,
+              ),
+              leading: SizedBox(
+                height: 48,
+                width: 48,
+                child: CircleAvatar(
+                  backgroundImage:
+                      user.picture != null ? NetworkImage(user.picture!) : null,
                 ),
-                title: Center(child: Text(user.name!)),
-                visualDensity: VisualDensity.standard,
-                trailing: IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: () {
-                    Auth().singOut();
-                  },
-                ),
-              )
-            : ListTile(
-                leading: const Icon(Icons.login),
-                title: Text(AppLocalizations.of(context)!.signIn),
-                onTap: () {
-                  Auth().signIn();
+              ),
+              title: Center(child: Text(user.name!)),
+              visualDensity: VisualDensity.standard,
+              trailing: IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () {
+                  Auth().singOut();
                 },
-              );
+              ),
+            )
+            : ListTile(
+              leading: const Icon(Icons.login),
+              title: Text(AppLocalizations.of(context)!.signIn),
+              onTap: () {
+                Auth().signIn();
+              },
+            );
       },
       orElse: () => const SizedBox.shrink(),
     );
