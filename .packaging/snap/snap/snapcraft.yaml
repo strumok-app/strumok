@@ -1,0 +1,20 @@
+name: strumok
+base: core24
+version: '1.10.0'
+summary: Watch tv shows, movies, anime and read manga in singe app
+description: Watch tv shows, movies, anime and read manga in singe app
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+parts:
+  my-part:
+    # See 'snapcraft plugins'
+    plugin: dump
+    source: https://github.com/strumok-app/strumok/releases/download/latest/strumok-linux.tar.gz
+    stage-packages:
+    - libmpv2
+
+apps:
+  strumok:
+    command: strumok
