@@ -58,17 +58,17 @@ Watch movies, tv shows, anime and read manga in one app on android, windows and 
 
 ### Android / Android TV
 
-[Download](https://github.com/strumok-app/strumok/releases/download/latest/app-release.apk) android universal apk
+[Download](https://github.com/strumok-app/strumok/releases/latest/download/app-release.apk) android universal apk
 
 ### Windows
 
-[Download](https://github.com/strumok-app/strumok/releases/download/latest/StrumokSetup.exe) windows installer
+[Download](https://github.com/strumok-app/strumok/releases/latest/download/StrumokSetup.exe) windows installer
 
 ### Linux
 
 Install [libmpv](https://mpv.io/installation/)
 
-[Download](https://github.com/strumok-app/strumok/releases/download/latest/strumok-linux.tar.gz) archive and unpack
+[Download](https://github.com/strumok-app/strumok/releases/latest/download/strumok-linux.tar.gz) archive and unpack
 
 ### Disclaimer
 
