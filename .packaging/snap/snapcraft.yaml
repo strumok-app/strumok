@@ -11,7 +11,7 @@ parts:
   my-part:
     # See 'snapcraft plugins'
     plugin: dump
-    source: https://github.com/strumok-app/strumok/releases/download/latest/strumok-linux.tar.gz
+    source: https://github.com/strumok-app/strumok/releases/latest/download/strumok-linux.tar.gz
     stage-packages:
     - libmpv2
 
