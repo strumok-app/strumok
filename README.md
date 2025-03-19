@@ -58,17 +58,17 @@
 
 ### Android / Android TV
 
-[Завантажити](https://github.com/strumok-app/strumok/releases/download/latest/app-release.apk) універсальний android apk
+[Завантажити](https://github.com/strumok-app/strumok/releases/latest/download/app-release.apk) універсальний android apk
 
 ### Windows
 
-[Завантажити](https://github.com/strumok-app/strumok/releases/download/latest/StrumokSetup.exe) windows інсталятор
+[Завантажити](https://github.com/strumok-app/strumok/releases/latest/download/StrumokSetup.exe) windows інсталятор
 
 ### Linux
 
 Встановити [libmpv](https://mpv.io/installation/)
 
-[Завантажити](https://github.com/strumok-app/strumok/releases/download/latest/strumok-linux.tar.gz) архів та розпакувати
+[Завантажити](https://github.com/strumok-app/strumok/releases/latest/download/strumok-linux.tar.gz) архів та розпакувати
 
 ### Disclaimer
 

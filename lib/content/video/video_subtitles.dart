@@ -21,7 +21,12 @@ class WithSubtitles extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Stack(children: [Positioned.fill(child: _PlayerSubtitles()), child]);
+    return Stack(
+      children: [
+        Positioned.fill(child: _PlayerSubtitles()),
+        Positioned.fill(child: child),
+      ],
+    );
   }
 }
 
