@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:strumok/app_database.dart';
 import 'package:strumok/app_init_firebase.dart';
 import 'package:strumok/app_localizations.dart';
@@ -20,6 +21,13 @@ import 'package:media_kit/media_kit.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
+  const sentryDns = String.fromEnvironment("SENTRY_DNS");
+  await SentryFlutter.init((options) {
+    options.dsn = sentryDns;
+  }, appRunner: appRunner);
+}
+
+void appRunner() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (isDesktopDevice()) {
@@ -43,10 +51,7 @@ void main() async {
   await ContentSuppliers().load();
 
   // start ui
-  runApp(ProviderScope(
-    observers: [ErrorProviderObserver()],
-    child: MainApp(),
-  ));
+  runApp(ProviderScope(observers: [ErrorProviderObserver()], child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -64,20 +69,22 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        scrollBehavior: const MaterialScrollBehavior().copyWith(dragDevices: {
-          PointerDeviceKind.mouse,
-          PointerDeviceKind.touch,
-          PointerDeviceKind.trackpad,
-        }),
-        routerConfig: _appRouter.config(),
-        builder: (context, child) => AppTheme(
-          child: VersionGuard(
-            child: GlobalNotifications(
-              router: _appRouter,
-              child: child!,
-            ),
-          ),
+        scrollBehavior: const MaterialScrollBehavior().copyWith(
+          dragDevices: {
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.touch,
+            PointerDeviceKind.trackpad,
+          },
         ),
+        routerConfig: _appRouter.config(
+          navigatorObservers: () => [SentryNavigatorObserver()],
+        ),
+        builder:
+            (context, child) => AppTheme(
+              child: VersionGuard(
+                child: GlobalNotifications(router: _appRouter, child: child!),
+              ),
+            ),
       ),
     );
   }
