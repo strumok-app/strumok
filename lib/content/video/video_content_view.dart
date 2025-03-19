@@ -382,12 +382,12 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
 
   @override
   Widget build(BuildContext context) {
-    final view = switch (Theme.of(context).platform) {
-      TargetPlatform.android =>
-        TVDetector.isTV ? _renderTvView() : _renderMobileView(),
-      TargetPlatform.iOS => _renderMobileView(),
-      _ => _renderDesktopView(),
-    };
+    // final view = switch (Theme.of(context).platform) {
+    //   TargetPlatform.android =>
+    //     TVDetector.isTV ? _renderTvView() : _renderMobileView(),
+    //   TargetPlatform.iOS => _renderMobileView(),
+    //   _ => _renderDesktopView(),
+    // };
 
     final size = MediaQuery.sizeOf(context);
 
@@ -397,7 +397,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
       color: Colors.black,
       child: Stack(
         children: [
-          view,
+          _renderTvView(),
           ValueListenableBuilder(
             valueListenable: _playerController.isLoading,
             builder: (context, value, child) {

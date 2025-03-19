@@ -156,7 +156,8 @@ jobs:
           path: windows-outputs
       - name: RePackage Desktops
         run: |
-          tar -czf strumok-linux.tar.gz -C linux-outputs .
+          chmod +x linux-outputs/strumok
+          tar -czfp strumok-linux.tar.gz -C linux-outputs .
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
