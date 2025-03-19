@@ -157,7 +157,7 @@ jobs:
       - name: RePackage Desktops
         run: |
           chmod +x linux-outputs/strumok
-          tar -czfp strumok-linux.tar.gz -C linux-outputs .
+          tar -czf strumok-linux.tar.gz -C linux-outputs .
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
