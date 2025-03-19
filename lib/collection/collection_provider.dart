@@ -47,7 +47,7 @@ CollectionService collectionService(Ref ref) {
   final user = ref.watch(userProvider).valueOrNull;
   final offlineMode = ref.read(offlineModeProvider);
 
-  final localRepository = IsarCollectionRepository();
+  final localRepository = LocalCollectionRepository();
   final repository =
       offlineMode
           ? localRepository

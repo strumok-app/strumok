@@ -6,123 +6,120 @@ import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/sync/collection_sync.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:firebase_dart/firebase_dart.dart';
-import 'package:isar/isar.dart';
 
-part 'collection_repository.g.dart';
+// @collection
+// @Name("MediaCollectionItem")
+// class IsarMediaCollectionItem {
+//   IsarMediaCollectionItem({
+//     required this.id,
+//     required this.supplier,
+//     required this.title,
+//     required this.image,
+//     required this.status,
+//     required this.mediaType,
+//     this.currentItem,
+//     this.currentSourceName,
+//     this.currentSubtitleName,
+//     this.positions,
+//     this.priority,
+//     this.lastSeen,
+//     this.isarId,
+//   });
 
-@collection
-@Name("MediaCollectionItem")
-class IsarMediaCollectionItem {
-  IsarMediaCollectionItem({
-    required this.id,
-    required this.supplier,
-    required this.title,
-    required this.image,
-    required this.status,
-    required this.mediaType,
-    this.currentItem,
-    this.currentSourceName,
-    this.currentSubtitleName,
-    this.positions,
-    this.priority,
-    this.lastSeen,
-    this.isarId,
-  });
+//   Id? isarId;
 
-  Id? isarId;
+//   final String id;
+//   @Index(
+//     name: "supplierId",
+//     composite: [CompositeIndex('id')],
+//     unique: true,
+//   )
+//   final String supplier;
+//   final String title;
+//   String? secondaryTitle;
+//   final String image;
+//   @Enumerated(EnumType.ordinal)
+//   MediaType mediaType;
+//   int? currentItem;
+//   String? currentSourceName;
+//   String? currentSubtitleName;
+//   List<IsarMediaItemPosition>? positions;
 
-  final String id;
-  @Index(
-    name: "supplierId",
-    composite: [CompositeIndex('id')],
-    unique: true,
-  )
-  final String supplier;
-  final String title;
-  String? secondaryTitle;
-  final String image;
-  @Enumerated(EnumType.ordinal)
-  MediaType mediaType;
-  int? currentItem;
-  String? currentSourceName;
-  String? currentSubtitleName;
-  List<IsarMediaItemPosition>? positions;
+//   @Enumerated(EnumType.ordinal)
+//   MediaCollectionItemStatus status;
 
-  @Enumerated(EnumType.ordinal)
-  MediaCollectionItemStatus status;
+//   int? priority;
+//   DateTime? lastSeen;
 
-  int? priority;
-  DateTime? lastSeen;
+//   @Index(type: IndexType.value, caseSensitive: false)
+//   List<String> get fts => Isar.splitWords(title);
 
-  @Index(type: IndexType.value, caseSensitive: false)
-  List<String> get fts => Isar.splitWords(title);
+//   factory IsarMediaCollectionItem.fromMediaCollectionItem(
+//     MediaCollectionItem collectionItem,
+//   ) {
+//     return IsarMediaCollectionItem(
+//       id: collectionItem.id,
+//       supplier: collectionItem.supplier,
+//       title: collectionItem.title,
+//       image: collectionItem.image,
+//       mediaType: collectionItem.mediaType,
+//       currentItem: collectionItem.currentItem,
+//       currentSourceName: collectionItem.currentSourceName,
+//       currentSubtitleName: collectionItem.currentSubtitleName,
+//       positions: collectionItem.positions.entries
+//           .map(
+//             (e) => IsarMediaItemPosition()
+//               ..number = e.key
+//               ..position = e.value.position
+//               ..length = e.value.length,
+//           )
+//           .toList(),
+//       status: collectionItem.status,
+//       priority: collectionItem.priority,
+//       lastSeen: collectionItem.lastSeen,
+//       isarId: collectionItem.internalId,
+//     );
+//   }
 
-  factory IsarMediaCollectionItem.fromMediaCollectionItem(
-    MediaCollectionItem collectionItem,
-  ) {
-    return IsarMediaCollectionItem(
-      id: collectionItem.id,
-      supplier: collectionItem.supplier,
-      title: collectionItem.title,
-      image: collectionItem.image,
-      mediaType: collectionItem.mediaType,
-      currentItem: collectionItem.currentItem,
-      currentSourceName: collectionItem.currentSourceName,
-      currentSubtitleName: collectionItem.currentSubtitleName,
-      positions: collectionItem.positions.entries
-          .map(
-            (e) => IsarMediaItemPosition()
-              ..number = e.key
-              ..position = e.value.position
-              ..length = e.value.length,
-          )
-          .toList(),
-      status: collectionItem.status,
-      priority: collectionItem.priority,
-      lastSeen: collectionItem.lastSeen,
-      isarId: collectionItem.internalId,
-    );
-  }
+//   MediaCollectionItem toMediaCollectionItem() {
+//     return MediaCollectionItem(
+//       id: id,
+//       supplier: supplier,
+//       title: title,
+//       image: image,
+//       mediaType: mediaType,
+//       currentItem: currentItem ?? 0,
+//       currentSourceName: currentSourceName,
+//       currentSubtitleName: currentSubtitleName,
+//       positions: Map.fromEntries(
+//         positions?.map(
+//               (e) => MapEntry(
+//                 e.number,
+//                 MediaItemPosition(
+//                   position: e.position,
+//                   length: e.length,
+//                 ),
+//               ),
+//             ) ??
+//             {},
+//       ),
+//       status: status,
+//       priority: priority ?? 0,
+//       lastSeen: lastSeen,
+//       internalId: isarId,
+//     );
+//   }
+// }
 
-  MediaCollectionItem toMediaCollectionItem() {
-    return MediaCollectionItem(
-      id: id,
-      supplier: supplier,
-      title: title,
-      image: image,
-      mediaType: mediaType,
-      currentItem: currentItem ?? 0,
-      currentSourceName: currentSourceName,
-      currentSubtitleName: currentSubtitleName,
-      positions: Map.fromEntries(
-        positions?.map(
-              (e) => MapEntry(
-                e.number,
-                MediaItemPosition(
-                  position: e.position,
-                  length: e.length,
-                ),
-              ),
-            ) ??
-            {},
-      ),
-      status: status,
-      priority: priority ?? 0,
-      lastSeen: lastSeen,
-      internalId: isarId,
-    );
-  }
-}
+// @embedded
+// @Name("IsarMediaCollectionItemPosition")
+// class IsarMediaItemPosition {
+//   int number = 0;
+//   int position = 0;
+//   int length = 0;
+// }
 
-@embedded
-@Name("IsarMediaCollectionItemPosition")
-class IsarMediaItemPosition {
-  int number = 0;
-  int position = 0;
-  int length = 0;
-}
-
-abstract class CollectionRepository {
+abstract interface class CollectionRepository {
   Stream<void> get changesStream;
   FutureOr<MediaCollectionItem?> getCollectionItem(String supplier, String id);
   FutureOr<int> save(MediaCollectionItem collectionItem);
@@ -130,72 +127,95 @@ abstract class CollectionRepository {
   FutureOr<void> delete(String supplier, String id);
 }
 
-class IsarCollectionRepository extends CollectionRepository {
-  final Isar db = AppDatabase().database;
-  late final IsarCollection<IsarMediaCollectionItem> collection = db.isarMediaCollectionItems;
+class LocalCollectionRepository extends CollectionRepository {
+  @override
+  Stream<void> get changesStream => throw UnimplementedError();
 
   @override
-  Stream<void> get changesStream => collection.watchLazy();
-  @override
-  FutureOr<MediaCollectionItem?> getCollectionItem(String supplier, String id) async {
-    final collectionItem = await collection.getBySupplierId(supplier, id);
-
-    return collectionItem?.toMediaCollectionItem();
+  FutureOr<MediaCollectionItem?> getCollectionItem(
+    String supplier,
+    String id,
+  ) async {
+    return null;
   }
 
   @override
   FutureOr<int> save(MediaCollectionItem collectionItem) async {
-    final item = IsarMediaCollectionItem.fromMediaCollectionItem(collectionItem);
-
-    return await db.writeTxn(
-      () async => await collection.put(item),
-    );
+    return 0;
   }
 
   @override
-  FutureOr<void> delete(String supplier, String id) async {
-    return await db.writeTxn(
-      () async => await collection.deleteBySupplierId(supplier, id),
-    );
+  FutureOr<Iterable<MediaCollectionItem>> search({String? query}) async {
+    return [];
   }
 
   @override
-  FutureOr<Iterable<MediaCollectionItem>> search({
-    String? query,
-  }) async {
-    final words = query != null ? Isar.splitWords(query) : const [];
-
-    final result = await collection
-        .where()
-        .optional(
-          words.isNotEmpty,
-          (q) {
-            var ftsQ = q.ftsElementStartsWith(words[0]);
-
-            for (var i = 1; i < words.length; i++) {
-              ftsQ = ftsQ.or().ftsElementStartsWith(words[i]);
-            }
-
-            return ftsQ;
-          },
-        )
-        .sortByPriorityDesc()
-        .thenByLastSeenDesc()
-        .findAll();
-
-    return result.map((e) => e.toMediaCollectionItem());
-  }
+  FutureOr<void> delete(String supplier, String id) async {}
 }
+
+// class IsarCollectionRepository extends CollectionRepository {
+//   final Isar db = AppDatabase().database;
+//   late final IsarCollection<IsarMediaCollectionItem> collection = db.isarMediaCollectionItems;
+
+//   @override
+//   Stream<void> get changesStream => collection.watchLazy();
+//   @override
+//   FutureOr<MediaCollectionItem?> getCollectionItem(String supplier, String id) async {
+//     final collectionItem = await collection.getBySupplierId(supplier, id);
+
+//     return collectionItem?.toMediaCollectionItem();
+//   }
+
+//   @override
+//   FutureOr<int> save(MediaCollectionItem collectionItem) async {
+//     final item = IsarMediaCollectionItem.fromMediaCollectionItem(collectionItem);
+
+//     return await db.writeTxn(
+//       () async => await collection.put(item),
+//     );
+//   }
+
+//   @override
+//   FutureOr<void> delete(String supplier, String id) async {
+//     return await db.writeTxn(
+//       () async => await collection.deleteBySupplierId(supplier, id),
+//     );
+//   }
+
+//   @override
+//   FutureOr<Iterable<MediaCollectionItem>> search({
+//     String? query,
+//   }) async {
+//     final words = query != null ? Isar.splitWords(query) : const [];
+
+//     final result = await collection
+//         .where()
+//         .optional(
+//           words.isNotEmpty,
+//           (q) {
+//             var ftsQ = q.ftsElementStartsWith(words[0]);
+
+//             for (var i = 1; i < words.length; i++) {
+//               ftsQ = ftsQ.or().ftsElementStartsWith(words[i]);
+//             }
+
+//             return ftsQ;
+//           },
+//         )
+//         .sortByPriorityDesc()
+//         .thenByLastSeenDesc()
+//         .findAll();
+
+//     return result.map((e) => e.toMediaCollectionItem());
+//   }
+// }
 
 class FirebaseRepository extends CollectionRepository {
   final CollectionRepository downstream;
   final auth.User? user;
   late final FirebaseDatabase database;
 
-  FirebaseRepository({
-    required this.downstream,
-    required this.user,
-  }) {
+  FirebaseRepository({required this.downstream, required this.user}) {
     database = FirebaseDatabase(app: Firebase.app());
 
     if (user != null) {
@@ -238,7 +258,8 @@ class FirebaseRepository extends CollectionRepository {
       return;
     }
 
-    final itemId = "${collectionItem.supplier}${_sanitizeId(collectionItem.id)}";
+    final itemId =
+        "${collectionItem.supplier}${_sanitizeId(collectionItem.id)}";
     final ref = database.reference().child("collection/${user!.id}/$itemId");
 
     await ref.set(collectionItem.toJson());

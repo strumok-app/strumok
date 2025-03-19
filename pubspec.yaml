@@ -22,12 +22,12 @@ dependencies:
   http: ^1.3.0
   # storage
   path_provider: ^2.1.5
-  isar: 
-    version: 3.1.8
-    hosted: https://pub.isar-community.dev/
-  isar_flutter_libs: # contains Isar Core
-    version: 3.1.8
-    hosted: https://pub.isar-community.dev/
+  # isar: 
+  #   version: 3.1.8
+  #   hosted: https://pub.isar-community.dev/
+  # isar_flutter_libs: # contains Isar Core
+  #   version: 3.1.8
+  #   hosted: https://pub.isar-community.dev/
   shared_preferences: ^2.5.2
   # media kit
   media_kit: ^1.1.11                              
@@ -64,6 +64,7 @@ dependencies:
 
   content_suppliers_rust:
     path: content_suppliers_rust
+  sembast: ^3.8.4+1
 
 dev_dependencies:
   analyzer: ^7.3.0
@@ -71,11 +72,11 @@ dev_dependencies:
   auto_route_generator: ^10.0.1
   custom_lint: ^0.7.0
   json_serializable: ^6.9.0
-  isar_generator:
-    git:
-      url: https://github.com/mdddj/isar
-      ref: v3
-      path: packages/isar_generator/
+  # isar_generator:
+  #   git:
+  #     url: https://github.com/mdddj/isar
+  #     ref: v3
+  #     path: packages/isar_generator/
   flutter_lints: ^5.0.0
   riverpod_generator: ^2.6.3
   flutter_launcher_icons: "^0.14.3"
