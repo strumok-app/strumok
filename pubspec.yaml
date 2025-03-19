@@ -1,7 +1,7 @@
 name: strumok
 description: "Strumok"
 publish_to: 'none'
-version: 1.10.0
+version: 1.10.2
 
 environment:
   sdk: ">=3.7.0 <4.0.0"
@@ -57,7 +57,7 @@ dependencies:
   wakelock_plus: ^1.1.1 # same as media_kit have
   rounded_background_text: ^0.5.0
   #tracing
-  # sentry_flutter: ^8.10.1
+  sentry_flutter: ^8.14.0
 
   content_suppliers_api:
     path: content_suppliers_api

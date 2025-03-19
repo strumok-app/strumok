@@ -68,10 +68,7 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
   late bool uiShown = false;
   late bool visible = false;
 
-  late bool buffering = controller(context).player.state.buffering;
-
   FocusNode playPauseFocusNode = FocusNode();
-  final List<StreamSubscription> subscriptions = [];
 
   bool seekVisible = false;
   int seekPosition = 0;
@@ -85,24 +82,7 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (subscriptions.isEmpty) {
-      subscriptions.add(
-        controller(context).player.stream.buffering.listen((event) {
-          setState(() {
-            buffering = event;
-          });
-        }),
-      );
-    }
-  }
-
-  @override
   void dispose() {
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
     _seekTimer?.cancel();
     playPauseFocusNode.dispose();
     super.dispose();
@@ -221,30 +201,12 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
                           )
                           : const SizedBox.shrink(),
                 ),
-                Positioned.fill(child: _renderBufferedIndicator()),
+                Positioned.fill(child: _AndroidTVVideoBufferingIndicator()),
                 Positioned.fill(child: _renderSeekPosition()),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _renderBufferedIndicator() {
-    return Center(
-      child: TweenAnimationBuilder<double>(
-        tween: Tween<double>(begin: 0.0, end: buffering ? 1.0 : 0.0),
-        duration: const Duration(milliseconds: 150),
-        builder: (context, value, child) {
-          // Only mount the buffering indicator if the opacity is greater than 0.0.
-          // This has been done to prevent redundant resource usage in [CircularProgressIndicator].
-          if (value > 0.0) {
-            return Opacity(opacity: value, child: child!);
-          }
-          return const SizedBox.shrink();
-        },
-        child: const CircularProgressIndicator(color: Colors.white),
       ),
     );
   }
@@ -317,6 +279,54 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
           ),
         ],
         inherit: true,
+      ),
+    );
+  }
+}
+
+class _AndroidTVVideoBufferingIndicator extends StatefulWidget {
+  @override
+  State<_AndroidTVVideoBufferingIndicator> createState() =>
+      _AndroidTVVideoBufferingIndicatorState();
+}
+
+class _AndroidTVVideoBufferingIndicatorState
+    extends State<_AndroidTVVideoBufferingIndicator> {
+  late bool buffering = controller(context).player.state.buffering;
+
+  StreamSubscription? _subscription;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _subscription = controller(context).player.stream.buffering.listen((event) {
+      setState(() {
+        buffering = event;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: TweenAnimationBuilder<double>(
+        tween: Tween<double>(begin: 0.0, end: buffering ? 1.0 : 0.0),
+        duration: const Duration(milliseconds: 150),
+        builder: (context, value, child) {
+          // Only mount the buffering indicator if the opacity is greater than 0.0.
+          // This has been done to prevent redundant resource usage in [CircularProgressIndicator].
+          if (value > 0.0) {
+            return Opacity(opacity: value, child: child!);
+          }
+          return const SizedBox.shrink();
+        },
+        child: const CircularProgressIndicator(color: Colors.white),
       ),
     );
   }
