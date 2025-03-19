@@ -19,4 +19,3 @@ parts:
 apps:
   strumok:
     command: strumok
-    adapter: none
