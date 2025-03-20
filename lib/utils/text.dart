@@ -4,7 +4,7 @@ String cleanupQuery(String text) {
   return text.trim().replaceAll('\\s', '\\s');
 }
 
-final wordRegExp = RegExp(r'\b\w+\b');
+final wordRegExp = RegExp(r'[\u0400-\u04FF\w]+');
 
 List<String> splitWords(String text) {
   return wordRegExp

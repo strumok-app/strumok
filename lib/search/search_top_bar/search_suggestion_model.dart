@@ -22,8 +22,9 @@ class SearchSuggestion {
 
   static Future<void> addSuggestion(String query) async {
     final text = cleanupQuery(query);
+    final tokens = splitWords(text);
 
-    if (text.isEmpty) {
+    if (tokens.isEmpty) {
       return;
     }
 
@@ -37,7 +38,7 @@ class SearchSuggestion {
     final suggestion = SearchSuggestion(
       text: text,
       lastSeen: DateTime.now(),
-      tokens: splitWords(text),
+      tokens: tokens,
     );
 
     await store.record(text).put(db, suggestion.toJson());
@@ -52,15 +53,14 @@ class SearchSuggestion {
 
     final words = splitWords(text);
 
-    if (words.isEmpty) {
-      return [];
+    Filter? filter;
+    if (words.isNotEmpty) {
+      filter = Filter.or(
+        words
+            .map((w) => Filter.matches("tokens", "^$w", anyInList: true))
+            .toList(),
+      );
     }
-
-    Filter filter = Filter.or(
-      words
-          .map((w) => Filter.matches("tokens", "^$w", anyInList: true))
-          .toList(),
-    );
 
     final snapshot = await store.find(
       db,
