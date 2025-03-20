@@ -1,16 +1,15 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:collection/collection.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:strumok/app_database.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/auth/auth.dart';
-import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_repository.dart';
 import 'package:firebase_dart/firebase_dart.dart';
 // ignore: implementation_imports
 import 'package:firebase_dart/src/database/impl/firebase_impl.dart';
+import 'package:strumok/utils/text.dart';
 
 class CollectionSync {
   final StreamController<bool> _syncStatus = StreamController();
@@ -60,6 +59,7 @@ class CollectionSync {
         final localItem = await localStore.record(key).get(tx);
 
         if (localItem == null) {
+          remoteItem["tokens"] = splitWords(remoteItem["title"] ?? "");
           await localStore.record(key).put(tx, remoteItem);
           continue;
         }
@@ -72,9 +72,10 @@ class CollectionSync {
         }
 
         if (remoteLastSean.isAfter(localLastSean)) {
-          final localPositions = localItem["positions"] as Map<int, int>? ?? {};
+          final localPositions =
+              localItem["positions"] as Map<int, dynamic>? ?? {};
           final remotePositions =
-              remoteItem["positions"] as Map<int, int>? ?? {};
+              remoteItem["positions"] as Map<int, dynamic>? ?? {};
           remoteItem["positions"] = mergeMaps(
             localPositions,
             remotePositions,

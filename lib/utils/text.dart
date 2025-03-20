@@ -7,7 +7,10 @@ String cleanupQuery(String text) {
 final wordRegExp = RegExp(r'\b\w+\b');
 
 List<String> splitWords(String text) {
-  return wordRegExp.allMatches(text).map((m) => m.group(0)!).toList();
+  return wordRegExp
+      .allMatches(text)
+      .map((m) => m.group(0)!.toLowerCase())
+      .toList();
 }
 
 String formatBytes(int size) {

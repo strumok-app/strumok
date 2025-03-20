@@ -87,63 +87,6 @@ class LocalCollectionRepository extends CollectionRepository {
   }
 }
 
-// class IsarCollectionRepository extends CollectionRepository {
-//   final Isar db = AppDatabase().database;
-//   late final IsarCollection<IsarMediaCollectionItem> collection = db.isarMediaCollectionItems;
-
-//   @override
-//   Stream<void> get changesStream => collection.watchLazy();
-//   @override
-//   FutureOr<MediaCollectionItem?> getCollectionItem(String supplier, String id) async {
-//     final collectionItem = await collection.getBySupplierId(supplier, id);
-
-//     return collectionItem?.toMediaCollectionItem();
-//   }
-
-//   @override
-//   FutureOr<int> save(MediaCollectionItem collectionItem) async {
-//     final item = IsarMediaCollectionItem.fromMediaCollectionItem(collectionItem);
-
-//     return await db.writeTxn(
-//       () async => await collection.put(item),
-//     );
-//   }
-
-//   @override
-//   FutureOr<void> delete(String supplier, String id) async {
-//     return await db.writeTxn(
-//       () async => await collection.deleteBySupplierId(supplier, id),
-//     );
-//   }
-
-//   @override
-//   FutureOr<Iterable<MediaCollectionItem>> search({
-//     String? query,
-//   }) async {
-//     final words = query != null ? Isar.splitWords(query) : const [];
-
-//     final result = await collection
-//         .where()
-//         .optional(
-//           words.isNotEmpty,
-//           (q) {
-//             var ftsQ = q.ftsElementStartsWith(words[0]);
-
-//             for (var i = 1; i < words.length; i++) {
-//               ftsQ = ftsQ.or().ftsElementStartsWith(words[i]);
-//             }
-
-//             return ftsQ;
-//           },
-//         )
-//         .sortByPriorityDesc()
-//         .thenByLastSeenDesc()
-//         .findAll();
-
-//     return result.map((e) => e.toMediaCollectionItem());
-//   }
-// }
-
 class FirebaseRepository extends CollectionRepository {
   final CollectionRepository downstream;
   final auth.User? user;

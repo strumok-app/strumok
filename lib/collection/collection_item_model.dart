@@ -18,6 +18,12 @@ int? _dateTimeToMilli(DateTime? value) {
   return value?.millisecondsSinceEpoch;
 }
 
+Map<String, dynamic> _mapPositions(Map<int, MediaItemPosition> positions) {
+  return {
+    for (final e in positions.entries) e.key.toString(): e.value.toJson(),
+  };
+}
+
 @JsonSerializable()
 class MediaCollectionItem with ContentProgress implements ContentInfo {
   @override
@@ -39,6 +45,8 @@ class MediaCollectionItem with ContentProgress implements ContentInfo {
   @override
   String? currentSubtitleName;
   @override
+  // stupid json_serilizable can handle int keys properly!
+  @JsonKey(toJson: _mapPositions)
   Map<int, MediaItemPosition> positions;
 
   final MediaCollectionItemStatus status;
