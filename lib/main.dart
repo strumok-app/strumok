@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:strumok/app_database.dart';
 import 'package:strumok/app_init_firebase.dart';
@@ -23,7 +24,12 @@ import 'package:window_manager/window_manager.dart';
 void main() async {
   const sentryDns = String.fromEnvironment("SENTRY_DNS");
   await SentryFlutter.init((options) {
-    options.dsn = sentryDns;
+    if (kDebugMode) {
+      options.dsn = "";
+    } else {
+      options.tracesSampleRate = 1.0;
+      options.dsn = sentryDns;
+    }
   }, appRunner: appRunner);
 }
 
