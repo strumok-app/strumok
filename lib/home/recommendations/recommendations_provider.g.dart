@@ -7,7 +7,7 @@ part of 'recommendations_provider.dart';
 // **************************************************************************
 
 String _$recommendationChannelHash() =>
-    r'f799d0132222bd60ac039fcb82d0758a39745476';
+    r'83ddcbb74bd128d7725ab03b1e43e60a63d9be9a';
 
 /// Copied from Dart SDK
 class _SystemHash {

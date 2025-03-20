@@ -1,4 +1,5 @@
 {
+  "dart.previewLsp": true,
   "search.followSymlinks": false,
   "[dart]": {
     "editor.formatOnSave": true,

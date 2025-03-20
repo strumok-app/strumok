@@ -18,12 +18,11 @@ class CollectionService {
   FutureOr<MediaCollectionItem> save(MediaCollectionItem collectionItem) async {
     if (collectionItem.status == MediaCollectionItemStatus.none) {
       await repository.delete(collectionItem.supplier, collectionItem.id);
-      collectionItem.internalId = null;
       return collectionItem;
     }
 
     collectionItem.lastSeen = DateTime.now();
-    collectionItem.internalId = await repository.save(collectionItem);
+    await repository.save(collectionItem);
 
     return collectionItem;
   }
@@ -38,12 +37,12 @@ class CollectionService {
     Set<MediaType>? mediaTypes,
     Set<String>? suppliersNames,
   }) async {
-    Iterable<MediaCollectionItem> collectionItems = await repository.search(query: query);
+    Iterable<MediaCollectionItem> collectionItems = await repository.search(
+      query: query,
+    );
 
     if (status != null) {
-      collectionItems = collectionItems.where(
-        (i) => status.contains(i.status),
-      );
+      collectionItems = collectionItems.where((i) => status.contains(i.status));
     }
 
     if (mediaTypes != null) {

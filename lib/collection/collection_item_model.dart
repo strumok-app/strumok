@@ -5,13 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'collection_item_model.g.dart';
 
-enum MediaCollectionItemStatus {
-  none,
-  latter,
-  inProgress,
-  complete,
-  onHold,
-}
+enum MediaCollectionItemStatus { none, latter, inProgress, complete, onHold }
 
 DateTime? _dateTimeFormMilli(value) {
   if (value is int) {
@@ -26,12 +20,6 @@ int? _dateTimeToMilli(DateTime? value) {
 
 @JsonSerializable()
 class MediaCollectionItem with ContentProgress implements ContentInfo {
-  @JsonKey(
-    includeFromJson: false,
-    includeToJson: false,
-  )
-  int? internalId; // for database
-
   @override
   final String id;
   @override
@@ -56,10 +44,7 @@ class MediaCollectionItem with ContentProgress implements ContentInfo {
   final MediaCollectionItemStatus status;
   final int priority;
 
-  @JsonKey(
-    fromJson: _dateTimeFormMilli,
-    toJson: _dateTimeToMilli,
-  )
+  @JsonKey(fromJson: _dateTimeFormMilli, toJson: _dateTimeToMilli)
   DateTime? lastSeen;
 
   MediaCollectionItem({
@@ -74,7 +59,6 @@ class MediaCollectionItem with ContentProgress implements ContentInfo {
     this.positions = const {},
     this.status = MediaCollectionItemStatus.none,
     this.priority = 1,
-    this.internalId,
     this.lastSeen,
   });
 
@@ -104,18 +88,20 @@ class MediaCollectionItem with ContentProgress implements ContentInfo {
       image: image ?? this.image,
       mediaType: mediaType,
       currentItem: currentItem ?? this.currentItem,
-      currentSourceName: currentSourceName != null
-          ? currentSourceName()
-          : this.currentSourceName,
-      currentSubtitleName: currentSubtitleName != null
-          ? currentSubtitleName()
-          : this.currentSubtitleName,
-      positions: positions != null
-          ? {...this.positions, ...positions}
-          : this.positions,
+      currentSourceName:
+          currentSourceName != null
+              ? currentSourceName()
+              : this.currentSourceName,
+      currentSubtitleName:
+          currentSubtitleName != null
+              ? currentSubtitleName()
+              : this.currentSubtitleName,
+      positions:
+          positions != null
+              ? {...this.positions, ...positions}
+              : this.positions,
       status: status ?? this.status,
       priority: priority ?? this.priority,
-      internalId: internalId,
       lastSeen: lastSeen,
     );
   }
@@ -132,17 +118,11 @@ class MediaItemPosition extends Equatable {
   final int position;
   final int length;
 
-  const MediaItemPosition({
-    required this.position,
-    required this.length,
-  });
+  const MediaItemPosition({required this.position, required this.length});
 
   double get progress => length != 0 ? (position + 1) / length : 0;
 
-  MediaItemPosition copyWith({
-    int? position,
-    int? length,
-  }) {
+  MediaItemPosition copyWith({int? position, int? length}) {
     return MediaItemPosition(
       position: position ?? this.position,
       length: length ?? this.length,

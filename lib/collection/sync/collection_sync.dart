@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:ffi';
 
+import 'package:collection/collection.dart';
+import 'package:sembast/sembast_io.dart';
 import 'package:strumok/app_database.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/auth/auth.dart';
@@ -19,79 +22,70 @@ class CollectionSync {
   Stream<bool> get syncStatus => _syncStatus.stream;
 
   Future<void> run() async {
-    //   // wait for user
-    //   final user = Auth().currentUser;
-    //   if (user == null) {
-    //     return;
-    //   }
+    // wait for user
+    final user = Auth().currentUser;
+    if (user == null) {
+      return;
+    }
 
-    //   _syncStatus.sink.add(true);
+    _syncStatus.sink.add(true);
 
-    //   // obtain databases
-    //   final isar = AppDatabase().database;
-    //   final firebase = FirebaseDatabase();
+    // obtain databases
+    final db = AppDatabase().db();
+    final firebase = FirebaseDatabase();
 
-    //   // read local and remote collection
-    //   final localCollection = isar.isarMediaCollectionItems;
-    //   final ref = firebase.reference().child("collection/${user.id}");
+    // read local and remote collection
+    final localStore = LocalCollectionRepository.store;
+    final ref = firebase.reference().child("collection/${user.id}");
 
-    //   final lastSyncTimestamp = AppPreferences.lastSyncTimestamp;
-    //   final nowTimestamp = DateTime.timestamp().millisecondsSinceEpoch;
-    //   final remoteSnapshot = await ref.orderByChild("lastSeen").startAt(lastSyncTimestamp).once() as DataSnapshotImpl;
+    final lastSyncTimestamp = AppPreferences.lastSyncTimestamp;
+    final nowTimestamp = DateTime.timestamp().millisecondsSinceEpoch;
+    final remoteSnapshot =
+        await ref.orderByChild("lastSeen").startAt(lastSyncTimestamp).once()
+            as DataSnapshotImpl;
 
-    //   final remoteCollection = remoteSnapshot.treeStructuredData.toJson(true);
+    final Map<String, dynamic>? remoteCollection = remoteSnapshot
+        .treeStructuredData
+        .toJson(true);
 
-    //   if (remoteCollection == null) {
-    //     _syncStatus.sink.add(false);
-    //     return;
-    //   }
+    if (remoteCollection == null) {
+      _syncStatus.sink.add(false);
+      return;
+    }
 
-    //   await isar.writeTxn(() async {
-    //     // iterate remote items
-    //     for (final remoteItemJson in remoteCollection.values) {
-    //       var remoteItem = MediaCollectionItem.fromJson(remoteItemJson);
-    //       final localItem = await localCollection.getBySupplierId(
-    //         remoteItem.supplier,
-    //         remoteItem.id,
-    //       );
+    await db.transaction((tx) async {
+      for (final entry in remoteCollection.entries) {
+        final key = entry.key;
+        final remoteItem = entry.value;
+        final localItem = await localStore.record(key).get(tx);
 
-    //       // store newer remote items
-    //       if (localItem == null || remoteItem.lastSeen!.isAfter(localItem.lastSeen!)) {
-    //         if (localItem != null) {
-    //           // set local internalId
-    //           remoteItem.internalId = localItem.isarId;
-    //           // merge positions
-    //           _mergePositions(remoteItem, localItem);
-    //         }
+        if (localItem == null) {
+          await localStore.record(key).put(tx, remoteItem);
+          continue;
+        }
 
-    //         var isarMediaCollectionItem = IsarMediaCollectionItem.fromMediaCollectionItem(remoteItem);
+        final DateTime? remoteLastSean = remoteItem["lastSean"];
+        final DateTime? localLastSean = localItem["lastSean"] as DateTime?;
 
-    //         await localCollection.put(
-    //           isarMediaCollectionItem,
-    //         );
-    //       }
-    //     }
-    //   });
+        if (localLastSean == null || remoteLastSean == null) {
+          continue;
+        }
 
-    //   AppPreferences.lastSyncTimestamp = nowTimestamp;
-    //   _syncStatus.sink.add(false);
-    // }
+        if (remoteLastSean.isAfter(localLastSean)) {
+          final localPositions = localItem["positions"] as Map<int, int>? ?? {};
+          final remotePositions =
+              remoteItem["positions"] as Map<int, int>? ?? {};
+          remoteItem["positions"] = mergeMaps(
+            localPositions,
+            remotePositions,
+            value: (_, v) => v,
+          );
+          await localStore.record(key).put(tx, remoteItem);
+        }
+      }
+    });
 
-    // static void _mergePositions(
-    //   MediaCollectionItem remoteItem,
-    //   IsarMediaCollectionItem localItem,
-    // ) {
-    //   final positions = {...remoteItem.positions};
-    //   if (localItem.positions != null) {
-    //     for (final localPosition in localItem.positions!) {
-    //       if (!remoteItem.positions.containsKey(localPosition.number)) {
-    //         positions[localPosition.number] = MediaItemPosition(
-    //           position: localPosition.position,
-    //           length: localPosition.length,
-    //         );
-    //       }
-    //     }
-    //   }
-    //   remoteItem.positions = positions;
+    AppPreferences.lastSyncTimestamp = nowTimestamp;
+    _syncStatus.sink.add(false);
   }
 }

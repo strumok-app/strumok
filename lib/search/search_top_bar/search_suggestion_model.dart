@@ -1,70 +1,97 @@
-import 'package:isar/isar.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:sembast/sembast_io.dart';
+import 'package:strumok/app_database.dart';
+import 'package:strumok/utils/text.dart';
 
 part 'search_suggestion_model.g.dart';
 
-@collection
+@JsonSerializable()
 class SearchSuggestion {
-  final Id? id;
+  static StoreRef<String, Map<String, Object?>> store = stringMapStoreFactory
+      .store("suggestions");
+
   final String text;
   final DateTime lastSeen;
+  final List<String> tokens;
 
-  const SearchSuggestion({this.id, required this.text, required this.lastSeen});
-
-  @Index(type: IndexType.value, caseSensitive: false)
-  List<String> get fts => Isar.splitWords(text);
+  SearchSuggestion({
+    required this.text,
+    required this.lastSeen,
+    required this.tokens,
+  });
 
   static Future<void> addSuggestion(String query) async {
-    // final text = cleanupQuery(query);
+    final text = cleanupQuery(query);
 
-    // if (text.isEmpty) {
-    //   return;
-    // }
+    if (text.isEmpty) {
+      return;
+    }
 
-    // final db = AppDatabase().database;
+    final db = AppDatabase().db();
 
-    // var suggestion = await db.searchSuggestions.filter().textEqualTo(text).findFirst();
+    final exists = await store.record(text).exists(db);
+    if (exists) {
+      return;
+    }
 
-    // suggestion ??= SearchSuggestion(text: text, lastSeen: DateTime.now());
+    final suggestion = SearchSuggestion(
+      text: text,
+      lastSeen: DateTime.now(),
+      tokens: splitWords(text),
+    );
 
-    // await db.writeTxn(() async {
-    //   await db.searchSuggestions.put(suggestion!);
-    // });
+    await store.record(text).put(db, suggestion.toJson());
   }
 
   static Future<List<SearchSuggestion>> getSuggestions(
     String query, {
     int limit = 10,
   }) async {
-    // final text = cleanupQuery(query);
-    // final db = AppDatabase().database;
+    final text = cleanupQuery(query);
+    final db = AppDatabase().db();
 
-    // final words = Isar.splitWords(text);
+    final words = splitWords(text);
 
-    // return db.searchSuggestions
-    //     .where()
-    //     .optional(
-    //       words.isNotEmpty,
-    //       (q) {
-    //         var ftsQ = q.ftsElementStartsWith(words[0]);
+    if (words.isEmpty) {
+      return [];
+    }
 
-    //         for (var i = 1; i < words.length; i++) {
-    //           ftsQ = ftsQ.or().ftsElementStartsWith(words[i]);
-    //         }
+    Filter filter = Filter.or(
+      words
+          .map((w) => Filter.matches("tokens", "^$w", anyInList: true))
+          .toList(),
+    );
 
-    //         return ftsQ;
-    //       },
-    //     )
-    //     .sortByLastSeenDesc()
-    //     .limit(limit)
-    //     .findAll();
-    return [];
+    final snapshot = await store.find(
+      db,
+      finder: Finder(
+        filter: filter,
+        sortOrders: [SortOrder("lastSeen", false)],
+      ),
+    );
+
+    return snapshot.map((it) => SearchSuggestion.fromJson(it.value)).toList();
+  }
+
+  static Future<void> deleteOld() async {
+    await store.delete(
+      AppDatabase().db(),
+      finder: Finder(
+        filter: Filter.lessThan(
+          "lastSean",
+          DateTime.now().subtract(Duration(days: 30)),
+        ),
+      ),
+    );
   }
 
   Future<void> delete() async {
-    // final db = AppDatabase().database;
+    final db = AppDatabase().db();
 
-    // await db.writeTxn(() async {
-    //   await db.searchSuggestions.delete(id!);
-    // });
+    await store.record(text).delete(db);
   }
+
+  factory SearchSuggestion.fromJson(Map<String, dynamic> json) =>
+      _$SearchSuggestionFromJson(json);
+  Map<String, dynamic> toJson() => _$SearchSuggestionToJson(this);
 }

@@ -6,7 +6,7 @@ part of 'search_suggestion_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$suggestionsHash() => r'3121b84d54c8a3ce22837ce62533bec7c9d12123';
+String _$suggestionsHash() => r'f2faca38fa8ed9aeec907756b5c3ddb73be86ada';
 
 /// See also [Suggestions].
 @ProviderFor(Suggestions)

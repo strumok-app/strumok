@@ -21,10 +21,10 @@ class Suggestions extends _$Suggestions {
   }
 
   void deleteSuggestion(SearchSuggestion suggestion) async {
-    state = await AsyncValue.guard(() async {
-      await suggestion.delete();
+    // state = await AsyncValue.guard(() async {
+    //   await suggestion.delete();
 
-      return state.requireValue.where((e) => e.id != suggestion.id).toList();
-    });
+    //   return state.requireValue.where((e) => e.id != suggestion.id).toList();
+    // });
   }
 }

@@ -4,6 +4,12 @@ String cleanupQuery(String text) {
   return text.trim().replaceAll('\\s', '\\s');
 }
 
+final wordRegExp = RegExp(r'\b\w+\b');
+
+List<String> splitWords(String text) {
+  return wordRegExp.allMatches(text).map((m) => m.group(0)!).toList();
+}
+
 String formatBytes(int size) {
   if (size < 0) {
     throw ArgumentError("Size must be a non-negative integer.");

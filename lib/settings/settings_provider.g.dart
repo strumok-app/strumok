@@ -6,7 +6,7 @@ part of 'settings_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$offlineModeHash() => r'b5d82eb4eb63c37fe4f39938bb169149042d12ba';
+String _$offlineModeHash() => r'4e4919c060b91d756227646747add3d6da07eae1';
 
 /// See also [OfflineMode].
 @ProviderFor(OfflineMode)

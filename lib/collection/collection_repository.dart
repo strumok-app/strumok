@@ -1,156 +1,90 @@
 import 'dart:async';
 
+import 'package:sembast/sembast_io.dart';
 import 'package:strumok/app_database.dart';
 import 'package:strumok/auth/auth.dart' as auth;
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/sync/collection_sync.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:firebase_dart/firebase_dart.dart';
-
-// @collection
-// @Name("MediaCollectionItem")
-// class IsarMediaCollectionItem {
-//   IsarMediaCollectionItem({
-//     required this.id,
-//     required this.supplier,
-//     required this.title,
-//     required this.image,
-//     required this.status,
-//     required this.mediaType,
-//     this.currentItem,
-//     this.currentSourceName,
-//     this.currentSubtitleName,
-//     this.positions,
-//     this.priority,
-//     this.lastSeen,
-//     this.isarId,
-//   });
-
-//   Id? isarId;
-
-//   final String id;
-//   @Index(
-//     name: "supplierId",
-//     composite: [CompositeIndex('id')],
-//     unique: true,
-//   )
-//   final String supplier;
-//   final String title;
-//   String? secondaryTitle;
-//   final String image;
-//   @Enumerated(EnumType.ordinal)
-//   MediaType mediaType;
-//   int? currentItem;
-//   String? currentSourceName;
-//   String? currentSubtitleName;
-//   List<IsarMediaItemPosition>? positions;
-
-//   @Enumerated(EnumType.ordinal)
-//   MediaCollectionItemStatus status;
-
-//   int? priority;
-//   DateTime? lastSeen;
-
-//   @Index(type: IndexType.value, caseSensitive: false)
-//   List<String> get fts => Isar.splitWords(title);
-
-//   factory IsarMediaCollectionItem.fromMediaCollectionItem(
-//     MediaCollectionItem collectionItem,
-//   ) {
-//     return IsarMediaCollectionItem(
-//       id: collectionItem.id,
-//       supplier: collectionItem.supplier,
-//       title: collectionItem.title,
-//       image: collectionItem.image,
-//       mediaType: collectionItem.mediaType,
-//       currentItem: collectionItem.currentItem,
-//       currentSourceName: collectionItem.currentSourceName,
-//       currentSubtitleName: collectionItem.currentSubtitleName,
-//       positions: collectionItem.positions.entries
-//           .map(
-//             (e) => IsarMediaItemPosition()
-//               ..number = e.key
-//               ..position = e.value.position
-//               ..length = e.value.length,
-//           )
-//           .toList(),
-//       status: collectionItem.status,
-//       priority: collectionItem.priority,
-//       lastSeen: collectionItem.lastSeen,
-//       isarId: collectionItem.internalId,
-//     );
-//   }
-
-//   MediaCollectionItem toMediaCollectionItem() {
-//     return MediaCollectionItem(
-//       id: id,
-//       supplier: supplier,
-//       title: title,
-//       image: image,
-//       mediaType: mediaType,
-//       currentItem: currentItem ?? 0,
-//       currentSourceName: currentSourceName,
-//       currentSubtitleName: currentSubtitleName,
-//       positions: Map.fromEntries(
-//         positions?.map(
-//               (e) => MapEntry(
-//                 e.number,
-//                 MediaItemPosition(
-//                   position: e.position,
-//                   length: e.length,
-//                 ),
-//               ),
-//             ) ??
-//             {},
-//       ),
-//       status: status,
-//       priority: priority ?? 0,
-//       lastSeen: lastSeen,
-//       internalId: isarId,
-//     );
-//   }
-// }
-
-// @embedded
-// @Name("IsarMediaCollectionItemPosition")
-// class IsarMediaItemPosition {
-//   int number = 0;
-//   int position = 0;
-//   int length = 0;
-// }
+import 'package:strumok/utils/text.dart';
 
 abstract interface class CollectionRepository {
   Stream<void> get changesStream;
   FutureOr<MediaCollectionItem?> getCollectionItem(String supplier, String id);
-  FutureOr<int> save(MediaCollectionItem collectionItem);
+  FutureOr<void> save(MediaCollectionItem collectionItem);
   FutureOr<Iterable<MediaCollectionItem>> search({String? query});
   FutureOr<void> delete(String supplier, String id);
 }
 
 class LocalCollectionRepository extends CollectionRepository {
+  static StoreRef<String, Map<String, Object?>> store = stringMapStoreFactory
+      .store("collection");
+
+  final Database db = AppDatabase().db();
+
   @override
-  Stream<void> get changesStream => throw UnimplementedError();
+  Stream<void> get changesStream => store.query().onSnapshot(db);
 
   @override
   FutureOr<MediaCollectionItem?> getCollectionItem(
     String supplier,
     String id,
   ) async {
-    return null;
+    final itemId = _sanitizeId(supplier, id);
+
+    final record = await store.record(itemId).get(db);
+
+    if (record == null) {
+      return null;
+    }
+
+    return MediaCollectionItem.fromJson(record);
   }
 
   @override
-  FutureOr<int> save(MediaCollectionItem collectionItem) async {
-    return 0;
+  Future<void> save(MediaCollectionItem collectionItem) async {
+    final itemId = _sanitizeId(collectionItem.supplier, collectionItem.id);
+    final recordValue = collectionItem.toJson();
+
+    recordValue["tokens"] = splitWords(collectionItem.title);
+
+    await db.transaction((tx) => store.record(itemId).put(tx, recordValue));
   }
 
   @override
   FutureOr<Iterable<MediaCollectionItem>> search({String? query}) async {
-    return [];
+    final words = query != null ? splitWords(query) : [];
+
+    Filter? filter;
+    if (words.isNotEmpty) {
+      filter = Filter.or(
+        words
+            .map((w) => Filter.matches("tokens", "^$w", anyInList: true))
+            .toList(),
+      );
+    }
+
+    final snapshot = await store.find(
+      db,
+      finder: Finder(
+        filter: filter,
+        sortOrders: [
+          SortOrder("priority", false),
+          SortOrder("lastSean", false),
+        ],
+      ),
+    );
+
+    return snapshot.map((record) => MediaCollectionItem.fromJson(record.value));
   }
 
   @override
-  FutureOr<void> delete(String supplier, String id) async {}
+  FutureOr<void> delete(String supplier, String id) async {
+    final itemId = _sanitizeId(supplier, id);
+
+    await db.transaction((tx) => store.record(itemId).delete(tx));
+  }
 }
 
 // class IsarCollectionRepository extends CollectionRepository {
@@ -232,9 +166,9 @@ class FirebaseRepository extends CollectionRepository {
   }
 
   @override
-  FutureOr<int> save(MediaCollectionItem collectionItem) {
+  FutureOr<void> save(MediaCollectionItem collectionItem) async {
     _saveToFirebase(collectionItem);
-    return downstream.save(collectionItem);
+    await downstream.save(collectionItem);
   }
 
   @override
@@ -258,8 +192,7 @@ class FirebaseRepository extends CollectionRepository {
       return;
     }
 
-    final itemId =
-        "${collectionItem.supplier}${_sanitizeId(collectionItem.id)}";
+    final itemId = _sanitizeId(collectionItem.supplier, collectionItem.id);
     final ref = database.reference().child("collection/${user!.id}/$itemId");
 
     await ref.set(collectionItem.toJson());
@@ -270,13 +203,13 @@ class FirebaseRepository extends CollectionRepository {
       return;
     }
 
-    final itemId = "$supplier${_sanitizeId(id)}";
+    final itemId = _sanitizeId(supplier, id);
     final ref = database.reference().child("collection/${user!.id}/$itemId");
 
     await ref.remove();
   }
+}
 
-  String _sanitizeId(String id) {
-    return id.replaceAll("/", "|").replaceAll(".", "");
-  }
+String _sanitizeId(String supplier, String id) {
+  return supplier + id.replaceAll("/", "|").replaceAll(".", "");
 }
