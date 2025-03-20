@@ -78,50 +78,10 @@ class AppPreferences {
     return colorValue != null ? Color(colorValue) : defaultColor;
   }
 
-  // static Set<MediaType>? get collectionMediaType => instance
-  //     .getStringList("collection_media_type")
-  //     ?.map(
-  //       (value) => MediaType.values.firstWhereOrNull((type) => type.name == value),
-  //     )
-  //     .nonNulls
-  //     .toSet();
-
-  // static set collectionMediaType(
-  //   Set<MediaType>? value,
-  // ) =>
-  //     instance.setStringList(
-  //       "collection_media_type",
-  //       value?.map((type) => type.name).toList() ?? List.empty(),
-  //     );
-
-  // static Set<MediaCollectionItemStatus>? get collectionItemStatus => instance
-  //     .getStringList("collection_item_status")
-  //     ?.map(
-  //       (value) => MediaCollectionItemStatus.values.firstWhereOrNull((type) => type.name == value),
-  //     )
-  //     .nonNulls
-  //     .toSet();
-
-  // static set collectionItemStatus(
-  //   Set<MediaCollectionItemStatus>? value,
-  // ) =>
-  //     instance.setStringList(
-  //       "collection_item_status",
-  //       value?.map((type) => type.name).toList() ?? List.empty(),
-  //     );
-
-  // static Set<String>? get collectionContentSuppliers => instance.getStringList("collection_content_suppliers")?.toSet();
-
-  // static set collectionContentSuppliers(Set<String>? value) => instance.setStringList(
-  //       "collection_content_suppliers",
-  //       value?.toList() ?? List.empty(),
-  //     );
-
-  static int get lastSyncTimestamp =>
-      instance.getInt("last_sync_timestamp") ?? 0;
+  static int get lastSyncTimestamp => instance.getInt("last_sync_ts") ?? 0;
 
   static set lastSyncTimestamp(int timestamp) =>
-      instance.setInt("last_sync_timestamp", timestamp);
+      instance.setInt("last_sync_ts", timestamp);
 
   static double get volume => instance.getDouble("volume") ?? 100.0;
 
