@@ -64,18 +64,14 @@ class CollectionSync {
           continue;
         }
 
-        final DateTime? remoteLastSean = remoteItem["lastSean"];
-        final DateTime? localLastSean = localItem["lastSean"] as DateTime?;
+        final int remoteLastSean = remoteItem["lastSeen"] ?? 0;
+        final int localLastSean = (localItem["lastSeen"] as int?) ?? 0;
 
-        if (localLastSean == null || remoteLastSean == null) {
-          continue;
-        }
-
-        if (remoteLastSean.isAfter(localLastSean)) {
+        if (remoteLastSean > localLastSean) {
           final localPositions =
-              localItem["positions"] as Map<int, dynamic>? ?? {};
+              (localItem["positions"] as Map<String, dynamic>?) ?? {};
           final remotePositions =
-              remoteItem["positions"] as Map<int, dynamic>? ?? {};
+              (remoteItem["positions"] as Map<String, dynamic>?) ?? {};
           remoteItem["positions"] = mergeMaps(
             localPositions,
             remotePositions,
