@@ -34,7 +34,7 @@ extension PlayerExt on Player {
   }
 }
 
-// TODO: this smells, bad need to figureout how to make it better
+// TODO: this smells bad, need to figureout how to make it better
 class PlayerController {
   final Player _player;
   final ContentDetails contentDetails;

@@ -50,8 +50,6 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
         initializationSettings,
         onDidReceiveNotificationResponse: _onNotificationTap,
       );
-
-      _requestPermissions();
     }
   }
 
@@ -105,7 +103,7 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
       }
     }
 
-    if (isMobileDevice() && notificationsGranted) {
+    if (isMobileDevice()) {
       _handleLocalNotificaionDownloadTask(context, downloadTask);
     }
   }
@@ -113,9 +111,19 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
   void _handleLocalNotificaionDownloadTask(
     BuildContext context,
     DownloadTask downloadTask,
-  ) {
+  ) async {
     final request = downloadTask.request;
+
     if (request is ContentDownloadRequest) {
+      // request notification permission on download start
+      if (!notificationsGranted) {
+        if (downloadTask.status.value == DownloadStatus.started) {
+          await _requestPermissions();
+        } else {
+          return;
+        }
+      }
+
       if (downloadTask.status.value.isCompleted) {
         final id = notificationsIds.remove(request.id);
         if (id != null) {
