@@ -6,13 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'model.g.dart';
 
-enum ContentType {
-  movie,
-  anime,
-  cartoon,
-  series,
-  manga,
-}
+enum ContentType { movie, anime, cartoon, series, manga }
 
 enum ContentLanguage {
   en("EN"),
@@ -24,10 +18,7 @@ enum ContentLanguage {
   const ContentLanguage(this.label);
 }
 
-enum MediaType {
-  video,
-  manga,
-}
+enum MediaType { video, manga }
 
 abstract class ContentSupplier {
   String get name;
@@ -37,12 +28,12 @@ abstract class ContentSupplier {
   Set<ContentLanguage> get supportedLanguages => const {};
   Future<List<ContentInfo>> search(String query) async => const [];
 
-  Future<List<ContentInfo>> loadChannel(
-    String channel, {
-    int page = 0,
-  }) async =>
+  Future<List<ContentInfo>> loadChannel(String channel, {int page = 0}) async =>
       const [];
-  Future<ContentDetails?> detailsById(String id, Set<ContentLanguage> langs) async => null;
+  Future<ContentDetails?> detailsById(
+    String id,
+    Set<ContentLanguage> langs,
+  ) async => null;
 }
 
 abstract interface class ContentInfo {
@@ -108,7 +99,8 @@ class ContentSearchResult extends Equatable implements ContentInfo {
     required this.secondaryTitle,
   });
 
-  factory ContentSearchResult.fromJson(Map<String, dynamic> json) => _$ContentSearchResultFromJson(json);
+  factory ContentSearchResult.fromJson(Map<String, dynamic> json) =>
+      _$ContentSearchResultFromJson(json);
 
   static List<ContentSearchResult> fromJsonList(List<dynamic> json) =>
       json.map((e) => ContentSearchResult.fromJson(e)).toList();
@@ -119,7 +111,8 @@ class ContentSearchResult extends Equatable implements ContentInfo {
   List<Object?> get props => [id, supplier, image, title, secondaryTitle];
 }
 
-abstract class AbstractContentDetails extends Equatable implements ContentDetails {
+abstract class AbstractContentDetails extends Equatable
+    implements ContentDetails {
   @override
   final String id;
   @override
@@ -136,10 +129,7 @@ abstract class AbstractContentDetails extends Equatable implements ContentDetail
   @JsonKey(defaultValue: [])
   final List<String> additionalInfo;
   @override
-  @JsonKey(
-    defaultValue: [],
-    fromJson: ContentSearchResult.fromJsonList,
-  )
+  @JsonKey(defaultValue: [], fromJson: ContentSearchResult.fromJsonList)
   final List<ContentInfo> similar;
   @override
   MediaType get mediaType => MediaType.video;
@@ -158,11 +148,21 @@ abstract class AbstractContentDetails extends Equatable implements ContentDetail
   });
 
   @override
-  List<Object?> get props => [id, supplier, title, secondaryTitle, image, description, additionalInfo, similar];
+  List<Object?> get props => [
+    id,
+    supplier,
+    title,
+    secondaryTitle,
+    image,
+    description,
+    additionalInfo,
+    similar,
+  ];
 }
 
 @immutable
-class SimpleContentMediaItemSource extends Equatable implements MediaFileItemSource {
+class SimpleContentMediaItemSource extends Equatable
+    implements MediaFileItemSource {
   @override
   final FileKind kind;
   @override
@@ -193,4 +193,9 @@ class ContentSuppliersException implements Exception {
   final String message;
 
   ContentSuppliersException(this.message);
+
+  @override
+  String toString() {
+    return "ContentSuppliersException: $message";
+  }
 }
