@@ -23,8 +23,9 @@ class CollectionHorizontalView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final collections = ref.watch(collectionProvider).valueOrNull;
-    final collectionSync = ref.watch(collectionSyncStatusProvider).valueOrNull ?? false;
+    final collections = ref.watch(collectionItemsByStatusProvider).valueOrNull;
+    final collectionSync =
+        ref.watch(collectionSyncStatusProvider).valueOrNull ?? false;
 
     if (collectionSync) {
       return const Center(child: CircularProgressIndicator());
@@ -39,9 +40,10 @@ class CollectionHorizontalView extends ConsumerWidget {
     }
 
     return ListView(
-      children: groupsOrder.mapIndexed((groupIdx, e) {
-        return CollectionHorizontalGroup(groupIdx: groupIdx, status: e);
-      }).toList(),
+      children:
+          groupsOrder.mapIndexed((groupIdx, e) {
+            return CollectionHorizontalGroup(groupIdx: groupIdx, status: e);
+          }).toList(),
     );
   }
 }
@@ -68,7 +70,9 @@ class CollectionHorizontalGroup extends HookConsumerWidget {
     }, [primaryFocusNode]);
 
     final groupItems = ref.watch(
-      collectionProvider.select((value) => value.valueOrNull?[status]),
+      collectionItemsByStatusProvider.select(
+        (value) => value.valueOrNull?[status],
+      ),
     );
 
     if (groupItems == null) {

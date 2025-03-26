@@ -24,7 +24,7 @@ final enabledSuppliersProvider = Provider<Set<String>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef EnabledSuppliersRef = ProviderRef<Set<String>>;
-String _$suppliersSettingsHash() => r'f6eea4ef7316f564919d011265cb1e158c180ce9';
+String _$suppliersSettingsHash() => r'11b82c203b8f917db0e2d695af61416fb450cd4e';
 
 /// See also [SuppliersSettings].
 @ProviderFor(SuppliersSettings)

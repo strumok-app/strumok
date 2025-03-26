@@ -47,9 +47,7 @@ Map<String, dynamic> _$MediaCollectionItemToJson(
   'currentItem': instance.currentItem,
   'currentSourceName': instance.currentSourceName,
   'currentSubtitleName': instance.currentSubtitleName,
-  'positions': instance.positions.map(
-    (k, e) => MapEntry(k.toString(), e.toJson()),
-  ),
+  'positions': _mapPositions(instance.positions),
   'status': _$MediaCollectionItemStatusEnumMap[instance.status]!,
   'priority': instance.priority,
   'lastSeen': _dateTimeToMilli(instance.lastSeen),

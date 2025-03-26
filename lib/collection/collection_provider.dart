@@ -4,7 +4,6 @@ import 'package:strumok/collection/collection_repository.dart';
 import 'package:strumok/collection/collection_service.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/settings/settings_provider.dart';
-import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/utils/collections.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -67,9 +66,7 @@ class CollectionChanges extends _$CollectionChanges {
 final collectionFilterQueryProvider = StateProvider<String>((ref) => "");
 
 @riverpod
-FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collection(
-  Ref ref,
-) async {
+Future<List<MediaCollectionItem>> collectionItems(Ref ref) async {
   ref.watch(collectionChangesProvider);
 
   final repository = ref.watch(collectionServiceProvider);
@@ -84,16 +81,36 @@ FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>> collection(
     suppliersNames: collectionFilter.suppliersNames,
   );
 
+  return collectionItems.toList();
+}
+
+@riverpod
+Future<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>
+collectionItemsByStatus(Ref ref) async {
+  final collectionItems = await ref.watch(collectionItemsProvider.future);
+
   return Future.value(collectionItems.groupListsBy((e) => e.status));
 }
 
 @riverpod
-FutureOr<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>
+Future<Set<String>> collectionItemsSuppliers(Ref ref) async {
+  ref.watch(collectionChangesProvider);
+
+  final repository = ref.watch(collectionServiceProvider);
+  final collectionItems = await repository.search();
+
+  return collectionItems
+      .map((item) => item.supplier)
+      .toSet()
+      .intersection(ContentSuppliers().suppliersName);
+}
+
+@riverpod
+Future<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>
 collectionActiveItems(Ref ref) async {
   ref.watch(collectionChangesProvider);
 
   final repository = ref.watch(collectionServiceProvider);
-  final suppliers = ref.watch(enabledSuppliersProvider);
 
   final collectionItems = await repository.search(
     status: {
@@ -102,9 +119,7 @@ collectionActiveItems(Ref ref) async {
     },
   );
 
-  final activeItems = collectionItems
-      .where((item) => suppliers.contains(item.supplier))
-      .groupListsBy((e) => e.status);
+  final activeItems = collectionItems.groupListsBy((e) => e.status);
 
   return activeItems;
 }

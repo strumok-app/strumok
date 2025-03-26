@@ -24,29 +24,72 @@ final collectionServiceProvider = Provider<CollectionService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CollectionServiceRef = ProviderRef<CollectionService>;
-String _$collectionHash() => r'07e7395ce1e2d8285a2d3139529017dbbbf5a46d';
+String _$collectionItemsHash() => r'7f061ed51578f3d6a84966ab98d145a95f417e43';
 
-/// See also [collection].
-@ProviderFor(collection)
-final collectionProvider = AutoDisposeFutureProvider<
+/// See also [collectionItems].
+@ProviderFor(collectionItems)
+final collectionItemsProvider =
+    AutoDisposeFutureProvider<List<MediaCollectionItem>>.internal(
+      collectionItems,
+      name: r'collectionItemsProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$collectionItemsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CollectionItemsRef =
+    AutoDisposeFutureProviderRef<List<MediaCollectionItem>>;
+String _$collectionItemsByStatusHash() =>
+    r'dc82a46ec5fb8bed38679bd19199935373aea07e';
+
+/// See also [collectionItemsByStatus].
+@ProviderFor(collectionItemsByStatus)
+final collectionItemsByStatusProvider = AutoDisposeFutureProvider<
   Map<MediaCollectionItemStatus, List<MediaCollectionItem>>
 >.internal(
-  collection,
-  name: r'collectionProvider',
+  collectionItemsByStatus,
+  name: r'collectionItemsByStatusProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$collectionHash,
+      const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$collectionItemsByStatusHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef CollectionRef =
+typedef CollectionItemsByStatusRef =
     AutoDisposeFutureProviderRef<
       Map<MediaCollectionItemStatus, List<MediaCollectionItem>>
     >;
+String _$collectionItemsSuppliersHash() =>
+    r'c6106bd0396a295a5a92e7f4a43a826b62d4cd5e';
+
+/// See also [collectionItemsSuppliers].
+@ProviderFor(collectionItemsSuppliers)
+final collectionItemsSuppliersProvider =
+    AutoDisposeFutureProvider<Set<String>>.internal(
+      collectionItemsSuppliers,
+      name: r'collectionItemsSuppliersProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$collectionItemsSuppliersHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CollectionItemsSuppliersRef = AutoDisposeFutureProviderRef<Set<String>>;
 String _$collectionActiveItemsHash() =>
-    r'1681c9c295bcbaa7f58cc0c5c75253bfae278566';
+    r'3bb2056ae84300d6fc2cd2d42c7d072b504eb523';
 
 /// See also [collectionActiveItems].
 @ProviderFor(collectionActiveItems)

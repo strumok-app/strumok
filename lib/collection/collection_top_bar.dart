@@ -19,15 +19,17 @@ class CollectionTopBar extends HookConsumerWidget {
       text: ref.read(collectionFilterQueryProvider),
     );
 
-    return Column(
-      children: [
-        _renderSearchBar(context, ref, controller),
-      ],
-    );
+    return Column(children: [_renderSearchBar(context, ref, controller)]);
   }
 
-  Widget _renderSearchBar(BuildContext context, WidgetRef ref, TextEditingController controller) {
-    final searchBarFocusNode = useFocusNode(debugLabel: "Collections serach bar");
+  Widget _renderSearchBar(
+    BuildContext context,
+    WidgetRef ref,
+    TextEditingController controller,
+  ) {
+    final searchBarFocusNode = useFocusNode(
+      debugLabel: "Collections serach bar",
+    );
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -35,7 +37,8 @@ class CollectionTopBar extends HookConsumerWidget {
         children: [
           Expanded(
             child: Align(
-              alignment: TVDetector.isTV ? Alignment.centerLeft : Alignment.center,
+              alignment:
+                  TVDetector.isTV ? Alignment.centerLeft : Alignment.center,
               child: BackButtonListener(
                 onBackButtonPressed: () async {
                   if (searchBarFocusNode.hasFocus) {
@@ -51,9 +54,11 @@ class CollectionTopBar extends HookConsumerWidget {
                   ),
                   focusNode: searchBarFocusNode,
                   leading: const Icon(Icons.search),
-                  trailing: TVDetector.isTV ? null : [_renderFilterSwitcher(context)],
+                  trailing:
+                      TVDetector.isTV ? null : [_renderFilterSwitcher(context)],
                   onSubmitted: (value) {
-                    ref.read(collectionFilterQueryProvider.notifier).state = value;
+                    ref.read(collectionFilterQueryProvider.notifier).state =
+                        value;
                     searchBarFocusNode.previousFocus();
                   },
                 ),
@@ -73,7 +78,10 @@ class CollectionTopBar extends HookConsumerWidget {
   IconButton _renderFilterSwitcher(BuildContext context) {
     return IconButton(
       onPressed: () {
-        showDialog(context: context, builder: (context) => _StatusFilterDialog());
+        showDialog(
+          context: context,
+          builder: (context) => _StatusFilterDialog(),
+        );
       },
       icon: const Icon(Icons.tune),
     );
@@ -85,8 +93,12 @@ class _StatusFilterDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final collectionFilter = ref.watch(collectionFilterProvider);
-    final suppliersNames = ContentSuppliers().suppliersName.toList();
-    final allStatus = MediaCollectionItemStatus.values.where((s) => s != MediaCollectionItemStatus.none).toList();
+    final suppliersNames =
+        ref.watch(collectionItemsSuppliersProvider).valueOrNull?.toList() ?? [];
+    final allStatus =
+        MediaCollectionItemStatus.values
+            .where((s) => s != MediaCollectionItemStatus.none)
+            .toList();
 
     return Dialog(
       insetPadding: EdgeInsets.only(left: isMobile(context) ? 0 : 80.0),
@@ -110,7 +122,9 @@ class _StatusFilterDialog extends ConsumerWidget {
                     selected: collectionFilter.mediaTypes.contains(item),
                     label: Text(mediaTypeLabel(context, item)),
                     onSelected: (value) {
-                      ref.read(collectionFilterProvider.notifier).toggleMediaType(item);
+                      ref
+                          .read(collectionFilterProvider.notifier)
+                          .toggleMediaType(item);
                     },
                   );
                 },
@@ -128,7 +142,9 @@ class _StatusFilterDialog extends ConsumerWidget {
                     selected: collectionFilter.status.contains(item),
                     label: Text(statusLabel(context, item)),
                     onSelected: (value) {
-                      ref.read(collectionFilterProvider.notifier).toggleStatus(item);
+                      ref
+                          .read(collectionFilterProvider.notifier)
+                          .toggleStatus(item);
                     },
                   );
                 },
@@ -146,15 +162,21 @@ class _StatusFilterDialog extends ConsumerWidget {
                     label: Text(item),
                     selected: collectionFilter.suppliersNames.contains(item),
                     onSelected: (value) {
-                      ref.read(collectionFilterProvider.notifier).toggleSupplierName(item);
+                      ref
+                          .read(collectionFilterProvider.notifier)
+                          .toggleSupplierName(item);
                     },
                   );
                 },
                 onSelectAll: () {
-                  ref.read(collectionFilterProvider.notifier).toggleAllSuppliers(true);
+                  ref
+                      .read(collectionFilterProvider.notifier)
+                      .toggleAllSuppliers(true);
                 },
                 onUnselectAll: () {
-                  ref.read(collectionFilterProvider.notifier).toggleAllSuppliers(false);
+                  ref
+                      .read(collectionFilterProvider.notifier)
+                      .toggleAllSuppliers(false);
                 },
               ),
             ],
