@@ -23,9 +23,7 @@ import '../../download/manager/models.dart';
 part 'suppliers_bundle_version_provider.g.dart';
 
 @riverpod
-Future<FFISupplierBundleInfo?> installedSupplierBundleInfo(
-  Ref ref,
-) async {
+Future<FFISupplierBundleInfo?> installedSupplierBundleInfo(Ref ref) async {
   final info = AppPreferences.ffiSupplierBundleInfo;
 
   if (info != null) {
@@ -42,7 +40,9 @@ Future<FFISupplierBundleInfo?> installedSupplierBundleInfo(
 @riverpod
 FutureOr<FFISupplierBundleInfo?> latestSupplierBundleInfo(Ref ref) async {
   try {
-    const latestVersionUrl = String.fromEnvironment("FFI_LIB_VERSION_CHECK_URL");
+    const latestVersionUrl = String.fromEnvironment(
+      "FFI_LIB_VERSION_CHECK_URL",
+    );
     final res = await Client().get(Uri.parse(latestVersionUrl));
     return FFISupplierBundleInfo.fromJson(json.decode(res.body));
   } catch (e) {
@@ -69,7 +69,9 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
       return;
     }
 
-    final task = DownloadManager().download(FileDownloadRequest("bunde_download", url, libPath));
+    final task = DownloadManager().download(
+      FileDownloadRequest("bunde_download", url, libPath),
+    );
 
     task.progress.addListener(() {
       state = state.updateProgress(task.progress.value);
@@ -121,7 +123,9 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
     } else {
       final deviceInfo = await DeviceInfoPlugin().androidInfo;
 
-      if (deviceInfo.supportedAbis.contains("arm64-v8a")) {
+      if (deviceInfo.supportedAbis.contains("x86_64")) {
+        return info.downloadUrl["android-x86_64"];
+      } else if (deviceInfo.supportedAbis.contains("arm64-v8a")) {
         return info.downloadUrl["arm64-v8a"];
       } else if (deviceInfo.supportedAbis.contains("armeabi-v7a")) {
         return info.downloadUrl["armeabi-v7a"];
