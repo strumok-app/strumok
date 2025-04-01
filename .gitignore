@@ -43,6 +43,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+
+
 secrets.json
 /android/app/google-services.json
 /android/app/strumok.jks

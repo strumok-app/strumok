@@ -1,2 +1,0 @@
-/home/andrii/Documents/personal/strumok/android/app/.cxx/Debug/3u1w1i18/armeabi-v7a/CMakeFiles/edit_cache.dir
-/home/andrii/Documents/personal/strumok/android/app/.cxx/Debug/3u1w1i18/armeabi-v7a/CMakeFiles/rebuild_cache.dir

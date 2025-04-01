@@ -7,6 +7,7 @@ import 'package:http/http.dart';
 import 'package:strumok/download/manager/download_file.dart';
 import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/utils.dart';
 
 class HLSStream {
   final Uri uri;
@@ -36,7 +37,11 @@ class HLSManifest {
   });
 }
 
-void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback onDone) async {
+void downloadVideo(
+  VideoDownloadRequest request,
+  DownloadTask task,
+  VoidCallback onDone,
+) async {
   task.status.value = DownloadStatus.started;
 
   if (await File(request.fileSrc).exists()) {
@@ -61,7 +66,8 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
       throw Exception("httpStatus: ${res.statusCode}");
     }
 
-    if (request.url.endsWith(".m3u8") || res.headers['content-type'] == 'application/vnd.apple.mpegurl') {
+    if (request.url.endsWith(".m3u8") ||
+        res.headers['content-type'] == 'application/vnd.apple.mpegurl') {
       final bytes = await res.stream.toBytes();
       final hls = utf8.decode(bytes);
 
@@ -72,14 +78,18 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
       }
 
       if (master.streams.isNotEmpty) {
-        final sortedStreams = master.streams.sorted((a, b) => b.bandwidth.compareTo(a.bandwidth));
+        final sortedStreams = master.streams.sorted(
+          (a, b) => b.bandwidth.compareTo(a.bandwidth),
+        );
         for (int i = 0; i < sortedStreams.length; i++) {
           final selectedStream = sortedStreams[i];
           try {
             await _downloadHLSStream(request, task, selectedStream, onDone);
             break;
           } catch (e) {
-            logger.w("download video failed for request: $request, selectedStream: $selectedStream, error: $e");
+            logger.w(
+              "download video failed for request: $request, selectedStream: $selectedStream, error: $e",
+            );
             if (i == sortedStreams.length - 1) {
               rethrow;
             }
@@ -93,7 +103,12 @@ void downloadVideo(VideoDownloadRequest request, DownloadTask task, VoidCallback
       onDone();
     } else {
       donwloadFile(
-        FileDownloadRequest(request.url, request.url, request.fileSrc, headers: request.headers),
+        FileDownloadRequest(
+          request.url,
+          request.url,
+          request.fileSrc,
+          headers: request.headers,
+        ),
         task,
         onDone,
       );
@@ -162,7 +177,11 @@ Future<void> _downloadStreamSegments(
       segmentReq.headers.addAll(request.headers!);
     }
 
-    final res = await client.send(segmentReq).timeout(httpTimeout);
+    final res = await retry(
+      () => client.send(segmentReq).timeout(httpTimeout),
+      3,
+      const Duration(seconds: 10),
+    );
 
     if (res.statusCode != HttpStatus.ok) {
       await sink.close();
@@ -216,12 +235,14 @@ HLSManifest _parseHLSManifest(Uri uri, String content) {
         }
 
         if (bandwidth != null && i < lines.length - 1) {
-          streams.add(HLSStream(
-            uri: _relativeUri(uri, lines[++i]),
-            bandwidth: bandwidth,
-            width: width,
-            height: height,
-          ));
+          streams.add(
+            HLSStream(
+              uri: _relativeUri(uri, lines[++i]),
+              bandwidth: bandwidth,
+              width: width,
+              height: height,
+            ),
+          );
         }
       }
     } else {

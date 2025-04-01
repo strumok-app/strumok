@@ -35,7 +35,7 @@ String downloadTaskDescription(DownloadTask task) {
   final speed = task.speed();
 
   if (speed != null) {
-    return "$title $speed/s";
+    return "$title ($speed/s)";
   }
 
   return title;
