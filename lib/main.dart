@@ -12,6 +12,7 @@ import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/layouts/global_notifications.dart';
 import 'package:strumok/layouts/version_guard.dart';
 import 'package:strumok/offline/offline_storage.dart';
+import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/error_observer.dart';
 import 'package:strumok/utils/visual.dart';
@@ -60,18 +61,21 @@ void appRunner() async {
   runApp(ProviderScope(observers: [ErrorProviderObserver()], child: MainApp()));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   final _appRouter = AppRouter();
 
   MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userLang = ref.watch(userLanguageSettingProvider);
+
     return Shortcuts(
       shortcuts: <LogicalKeySet, Intent>{
         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
       },
       child: MaterialApp.router(
+        locale: Locale(userLang),
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

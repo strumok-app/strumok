@@ -7,7 +7,7 @@ class HorizontalListCard extends HookWidget {
   final GestureTapCallback onTap;
   final ValueChanged<bool>? onHover;
   final GestureLongPressCallback? onLongPress;
-  final Decoration? decoration;
+  final Widget? background;
   final Widget? child;
   final Widget? corner;
   final Widget? badge;
@@ -18,7 +18,7 @@ class HorizontalListCard extends HookWidget {
     required this.onTap,
     this.onHover,
     this.onLongPress,
-    this.decoration,
+    this.background,
     this.child,
     this.corner,
     this.badge,
@@ -43,9 +43,10 @@ class HorizontalListCard extends HookWidget {
       ),
       child: Stack(
         children: [
-          _buildBackground(imageWidth),
+          if (background != null) _buildBackground(imageWidth),
           if (badge != null) _buildBadge(),
           _buildContent(mobile, focused),
+          if (corner != null) _buildCorner(),
         ],
       ),
     );
@@ -59,26 +60,20 @@ class HorizontalListCard extends HookWidget {
         onLongPress: onLongPress,
         onHover: onHover,
         onFocusChange: mobile ? null : (value) => focused.value = value,
-        child: Material(
-          color: Colors.transparent,
-          child:
-              corner != null
-                  ? Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Align(alignment: Alignment.topRight, child: corner),
-                  )
-                  : null,
-        ),
+        child: Material(color: Colors.transparent, child: child),
       ),
     );
   }
 
-  Widget _buildBackground(double imageWidth) {
-    return Container(
-      constraints: BoxConstraints(maxWidth: imageWidth),
-      decoration: decoration,
-      child: SizedBox.expand(child: child),
+  Widget _buildCorner() {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Align(alignment: Alignment.topRight, child: corner),
     );
+  }
+
+  Widget _buildBackground(double imageWidth) {
+    return SizedBox(width: imageWidth, child: background);
   }
 
   Widget _buildBadge() {

@@ -57,6 +57,24 @@ final colorSettingsProvider =
     );
 
 typedef _$ColorSettings = AutoDisposeNotifier<Color>;
+String _$userLanguageSettingHash() =>
+    r'd4339e5e190b24c8491aebe5b96dac9c4e300492';
+
+/// See also [UserLanguageSetting].
+@ProviderFor(UserLanguageSetting)
+final userLanguageSettingProvider =
+    AutoDisposeNotifierProvider<UserLanguageSetting, String>.internal(
+      UserLanguageSetting.new,
+      name: r'userLanguageSettingProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$userLanguageSettingHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$UserLanguageSetting = AutoDisposeNotifier<String>;
 String _$mangaReaderScaleSettingsHash() =>
     r'a98f1278f26331b354ff70df01d929dfccfe51f8';
 

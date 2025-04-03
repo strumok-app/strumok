@@ -59,6 +59,13 @@ class AppPreferences {
         value?.toList() ?? List.empty(),
       );
 
+  static set userLanguage(String? lang) =>
+      lang != null
+          ? instance.setString("user_language", lang)
+          : instance.remove("user_language");
+
+  static String? get userLanguage => instance.getString("user_language");
+
   static set themeBrightness(Brightness? brightness) =>
       brightness != null
           ? instance.setString("theme_brightness", brightness.name)
@@ -172,7 +179,7 @@ class AppPreferences {
       StarVideoPosition.fromRemembered;
 
   static set videoPlayerSettingStarFrom(StarVideoPosition startFrom) =>
-      instance.setString("video_player_setting_star_from", startFrom.name);
+      instance.setString("video_player_setting_start_from", startFrom.name);
 
   static int get videoPlayerSettingFixedPosition =>
       instance.getInt("video_player_setting_fixed_position") ?? 0;

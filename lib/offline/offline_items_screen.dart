@@ -129,12 +129,10 @@ class OfflineItem extends ConsumerWidget {
       height: 260,
       child: HorizontalListCard(
         onTap: () => navigateToContentDetails(context, info),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: CachedNetworkImageProvider(info.image),
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-          ),
+        background: CachedNetworkImage(
+          imageUrl: info.image,
+          fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
         ),
         badge: Badge(
           label: Text(info.supplier),

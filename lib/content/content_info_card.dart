@@ -34,22 +34,21 @@ class ContentInfoCard extends StatelessWidget {
       onTap: onTap ?? () => navigateToContentDetails(context, contentInfo),
       onHover: onHover,
       onLongPress: onLongPress,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: CachedNetworkImageProvider(contentInfo.image),
-          fit: BoxFit.cover,
-          alignment: Alignment.topCenter,
-        ),
+      background: CachedNetworkImage(
+        imageUrl: contentInfo.image,
+        fit: BoxFit.cover,
+        alignment: Alignment.topCenter,
       ),
       corner: corner,
-      badge: showSupplier
-          ? Badge(
-              label: Text(contentInfo.supplier),
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              backgroundColor: theme.colorScheme.primary,
-              textColor: theme.colorScheme.onPrimary,
-            )
-          : null,
+      badge:
+          showSupplier
+              ? Badge(
+                label: Text(contentInfo.supplier),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                backgroundColor: theme.colorScheme.primary,
+                textColor: theme.colorScheme.onPrimary,
+              )
+              : null,
       child: Column(
         children: [
           const Spacer(),
@@ -70,17 +69,20 @@ class ContentInfoCard extends StatelessWidget {
                 style: const TextStyle(color: Colors.white, inherit: true),
                 maxLines: 2,
               ),
-              subtitle: contentInfo.secondaryTitle == null
-                  ? null
-                  : Text(
-                      contentInfo.secondaryTitle!,
-                      overflow: TextOverflow.ellipsis,
-                      style:
-                          const TextStyle(color: Colors.white, inherit: true),
-                      maxLines: 2,
-                    ),
+              subtitle:
+                  contentInfo.secondaryTitle == null
+                      ? null
+                      : Text(
+                        contentInfo.secondaryTitle!,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          inherit: true,
+                        ),
+                        maxLines: 2,
+                      ),
             ),
-          )
+          ),
         ],
       ),
     );

@@ -48,6 +48,20 @@ class ColorSettings extends _$ColorSettings {
 }
 
 @riverpod
+class UserLanguageSetting extends _$UserLanguageSetting {
+  @override
+  String build() {
+    final [localeLang, ...] = Platform.localeName.split("_");
+    return AppPreferences.userLanguage ?? localeLang;
+  }
+
+  void select(String lang) {
+    state = lang;
+    AppPreferences.userLanguage = lang;
+  }
+}
+
+@riverpod
 class MangaReaderScaleSettings extends _$MangaReaderScaleSettings {
   @override
   MangaReaderScale build() {

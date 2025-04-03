@@ -28,11 +28,14 @@ class ContentDetailsScreen extends ConsumerWidget {
       showBackButton: true,
       child: details.when(
         data: (data) => ContentDetailsView(data),
-        error: (error, stackTrace) => DisplayError(
-          error: error,
-          onRefresh: () => ref.invalidate(detailsProvider(supplier, id)),
-          actions: [_RemoveFromCollectionButton(supplier: supplier, id: id)],
-        ),
+        error:
+            (error, stackTrace) => DisplayError(
+              error: error,
+              onRefresh: () => ref.invalidate(detailsProvider(supplier, id)),
+              actions: [
+                _RemoveFromCollectionButton(supplier: supplier, id: id),
+              ],
+            ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
     );
@@ -40,25 +43,24 @@ class ContentDetailsScreen extends ConsumerWidget {
 }
 
 class _RemoveFromCollectionButton extends ConsumerWidget {
-  const _RemoveFromCollectionButton({
-    required this.supplier,
-    required this.id,
-  });
+  const _RemoveFromCollectionButton({required this.supplier, required this.id});
 
   final String supplier;
   final String id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final inCollection = ref.watch(hasCollectionItemProvider(supplier, id)).valueOrNull ?? false;
+    final inCollection =
+        ref.watch(hasCollectionItemProvider(supplier, id)).valueOrNull ?? false;
 
     return inCollection
         ? OutlinedButton(
-            onPressed: () {
-              ref.read(collectionServiceProvider).delete(supplier, id);
-            },
-            child: Text(AppLocalizations.of(context)!.removeFromCollection),
-          )
+          onPressed: () {
+            ref.read(collectionServiceProvider).delete(supplier, id);
+            context.pop();
+          },
+          child: Text(AppLocalizations.of(context)!.removeFromCollection),
+        )
         : const SizedBox.shrink();
   }
 }

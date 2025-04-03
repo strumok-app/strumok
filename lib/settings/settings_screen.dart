@@ -3,11 +3,12 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/settings/app_version/app_version_settings.dart';
-import 'package:strumok/settings/content_language/content_language.dart';
+import 'package:strumok/settings/content_language.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_settings.dart';
-import 'package:strumok/settings/theme/brightness_switcher.dart';
-import 'package:strumok/settings/theme/color_switcher.dart';
+import 'package:strumok/settings/brightness_switcher.dart';
+import 'package:strumok/settings/color_switcher.dart';
 import 'package:flutter/material.dart';
+import 'package:strumok/settings/user_language.dart';
 import 'package:strumok/widgets/settings_section.dart';
 
 @RoutePage()
@@ -53,6 +54,11 @@ class _SettingsView extends StatelessWidget {
               ),
               _renderSection(
                 context,
+                AppLocalizations.of(context)!.language,
+                const UserLanguage(),
+              ),
+              _renderSection(
+                context,
                 AppLocalizations.of(context)!.settingsVersion,
                 const AppVersionSettings(),
               ),
@@ -71,12 +77,14 @@ class _SettingsView extends StatelessWidget {
                 leading: const Icon(Icons.chevron_right),
                 horizontalTitleGap: 8,
                 title: Text(
-                  AppLocalizations.of(context)!.settingsSuppliersAndRecommendations,
+                  AppLocalizations.of(
+                    context,
+                  )!.settingsSuppliersAndRecommendations,
                 ),
                 onTap: () {
                   context.router.push(const SuppliersSettingsRoute());
                 },
-              )
+              ),
             ],
           ),
         ),
@@ -87,10 +95,7 @@ class _SettingsView extends StatelessWidget {
   Widget _renderSection(BuildContext context, String label, Widget section) {
     return SettingsSection(
       labelWidth: 200,
-      label: Text(
-        label,
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
+      label: Text(label, style: Theme.of(context).textTheme.titleMedium),
       section: section,
     );
   }

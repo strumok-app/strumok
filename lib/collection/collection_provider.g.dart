@@ -69,7 +69,7 @@ typedef CollectionItemsByStatusRef =
       Map<MediaCollectionItemStatus, List<MediaCollectionItem>>
     >;
 String _$collectionItemsSuppliersHash() =>
-    r'c6106bd0396a295a5a92e7f4a43a826b62d4cd5e';
+    r'7734ea3459e39c871ec144acafb49a78ad880c00';
 
 /// See also [collectionItemsSuppliers].
 @ProviderFor(collectionItemsSuppliers)

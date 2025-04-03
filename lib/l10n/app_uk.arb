@@ -96,5 +96,6 @@
     "downloadsDeleteConfimation": "Видалии усі заванатжені дані для: {title}",
     "downloadsFailed": "Неможливо завантажити: {title}",
     "confirmeDialogCancel": "Відмінити",
-    "confirmeDialogAccept": "Підтвердити"
+    "confirmeDialogAccept": "Підтвердити",
+    "language": "Мова"
 }
