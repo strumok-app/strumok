@@ -8,6 +8,7 @@ import 'package:strumok/content/details/widgets.dart';
 import 'package:strumok/content/manga/content_details_manga_actions.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
+import 'package:strumok/widgets/nothing_to_show.dart';
 
 class ContentDetailsMobileView extends StatelessWidget {
   final ContentDetails contentDetails;
@@ -22,10 +23,13 @@ class ContentDetailsMobileView extends StatelessWidget {
       child: Column(
         children: [
           Theme(
-            data: ThemeData(colorSchemeSeed: color, brightness: Brightness.dark),
+            data: ThemeData(
+              colorSchemeSeed: color,
+              brightness: Brightness.dark,
+            ),
             child: _MainAccentBlock(contentDetails: contentDetails),
           ),
-          _InfoBlock(contentDetails: contentDetails)
+          _InfoBlock(contentDetails: contentDetails),
         ],
       ),
     );
@@ -57,7 +61,10 @@ class _MainAccentBlock extends HookWidget {
               imageUrl: contentDetails.image,
               fit: BoxFit.fitWidth,
               width: screenWidth,
-              placeholder: (context, url) => _buildImagePlaceholder(screenWidth),
+              placeholder:
+                  (context, url) => _buildImagePlaceholder(screenWidth),
+              errorWidget:
+                  (context, url, error) => Center(child: NothingToShow()),
             ),
           ),
         ),
@@ -73,8 +80,8 @@ class _MainAccentBlock extends HookWidget {
               alignment: Alignment.bottomLeft,
               child: _renderContentActions(screenWidth),
             ),
-          )
-        ]
+          ),
+        ],
       ],
     );
   }
@@ -100,11 +107,7 @@ class _MainAccentBlock extends HookWidget {
       padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 64),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Colors.transparent,
-            Colors.black54,
-            Colors.black,
-          ],
+          colors: [Colors.transparent, Colors.black54, Colors.black],
           stops: [0, 0.4, 1.0],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -122,9 +125,7 @@ class _MainAccentBlock extends HookWidget {
 }
 
 class _TitleBox extends StatelessWidget {
-  const _TitleBox({
-    required this.contentDetails,
-  });
+  const _TitleBox({required this.contentDetails});
 
   final ContentDetails contentDetails;
 
@@ -135,15 +136,9 @@ class _TitleBox extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 8),
-        Text(
-          contentDetails.title,
-          style: textTheme.bodyLarge,
-        ),
+        Text(contentDetails.title, style: textTheme.bodyLarge),
         if (contentDetails.secondaryTitle != null)
-          Text(
-            contentDetails.secondaryTitle!,
-            style: textTheme.bodyLarge,
-          ),
+          Text(contentDetails.secondaryTitle!, style: textTheme.bodyLarge),
         const SizedBox(height: 8),
       ],
     );
@@ -156,11 +151,7 @@ class _TitleBox extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Colors.transparent,
-                  Colors.black54,
-                  Colors.black87,
-                ],
+                colors: [Colors.transparent, Colors.black54, Colors.black87],
                 stops: [0, 0.3, 1.0],
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
@@ -198,7 +189,7 @@ class _InfoBlock extends StatelessWidget {
           if (contentDetails.similar.isNotEmpty) ...[
             const SizedBox(height: 8),
             SimilarBlock(contentDetails: contentDetails),
-          ]
+          ],
         ],
       ),
     );

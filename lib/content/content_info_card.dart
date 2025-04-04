@@ -3,6 +3,7 @@ import 'package:strumok/utils/nav.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
+import 'package:strumok/widgets/nothing_to_show.dart';
 
 class ContentInfoCard extends StatelessWidget {
   final FocusNode? focusNode;
@@ -38,6 +39,7 @@ class ContentInfoCard extends StatelessWidget {
         imageUrl: contentInfo.image,
         fit: BoxFit.cover,
         alignment: Alignment.topCenter,
+        errorWidget: (context, url, error) => Center(child: NothingToShow()),
       ),
       corner: corner,
       badge:

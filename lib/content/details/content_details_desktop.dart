@@ -9,6 +9,7 @@ import 'package:strumok/content/manga/content_details_manga_actions.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/widgets/focus_indicator.dart';
+import 'package:strumok/widgets/nothing_to_show.dart';
 
 class ContentDetailsDesktopView extends StatelessWidget {
   final ContentDetails contentDetails;
@@ -37,6 +38,8 @@ class ContentDetailsDesktopView extends StatelessWidget {
                   imageUrl: contentDetails.image,
                   height: screanHeight,
                   fit: BoxFit.contain,
+                  errorWidget:
+                      (context, url, error) => Center(child: NothingToShow()),
                 ),
               ),
             ),
@@ -87,6 +90,9 @@ class _InfoBlock extends StatelessWidget {
                     child: CachedNetworkImage(
                       imageUrl: contentDetails.image,
                       width: 250,
+                      errorWidget:
+                          (context, url, error) =>
+                              Center(child: NothingToShow()),
                     ),
                   ),
                 ],
