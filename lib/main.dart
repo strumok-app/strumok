@@ -23,15 +23,15 @@ import 'package:media_kit/media_kit.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
-  const sentryDns = String.fromEnvironment("SENTRY_DNS");
-  await SentryFlutter.init((options) {
-    if (kDebugMode) {
-      options.dsn = "";
-    } else {
+  if (kDebugMode) {
+    appRunner();
+  } else {
+    const sentryDns = String.fromEnvironment("SENTRY_DNS");
+    await SentryFlutter.init((options) {
       options.tracesSampleRate = 1.0;
       options.dsn = sentryDns;
-    }
-  }, appRunner: appRunner);
+    }, appRunner: appRunner);
+  }
 }
 
 void appRunner() async {

@@ -13,8 +13,11 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GeneralLayout(
       selectedIndex: 0,
-      child: ListView(
-        children: const [ActiveCollectionItemsView(), Recommendations()],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [ActiveCollectionItemsView(), Recommendations()],
+        ),
       ),
     );
   }

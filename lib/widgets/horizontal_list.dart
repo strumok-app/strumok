@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class HorizontalList extends StatelessWidget {
   final Widget title;
-  final NullableIndexedWidgetBuilder itemBuilder;
+  final IndexedWidgetBuilder itemBuilder;
   final ScrollController? scrollController;
   final int itemCount;
   final double paddings;
@@ -23,17 +23,26 @@ class HorizontalList extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: title),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: title,
+          ),
           SizedBox(
-            height: 260,
-            child: ListView.builder(
+            child: SingleChildScrollView(
               controller: scrollController,
-              padding: const EdgeInsets.only(bottom: 8),
               scrollDirection: Axis.horizontal,
-              itemBuilder: itemBuilder,
-              itemCount: itemCount,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                    itemCount,
+                    (idx) => itemBuilder(context, idx),
+                  ),
+                ),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

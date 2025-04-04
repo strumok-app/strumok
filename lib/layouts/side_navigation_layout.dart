@@ -23,6 +23,7 @@ class SideNavigationLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),

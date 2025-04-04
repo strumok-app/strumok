@@ -11,6 +11,7 @@ import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/utils/text.dart';
 import 'package:strumok/utils/visual.dart';
 
+const downloadGroupKey = "app.strumok.downloads";
 const downloadChannelName = "downloads";
 const downloadChannelTitle = "Downloads";
 
@@ -32,7 +33,7 @@ class GlobalNotifications extends ConsumerStatefulWidget {
 class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
   final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  int nextId = 0;
+  int nextId = 1;
   bool notificationsGranted = false;
   final Map<String, int> notificationsIds = {};
   final Map<String, VoidCallback> listeners = {};
@@ -148,7 +149,7 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
     }
   }
 
-  void _showDownloadingNotification(int id, DownloadTask taks) {
+  void _showDownloadingNotification(int id, DownloadTask taks) async {
     if (!notificationsIds.containsKey(taks.request.id)) {
       return;
     }
@@ -158,12 +159,13 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
         downloadChannelName,
         downloadChannelTitle,
         maxProgress: 100,
+        silent: true,
         onlyAlertOnce: true,
         autoCancel: false,
         ongoing: true,
         showProgress: true,
         progress: (taks.progress.value * 100).ceil(),
-        groupKey: downloadChannelName,
+        groupKey: downloadGroupKey,
       ),
     );
 
@@ -174,6 +176,42 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
       notificationDetails,
       payload: taks.request.id,
     );
+
+    _showDownloadingNotificationsGroup();
+  }
+
+  void _showDownloadingNotificationsGroup() async {
+    final activeNotifications =
+        await localNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >()!
+            .getActiveNotifications();
+
+    if (activeNotifications.where((n) => n.id == 0).isNotEmpty) {
+      return;
+    }
+
+    final activeNotificationsLenth = activeNotifications.length;
+
+    if (activeNotificationsLenth > 1) {
+      final notificationDetails = NotificationDetails(
+        android: AndroidNotificationDetails(
+          downloadChannelName,
+          downloadChannelTitle,
+          styleInformation: InboxStyleInformation(
+            activeNotifications.map((e) => e.title.toString()).toList(),
+            contentTitle: "Downloads",
+            summaryText: "Downloads",
+          ),
+          silent: true,
+          setAsGroupSummary: true,
+          groupKey: downloadGroupKey,
+          onlyAlertOnce: true,
+        ),
+      );
+      localNotificationsPlugin.show(0, "Downloads", null, notificationDetails);
+    }
   }
 
   void _onNotificationTap(NotificationResponse details) async {

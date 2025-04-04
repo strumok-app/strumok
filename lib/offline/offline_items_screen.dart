@@ -26,18 +26,15 @@ class OfflineItemsScreen extends StatelessWidget {
     return GeneralLayout(
       child: Align(
         alignment: Alignment.topLeft,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                _OfflineItemsTitle(),
-                if (isMobile(context)) _InprogressDownloads(),
-                _OfflineItemsView(),
-              ],
-            ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _OfflineItemsTitle(),
+              if (isMobile(context)) _InprogressDownloads(),
+              Expanded(child: _OfflineItemsView()),
+            ],
           ),
         ),
       ),
@@ -125,70 +122,70 @@ class OfflineItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    return SizedBox(
-      height: 260,
-      child: HorizontalListCard(
-        onTap: () => navigateToContentDetails(context, info),
-        background: CachedNetworkImage(
-          imageUrl: info.image,
-          fit: BoxFit.cover,
-          alignment: Alignment.topCenter,
-        ),
-        badge: Badge(
-          label: Text(info.supplier),
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          backgroundColor: theme.colorScheme.primary,
-          textColor: theme.colorScheme.onPrimary,
-        ),
-        corner: IconButton.filledTonal(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder:
-                  (context) => ConfirmDialog(
-                    content: Text(
-                      AppLocalizations.of(
-                        context,
-                      )!.downloadsDeleteConfimation(info.title),
-                    ),
-                    confimAction: () async {
-                      if (hasAnyDownloadingAitems(info.supplier, info.id)) {
-                        return;
-                      }
-
-                      await OfflineStorage().deleteAll(info.supplier, info.id);
-                      ref.invalidate(offlineContentProvider);
-                    },
+    return HorizontalListCard(
+      onTap: () => navigateToContentDetails(context, info),
+      background: CachedNetworkImage(
+        imageUrl: info.image,
+        fit: BoxFit.cover,
+        alignment: Alignment.topCenter,
+      ),
+      badge: Badge(
+        label: Text(info.supplier),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        backgroundColor: theme.colorScheme.primary,
+        textColor: theme.colorScheme.onPrimary,
+      ),
+      corner: IconButton.filledTonal(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder:
+                (context) => ConfirmDialog(
+                  content: Text(
+                    AppLocalizations.of(
+                      context,
+                    )!.downloadsDeleteConfimation(info.title),
                   ),
-            );
-          },
-          icon: Icon(Icons.delete),
-        ),
-        child: Column(
-          children: [
-            const Spacer(),
-            Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.black54, Colors.transparent],
-                  stops: [.5, 1.0],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
+                  confimAction: () async {
+                    if (hasAnyDownloadingAitems(info.supplier, info.id)) {
+                      return;
+                    }
+
+                    await OfflineStorage().deleteAll(info.supplier, info.id);
+                    ref.invalidate(offlineContentProvider);
+                  },
                 ),
-              ),
-              child: ListTile(
-                mouseCursor: SystemMouseCursors.click,
-                title: Text(
-                  info.title,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: Colors.white, inherit: true),
-                  maxLines: 2,
-                ),
-                subtitle: Text(formatBytes(info.diskUsage)),
+          );
+        },
+        icon: Icon(Icons.delete),
+      ),
+      child: Column(
+        children: [
+          const Spacer(),
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.black54, Colors.transparent],
+                stops: [.5, 1.0],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
               ),
             ),
-          ],
-        ),
+            child: ListTile(
+              mouseCursor: SystemMouseCursors.click,
+              title: Text(
+                info.title,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: Colors.white, inherit: true),
+                maxLines: 2,
+              ),
+              subtitle: Text(
+                formatBytes(info.diskUsage),
+                style: const TextStyle(color: Colors.white, inherit: true),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

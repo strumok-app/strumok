@@ -30,24 +30,29 @@ class HorizontalListCard extends HookWidget {
     final theme = Theme.of(context);
     final focused = useState(false);
     final mobile = isMobile(context);
-    final imageWidth = mobile ? _calcMobileSize(context) : 200.0;
+    final width = mobile ? _calcMobileSize(context) : 200.0;
+    final height = width * 1.3;
 
-    return Card(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      shape: RoundedRectangleBorder(
-        side:
-            !mobile && focused.value
-                ? BorderSide(color: theme.colorScheme.primary, width: 1)
-                : BorderSide.none,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Stack(
-        children: [
-          if (background != null) _buildBackground(imageWidth),
-          if (badge != null) _buildBadge(),
-          _buildContent(mobile, focused),
-          if (corner != null) _buildCorner(),
-        ],
+    return SizedBox(
+      width: width,
+      height: height,
+      child: Card(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: RoundedRectangleBorder(
+          side:
+              !mobile && focused.value
+                  ? BorderSide(color: theme.colorScheme.primary, width: 1)
+                  : BorderSide.none,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Stack(
+          children: [
+            if (background != null) Positioned.fill(child: background!),
+            _buildContent(mobile, focused),
+            if (badge != null) _buildBadge(),
+            if (corner != null) _buildCorner(),
+          ],
+        ),
       ),
     );
   }
@@ -72,10 +77,6 @@ class HorizontalListCard extends HookWidget {
     );
   }
 
-  Widget _buildBackground(double imageWidth) {
-    return SizedBox(width: imageWidth, child: background);
-  }
-
   Widget _buildBadge() {
     return Positioned.fill(
       child: Align(
@@ -87,6 +88,6 @@ class HorizontalListCard extends HookWidget {
 
   double _calcMobileSize(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    return (screenWidth - 36) / 2;
+    return (screenWidth - 24) / 2;
   }
 }

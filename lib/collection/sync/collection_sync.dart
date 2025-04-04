@@ -11,10 +11,6 @@ import 'package:firebase_dart/firebase_dart.dart';
 import 'package:firebase_dart/src/database/impl/firebase_impl.dart';
 import 'package:strumok/utils/text.dart';
 
-const lastSyncField = "lastSync";
-const lastSeenField = "lastSeen";
-const positionsField = "positions";
-
 class CollectionSync {
   final StreamController<bool> _syncStatus = StreamController();
 
@@ -44,7 +40,7 @@ class CollectionSync {
     final lastSyncTimestamp = AppPreferences.lastSyncTimestamp;
     final nowTimestamp = DateTime.timestamp().millisecondsSinceEpoch;
     final remoteSnapshot =
-        await ref.orderByChild(lastSeenField).startAt(lastSyncTimestamp).once()
+        await ref.orderByChild("lastSeen").startAt(lastSyncTimestamp).once()
             as DataSnapshotImpl;
 
     final Map<String, dynamic>? remoteCollection = remoteSnapshot
@@ -64,42 +60,26 @@ class CollectionSync {
 
         if (localItem == null) {
           remoteItem["tokens"] = splitWords(remoteItem["title"] ?? "");
-          remoteItem[positionsField] = nowTimestamp;
-
           await localStore.record(key).put(tx, remoteItem);
           continue;
         }
 
-        final int remoteLastSean = remoteItem[lastSeenField] ?? 0;
-        final int localLastSean = (localItem[lastSeenField] as int?) ?? 0;
+        final int remoteLastSean = remoteItem["lastSeen"] ?? 0;
+        final int localLastSean = (localItem["lastSeen"] as int?) ?? 0;
 
         if (remoteLastSean > localLastSean) {
           final localPositions =
-              (localItem[positionsField] as Map<String, dynamic>?) ?? {};
+              (localItem["positions"] as Map<String, dynamic>?) ?? {};
           final remotePositions =
-              (remoteItem[positionsField] as Map<String, dynamic>?) ?? {};
-
-          remoteItem[positionsField] = mergeMaps(
+              (remoteItem["positions"] as Map<String, dynamic>?) ?? {};
+          remoteItem["positions"] = mergeMaps(
             localPositions,
             remotePositions,
             value: (_, v) => v,
           );
-          remoteItem[lastSyncField] = nowTimestamp;
-
           await localStore.record(key).put(tx, remoteItem);
         }
       }
-
-      // cleanup remote deleted
-      localStore.delete(
-        db,
-        finder: Finder(
-          filter: Filter.and([
-            Filter.notNull(lastSyncField),
-            Filter.lessThan(lastSyncField, nowTimestamp),
-          ]),
-        ),
-      );
     });
 
     AppPreferences.lastSyncTimestamp = nowTimestamp;

@@ -6,6 +6,4 @@ analyzer:
     - content_suppliers_api/*
     - content_suppliers_rust/*
     - "**/*.g.dart"
-linter: 
-  rules:
-    implicit_call_tearoffs: false
+    - "**/*.freezed.dart"
