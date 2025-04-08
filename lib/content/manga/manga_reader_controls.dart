@@ -67,18 +67,20 @@ class MangaReaderControls extends StatelessWidget {
       },
       child: Material(
         color: Colors.transparent,
-        child: Column(children: [
-          MangaReaderControlTopBar(
-            contentDetails: contentDetails,
-            mediaItems: mediaItems,
-          ),
-          const Spacer(),
-          MangaReaderControlBottomBar(
-            contentDetails: contentDetails,
-            mediaItems: mediaItems,
-            onPageChanged: onPageChanged,
-          )
-        ]),
+        child: Column(
+          children: [
+            MangaReaderControlTopBar(
+              contentDetails: contentDetails,
+              mediaItems: mediaItems,
+            ),
+            const Spacer(),
+            MangaReaderControlBottomBar(
+              contentDetails: contentDetails,
+              mediaItems: mediaItems,
+              onPageChanged: onPageChanged,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -99,30 +101,43 @@ class MangaReaderControlTopBar extends ConsumerWidget {
     final theme = Theme.of(context);
     final mobile = isMobile(context);
 
+    final item =
+        ref
+            .watch(collectionItemCurrentItemProvider(contentDetails))
+            .valueOrNull;
+
     return Container(
       color: Colors.black45,
       child: Padding(
-        padding: EdgeInsets.only(left: mobile ? 8 : 20, right: 8, bottom: 8, top: 8),
-        child: Row(children: [
-          if (!TVDetector.isTV) ...[
-            BackButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-              color: Colors.white,
+        padding: EdgeInsets.only(
+          left: mobile ? 8 : 20,
+          right: 8,
+          bottom: 8,
+          top: 8,
+        ),
+        child: Row(
+          children: [
+            if (!TVDetector.isTV) ...[
+              BackButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                color: Colors.white,
+              ),
+              const SizedBox(width: 8),
+            ],
+            Text(
+              [
+                contentDetails.title,
+                if (item != null) mediaItems[item].title,
+              ].join(" - "),
+              style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),
             ),
-            const SizedBox(width: 8),
+            const Spacer(),
+            _renderVolumesBotton(context, ref),
           ],
-          Text(
-            contentDetails.title,
-            style: theme.textTheme.titleMedium!.copyWith(
-              color: Colors.white,
-            ),
-          ),
-          const Spacer(),
-          _renderVolumesBotton(context, ref)
-        ]),
+        ),
       ),
     );
   }
@@ -132,7 +147,9 @@ class MangaReaderControlTopBar extends ConsumerWidget {
       contentDetails: contentDetails,
       mediaItems: mediaItems,
       onSelect: (item) {
-        ref.read(collectionItemProvider(contentDetails).notifier).setCurrentItem(item.number);
+        ref
+            .read(collectionItemProvider(contentDetails).notifier)
+            .setCurrentItem(item.number);
         Navigator.of(context).pop();
       },
       autofocus: true,
@@ -154,17 +171,26 @@ class MangaReaderControlBottomBar extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<MangaReaderControlBottomBar> createState() => _MangaReaderControlBottomBarState();
+  ConsumerState<MangaReaderControlBottomBar> createState() =>
+      _MangaReaderControlBottomBarState();
 }
 
-class _MangaReaderControlBottomBarState extends ConsumerState<MangaReaderControlBottomBar> {
+class _MangaReaderControlBottomBarState
+    extends ConsumerState<MangaReaderControlBottomBar> {
   int? tragetPage;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final position = ref.watch(collectionItemCurrentMediaItemPositionProvider(widget.contentDetails)).value;
+    final position =
+        ref
+            .watch(
+              collectionItemCurrentMediaItemPositionProvider(
+                widget.contentDetails,
+              ),
+            )
+            .value;
 
     if (position == null) {
       return const SizedBox.shrink();
@@ -177,7 +203,9 @@ class _MangaReaderControlBottomBarState extends ConsumerState<MangaReaderControl
     final mobile = isMobile(context);
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(navigationMode: NavigationMode.directional),
+      data: MediaQuery.of(
+        context,
+      ).copyWith(navigationMode: NavigationMode.directional),
       child: Container(
         color: Colors.black45,
         child: Padding(
@@ -194,7 +222,9 @@ class _MangaReaderControlBottomBarState extends ConsumerState<MangaReaderControl
                 ),
               Expanded(
                 child: SliderTheme(
-                  data: SliderThemeData(tickMarkShape: SliderTickMarkShape.noTickMark),
+                  data: SliderThemeData(
+                    tickMarkShape: SliderTickMarkShape.noTickMark,
+                  ),
                   child: Slider(
                     allowedInteraction: SliderInteraction.tapAndSlide,
                     max: pageNumbers.toDouble() - 1,
@@ -246,10 +276,11 @@ class MangaSettingsButton extends StatelessWidget {
       onPressed: () {
         showDialog(
           context: context,
-          builder: (context) => MangaReaderSettingsDialog(
-            contentDetails: contentDetails,
-            mediaItems: mediaItems,
-          ),
+          builder:
+              (context) => MangaReaderSettingsDialog(
+                contentDetails: contentDetails,
+                mediaItems: mediaItems,
+              ),
         );
       },
       tooltip: AppLocalizations.of(context)!.settings,

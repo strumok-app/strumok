@@ -45,13 +45,20 @@ class HorizontalListCard extends HookWidget {
                   : BorderSide.none,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Stack(
-          children: [
-            if (background != null) Positioned.fill(child: background!),
-            _buildContent(mobile, focused),
-            if (badge != null) _buildBadge(),
-            if (corner != null) _buildCorner(),
-          ],
+        child: InkWell(
+          focusNode: focusNode,
+          onTap: onTap,
+          onLongPress: onLongPress,
+          onHover: onHover,
+          onFocusChange: mobile ? null : (value) => focused.value = value,
+          child: Stack(
+            children: [
+              if (background != null) Positioned.fill(child: background!),
+              _buildContent(mobile, focused),
+              if (badge != null) _buildBadge(),
+              if (corner != null) _buildCorner(),
+            ],
+          ),
         ),
       ),
     );
@@ -59,14 +66,7 @@ class HorizontalListCard extends HookWidget {
 
   Widget _buildContent(bool mobile, ValueNotifier<bool> focused) {
     return Positioned.fill(
-      child: InkWell(
-        focusNode: focusNode,
-        onTap: onTap,
-        onLongPress: onLongPress,
-        onHover: onHover,
-        onFocusChange: mobile ? null : (value) => focused.value = value,
-        child: Material(color: Colors.transparent, child: child),
-      ),
+      child: Material(color: Colors.transparent, child: child),
     );
   }
 

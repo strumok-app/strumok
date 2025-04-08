@@ -35,10 +35,5 @@ class NavigationBarData {
     routeBuilder: () => const CollectionRoute(),
   );
 
-  static final List<NavigationBarData> routes = [
-    home,
-    search,
-    collection,
-    // settings,
-  ];
+  static final List<NavigationBarData> routes = [home, search, collection];
 }
