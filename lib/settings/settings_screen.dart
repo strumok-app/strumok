@@ -82,7 +82,7 @@ class _SettingsView extends StatelessWidget {
                   )!.settingsSuppliersAndRecommendations,
                 ),
                 onTap: () {
-                  context.router.push(const SuppliersSettingsRoute());
+                  context.navigateTo(const SuppliersSettingsRoute());
                 },
               ),
             ],

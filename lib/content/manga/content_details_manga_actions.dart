@@ -9,7 +9,10 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
   const ContentDetailsMangaActions(super.contentDetails, {super.key});
 
   @override
-  Widget renderActions(BuildContext context, List<ContentMediaItem> mediaItems) {
+  Widget renderActions(
+    BuildContext context,
+    List<ContentMediaItem> mediaItems,
+  ) {
     return Row(
       children: [
         _renderReadButton(context),
@@ -23,6 +26,7 @@ class ContentDetailsMangaActions extends ContentDetailsActions {
     return SizedBox(
       width: 200,
       child: OutlinedButton.icon(
+        autofocus: true,
         onPressed: () => navigateToContent(context, contentDetails),
         icon: const Icon(Icons.menu_book_outlined),
         label: Text(AppLocalizations.of(context)!.readButton),

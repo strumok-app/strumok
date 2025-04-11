@@ -382,12 +382,14 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
 
   @override
   Widget build(BuildContext context) {
-    final view = switch (Theme.of(context).platform) {
-      TargetPlatform.android =>
-        TVDetector.isTV ? _renderTvView() : _renderMobileView(),
-      TargetPlatform.iOS => _renderMobileView(),
-      _ => _renderDesktopView(),
-    };
+    Widget view;
+    if (TVDetector.isTV) {
+      view = _renderTvView();
+    } else if (Platform.isAndroid || Platform.isIOS) {
+      view = _renderMobileView();
+    } else {
+      view = _renderDesktopView();
+    }
 
     final size = MediaQuery.sizeOf(context);
 

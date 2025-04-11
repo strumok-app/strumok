@@ -41,6 +41,7 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
     return SizedBox(
       width: 200,
       child: OutlinedButton.icon(
+        autofocus: true,
         onPressed: () => navigateToContent(context, contentDetails),
         icon: const Icon(Icons.play_arrow_outlined),
         label: Text(AppLocalizations.of(context)!.watchButton),

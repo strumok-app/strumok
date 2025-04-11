@@ -19,22 +19,23 @@ class Recommendations extends ConsumerWidget {
     final settings = ref.watch(suppliersSettingsProvider);
     final enabledSuppliers = ref.watch(enabledSuppliersProvider);
 
-    final recommendations = enabledSuppliers
-        .map((s) => (s, settings.getConfig(s)))
-        .where((e) => e.$2.channels.isNotEmpty)
-        .mapIndexed(
-          (groupIdx, e) => [
-            ...e.$2.channels.mapIndexed(
-              (channelIdx, channel) => _RecommendationChannel(
-                channelIdx: channelIdx,
-                supplierName: e.$1,
-                channel: channel,
-              ),
-            ),
-          ],
-        )
-        .expand((e) => e)
-        .toList();
+    final recommendations =
+        enabledSuppliers
+            .map((s) => (s, settings.getConfig(s)))
+            .where((e) => e.$2.channels.isNotEmpty)
+            .mapIndexed(
+              (groupIdx, e) => [
+                ...e.$2.channels.mapIndexed(
+                  (channelIdx, channel) => _RecommendationChannel(
+                    channelIdx: channelIdx,
+                    supplierName: e.$1,
+                    channel: channel,
+                  ),
+                ),
+              ],
+            )
+            .expand((e) => e)
+            .toList();
 
     if (recommendations.isEmpty) {
       return _renderEmptyRecommendations(context);
@@ -49,12 +50,13 @@ class Recommendations extends ConsumerWidget {
   Widget _renderEmptyRecommendations(BuildContext context) {
     return HorizontalList(
       title: const SizedBox.shrink(),
-      itemBuilder: (context, index) => HorizontalListCard(
-        onTap: () {
-          context.router.push(const SuppliersSettingsRoute());
-        },
-        child: const SetRecommendationsHint(),
-      ),
+      itemBuilder:
+          (context, index) => HorizontalListCard(
+            onTap: () {
+              context.navigateTo(const SuppliersSettingsRoute());
+            },
+            child: const SetRecommendationsHint(),
+          ),
       itemCount: 1,
     );
   }
@@ -85,7 +87,8 @@ class _RecommendationChannel extends HookConsumerWidget {
     useEffect(() {
       void onScroll() {
         var position = scrollController.position;
-        if (position.pixels >= scrollController.position.maxScrollExtent - 200) {
+        if (position.pixels >=
+            scrollController.position.maxScrollExtent - 200) {
           ref.read(provider.notifier).loadNext();
         }
       }
@@ -97,17 +100,11 @@ class _RecommendationChannel extends HookConsumerWidget {
 
     final list = HorizontalList(
       scrollController: scrollController,
-      title: Text(
-        channel,
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
+      title: Text(channel, style: Theme.of(context).textTheme.titleMedium),
       itemBuilder: (context, index) {
         final item = state.recommendations[index];
 
-        return ContentInfoCard(
-          contentInfo: item,
-          showSupplier: false,
-        );
+        return ContentInfoCard(contentInfo: item, showSupplier: false);
       },
       itemCount: state.recommendations.length,
     );
