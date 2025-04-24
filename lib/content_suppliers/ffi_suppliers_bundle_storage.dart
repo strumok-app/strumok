@@ -2,16 +2,14 @@ import 'dart:io';
 import 'package:strumok/content_suppliers/ffi_supplier_bundle_info.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:strumok/utils/sem_ver.dart';
 
 const ffiSupplierBundleDir = "ffi";
 
 class FFISuppliersBundleStorage {
-  static const minimalCompatibleVersion = SemVer(major: 1, minor: 4, inc: 3);
-
   FFISuppliersBundleStorage._internal();
 
-  static final FFISuppliersBundleStorage _instance = FFISuppliersBundleStorage._internal();
+  static final FFISuppliersBundleStorage _instance =
+      FFISuppliersBundleStorage._internal();
 
   factory FFISuppliersBundleStorage() {
     return _instance;
@@ -35,10 +33,6 @@ class FFISuppliersBundleStorage {
   }
 
   Future<bool> isInstalled(FFISupplierBundleInfo info) async {
-    if (minimalCompatibleVersion.compareTo(info.version) > 0) {
-      return false;
-    }
-
     return File(getLibFilePath(info)).exists();
   }
 
@@ -47,7 +41,8 @@ class FFISuppliersBundleStorage {
       final files = await Directory(libsDir).list().toList();
 
       for (var file in files) {
-        if (file.path.contains(info.name) && !file.path.contains(info.version.toString())) {
+        if (file.path.contains(info.name) &&
+            !file.path.contains(info.version.toString())) {
           await file.delete();
         }
       }

@@ -12,7 +12,8 @@ part of 'models.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$ContentMediaItemSource {
@@ -21,65 +22,89 @@ mixin _$ContentMediaItemSource {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            String link, String description, Map<String, String>? headers)
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )
+    video,
     required TResult Function(
-            String link, String description, Map<String, String>? headers)
-        subtitle,
-    required TResult Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)
-        manga,
-  }) =>
-      throw _privateConstructorUsedError;
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )
+    subtitle,
+    required TResult Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )
+    manga,
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            String link, String description, Map<String, String>? headers)?
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    video,
     TResult? Function(
-            String link, String description, Map<String, String>? headers)?
-        subtitle,
-    TResult? Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)?
-        manga,
-  }) =>
-      throw _privateConstructorUsedError;
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    subtitle,
+    TResult? Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )?
+    manga,
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            String link, String description, Map<String, String>? headers)?
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    video,
     TResult Function(
-            String link, String description, Map<String, String>? headers)?
-        subtitle,
-    TResult Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)?
-        manga,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    subtitle,
+    TResult Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )?
+    manga,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(ContentMediaItemSource_Video value) video,
     required TResult Function(ContentMediaItemSource_Subtitle value) subtitle,
     required TResult Function(ContentMediaItemSource_Manga value) manga,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ContentMediaItemSource_Video value)? video,
     TResult? Function(ContentMediaItemSource_Subtitle value)? subtitle,
     TResult? Function(ContentMediaItemSource_Manga value)? manga,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ContentMediaItemSource_Video value)? video,
     TResult Function(ContentMediaItemSource_Subtitle value)? subtitle,
     TResult Function(ContentMediaItemSource_Manga value)? manga,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 
   /// Create a copy of ContentMediaItemSource
   /// with the given fields replaced by the non-null parameter values.
@@ -90,16 +115,19 @@ mixin _$ContentMediaItemSource {
 
 /// @nodoc
 abstract class $ContentMediaItemSourceCopyWith<$Res> {
-  factory $ContentMediaItemSourceCopyWith(ContentMediaItemSource value,
-          $Res Function(ContentMediaItemSource) then) =
-      _$ContentMediaItemSourceCopyWithImpl<$Res, ContentMediaItemSource>;
+  factory $ContentMediaItemSourceCopyWith(
+    ContentMediaItemSource value,
+    $Res Function(ContentMediaItemSource) then,
+  ) = _$ContentMediaItemSourceCopyWithImpl<$Res, ContentMediaItemSource>;
   @useResult
   $Res call({String description, Map<String, String>? headers});
 }
 
 /// @nodoc
-class _$ContentMediaItemSourceCopyWithImpl<$Res,
-        $Val extends ContentMediaItemSource>
+class _$ContentMediaItemSourceCopyWithImpl<
+  $Res,
+  $Val extends ContentMediaItemSource
+>
     implements $ContentMediaItemSourceCopyWith<$Res> {
   _$ContentMediaItemSourceCopyWithImpl(this._value, this._then);
 
@@ -112,20 +140,22 @@ class _$ContentMediaItemSourceCopyWithImpl<$Res,
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? description = null,
-    Object? headers = freezed,
-  }) {
-    return _then(_value.copyWith(
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      headers: freezed == headers
-          ? _value.headers
-          : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-    ) as $Val);
+  $Res call({Object? description = null, Object? headers = freezed}) {
+    return _then(
+      _value.copyWith(
+            description:
+                null == description
+                    ? _value.description
+                    : description // ignore: cast_nullable_to_non_nullable
+                        as String,
+            headers:
+                freezed == headers
+                    ? _value.headers
+                    : headers // ignore: cast_nullable_to_non_nullable
+                        as Map<String, String>?,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -133,9 +163,9 @@ class _$ContentMediaItemSourceCopyWithImpl<$Res,
 abstract class _$$ContentMediaItemSource_VideoImplCopyWith<$Res>
     implements $ContentMediaItemSourceCopyWith<$Res> {
   factory _$$ContentMediaItemSource_VideoImplCopyWith(
-          _$ContentMediaItemSource_VideoImpl value,
-          $Res Function(_$ContentMediaItemSource_VideoImpl) then) =
-      __$$ContentMediaItemSource_VideoImplCopyWithImpl<$Res>;
+    _$ContentMediaItemSource_VideoImpl value,
+    $Res Function(_$ContentMediaItemSource_VideoImpl) then,
+  ) = __$$ContentMediaItemSource_VideoImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String link, String description, Map<String, String>? headers});
@@ -143,13 +173,16 @@ abstract class _$$ContentMediaItemSource_VideoImplCopyWith<$Res>
 
 /// @nodoc
 class __$$ContentMediaItemSource_VideoImplCopyWithImpl<$Res>
-    extends _$ContentMediaItemSourceCopyWithImpl<$Res,
-        _$ContentMediaItemSource_VideoImpl>
+    extends
+        _$ContentMediaItemSourceCopyWithImpl<
+          $Res,
+          _$ContentMediaItemSource_VideoImpl
+        >
     implements _$$ContentMediaItemSource_VideoImplCopyWith<$Res> {
   __$$ContentMediaItemSource_VideoImplCopyWithImpl(
-      _$ContentMediaItemSource_VideoImpl _value,
-      $Res Function(_$ContentMediaItemSource_VideoImpl) _then)
-      : super(_value, _then);
+    _$ContentMediaItemSource_VideoImpl _value,
+    $Res Function(_$ContentMediaItemSource_VideoImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ContentMediaItemSource
   /// with the given fields replaced by the non-null parameter values.
@@ -160,32 +193,37 @@ class __$$ContentMediaItemSource_VideoImplCopyWithImpl<$Res>
     Object? description = null,
     Object? headers = freezed,
   }) {
-    return _then(_$ContentMediaItemSource_VideoImpl(
-      link: null == link
-          ? _value.link
-          : link // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      headers: freezed == headers
-          ? _value._headers
-          : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-    ));
+    return _then(
+      _$ContentMediaItemSource_VideoImpl(
+        link:
+            null == link
+                ? _value.link
+                : link // ignore: cast_nullable_to_non_nullable
+                    as String,
+        description:
+            null == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                    as String,
+        headers:
+            freezed == headers
+                ? _value._headers
+                : headers // ignore: cast_nullable_to_non_nullable
+                    as Map<String, String>?,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$ContentMediaItemSource_VideoImpl extends ContentMediaItemSource_Video {
-  const _$ContentMediaItemSource_VideoImpl(
-      {required this.link,
-      required this.description,
-      final Map<String, String>? headers})
-      : _headers = headers,
-        super._();
+  const _$ContentMediaItemSource_VideoImpl({
+    required this.link,
+    required this.description,
+    final Map<String, String>? headers,
+  }) : _headers = headers,
+       super._();
 
   @override
   final String link;
@@ -218,8 +256,12 @@ class _$ContentMediaItemSource_VideoImpl extends ContentMediaItemSource_Video {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, link, description,
-      const DeepCollectionEquality().hash(_headers));
+  int get hashCode => Object.hash(
+    runtimeType,
+    link,
+    description,
+    const DeepCollectionEquality().hash(_headers),
+  );
 
   /// Create a copy of ContentMediaItemSource
   /// with the given fields replaced by the non-null parameter values.
@@ -227,22 +269,34 @@ class _$ContentMediaItemSource_VideoImpl extends ContentMediaItemSource_Video {
   @override
   @pragma('vm:prefer-inline')
   _$$ContentMediaItemSource_VideoImplCopyWith<
-          _$ContentMediaItemSource_VideoImpl>
-      get copyWith => __$$ContentMediaItemSource_VideoImplCopyWithImpl<
-          _$ContentMediaItemSource_VideoImpl>(this, _$identity);
+    _$ContentMediaItemSource_VideoImpl
+  >
+  get copyWith => __$$ContentMediaItemSource_VideoImplCopyWithImpl<
+    _$ContentMediaItemSource_VideoImpl
+  >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            String link, String description, Map<String, String>? headers)
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )
+    video,
     required TResult Function(
-            String link, String description, Map<String, String>? headers)
-        subtitle,
-    required TResult Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)
-        manga,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )
+    subtitle,
+    required TResult Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )
+    manga,
   }) {
     return video(link, description, headers);
   }
@@ -251,14 +305,24 @@ class _$ContentMediaItemSource_VideoImpl extends ContentMediaItemSource_Video {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            String link, String description, Map<String, String>? headers)?
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    video,
     TResult? Function(
-            String link, String description, Map<String, String>? headers)?
-        subtitle,
-    TResult? Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)?
-        manga,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    subtitle,
+    TResult? Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )?
+    manga,
   }) {
     return video?.call(link, description, headers);
   }
@@ -267,14 +331,24 @@ class _$ContentMediaItemSource_VideoImpl extends ContentMediaItemSource_Video {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            String link, String description, Map<String, String>? headers)?
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    video,
     TResult Function(
-            String link, String description, Map<String, String>? headers)?
-        subtitle,
-    TResult Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)?
-        manga,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    subtitle,
+    TResult Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )?
+    manga,
     required TResult orElse(),
   }) {
     if (video != null) {
@@ -319,10 +393,11 @@ class _$ContentMediaItemSource_VideoImpl extends ContentMediaItemSource_Video {
 }
 
 abstract class ContentMediaItemSource_Video extends ContentMediaItemSource {
-  const factory ContentMediaItemSource_Video(
-      {required final String link,
-      required final String description,
-      final Map<String, String>? headers}) = _$ContentMediaItemSource_VideoImpl;
+  const factory ContentMediaItemSource_Video({
+    required final String link,
+    required final String description,
+    final Map<String, String>? headers,
+  }) = _$ContentMediaItemSource_VideoImpl;
   const ContentMediaItemSource_Video._() : super._();
 
   String get link;
@@ -336,17 +411,18 @@ abstract class ContentMediaItemSource_Video extends ContentMediaItemSource {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ContentMediaItemSource_VideoImplCopyWith<
-          _$ContentMediaItemSource_VideoImpl>
-      get copyWith => throw _privateConstructorUsedError;
+    _$ContentMediaItemSource_VideoImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$ContentMediaItemSource_SubtitleImplCopyWith<$Res>
     implements $ContentMediaItemSourceCopyWith<$Res> {
   factory _$$ContentMediaItemSource_SubtitleImplCopyWith(
-          _$ContentMediaItemSource_SubtitleImpl value,
-          $Res Function(_$ContentMediaItemSource_SubtitleImpl) then) =
-      __$$ContentMediaItemSource_SubtitleImplCopyWithImpl<$Res>;
+    _$ContentMediaItemSource_SubtitleImpl value,
+    $Res Function(_$ContentMediaItemSource_SubtitleImpl) then,
+  ) = __$$ContentMediaItemSource_SubtitleImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String link, String description, Map<String, String>? headers});
@@ -354,13 +430,16 @@ abstract class _$$ContentMediaItemSource_SubtitleImplCopyWith<$Res>
 
 /// @nodoc
 class __$$ContentMediaItemSource_SubtitleImplCopyWithImpl<$Res>
-    extends _$ContentMediaItemSourceCopyWithImpl<$Res,
-        _$ContentMediaItemSource_SubtitleImpl>
+    extends
+        _$ContentMediaItemSourceCopyWithImpl<
+          $Res,
+          _$ContentMediaItemSource_SubtitleImpl
+        >
     implements _$$ContentMediaItemSource_SubtitleImplCopyWith<$Res> {
   __$$ContentMediaItemSource_SubtitleImplCopyWithImpl(
-      _$ContentMediaItemSource_SubtitleImpl _value,
-      $Res Function(_$ContentMediaItemSource_SubtitleImpl) _then)
-      : super(_value, _then);
+    _$ContentMediaItemSource_SubtitleImpl _value,
+    $Res Function(_$ContentMediaItemSource_SubtitleImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ContentMediaItemSource
   /// with the given fields replaced by the non-null parameter values.
@@ -371,20 +450,25 @@ class __$$ContentMediaItemSource_SubtitleImplCopyWithImpl<$Res>
     Object? description = null,
     Object? headers = freezed,
   }) {
-    return _then(_$ContentMediaItemSource_SubtitleImpl(
-      link: null == link
-          ? _value.link
-          : link // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      headers: freezed == headers
-          ? _value._headers
-          : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-    ));
+    return _then(
+      _$ContentMediaItemSource_SubtitleImpl(
+        link:
+            null == link
+                ? _value.link
+                : link // ignore: cast_nullable_to_non_nullable
+                    as String,
+        description:
+            null == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                    as String,
+        headers:
+            freezed == headers
+                ? _value._headers
+                : headers // ignore: cast_nullable_to_non_nullable
+                    as Map<String, String>?,
+      ),
+    );
   }
 }
 
@@ -392,12 +476,12 @@ class __$$ContentMediaItemSource_SubtitleImplCopyWithImpl<$Res>
 
 class _$ContentMediaItemSource_SubtitleImpl
     extends ContentMediaItemSource_Subtitle {
-  const _$ContentMediaItemSource_SubtitleImpl(
-      {required this.link,
-      required this.description,
-      final Map<String, String>? headers})
-      : _headers = headers,
-        super._();
+  const _$ContentMediaItemSource_SubtitleImpl({
+    required this.link,
+    required this.description,
+    final Map<String, String>? headers,
+  }) : _headers = headers,
+       super._();
 
   @override
   final String link;
@@ -430,8 +514,12 @@ class _$ContentMediaItemSource_SubtitleImpl
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, link, description,
-      const DeepCollectionEquality().hash(_headers));
+  int get hashCode => Object.hash(
+    runtimeType,
+    link,
+    description,
+    const DeepCollectionEquality().hash(_headers),
+  );
 
   /// Create a copy of ContentMediaItemSource
   /// with the given fields replaced by the non-null parameter values.
@@ -439,22 +527,34 @@ class _$ContentMediaItemSource_SubtitleImpl
   @override
   @pragma('vm:prefer-inline')
   _$$ContentMediaItemSource_SubtitleImplCopyWith<
-          _$ContentMediaItemSource_SubtitleImpl>
-      get copyWith => __$$ContentMediaItemSource_SubtitleImplCopyWithImpl<
-          _$ContentMediaItemSource_SubtitleImpl>(this, _$identity);
+    _$ContentMediaItemSource_SubtitleImpl
+  >
+  get copyWith => __$$ContentMediaItemSource_SubtitleImplCopyWithImpl<
+    _$ContentMediaItemSource_SubtitleImpl
+  >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            String link, String description, Map<String, String>? headers)
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )
+    video,
     required TResult Function(
-            String link, String description, Map<String, String>? headers)
-        subtitle,
-    required TResult Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)
-        manga,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )
+    subtitle,
+    required TResult Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )
+    manga,
   }) {
     return subtitle(link, description, headers);
   }
@@ -463,14 +563,24 @@ class _$ContentMediaItemSource_SubtitleImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            String link, String description, Map<String, String>? headers)?
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    video,
     TResult? Function(
-            String link, String description, Map<String, String>? headers)?
-        subtitle,
-    TResult? Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)?
-        manga,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    subtitle,
+    TResult? Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )?
+    manga,
   }) {
     return subtitle?.call(link, description, headers);
   }
@@ -479,14 +589,24 @@ class _$ContentMediaItemSource_SubtitleImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            String link, String description, Map<String, String>? headers)?
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    video,
     TResult Function(
-            String link, String description, Map<String, String>? headers)?
-        subtitle,
-    TResult Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)?
-        manga,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    subtitle,
+    TResult Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )?
+    manga,
     required TResult orElse(),
   }) {
     if (subtitle != null) {
@@ -531,11 +651,11 @@ class _$ContentMediaItemSource_SubtitleImpl
 }
 
 abstract class ContentMediaItemSource_Subtitle extends ContentMediaItemSource {
-  const factory ContentMediaItemSource_Subtitle(
-          {required final String link,
-          required final String description,
-          final Map<String, String>? headers}) =
-      _$ContentMediaItemSource_SubtitleImpl;
+  const factory ContentMediaItemSource_Subtitle({
+    required final String link,
+    required final String description,
+    final Map<String, String>? headers,
+  }) = _$ContentMediaItemSource_SubtitleImpl;
   const ContentMediaItemSource_Subtitle._() : super._();
 
   String get link;
@@ -549,36 +669,40 @@ abstract class ContentMediaItemSource_Subtitle extends ContentMediaItemSource {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ContentMediaItemSource_SubtitleImplCopyWith<
-          _$ContentMediaItemSource_SubtitleImpl>
-      get copyWith => throw _privateConstructorUsedError;
+    _$ContentMediaItemSource_SubtitleImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$ContentMediaItemSource_MangaImplCopyWith<$Res>
     implements $ContentMediaItemSourceCopyWith<$Res> {
   factory _$$ContentMediaItemSource_MangaImplCopyWith(
-          _$ContentMediaItemSource_MangaImpl value,
-          $Res Function(_$ContentMediaItemSource_MangaImpl) then) =
-      __$$ContentMediaItemSource_MangaImplCopyWithImpl<$Res>;
+    _$ContentMediaItemSource_MangaImpl value,
+    $Res Function(_$ContentMediaItemSource_MangaImpl) then,
+  ) = __$$ContentMediaItemSource_MangaImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String description,
-      Map<String, String>? headers,
-      int pageNumbers,
-      List<String>? pages,
-      List<String> params});
+  $Res call({
+    String description,
+    Map<String, String>? headers,
+    List<String>? pages,
+    List<String> params,
+  });
 }
 
 /// @nodoc
 class __$$ContentMediaItemSource_MangaImplCopyWithImpl<$Res>
-    extends _$ContentMediaItemSourceCopyWithImpl<$Res,
-        _$ContentMediaItemSource_MangaImpl>
+    extends
+        _$ContentMediaItemSourceCopyWithImpl<
+          $Res,
+          _$ContentMediaItemSource_MangaImpl
+        >
     implements _$$ContentMediaItemSource_MangaImplCopyWith<$Res> {
   __$$ContentMediaItemSource_MangaImplCopyWithImpl(
-      _$ContentMediaItemSource_MangaImpl _value,
-      $Res Function(_$ContentMediaItemSource_MangaImpl) _then)
-      : super(_value, _then);
+    _$ContentMediaItemSource_MangaImpl _value,
+    $Res Function(_$ContentMediaItemSource_MangaImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ContentMediaItemSource
   /// with the given fields replaced by the non-null parameter values.
@@ -587,48 +711,48 @@ class __$$ContentMediaItemSource_MangaImplCopyWithImpl<$Res>
   $Res call({
     Object? description = null,
     Object? headers = freezed,
-    Object? pageNumbers = null,
     Object? pages = freezed,
     Object? params = null,
   }) {
-    return _then(_$ContentMediaItemSource_MangaImpl(
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      headers: freezed == headers
-          ? _value._headers
-          : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-      pageNumbers: null == pageNumbers
-          ? _value.pageNumbers
-          : pageNumbers // ignore: cast_nullable_to_non_nullable
-              as int,
-      pages: freezed == pages
-          ? _value._pages
-          : pages // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-      params: null == params
-          ? _value._params
-          : params // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
+    return _then(
+      _$ContentMediaItemSource_MangaImpl(
+        description:
+            null == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                    as String,
+        headers:
+            freezed == headers
+                ? _value._headers
+                : headers // ignore: cast_nullable_to_non_nullable
+                    as Map<String, String>?,
+        pages:
+            freezed == pages
+                ? _value._pages
+                : pages // ignore: cast_nullable_to_non_nullable
+                    as List<String>?,
+        params:
+            null == params
+                ? _value._params
+                : params // ignore: cast_nullable_to_non_nullable
+                    as List<String>,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$ContentMediaItemSource_MangaImpl extends ContentMediaItemSource_Manga {
-  const _$ContentMediaItemSource_MangaImpl(
-      {required this.description,
-      final Map<String, String>? headers,
-      required this.pageNumbers,
-      final List<String>? pages,
-      required final List<String> params})
-      : _headers = headers,
-        _pages = pages,
-        _params = params,
-        super._();
+  const _$ContentMediaItemSource_MangaImpl({
+    required this.description,
+    final Map<String, String>? headers,
+    final List<String>? pages,
+    required final List<String> params,
+  }) : _headers = headers,
+       _pages = pages,
+       _params = params,
+       super._();
 
   @override
   final String description;
@@ -642,8 +766,6 @@ class _$ContentMediaItemSource_MangaImpl extends ContentMediaItemSource_Manga {
     return EqualUnmodifiableMapView(value);
   }
 
-  @override
-  final int pageNumbers;
   final List<String>? _pages;
   @override
   List<String>? get pages {
@@ -664,7 +786,7 @@ class _$ContentMediaItemSource_MangaImpl extends ContentMediaItemSource_Manga {
 
   @override
   String toString() {
-    return 'ContentMediaItemSource.manga(description: $description, headers: $headers, pageNumbers: $pageNumbers, pages: $pages, params: $params)';
+    return 'ContentMediaItemSource.manga(description: $description, headers: $headers, pages: $pages, params: $params)';
   }
 
   @override
@@ -675,20 +797,18 @@ class _$ContentMediaItemSource_MangaImpl extends ContentMediaItemSource_Manga {
             (identical(other.description, description) ||
                 other.description == description) &&
             const DeepCollectionEquality().equals(other._headers, _headers) &&
-            (identical(other.pageNumbers, pageNumbers) ||
-                other.pageNumbers == pageNumbers) &&
             const DeepCollectionEquality().equals(other._pages, _pages) &&
             const DeepCollectionEquality().equals(other._params, _params));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      description,
-      const DeepCollectionEquality().hash(_headers),
-      pageNumbers,
-      const DeepCollectionEquality().hash(_pages),
-      const DeepCollectionEquality().hash(_params));
+    runtimeType,
+    description,
+    const DeepCollectionEquality().hash(_headers),
+    const DeepCollectionEquality().hash(_pages),
+    const DeepCollectionEquality().hash(_params),
+  );
 
   /// Create a copy of ContentMediaItemSource
   /// with the given fields replaced by the non-null parameter values.
@@ -696,58 +816,90 @@ class _$ContentMediaItemSource_MangaImpl extends ContentMediaItemSource_Manga {
   @override
   @pragma('vm:prefer-inline')
   _$$ContentMediaItemSource_MangaImplCopyWith<
-          _$ContentMediaItemSource_MangaImpl>
-      get copyWith => __$$ContentMediaItemSource_MangaImplCopyWithImpl<
-          _$ContentMediaItemSource_MangaImpl>(this, _$identity);
+    _$ContentMediaItemSource_MangaImpl
+  >
+  get copyWith => __$$ContentMediaItemSource_MangaImplCopyWithImpl<
+    _$ContentMediaItemSource_MangaImpl
+  >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            String link, String description, Map<String, String>? headers)
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )
+    video,
     required TResult Function(
-            String link, String description, Map<String, String>? headers)
-        subtitle,
-    required TResult Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)
-        manga,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )
+    subtitle,
+    required TResult Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )
+    manga,
   }) {
-    return manga(description, headers, pageNumbers, pages, params);
+    return manga(description, headers, pages, params);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            String link, String description, Map<String, String>? headers)?
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    video,
     TResult? Function(
-            String link, String description, Map<String, String>? headers)?
-        subtitle,
-    TResult? Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)?
-        manga,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    subtitle,
+    TResult? Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )?
+    manga,
   }) {
-    return manga?.call(description, headers, pageNumbers, pages, params);
+    return manga?.call(description, headers, pages, params);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            String link, String description, Map<String, String>? headers)?
-        video,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    video,
     TResult Function(
-            String link, String description, Map<String, String>? headers)?
-        subtitle,
-    TResult Function(String description, Map<String, String>? headers,
-            int pageNumbers, List<String>? pages, List<String> params)?
-        manga,
+      String link,
+      String description,
+      Map<String, String>? headers,
+    )?
+    subtitle,
+    TResult Function(
+      String description,
+      Map<String, String>? headers,
+      List<String>? pages,
+      List<String> params,
+    )?
+    manga,
     required TResult orElse(),
   }) {
     if (manga != null) {
-      return manga(description, headers, pageNumbers, pages, params);
+      return manga(description, headers, pages, params);
     }
     return orElse();
   }
@@ -788,19 +940,18 @@ class _$ContentMediaItemSource_MangaImpl extends ContentMediaItemSource_Manga {
 }
 
 abstract class ContentMediaItemSource_Manga extends ContentMediaItemSource {
-  const factory ContentMediaItemSource_Manga(
-      {required final String description,
-      final Map<String, String>? headers,
-      required final int pageNumbers,
-      final List<String>? pages,
-      required final List<String> params}) = _$ContentMediaItemSource_MangaImpl;
+  const factory ContentMediaItemSource_Manga({
+    required final String description,
+    final Map<String, String>? headers,
+    final List<String>? pages,
+    required final List<String> params,
+  }) = _$ContentMediaItemSource_MangaImpl;
   const ContentMediaItemSource_Manga._() : super._();
 
   @override
   String get description;
   @override
   Map<String, String>? get headers;
-  int get pageNumbers;
   List<String>? get pages;
   List<String> get params;
 
@@ -809,6 +960,7 @@ abstract class ContentMediaItemSource_Manga extends ContentMediaItemSource {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ContentMediaItemSource_MangaImplCopyWith<
-          _$ContentMediaItemSource_MangaImpl>
-      get copyWith => throw _privateConstructorUsedError;
+    _$ContentMediaItemSource_MangaImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
 }

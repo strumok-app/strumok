@@ -1,3 +1,4 @@
+import 'package:content_suppliers_rust/bundle.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
@@ -16,11 +17,25 @@ class VersionGuard extends ConsumerWidget {
 
     return Scaffold(
       body: installedBundle.when(
-        data: (info) => info != null ? child : _InstallSuppliersBundler(),
-        error: (error, stackTrace) => _Error(error: AppLocalizations.of(context)!.ffiLibInstallationFailed),
+        data: (info) {
+          return _isRequireToUpdate(info) ? child : _InstallSuppliersBundler();
+        },
+        error: (error, stackTrace) {
+          return _Error(
+            error: AppLocalizations.of(context)!.ffiLibInstallationFailed,
+          );
+        },
         loading: () => _Loader(),
       ),
     );
+  }
+
+  bool _isRequireToUpdate(FFISupplierBundleInfo? info) {
+    if (info == null) {
+      return true;
+    }
+
+    return !RustContentSuppliersBundle.isCompatible(info.version.major);
   }
 }
 
@@ -30,9 +45,14 @@ class _InstallSuppliersBundler extends ConsumerWidget {
     final lattestBundle = ref.watch(latestSupplierBundleInfoProvider);
 
     return lattestBundle.when(
-      data: (info) => info == null
-          ? _Error(error: AppLocalizations.of(context)!.ffiLibInstallationFailed)
-          : _buildInstall(context, info),
+      data:
+          (info) =>
+              info == null
+                  ? _Error(
+                    error:
+                        AppLocalizations.of(context)!.ffiLibInstallationFailed,
+                  )
+                  : _buildInstall(context, info),
       error: (error, stackTrace) => _Error(error: error.toString()),
       loading: () => _Loader(),
     );
@@ -59,9 +79,7 @@ class _InstallSuppliersBundler extends ConsumerWidget {
 class _Loader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
+    return const Center(child: CircularProgressIndicator());
   }
 }
 

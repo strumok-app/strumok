@@ -50,17 +50,29 @@ class ContentSuppliers {
     _suppliersByName = {for (var s in suppliers) s.name: s};
   }
 
-  Stream<(String, List<ContentInfo>)> search(String query, Set<String> contentSuppliers) {
+  Stream<(String, List<ContentInfo>)> search(
+    String query,
+    Set<String> contentSuppliers,
+  ) {
     final futures = contentSuppliers
         .map((name) => _suppliersByName[name])
         .nonNulls
-        .map((supplier) => supplier.search(query).then((res) => (supplier.name, res)));
+        .map(
+          (supplier) =>
+              supplier.search(query).then((res) => (supplier.name, res)),
+        );
 
     return Stream.fromFutures(futures);
   }
 
-  Future<List<ContentInfo>> loadRecommendationsChannel(String supplierName, String channel, {page = 1}) async {
-    logger.i("Loading content supplier: $supplierName recommendations channel: $channel");
+  Future<List<ContentInfo>> loadRecommendationsChannel(
+    String supplierName,
+    String channel, {
+    page = 1,
+  }) async {
+    logger.i(
+      "Loading content supplier: $supplierName recommendations channel: $channel",
+    );
 
     final supplier = getSupplier(supplierName);
 
@@ -71,10 +83,15 @@ class ContentSuppliers {
     return supplier.loadChannel(channel, page: page);
   }
 
-  Future<ContentDetails> detailsById(String supplierName, String id, Set<ContentLanguage> langs) async {
+  Future<ContentDetails> detailsById(
+    String supplierName,
+    String id,
+    Set<ContentLanguage> langs,
+  ) async {
     logger.i("Load content details supplier: $supplierName id: $id");
 
-    final supplier = _suppliers.where((e) => e.name == supplierName).firstOrNull;
+    final supplier =
+        _suppliers.where((e) => e.name == supplierName).firstOrNull;
 
     if (supplier == null) {
       throw Exception("No supplier $supplierName found");
@@ -112,9 +129,18 @@ class ContentSuppliers {
       final bundleInfo = AppPreferences.ffiSupplierBundleInfo;
 
       if (bundleInfo != null) {
-        final installed = await FFISuppliersBundleStorage().isInstalled(bundleInfo);
+        final installed = await FFISuppliersBundleStorage().isInstalled(
+          bundleInfo,
+        );
 
         if (!installed) {
+          return [];
+        }
+
+        // check api version compatablity
+        if (!RustContentSuppliersBundle.isCompatible(
+          bundleInfo.version.major,
+        )) {
           return [];
         }
 
@@ -134,6 +160,8 @@ class ContentSuppliers {
 
     logger.i("FFI libs directory: $libDirectory");
 
-    return [RustContentSuppliersBundle(directory: libDirectory, libName: libName)];
+    return [
+      RustContentSuppliersBundle(directory: libDirectory, libName: libName),
+    ];
   }
 }

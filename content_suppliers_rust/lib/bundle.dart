@@ -9,24 +9,20 @@ import 'package:content_suppliers_rust/rust/models.dart' as models;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+const compatibleApiVersoin = 2;
+
 // ignore_for_file: invalid_use_of_internal_member
 class RustContentSuppliersBundle implements ContentSupplierBundle {
   final String? directory;
   final String libName;
   _CustomRustLib? _lib;
 
-  RustContentSuppliersBundle({
-    required this.directory,
-    required this.libName,
-  });
+  RustContentSuppliersBundle({required this.directory, required this.libName});
 
   @override
   Future<void> load() async {
     if (_lib == null) {
-      _lib = _CustomRustLib(
-        directory: directory,
-        libName: libName,
-      );
+      _lib = _CustomRustLib(directory: directory, libName: libName);
 
       await _lib!.init();
     }
@@ -45,7 +41,14 @@ class RustContentSuppliersBundle implements ContentSupplierBundle {
 
     final api = _lib!.api;
 
-    return api.crateApiAvalaibleSuppliers().map((supplier) => _RustContentSupplier(name: supplier, api: api)).toList();
+    return api
+        .crateApiAvalaibleSuppliers()
+        .map((supplier) => _RustContentSupplier(name: supplier, api: api))
+        .toList();
+  }
+
+  static bool isCompatible(int apiVersion) {
+    return compatibleApiVersoin == apiVersion;
   }
 }
 
@@ -57,7 +60,8 @@ class _RustContentSupplier implements ContentSupplier {
   @override
   final String name;
 
-  _RustContentSupplier({required this.name, required RustLibApi api}) : _api = api;
+  _RustContentSupplier({required this.name, required RustLibApi api})
+    : _api = api;
 
   @override
   Set<String> get channels {
@@ -70,11 +74,18 @@ class _RustContentSupplier implements ContentSupplier {
   }
 
   @override
-  Future<ContentDetails?> detailsById(String id, Set<ContentLanguage> langs) async {
+  Future<ContentDetails?> detailsById(
+    String id,
+    Set<ContentLanguage> langs,
+  ) async {
     try {
       final langsCodes = langs.map((lang) => lang.name).toList();
 
-      final result = await _api.crateApiGetContentDetails(supplier: name, id: id, langs: langsCodes);
+      final result = await _api.crateApiGetContentDetails(
+        supplier: name,
+        id: id,
+        langs: langsCodes,
+      );
 
       if (result == null) {
         return null;
@@ -97,7 +108,9 @@ class _RustContentSupplier implements ContentSupplier {
         page: page,
       );
 
-      return results.map((info) => ContentSearchResultExt.fromRust(name, info)).toList();
+      return results
+          .map((info) => ContentSearchResultExt.fromRust(name, info))
+          .toList();
     } catch (e) {
       throw ContentSuppliersException(
         "FFI LoadChannel Failed [supplier=$name channel=$channel page=$page] error: $e",
@@ -108,12 +121,11 @@ class _RustContentSupplier implements ContentSupplier {
   @override
   Future<List<ContentInfo>> search(String query) async {
     try {
-      final results = await _api.crateApiSearch(
-        supplier: name,
-        query: query,
-      );
+      final results = await _api.crateApiSearch(supplier: name, query: query);
 
-      return results.map((info) => ContentSearchResultExt.fromRust(name, info)).toList();
+      return results
+          .map((info) => ContentSearchResultExt.fromRust(name, info))
+          .toList();
     } catch (e) {
       throw ContentSuppliersException(
         "FFI Search Failed [supplier=$name query=$query] error: $e",
@@ -123,35 +135,40 @@ class _RustContentSupplier implements ContentSupplier {
 
   @override
   Set<ContentLanguage> get supportedLanguages {
-    _supportedLanguage ??= _api
-        .crateApiGetSupportedLanguages(supplier: name)
-        .map(
-          (lang) => ContentLanguage.values.firstWhereOrNull(
-            (v) => v.name == lang,
-          ),
-        )
-        .nonNulls
-        .toSet();
+    _supportedLanguage ??=
+        _api
+            .crateApiGetSupportedLanguages(supplier: name)
+            .map(
+              (lang) => ContentLanguage.values.firstWhereOrNull(
+                (v) => v.name == lang,
+              ),
+            )
+            .nonNulls
+            .toSet();
 
     return _supportedLanguage!;
   }
 
   @override
   Set<ContentType> get supportedTypes {
-    return _supportedTypes ??= _api
-        .crateApiGetSupportedTypes(supplier: name)
-        .map(
-          (type) => ContentType.values.firstWhereOrNull(
-            (v) => v.name == type.name,
-          ),
-        )
-        .nonNulls
-        .toSet();
+    return _supportedTypes ??=
+        _api
+            .crateApiGetSupportedTypes(supplier: name)
+            .map(
+              (type) => ContentType.values.firstWhereOrNull(
+                (v) => v.name == type.name,
+              ),
+            )
+            .nonNulls
+            .toSet();
   }
 }
 
 extension ContentSearchResultExt on ContentSearchResult {
-  static ContentSearchResult fromRust(String supplier, models.ContentInfo info) {
+  static ContentSearchResult fromRust(
+    String supplier,
+    models.ContentInfo info,
+  ) {
     return ContentSearchResult(
       id: info.id,
       supplier: supplier,
@@ -185,9 +202,9 @@ class _RustContentDetails extends AbstractContentDetails {
     Iterable<ContentMediaItem>? mediaItems,
     required RustLibApi api,
     required List<String> params,
-  })  : _api = api,
-        _mediaItems = mediaItems,
-        _params = params;
+  }) : _api = api,
+       _mediaItems = mediaItems,
+       _params = params;
 
   factory _RustContentDetails.fromRust(
     String id,
@@ -209,16 +226,13 @@ class _RustContentDetails extends AbstractContentDetails {
       image: result.image,
       description: result.description,
       additionalInfo: result.additionalInfo,
-      similar: result.similar.map((info) => ContentSearchResultExt.fromRust(supplier, info)).toList(),
+      similar:
+          result.similar
+              .map((info) => ContentSearchResultExt.fromRust(supplier, info))
+              .toList(),
       mediaItems: result.mediaItems?.mapIndexed(
-        (idx, item) => _RustMediaItem.fromRust(
-          id,
-          supplier,
-          idx,
-          langs,
-          item,
-          api,
-        ),
+        (idx, item) =>
+            _RustMediaItem.fromRust(id, supplier, idx, langs, item, api),
       ),
       params: result.params,
       api: api,
@@ -233,16 +247,9 @@ class _RustContentDetails extends AbstractContentDetails {
         id: id,
         langs: langs,
         params: _params,
-      ))
-          .mapIndexed(
-        (idx, item) => _RustMediaItem.fromRust(
-          id,
-          supplier,
-          idx,
-          langs,
-          item,
-          _api,
-        ),
+      )).mapIndexed(
+        (idx, item) =>
+            _RustMediaItem.fromRust(id, supplier, idx, langs, item, _api),
       );
     } catch (e) {
       throw ContentSuppliersException(
@@ -280,9 +287,9 @@ class _RustMediaItem implements ContentMediaItem {
     required List<ContentMediaItemSource>? sources,
     required List<String> params,
     required RustLibApi api,
-  })  : _sources = sources,
-        _params = params,
-        _api = api;
+  }) : _sources = sources,
+       _params = params,
+       _api = api;
 
   factory _RustMediaItem.fromRust(
     String id,
@@ -300,7 +307,10 @@ class _RustMediaItem implements ContentMediaItem {
       title: item.title,
       section: item.section,
       image: item.image,
-      sources: item.sources?.map((item) => mapMediaItemSource(id, supplier, item, api)).toList(),
+      sources:
+          item.sources
+              ?.map((item) => mapMediaItemSource(id, supplier, item, api))
+              .toList(),
       params: item.params,
       api: api,
     );
@@ -309,14 +319,15 @@ class _RustMediaItem implements ContentMediaItem {
   @override
   FutureOr<List<ContentMediaItemSource>> get sources async {
     try {
-      return _sources ??= (await _api.crateApiLoadMediaItemSources(
-        supplier: supplier,
-        id: id,
-        langs: langs,
-        params: _params,
-      ))
-          .map((item) => mapMediaItemSource(id, supplier, item, _api))
-          .toList();
+      return _sources ??=
+          (await _api.crateApiLoadMediaItemSources(
+                supplier: supplier,
+                id: id,
+                langs: langs,
+                params: _params,
+              ))
+              .map((item) => mapMediaItemSource(id, supplier, item, _api))
+              .toList();
     } catch (e) {
       throw ContentSuppliersException(
         "FFI LoadMediaItemSources Failed [supplier=$supplier id=$id params: $_params] error: $e",
@@ -329,22 +340,26 @@ class _RustMediaItem implements ContentMediaItem {
     String supplier,
     models.ContentMediaItemSource item,
     RustLibApi api,
-  ) =>
-      switch (item) {
-        models.ContentMediaItemSource_Video() => SimpleContentMediaItemSource(
-            kind: FileKind.video,
-            description: item.description,
-            link: Uri.parse(item.link),
-            headers: item.headers,
-          ),
-        models.ContentMediaItemSource_Subtitle() => SimpleContentMediaItemSource(
-            kind: FileKind.subtitle,
-            description: item.description,
-            link: Uri.parse(item.link),
-            headers: item.headers,
-          ),
-        models.ContentMediaItemSource_Manga() => _RustMangaMediaItemSource.fromRust(id, supplier, item, api)
-      };
+  ) => switch (item) {
+    models.ContentMediaItemSource_Video() => SimpleContentMediaItemSource(
+      kind: FileKind.video,
+      description: item.description,
+      link: Uri.parse(item.link),
+      headers: item.headers,
+    ),
+    models.ContentMediaItemSource_Subtitle() => SimpleContentMediaItemSource(
+      kind: FileKind.subtitle,
+      description: item.description,
+      link: Uri.parse(item.link),
+      headers: item.headers,
+    ),
+    models.ContentMediaItemSource_Manga() => _RustMangaMediaItemSource.fromRust(
+      id,
+      supplier,
+      item,
+      api,
+    ),
+  };
 }
 
 class _RustMangaMediaItemSource implements MangaMediaItemSource {
@@ -367,10 +382,10 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
     required RustLibApi api,
     required List<String> params,
     Map<String, String>? headers,
-  })  : _pages = pages,
-        _api = api,
-        _params = params,
-        _headers = headers;
+  }) : _pages = pages,
+       _api = api,
+       _params = params,
+       _headers = headers;
 
   factory _RustMangaMediaItemSource.fromRust(
     String id,
@@ -403,15 +418,15 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
 
   @override
   Future<List<ImageProvider<Object>>> get images async {
-    return _images ??= (await pages)
-        .map(
-          (link) => CachedNetworkImageProvider(link, headers: _headers),
-        )
-        .toList();
+    return _images ??=
+        (await pages)
+            .map((link) => CachedNetworkImageProvider(link, headers: _headers))
+            .toList();
   }
 }
 
-class _CustomRustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
+class _CustomRustLib
+    extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   final String? directory;
   final String libName;
   ExternalLibrary? externalLibrary;
@@ -419,20 +434,20 @@ class _CustomRustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibW
   _CustomRustLib({required this.directory, required this.libName});
 
   Future<void> init() async {
-    externalLibrary = await _loadExternalLibrary(defaultExternalLibraryLoaderConfig);
-
-    return initImpl(
-      api: null,
-      handler: null,
-      externalLibrary: externalLibrary,
+    externalLibrary = await _loadExternalLibrary(
+      defaultExternalLibraryLoaderConfig,
     );
+
+    return initImpl(api: null, handler: null, externalLibrary: externalLibrary);
   }
 
   @override
-  ApiImplConstructor<RustLibApiImpl, RustLibWire> get apiImplConstructor => RustLibApiImpl.new;
+  ApiImplConstructor<RustLibApiImpl, RustLibWire> get apiImplConstructor =>
+      RustLibApiImpl.new;
 
   @override
-  WireConstructor<RustLibWire> get wireConstructor => RustLibWire.fromExternalLibrary;
+  WireConstructor<RustLibWire> get wireConstructor =>
+      RustLibWire.fromExternalLibrary;
 
   @override
   Future<void> executeRustInitializers() async {
@@ -440,7 +455,8 @@ class _CustomRustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibW
   }
 
   @override
-  ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig => ExternalLibraryLoaderConfig(
+  ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig =>
+      ExternalLibraryLoaderConfig(
         stem: libName,
         ioDirectory: directory,
         webPrefix: null,
@@ -457,7 +473,9 @@ class _CustomRustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibW
   }
 }
 
-FutureOr<ExternalLibrary> _loadExternalLibrary(ExternalLibraryLoaderConfig config) async {
+FutureOr<ExternalLibrary> _loadExternalLibrary(
+  ExternalLibraryLoaderConfig config,
+) async {
   final ioDirectory = config.ioDirectory!;
 
   final stem = config.stem;
@@ -465,7 +483,9 @@ FutureOr<ExternalLibrary> _loadExternalLibrary(ExternalLibraryLoaderConfig confi
   ExternalLibrary tryLoad(String name) {
     final filePath = ioDirectory + Platform.pathSeparator + name;
     if (!File(filePath).existsSync()) {
-      throw ContentSuppliersException("Rust Suppliers lib not found in path: $filePath");
+      throw ContentSuppliersException(
+        "Rust Suppliers lib not found in path: $filePath",
+      );
     }
 
     return ExternalLibrary.open(filePath);
@@ -485,5 +505,7 @@ FutureOr<ExternalLibrary> _loadExternalLibrary(ExternalLibraryLoaderConfig confi
     return tryLoad(name);
   }
 
-  throw Exception('loadExternalLibrary failed: Unknown platform=${Platform.operatingSystem}');
+  throw Exception(
+    'loadExternalLibrary failed: Unknown platform=${Platform.operatingSystem}',
+  );
 }

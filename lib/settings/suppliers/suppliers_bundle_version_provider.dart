@@ -61,6 +61,11 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
   void download(FFISupplierBundleInfo info) async {
     state = state.start();
 
+    if (!RustContentSuppliersBundle.isCompatible(info.version.major)) {
+      state = state.fail("supplies api version not compatiable");
+      return;
+    }
+
     final libPath = FFISuppliersBundleStorage().getLibFilePath(info);
     final url = await _downloadUrl(info);
 
