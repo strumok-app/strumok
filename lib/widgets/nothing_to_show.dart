@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 
+const asciiText = "¯\\(°_o)/¯";
+
 class NothingToShow extends StatelessWidget {
-  const NothingToShow({super.key});
+  Widget? label;
+
+  NothingToShow({super.key, this.label});
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      "¯\\(°_o)/¯",
-      style: Theme.of(context).textTheme.bodyLarge,
-    );
+    final icon = Text(asciiText, style: Theme.of(context).textTheme.bodyLarge);
+
+    if (label == null) {
+      return icon;
+    }
+
+    return Column(mainAxisSize: MainAxisSize.min, children: [icon, label!]);
   }
 }

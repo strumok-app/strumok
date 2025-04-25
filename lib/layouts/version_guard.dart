@@ -18,7 +18,7 @@ class VersionGuard extends ConsumerWidget {
     return Scaffold(
       body: installedBundle.when(
         data: (info) {
-          return _isRequireToUpdate(info) ? child : _InstallSuppliersBundler();
+          return _isRequireToUpdate(info) ? _InstallSuppliersBundler() : child;
         },
         error: (error, stackTrace) {
           return _Error(
@@ -31,6 +31,14 @@ class VersionGuard extends ConsumerWidget {
   }
 
   bool _isRequireToUpdate(FFISupplierBundleInfo? info) {
+    // for debug, bypass if external lib specified
+    final externaLibDirectory = const String.fromEnvironment(
+      "FFI_SUPPLIER_LIBS_DIR",
+    );
+    if (externaLibDirectory.isNotEmpty) {
+      return false;
+    }
+
     if (info == null) {
       return true;
     }
@@ -45,14 +53,13 @@ class _InstallSuppliersBundler extends ConsumerWidget {
     final lattestBundle = ref.watch(latestSupplierBundleInfoProvider);
 
     return lattestBundle.when(
-      data:
-          (info) =>
-              info == null
-                  ? _Error(
-                    error:
-                        AppLocalizations.of(context)!.ffiLibInstallationFailed,
-                  )
-                  : _buildInstall(context, info),
+      data: (info) {
+        return info == null
+            ? _Error(
+              error: AppLocalizations.of(context)!.ffiLibInstallationFailed,
+            )
+            : _buildInstall(context, info);
+      },
       error: (error, stackTrace) => _Error(error: error.toString()),
       loading: () => _Loader(),
     );

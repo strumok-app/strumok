@@ -50,19 +50,18 @@ class ContentSuppliers {
     _suppliersByName = {for (var s in suppliers) s.name: s};
   }
 
-  Stream<(String, List<ContentInfo>)> search(
+  Future<List<ContentInfo>> search(
+    String supplierName,
     String query,
-    Set<String> contentSuppliers,
-  ) {
-    final futures = contentSuppliers
-        .map((name) => _suppliersByName[name])
-        .nonNulls
-        .map(
-          (supplier) =>
-              supplier.search(query).then((res) => (supplier.name, res)),
-        );
+    int page,
+  ) async {
+    final supplier = _suppliersByName[supplierName];
 
-    return Stream.fromFutures(futures);
+    if (supplier == null) {
+      return [];
+    }
+
+    return supplier.search(query);
   }
 
   Future<List<ContentInfo>> loadRecommendationsChannel(

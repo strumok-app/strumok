@@ -1,44 +1,93 @@
 import 'package:content_suppliers_api/model.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-class SearchState extends Equatable {
-  final Map<String, List<ContentInfo>> results;
+class SuppliersSearchResults {
+  final String supplierName;
+  final String? query;
+  final bool hasMore;
   final bool isLoading;
+  final List<ContentInfo> results;
+  final int page;
 
-  const SearchState({
-    this.results = const {},
-    required this.isLoading,
+  const SuppliersSearchResults({
+    required this.supplierName,
+    this.query,
+    this.hasMore = false,
+    this.isLoading = false,
+    this.results = const [],
+    this.page = 1,
   });
 
-  static const SearchState empty = SearchState(results: {}, isLoading: false);
-
-  const SearchState.loading()
-      : isLoading = true,
-        results = const {};
-
-  SearchState addResults(
-    String supplierName,
-    List<ContentInfo> supplierResults,
-  ) {
-    return copyWith(results: {...results, supplierName: supplierResults});
-  }
-
-  SearchState done() {
-    return copyWith(isLoading: false);
-  }
-
-  SearchState copyWith({
-    Map<String, List<ContentInfo>>? results,
-    bool? isLoading,
-  }) {
-    return SearchState(
-      results: results ?? this.results,
-      isLoading: isLoading ?? this.isLoading,
+  SuppliersSearchResults loadingNew(String query) {
+    return copyWith(
+      isLoading: true,
+      query: query,
+      hasMore: true,
+      results: [],
+      page: 1,
     );
   }
 
-  @override
-  List<Object?> get props => [results, isLoading];
+  SuppliersSearchResults addPage(List<ContentInfo> supplierResults, int page) {
+    if (supplierResults.isEmpty) {
+      return copyWith(hasMore: false, isLoading: false);
+    }
+
+    return copyWith(
+      results: [...results, ...supplierResults],
+      page: page,
+      isLoading: false,
+    );
+  }
+
+  SuppliersSearchResults copyWith({
+    bool? hasMore,
+    String? query,
+    bool? isLoading,
+    List<ContentInfo>? results,
+    int? page,
+  }) {
+    return SuppliersSearchResults(
+      supplierName: supplierName,
+      query: query ?? this.query,
+      hasMore: hasMore ?? this.hasMore,
+      isLoading: isLoading ?? this.isLoading,
+      results: results ?? this.results,
+      page: page ?? this.page,
+    );
+  }
+
+  bool get hasResults => results.isNotEmpty;
+}
+
+@immutable
+class SearchState {
+  final bool isLoading;
+  final bool isDone;
+  final Set<String> suppliers;
+  final bool hasResults;
+
+  const SearchState({
+    this.isLoading = false,
+    this.isDone = false,
+    this.suppliers = const {},
+    this.hasResults = false,
+  });
+
+  static const SearchState empty = SearchState();
+
+  const SearchState.loading(this.suppliers)
+    : isLoading = true,
+      hasResults = true,
+      isDone = false;
+
+  SearchState done(bool hasResults) {
+    return SearchState(
+      isLoading: false,
+      hasResults: hasResults,
+      isDone: true,
+      suppliers: suppliers,
+    );
+  }
 }

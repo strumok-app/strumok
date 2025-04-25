@@ -5,6 +5,7 @@ import 'package:strumok/search/search_top_bar/search_suggestion_model.dart';
 import 'package:strumok/search/search_top_bar/search_suggestion_provider.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
+import 'package:strumok/utils/text.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/filter_dialog_section.dart';
@@ -113,11 +114,6 @@ class _SearchBar extends ConsumerWidget {
     );
   }
 
-  void _search(WidgetRef ref, String query) {
-    ref.read(searchProvider.notifier).search(query);
-    ref.read(suggestionsProvider.notifier).addSuggestion(query);
-  }
-
   Widget _buildLeading(bool isLoadingResults) {
     return isLoadingResults
         ? const SizedBox(
@@ -126,6 +122,44 @@ class _SearchBar extends ConsumerWidget {
           child: CircularProgressIndicator(),
         )
         : const Icon(Icons.search);
+  }
+
+  void _search(WidgetRef ref, String query) async {
+    ref.read(suggestionsProvider.notifier).addSuggestion(query);
+
+    final searchProviderNotifier = ref.read(searchProvider.notifier);
+
+    query = cleanupQuery(query);
+
+    if (query.isEmpty) {
+      return;
+    }
+
+    final contentSuppliers = ref.read(enabledSearchSuppliersNamesProvider);
+
+    for (final suppliersName in contentSuppliers) {
+      // eagerly init all search providers
+      ref.watch(supplierSearchProvider(suppliersName));
+    }
+
+    bool hasResults = false;
+    final stream = Stream.fromFutures(
+      contentSuppliers.map(
+        (suppliersName) => ref
+            .read(supplierSearchProvider(suppliersName).notifier)
+            .search(query),
+      ),
+    );
+
+    searchProviderNotifier.loading(contentSuppliers);
+
+    await for (final supplierResults in stream) {
+      if (supplierResults.isNotEmpty) {
+        hasResults = true;
+      }
+    }
+
+    searchProviderNotifier.done(hasResults);
   }
 }
 
