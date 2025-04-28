@@ -35,7 +35,7 @@ class UserMenuItem extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _renderSignIn(context),
-                if (!TVDetector.isTV) ConnectTVWithCode(),
+                if (TVDetector.isTV) ConnectTVWithCode(),
               ],
             );
       },

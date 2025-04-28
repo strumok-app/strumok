@@ -43,26 +43,28 @@ class AccountMenu extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Container(
         constraints: const BoxConstraints(maxWidth: 300),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const UserMenuItem(),
-            const OfllineModeItem(),
-            ListTile(
-              leading: const DownloadingIcon(Icons.download_for_offline),
-              title: Text(AppLocalizations.of(context)!.downloads),
-              onTap: () {
-                context.router.popAndPush(const OfflineItemsRoute());
-              },
-            ),
-            ListTile(
-              leading: const NewVersionIcon(Icons.settings),
-              title: Text(AppLocalizations.of(context)!.settings),
-              onTap: () {
-                context.router.popAndPush(const SettingsRoute());
-              },
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const UserMenuItem(),
+              const OfllineModeItem(),
+              ListTile(
+                leading: const DownloadingIcon(Icons.download_for_offline),
+                title: Text(AppLocalizations.of(context)!.downloads),
+                onTap: () {
+                  context.router.popAndPush(const OfflineItemsRoute());
+                },
+              ),
+              ListTile(
+                leading: const NewVersionIcon(Icons.settings),
+                title: Text(AppLocalizations.of(context)!.settings),
+                onTap: () {
+                  context.router.popAndPush(const SettingsRoute());
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
