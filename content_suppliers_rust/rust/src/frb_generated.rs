@@ -468,11 +468,13 @@ fn wire__crate__api__search_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_supplier = <String>::sse_decode(&mut deserializer);
             let api_query = <String>::sse_decode(&mut deserializer);
+            let api_page = <u16>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
-                        let output_ok = crate::api::search(api_supplier, api_query).await?;
+                        let output_ok =
+                            crate::api::search(api_supplier, api_query, api_page).await?;
                         Ok(output_ok)
                     })()
                     .await,

@@ -33,9 +33,13 @@ pub fn get_supported_languages(supplier: String) -> anyhow::Result<Vec<String>> 
     Ok(AllContentSuppliers::get_supported_languages(&sup))
 }
 
-pub async fn search(supplier: String, query: String) -> anyhow::Result<Vec<ContentInfo>> {
+pub async fn search(
+    supplier: String,
+    query: String, 
+    page: u16,
+) -> anyhow::Result<Vec<ContentInfo>> {
     let sup = get_supplier(&supplier)?;
-    AllContentSuppliers::search(&sup, query).await
+    AllContentSuppliers::search(&sup, query, page).await
 }
 
 pub async fn load_channel(

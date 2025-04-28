@@ -123,6 +123,7 @@ abstract class RustLibApi extends BaseApi {
   Future<List<ContentInfo>> crateApiSearch({
     required String supplier,
     required String query,
+    required int page,
   });
 }
 
@@ -471,6 +472,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Future<List<ContentInfo>> crateApiSearch({
     required String supplier,
     required String query,
+    required int page,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -478,6 +480,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(supplier, serializer);
           sse_encode_String(query, serializer);
+          sse_encode_u_16(page, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -490,14 +493,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: sse_decode_AnyhowException,
         ),
         constMeta: kCrateApiSearchConstMeta,
-        argValues: [supplier, query],
+        argValues: [supplier, query, page],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSearchConstMeta =>
-      const TaskConstMeta(debugName: "search", argNames: ["supplier", "query"]);
+  TaskConstMeta get kCrateApiSearchConstMeta => const TaskConstMeta(
+    debugName: "search",
+    argNames: ["supplier", "query", "page"],
+  );
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {

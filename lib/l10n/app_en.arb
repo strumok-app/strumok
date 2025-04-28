@@ -20,7 +20,7 @@
     "mediaTypeManga": "Manga",
     "statusLabelWatchingNow": "Watch now",
     "statusLabelComplete": "Complete",
-    "statusLabelLatter": "Watch latter",
+    "statusLabelLatter": "Watch later",
     "statusLabelOnHold": "On Hold",
     "statusLabelPutOnHold": "Put on Hold",
     "addToCollection": "Add to Collection",
@@ -96,5 +96,12 @@
     "downloadsFailed": "Download failed: {title}",
     "confirmeDialogCancel": "Cancel",
     "confirmeDialogAccept": "Accept",
-    "language": "Language"
+    "language": "Language",
+    "loadMore": "Load More",
+    "searchMore": "Search more",
+    "offlineMode": "Offline Mode",
+    "connectTV": "Connect TV with code",
+    "connectTVValue": "Connect code: {code}",
+    "connectTVAuth": "Authenticate with code",
+    "connectTVInvalidCode": "Invalid code"
 }

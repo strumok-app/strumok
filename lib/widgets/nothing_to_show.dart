@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 const asciiText = "¯\\(°_o)/¯";
 
 class NothingToShow extends StatelessWidget {
-  Widget? label;
+  final Widget? label;
 
-  NothingToShow({super.key, this.label});
+  const NothingToShow({super.key, this.label});
 
   @override
   Widget build(BuildContext context) {

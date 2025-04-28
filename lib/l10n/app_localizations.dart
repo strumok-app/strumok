@@ -224,7 +224,7 @@ abstract class AppLocalizations {
   /// No description provided for @statusLabelLatter.
   ///
   /// In en, this message translates to:
-  /// **'Watch latter'**
+  /// **'Watch later'**
   String get statusLabelLatter;
 
   /// No description provided for @statusLabelOnHold.
@@ -676,6 +676,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Accept'**
   String get confirmeDialogAccept;
+
+  /// No description provided for @loadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load More'**
+  String get loadMore;
+
+  /// No description provided for @searchMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Search more'**
+  String get searchMore;
+
+  /// No description provided for @offlineMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline Mode'**
+  String get offlineMode;
+
+  /// No description provided for @connectTV.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect TV with code'**
+  String get connectTV;
+
+  /// No description provided for @connectTVValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect code: {code}'**
+  String connectTVValue(Object code);
+
+  /// No description provided for @connectTVAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticate with code'**
+  String get connectTVAuth;
+
+  /// No description provided for @connectTVInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid code'**
+  String get connectTVInvalidCode;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

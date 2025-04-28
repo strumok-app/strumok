@@ -19,11 +19,25 @@
             }
         },
         {
-            "name": "Emulator",
+            "name": "Emulator Mobile",
             "request": "launch",
             "type": "dart",
             "program": "${workspaceFolder}/lib/main.dart",
             "deviceId": "sdk gphone64 x86 64",
+            "toolArgs": [
+                "--dart-define-from-file",
+                "secrets.json"
+            ],
+            "env": {
+                "RUST_LOG": "info"
+            }
+        },
+        {
+            "name": "Emulator TV Andoid 7",
+            "request": "launch",
+            "type": "dart",
+            "program": "${workspaceFolder}/lib/main.dart",
+            "deviceId": "emulator-5554",
             "toolArgs": [
                 "--dart-define-from-file",
                 "secrets.json"

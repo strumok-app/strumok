@@ -72,7 +72,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusLabelComplete => 'Complete';
 
   @override
-  String get statusLabelLatter => 'Watch latter';
+  String get statusLabelLatter => 'Watch later';
 
   @override
   String get statusLabelOnHold => 'On Hold';
@@ -306,4 +306,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmeDialogAccept => 'Accept';
+
+  @override
+  String get loadMore => 'Load More';
+
+  @override
+  String get searchMore => 'Search more';
+
+  @override
+  String get offlineMode => 'Offline Mode';
+
+  @override
+  String get connectTV => 'Connect TV with code';
+
+  @override
+  String connectTVValue(Object code) {
+    return 'Connect code: $code';
+  }
+
+  @override
+  String get connectTVAuth => 'Authenticate with code';
+
+  @override
+  String get connectTVInvalidCode => 'Invalid code';
 }

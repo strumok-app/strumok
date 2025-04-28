@@ -22,7 +22,12 @@ List<String> getSupportedLanguages({required String supplier}) =>
 Future<List<ContentInfo>> search({
   required String supplier,
   required String query,
-}) => RustLib.instance.api.crateApiSearch(supplier: supplier, query: query);
+  required int page,
+}) => RustLib.instance.api.crateApiSearch(
+  supplier: supplier,
+  query: query,
+  page: page,
+);
 
 Future<List<ContentInfo>> loadChannel({
   required String supplier,

@@ -31,10 +31,12 @@ class VersionGuard extends ConsumerWidget {
   }
 
   bool _isRequireToUpdate(FFISupplierBundleInfo? info) {
+    // return false;
     // for debug, bypass if external lib specified
     final externaLibDirectory = const String.fromEnvironment(
       "FFI_SUPPLIER_LIBS_DIR",
     );
+
     if (externaLibDirectory.isNotEmpty) {
       return false;
     }

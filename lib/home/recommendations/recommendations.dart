@@ -2,13 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/home/recommendations/recommendations_provider.dart';
+import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
+import 'package:strumok/widgets/load_more_list_item.dart';
 import 'package:strumok/widgets/set_recommendations_hint.dart';
 
 class Recommendations extends ConsumerWidget {
@@ -82,24 +83,8 @@ class _RecommendationChannel extends HookConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final scrollController = useScrollController();
-
-    useEffect(() {
-      void onScroll() {
-        var position = scrollController.position;
-        if (position.pixels >=
-            scrollController.position.maxScrollExtent - 200) {
-          ref.read(provider.notifier).loadNext();
-        }
-      }
-
-      scrollController.addListener(onScroll);
-
-      return () => scrollController.removeListener(onScroll);
-    }, [scrollController]);
-
     final list = HorizontalList(
-      scrollController: scrollController,
+      // scrollController: scrollController,
       title: Text(channel, style: Theme.of(context).textTheme.titleMedium),
       itemBuilder: (context, index) {
         final item = state.recommendations[index];
@@ -107,6 +92,14 @@ class _RecommendationChannel extends HookConsumerWidget {
         return ContentInfoCard(contentInfo: item, showSupplier: false);
       },
       itemCount: state.recommendations.length,
+      trailing:
+          state.hasMore
+              ? LoadMoreItems(
+                label: AppLocalizations.of(context)!.loadMore,
+                onTap: () => ref.read(provider.notifier).loadNext(),
+                loading: state.isLoading,
+              )
+              : null,
     );
 
     if (channelIdx == 0) {

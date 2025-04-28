@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:strumok/layouts/account.dart';
+import 'package:strumok/layouts/account/account.dart';
 import 'package:strumok/layouts/navigation_bar_data.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/layouts/widgets.dart';

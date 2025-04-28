@@ -119,9 +119,13 @@ class _RustContentSupplier implements ContentSupplier {
   }
 
   @override
-  Future<List<ContentInfo>> search(String query) async {
+  Future<List<ContentInfo>> search(String query, {int page = 0}) async {
     try {
-      final results = await _api.crateApiSearch(supplier: name, query: query);
+      final results = await _api.crateApiSearch(
+        supplier: name,
+        query: query,
+        page: page,
+      );
 
       return results
           .map((info) => ContentSearchResultExt.fromRust(name, info))

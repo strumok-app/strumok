@@ -97,5 +97,12 @@
     "downloadsFailed": "Неможливо завантажити: {title}",
     "confirmeDialogCancel": "Відмінити",
     "confirmeDialogAccept": "Підтвердити",
-    "language": "Мова"
+    "language": "Мова",
+    "loadMore": "Завантажити ще",
+    "searchMore": "Шукати ще",
+    "offlineMode": "Офлайн режим",
+    "connectTV": "Отримати код підлюченя ТБ",
+    "connectTVValue": "Код підлюченя: {code}",
+    "connectTVAuth": "Ввести код авторизації",
+    "connectTVInvalidCode": "Невірний код авторизації"
 }

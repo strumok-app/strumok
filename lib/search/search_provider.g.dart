@@ -7,7 +7,7 @@ part of 'search_provider.dart';
 // **************************************************************************
 
 String _$enabledSearchSuppliersNamesHash() =>
-    r'419c51e8a145ebc94432c4df500358882b57967e';
+    r'385e38a8ebd0db0c12576729777096508c4e19b9';
 
 /// See also [enabledSearchSuppliersNames].
 @ProviderFor(enabledSearchSuppliersNames)
@@ -26,7 +26,7 @@ final enabledSearchSuppliersNamesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef EnabledSearchSuppliersNamesRef = AutoDisposeProviderRef<Set<String>>;
-String _$searchHash() => r'c33783707759628110892c722f3d8650cb4336c5';
+String _$searchHash() => r'41470ba87684667f9dd8198e4f0b27f2ba57364f';
 
 /// See also [Search].
 @ProviderFor(Search)
@@ -40,7 +40,7 @@ final searchProvider = NotifierProvider<Search, SearchState>.internal(
 );
 
 typedef _$Search = Notifier<SearchState>;
-String _$supplierSearchHash() => r'f9c53a1967dc88520dae062a0307851f989e7e4b';
+String _$supplierSearchHash() => r'cd16397459d17cc4fbd66e69f3daaa39f19c4e3a';
 
 /// Copied from Dart SDK
 class _SystemHash {

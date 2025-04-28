@@ -7,28 +7,28 @@ part 'recommendations_provider.g.dart';
 
 class RecommendationChannelState {
   final List<ContentInfo> recommendations;
-  final bool hasNext;
+  final bool hasMore;
   final int page;
-  final bool loading;
+  final bool isLoading;
 
   RecommendationChannelState({
     required this.recommendations,
-    this.hasNext = true,
+    this.hasMore = true,
     this.page = 1,
-    this.loading = false,
+    this.isLoading = false,
   });
 
   RecommendationChannelState copyWith({
     List<ContentInfo>? recommendations,
-    bool? hasNext,
+    bool? hasMore,
     int? page,
-    bool? loading,
+    bool? isLoading,
   }) {
     return RecommendationChannelState(
       recommendations: recommendations ?? this.recommendations,
-      hasNext: hasNext ?? this.hasNext,
+      hasMore: hasMore ?? this.hasMore,
       page: page ?? this.page,
-      loading: loading ?? this.loading,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 }
@@ -56,22 +56,24 @@ class RecommendationChannel extends _$RecommendationChannel {
   void loadNext() async {
     final current = state.requireValue;
 
-    if (!current.hasNext || current.loading) {
+    if (!current.hasMore || current.isLoading) {
       return;
     }
 
-    state = AsyncValue.data(current.copyWith(loading: true));
+    state = AsyncValue.data(current.copyWith(isLoading: true));
 
     final nextPage = current.page + 1;
     final nextRecommendations = await ContentSuppliers()
         .loadRecommendationsChannel(supplierName, channel, page: nextPage);
 
     if (nextRecommendations.isEmpty) {
-      state = AsyncValue.data(current.copyWith(loading: false, hasNext: false));
+      state = AsyncValue.data(
+        current.copyWith(isLoading: false, hasMore: false),
+      );
     } else {
       state = AsyncValue.data(
         current.copyWith(
-          loading: false,
+          isLoading: false,
           recommendations: current.recommendations + nextRecommendations,
           page: nextPage,
         ),

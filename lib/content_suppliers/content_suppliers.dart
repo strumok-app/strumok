@@ -61,7 +61,7 @@ class ContentSuppliers {
       return [];
     }
 
-    return supplier.search(query);
+    return supplier.search(query, page: page);
   }
 
   Future<List<ContentInfo>> loadRecommendationsChannel(

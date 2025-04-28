@@ -28,7 +28,7 @@ impl ContentSupplier for DummyContentSupplier {
         vec!["en".to_owned(), "uk".to_owned()]
     }
 
-    async fn search(&self, query: String) -> anyhow::Result<Vec<ContentInfo>> {
+    async fn search(&self, query: String, page: u16) -> anyhow::Result<Vec<ContentInfo>> {
         Ok(vec![ContentInfo {
             id: query.clone(),
             title: query.clone(),

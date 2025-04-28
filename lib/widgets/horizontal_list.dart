@@ -4,6 +4,7 @@ class HorizontalList extends StatelessWidget {
   final Widget title;
   final IndexedWidgetBuilder itemBuilder;
   final ScrollController? scrollController;
+  final Widget? trailing;
   final int itemCount;
   final double paddings;
 
@@ -12,12 +13,19 @@ class HorizontalList extends StatelessWidget {
     required this.title,
     required this.itemBuilder,
     required this.itemCount,
+    this.trailing,
     this.paddings = 8,
     this.scrollController,
   });
 
   @override
   Widget build(BuildContext context) {
+    var items = List.generate(itemCount, (idx) => itemBuilder(context, idx));
+
+    if (trailing != null) {
+      items.add(trailing!);
+    }
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: paddings),
       child: Column(
@@ -33,13 +41,7 @@ class HorizontalList extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Padding(
                 padding: EdgeInsets.only(bottom: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: List.generate(
-                    itemCount,
-                    (idx) => itemBuilder(context, idx),
-                  ),
-                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: items),
               ),
             ),
           ),

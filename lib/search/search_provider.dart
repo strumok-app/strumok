@@ -55,9 +55,11 @@ class SupplierSearch extends _$SupplierSearch {
   }
 
   void loadNext() async {
-    if (!state.hasMore || state.query == null) {
+    if (!state.hasMore || state.isLoading || state.query == null) {
       return;
     }
+
+    state = state.copyWith(isLoading: true);
 
     final page = state.page + 1;
     final supplierResults = await ContentSuppliers().search(

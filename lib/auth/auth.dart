@@ -1,58 +1,28 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:strumok/app_preferences.dart';
 import 'package:firebase_dart/firebase_dart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart';
+import 'package:strumok/app_init_firebase.dart';
+import 'package:strumok/utils/trace.dart';
+import 'package:strumok/utils/visual.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-abstract class AuthTokenStore {
-  FutureOr<void> write(AccessCredentials? credentials);
-  FutureOr<AccessCredentials?> read();
-  FutureOr<void> delete();
-}
-
-class PerferenceTokenStore extends AuthTokenStore {
-  final String key = "access_credentials";
-
-  @override
-  FutureOr<void> delete() => AppPreferences.instance.remove(key);
-
-  @override
-  FutureOr<AccessCredentials?> read() {
-    final accessCredentialsJson = AppPreferences.instance.getString(key);
-
-    if (accessCredentialsJson != null) {
-      return AccessCredentials.fromJson(json.decode(accessCredentialsJson));
-    }
-
-    return null;
-  }
-
-  @override
-  FutureOr<void> write(AccessCredentials? credentials) {
-    AppPreferences.instance.setString(key, json.encode(credentials));
-  }
-}
 
 class User {
   final String id;
   final String? name;
   final String? picture;
 
-  const User({
-    required this.id,
-    required this.name,
-    required this.picture,
-  });
+  const User({required this.id, required this.name, required this.picture});
 
   factory User.fromIdToken(String idToken) {
     final [_, encodedPayload, _] = idToken.split('.');
 
-    final payload = json.decode(String.fromCharCodes(base64.decode(encodedPayload))) as Map<String, dynamic>;
+    final payload =
+        json.decode(String.fromCharCodes(base64.decode(encodedPayload)))
+            as Map<String, dynamic>;
 
     return User(
       id: payload["sub"].toString(),
@@ -62,10 +32,12 @@ class User {
   }
 }
 
-const scopes = ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"];
+const scopes = [
+  "https://www.googleapis.com/auth/userinfo.profile",
+  "https://www.googleapis.com/auth/userinfo.email",
+];
 
 class Auth {
-  final AuthTokenStore _tokenStore = PerferenceTokenStore();
   final StreamController<User?> _userStreamController = StreamController();
   late Stream<User?> _userStream;
 
@@ -101,7 +73,7 @@ class Auth {
   Future<void> signIn() async {
     final clientId = await _loadDesktopClientId();
 
-    if (Platform.isLinux || Platform.isWindows) {
+    if (isDesktopDevice()) {
       final credentials = await obtainAccessCredentialsViaUserConsent(
         clientId,
         scopes,
@@ -119,11 +91,47 @@ class Auth {
     }
   }
 
-  Future<void> singOut() async {
-    if (Platform.isLinux || Platform.isWindows) {
-      await _tokenStore.delete();
+  Future<void> signInWithPairCode(String code) async {
+    final endpoint = AppInitFirebase().getEndpoint("exchangecodefortoken");
+
+    final res = await Client().post(Uri.parse(endpoint), body: {"code": code});
+
+    if (res.statusCode >= 400) {
+      final ex = Exception("Fail to exchange code for token: ${res.body}");
+      traceError(error: ex);
+      throw ex;
     }
+
+    String token = jsonDecode(res.body)["token"];
+
+    await FirebaseAuth.instance.signInWithCustomToken(token);
+  }
+
+  Future<void> singOut() async {
     await FirebaseAuth.instance.signOut();
+  }
+
+  Future<String?> getPairCode() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return null;
+    }
+
+    final token = await user.getIdToken();
+    final endpoint = AppInitFirebase().getEndpoint("generatecode");
+
+    final res = await Client().post(
+      Uri.parse(endpoint),
+      headers: {"Authorization": "Bearer $token"},
+    );
+
+    if (res.statusCode >= 400) {
+      traceError(error: Exception("Fail to generate pair code: ${res.body}"));
+      return null;
+    }
+
+    return jsonDecode(res.body)["code"];
   }
 
   static Future<ClientId> _loadDesktopClientId() async {
@@ -137,17 +145,7 @@ class Auth {
   }
 
   Future<void> restore() async {
-    if (Platform.isLinux || Platform.isWindows) {
-      final clientId = await _loadDesktopClientId();
-      var credentials = await _tokenStore.read();
-
-      if (credentials != null) {
-        if (credentials.accessToken.hasExpired) {
-          credentials = await refreshCredentials(clientId, credentials, Client());
-        }
-        _setAccessCredentials(credentials);
-      }
-    } else {
+    if (!isDesktopDevice()) {
       final googleSign = await GoogleSignIn(scopes: scopes).signInSilently();
       _setGoogleSignInAccount(googleSign);
     }

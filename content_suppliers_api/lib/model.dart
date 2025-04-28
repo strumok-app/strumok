@@ -26,7 +26,8 @@ abstract class ContentSupplier {
   Set<String> get defaultChannels => const {};
   Set<ContentType> get supportedTypes => const {};
   Set<ContentLanguage> get supportedLanguages => const {};
-  Future<List<ContentInfo>> search(String query) async => const [];
+  Future<List<ContentInfo>> search(String query, {int page = 0}) async =>
+      const [];
 
   Future<List<ContentInfo>> loadChannel(String channel, {int page = 0}) async =>
       const [];

@@ -306,4 +306,27 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get confirmeDialogAccept => 'Підтвердити';
+
+  @override
+  String get loadMore => 'Завантажити ще';
+
+  @override
+  String get searchMore => 'Шукати ще';
+
+  @override
+  String get offlineMode => 'Офлайн режим';
+
+  @override
+  String get connectTV => 'Отримати код підлюченя ТБ';
+
+  @override
+  String connectTVValue(Object code) {
+    return 'Код підлюченя: $code';
+  }
+
+  @override
+  String get connectTVAuth => 'Ввести код авторизації';
+
+  @override
+  String get connectTVInvalidCode => 'Невірний код авторизації';
 }
