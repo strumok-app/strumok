@@ -160,6 +160,7 @@ jobs:
           tar -czf strumok-linux.tar.gz -C linux-outputs .
       - name: Create Release
         uses: softprops/action-gh-release@v2
+        prerelease: true
         with:
           files: |
             android-outputs/*
