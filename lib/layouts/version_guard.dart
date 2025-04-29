@@ -31,21 +31,20 @@ class VersionGuard extends ConsumerWidget {
   }
 
   bool _isRequireToUpdate(FFISupplierBundleInfo? info) {
-    return false;
     // for debug, bypass if external lib specified
-    // final externaLibDirectory = const String.fromEnvironment(
-    //   "FFI_SUPPLIER_LIBS_DIR",
-    // );
+    final externaLibDirectory = const String.fromEnvironment(
+      "FFI_SUPPLIER_LIBS_DIR",
+    );
 
-    // if (externaLibDirectory.isNotEmpty) {
-    //   return false;
-    // }
+    if (externaLibDirectory.isNotEmpty) {
+      return false;
+    }
 
-    // if (info == null) {
-    //   return true;
-    // }
+    if (info == null) {
+      return true;
+    }
 
-    // return !RustContentSuppliersBundle.isCompatible(info.version.major);
+    return !RustContentSuppliersBundle.isCompatible(info.version.major);
   }
 }
 
