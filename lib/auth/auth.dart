@@ -109,6 +109,9 @@ class Auth {
 
   Future<void> singOut() async {
     await FirebaseAuth.instance.signOut();
+    if (!isDesktopDevice()) {
+      await GoogleSignIn(scopes: scopes).signOut();
+    }
   }
 
   Future<String?> getPairCode() async {

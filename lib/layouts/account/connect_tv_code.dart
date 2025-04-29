@@ -10,6 +10,7 @@ class ConnectTVWithCode extends HookWidget {
   @override
   Widget build(BuildContext context) {
     ValueNotifier<bool> showInput = useState(false);
+    final inputFocusNode = useFocusNode();
 
     if (showInput.value) {
       return Padding(
@@ -18,6 +19,7 @@ class ConnectTVWithCode extends HookWidget {
           onCancel: () {
             showInput.value = false;
           },
+          focusNode: inputFocusNode,
         ),
       );
     } else {
@@ -26,6 +28,7 @@ class ConnectTVWithCode extends HookWidget {
         title: Text(AppLocalizations.of(context)!.connectTVAuth),
         onTap: () {
           showInput.value = true;
+          inputFocusNode.requestFocus();
         },
       );
     }
@@ -34,14 +37,15 @@ class ConnectTVWithCode extends HookWidget {
 
 class _LoginWithCode extends HookWidget {
   final VoidCallback onCancel;
+  final FocusNode? focusNode;
 
-  const _LoginWithCode({required this.onCancel});
+  const _LoginWithCode({required this.onCancel, this.focusNode});
 
   @override
   Widget build(BuildContext context) {
     ValueNotifier<bool> isLoading = useState(false);
     ValueNotifier<String> code = useState("");
-    final focusNode = useFocusNode();
+    final acceptFocusNode = useFocusNode();
 
     return Row(
       children: [
@@ -50,18 +54,19 @@ class _LoginWithCode extends HookWidget {
         Expanded(
           child: BackButtonListener(
             onBackButtonPressed: () async {
-              focusNode.requestFocus();
+              acceptFocusNode.requestFocus();
               return true;
             },
-            child: TextFormField(
+            child: TextField(
               enabled: !isLoading.value,
-              autofocus: true,
+              focusNode: focusNode,
               maxLength: 6,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9]")),
               ],
               decoration: InputDecoration(border: InputBorder.none),
               onChanged: (value) => code.value = value,
+              onSubmitted: (value) => _handleLoggin(value, isLoading, context),
               buildCounter:
                   (
                     context, {
@@ -79,33 +84,37 @@ class _LoginWithCode extends HookWidget {
         ],
         if (!isLoading.value) ...[
           IconButton(
-            focusNode: focusNode,
-            onPressed: () async {
-              if (code.value.length == 6) {
-                isLoading.value = true;
-                try {
-                  await Auth().signInWithPairCode(code.value.toUpperCase());
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          AppLocalizations.of(context)!.connectTVInvalidCode,
-                        ),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                  }
-                }
-                isLoading.value = false;
-              }
-            },
+            focusNode: acceptFocusNode,
+            onPressed: () => _handleLoggin(code.value, isLoading, context),
             icon: Icon(Icons.check),
           ),
           IconButton(onPressed: onCancel, icon: Icon(Icons.cancel_outlined)),
         ],
       ],
     );
+  }
+
+  void _handleLoggin(
+    String code,
+    ValueNotifier<bool> isLoading,
+    BuildContext context,
+  ) async {
+    if (code.length == 6) {
+      isLoading.value = true;
+      try {
+        await Auth().signInWithPairCode(code.toUpperCase());
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.connectTVInvalidCode),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+      isLoading.value = false;
+    }
   }
 }
 
