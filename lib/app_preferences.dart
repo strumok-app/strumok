@@ -126,7 +126,7 @@ class AppPreferences {
             (type) => type.name == instance.getString("manga_reader_scale"),
           )
           .firstOrNull ??
-      MangaReaderScale.fit;
+      MangaReaderScale.fitHeight;
 
   static set mangaReaderBackground(MangaReaderBackground background) =>
       instance.setString("manga_reader_background", background.name);

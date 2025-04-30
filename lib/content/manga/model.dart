@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum MangaReaderScale {
-  fit,
-  fitHeight,
-  fitWidth,
-}
+enum MangaReaderScale { fitHeight, fitWidth }
 
 enum MangaReaderMode {
   vericalScroll(
@@ -13,14 +9,8 @@ enum MangaReaderMode {
     scaleModes: [MangaReaderScale.fitHeight, MangaReaderScale.fitWidth],
   ),
   hotizontalScroll(scroll: true),
-  hotizontalRtlScroll(
-    scroll: true,
-    rtl: true,
-  ),
-  vertical(
-    direction: Axis.vertical,
-    scaleModes: [],
-  ),
+  hotizontalRtlScroll(scroll: true, rtl: true),
+  vertical(direction: Axis.vertical, scaleModes: []),
   leftToRight(scaleModes: []),
   rightToLeft(rtl: true, scaleModes: []);
 
@@ -37,7 +27,4 @@ enum MangaReaderMode {
   });
 }
 
-enum MangaReaderBackground {
-  light,
-  dark,
-}
+enum MangaReaderBackground { light, dark }

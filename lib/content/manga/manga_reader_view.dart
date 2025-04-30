@@ -6,6 +6,7 @@ import 'package:strumok/content/manga/manga_reader_controls.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/settings/settings_provider.dart';
+import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -26,30 +27,32 @@ class MangaReaderView extends ConsumerWidget {
     super.key,
     required this.contentDetails,
     required this.mediaItems,
-  })  : _pagesProvider = currentMangaPagesProvider(
-          contentDetails,
-          mediaItems,
-        ),
-        _collectionItemProvider = collectionItemProvider(contentDetails);
+  }) : _pagesProvider = currentMangaPagesProvider(contentDetails, mediaItems),
+       _collectionItemProvider = collectionItemProvider(contentDetails);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<AsyncValue<List<ImageProvider>>>(
-      _pagesProvider,
-      (previous, next) {
-        final images = next.valueOrNull;
-        if (images != null) {
-          ref.read(collectionItemProvider(contentDetails).notifier).setCurrentLength(images.length);
-        }
-      },
-    );
+    ref.listen<AsyncValue<List<ImageProvider>>>(_pagesProvider, (
+      previous,
+      next,
+    ) {
+      final images = next.valueOrNull;
+      if (images != null) {
+        ref
+            .read(collectionItemProvider(contentDetails).notifier)
+            .setCurrentLength(images.length);
+      }
+    });
 
-    return ref.watch(_pagesProvider).when(
+    return ref
+        .watch(_pagesProvider)
+        .when(
           data: (pages) => _renderReader(context, ref, pages),
-          error: (error, stackTrace) => DisplayError(
-            error: error,
-            onRefresh: () => ref.invalidate(_pagesProvider),
-          ),
+          error:
+              (error, stackTrace) => DisplayError(
+                error: error,
+                onRefresh: () => ref.invalidate(_pagesProvider),
+              ),
           loading: () => const Center(child: CircularProgressIndicator()),
         );
   }
@@ -66,7 +69,9 @@ class MangaReaderView extends ConsumerWidget {
       );
     }
 
-    final pageFeature = ref.read(collectionItemCurrentPositionProvider(contentDetails).future);
+    final pageFeature = ref.read(
+      collectionItemCurrentPositionProvider(contentDetails).future,
+    );
 
     return FutureBuilder(
       future: pageFeature,
@@ -103,7 +108,8 @@ class _MangaPagesReaderView extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<_MangaPagesReaderView> createState() => _MangaPagesReaderViewState();
+  ConsumerState<_MangaPagesReaderView> createState() =>
+      _MangaPagesReaderViewState();
 }
 
 class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
@@ -115,13 +121,21 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   void initState() {
     page = ValueNotifier(widget.initialPage);
 
-    WakelockPlus.enable();
+    if (isMobileDevice()) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      WakelockPlus.enable();
+    }
+
     super.initState();
   }
 
   @override
   void dispose() {
-    WakelockPlus.disable();
+    if (isMobileDevice()) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      WakelockPlus.disable();
+    }
+
     super.dispose();
   }
 
@@ -129,12 +143,9 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   Widget build(BuildContext context) {
     final readerMode = ref.watch(mangaReaderModeSettingsProvider);
 
-    ref.listen(
-      mangaReaderScaleSettingsProvider,
-      (previous, next) {
-        transformationController.value = Matrix4.diagonal3Values(1, 1, 1);
-      },
-    );
+    ref.listen(mangaReaderScaleSettingsProvider, (previous, next) {
+      transformationController.value = Matrix4.diagonal3Values(1, 1, 1);
+    });
 
     return FocusableActionDetector(
       shortcuts: const {
@@ -145,9 +156,12 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
         SingleActivator(LogicalKeyboardKey.select): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.space): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.enter): ShowUIIntent(),
-        SingleActivator(LogicalKeyboardKey.digit1): SwitchReaderImageMode(MangaReaderScale.fit),
-        SingleActivator(LogicalKeyboardKey.digit2): SwitchReaderImageMode(MangaReaderScale.fitHeight),
-        SingleActivator(LogicalKeyboardKey.digit3): SwitchReaderImageMode(MangaReaderScale.fitWidth),
+        SingleActivator(LogicalKeyboardKey.digit1): SwitchReaderImageMode(
+          MangaReaderScale.fitHeight,
+        ),
+        SingleActivator(LogicalKeyboardKey.digit2): SwitchReaderImageMode(
+          MangaReaderScale.fitWidth,
+        ),
       },
       actions: {
         PrevPageIntent: CallbackAction<PrevPageIntent>(
@@ -157,13 +171,14 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
           onInvoke: (_) => _movePage(readerMode, 1),
         ),
         ShowUIIntent: CallbackAction<ShowUIIntent>(
-          onInvoke: (_) => Navigator.of(context).push(
-            MangaReaderControlsRoute(
-              contentDetails: widget.contentDetails,
-              mediaItems: widget.mediaItems,
-              onPageChanged: _jumpToPage,
-            ),
-          ),
+          onInvoke:
+              (_) => Navigator.of(context).push(
+                MangaReaderControlsRoute(
+                  contentDetails: widget.contentDetails,
+                  mediaItems: widget.mediaItems,
+                  onPageChanged: _jumpToPage,
+                ),
+              ),
         ),
         SwitchReaderImageMode: CallbackAction<SwitchReaderImageMode>(
           onInvoke: (intent) => _swithReaderImageMode(intent.mode),
@@ -182,23 +197,24 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
           _ReaderGestureDetector(
             readerMode: readerMode,
             transformationController: transformationController,
-            child: readerMode.scroll
-                ? _ScrolledView(
-                    readerMode: readerMode,
-                    pages: widget.pages,
-                    initialPage: widget.initialPage,
-                    transformationController: transformationController,
-                    scrollOffsetController: scrollOffsetController,
-                    page: page,
-                    collectionItemProvider: widget.collectionItemProvider,
-                  )
-                : _PagedView(
-                    readerMode: readerMode,
-                    pages: widget.pages,
-                    initialPage: widget.initialPage,
-                    transformationController: transformationController,
-                    pageListinable: page,
-                  ),
+            child:
+                readerMode.scroll
+                    ? _ScrolledView(
+                      readerMode: readerMode,
+                      pages: widget.pages,
+                      initialPage: widget.initialPage,
+                      transformationController: transformationController,
+                      scrollOffsetController: scrollOffsetController,
+                      page: page,
+                      collectionItemProvider: widget.collectionItemProvider,
+                    )
+                    : _PagedView(
+                      readerMode: readerMode,
+                      pages: widget.pages,
+                      initialPage: widget.initialPage,
+                      transformationController: transformationController,
+                      pageListinable: page,
+                    ),
           ),
         ],
       ),
@@ -213,7 +229,9 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   void _movePage(MangaReaderMode readerMode, int inc) async {
     inc = readerMode.rtl ? -inc : inc;
 
-    final contentProgress = (await ref.read(widget.collectionItemProvider.future));
+    final contentProgress = (await ref.read(
+      widget.collectionItemProvider.future,
+    ));
     final pos = contentProgress.currentPosition;
 
     final newPos = pos + inc;
@@ -271,10 +289,12 @@ class _ReaderGestureDetector extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<_ReaderGestureDetector> createState() => _ReaderGestureDetectorState();
+  ConsumerState<_ReaderGestureDetector> createState() =>
+      _ReaderGestureDetectorState();
 }
 
-class _ReaderGestureDetectorState extends ConsumerState<_ReaderGestureDetector> {
+class _ReaderGestureDetectorState
+    extends ConsumerState<_ReaderGestureDetector> {
   TapDownDetails? _lastTapDetails;
 
   @override
@@ -298,14 +318,14 @@ class _ReaderGestureDetectorState extends ConsumerState<_ReaderGestureDetector> 
     );
   }
 
-  bool _isInZone(
-    int testZone,
-    int zonesNum,
-    Offset point,
-  ) {
+  bool _isInZone(int testZone, int zonesNum, Offset point) {
     final viewport = MediaQuery.sizeOf(context);
-    final position = widget.readerMode.direction == Axis.horizontal ? point.dx : point.dy;
-    final range = widget.readerMode.direction == Axis.horizontal ? viewport.width : viewport.height;
+    final position =
+        widget.readerMode.direction == Axis.horizontal ? point.dx : point.dy;
+    final range =
+        widget.readerMode.direction == Axis.horizontal
+            ? viewport.width
+            : viewport.height;
 
     final zoneSize = range / zonesNum.toDouble();
     final lowerBoundry = (testZone - 1) * zoneSize;
@@ -344,9 +364,10 @@ class _ReaderGestureDetectorState extends ConsumerState<_ReaderGestureDetector> 
       transfomationController.value = Matrix4.identity();
     } else {
       // For a 3x zoom
-      transfomationController.value = Matrix4.identity()
-        ..translate(-position.dx, -position.dy)
-        ..scale(2.0);
+      transfomationController.value =
+          Matrix4.identity()
+            ..translate(-position.dx, -position.dy)
+            ..scale(2.0);
     }
   }
 }
@@ -446,19 +467,21 @@ class _SinglePageView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scale = ref.watch(mangaReaderScaleSettingsProvider);
 
-    return LayoutBuilder(builder: (context, constraints) {
-      return InteractiveViewer(
-        minScale: 1,
-        transformationController: transformationController,
-        boundaryMargin: EdgeInsets.zero,
-        child: _PageImage(
-          readerMode: readerMode,
-          constraints: constraints,
-          scale: scale,
-          page: page,
-        ),
-      );
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return InteractiveViewer(
+          minScale: 1,
+          transformationController: transformationController,
+          boundaryMargin: EdgeInsets.zero,
+          child: _PageImage(
+            readerMode: readerMode,
+            constraints: constraints,
+            scale: scale,
+            page: page,
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -484,11 +507,8 @@ class _PageImage extends StatelessWidget {
       ),
       alignment: Alignment.topCenter,
       child: SizedBox(
-        height: switch (scale) {
-          MangaReaderScale.fitHeight || MangaReaderScale.fit => constraints.maxHeight,
-          _ => null
-        },
-        width: switch (scale) { MangaReaderScale.fitWidth || MangaReaderScale.fit => constraints.maxWidth, _ => null },
+        height: constraints.maxHeight,
+        width: constraints.maxWidth,
         child: Image(
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) {
@@ -533,7 +553,8 @@ class _ScrolledView extends ConsumerStatefulWidget {
 
 class _ScrolledViewState extends ConsumerState<_ScrolledView> {
   bool isScaling = false;
-  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
   final ItemScrollController _itemScrollController = ItemScrollController();
 
   @override
@@ -561,11 +582,15 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
       return;
     }
 
-    final pageIndex = (lastItem.index == widget.pages.length - 1 && lastItem.itemTrailingEdge == 1.0)
-        ? lastItem.index
-        : firstItem.index;
+    final pageIndex =
+        (lastItem.index == widget.pages.length - 1 &&
+                lastItem.itemTrailingEdge == 1.0)
+            ? lastItem.index
+            : firstItem.index;
 
-    ref.watch(widget.collectionItemProvider.notifier).setCurrentPosition(pageIndex);
+    ref
+        .watch(widget.collectionItemProvider.notifier)
+        .setCurrentPosition(pageIndex);
   }
 
   void _onPageChanged() {
@@ -590,39 +615,55 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
   Widget build(BuildContext context) {
     final currentScale = ref.watch(mangaReaderScaleSettingsProvider);
 
-    return LayoutBuilder(builder: (context, constraints) {
-      return InteractiveViewer(
-        transformationController: widget.transformationController,
-        scaleEnabled: isScaling,
-        panEnabled: isScaling,
-        child: ScrollablePositionedList.separated(
-          reverse: widget.readerMode.rtl,
-          separatorBuilder: (context, index) => const SizedBox.square(dimension: 8),
-          scrollDirection: widget.readerMode.direction,
-          scrollOffsetController: widget.scrollOffsetController,
-          itemScrollController: _itemScrollController,
-          itemPositionsListener: _itemPositionsListener,
-          physics: isScaling ? const NeverScrollableScrollPhysics() : const ClampingScrollPhysics(),
-          itemCount: widget.pages.length,
-          initialScrollIndex: widget.initialPage,
-          itemBuilder: (context, index) => Image(
-            height: currentScale != MangaReaderScale.fitWidth ? constraints.maxHeight : null,
-            width: currentScale != MangaReaderScale.fitWidth ? constraints.maxWidth : null,
-            image: widget.pages[index],
-            fit: currentScale == MangaReaderScale.fitWidth ? BoxFit.fitWidth : BoxFit.fitHeight,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) {
-                return child;
-              }
-              return MangaPagePlaceholder(
-                readerMode: widget.readerMode,
-                constraints: constraints,
-              );
-            },
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return InteractiveViewer(
+          transformationController: widget.transformationController,
+          scaleEnabled: isScaling,
+          panEnabled: isScaling,
+          child: ScrollablePositionedList.separated(
+            reverse: widget.readerMode.rtl,
+            separatorBuilder:
+                (context, index) => const SizedBox.square(dimension: 8),
+            scrollDirection: widget.readerMode.direction,
+            scrollOffsetController: widget.scrollOffsetController,
+            itemScrollController: _itemScrollController,
+            itemPositionsListener: _itemPositionsListener,
+            physics:
+                isScaling
+                    ? const NeverScrollableScrollPhysics()
+                    : const ClampingScrollPhysics(),
+            itemCount: widget.pages.length,
+            initialScrollIndex: widget.initialPage,
+            itemBuilder:
+                (context, index) => Image(
+                  height:
+                      currentScale != MangaReaderScale.fitWidth
+                          ? constraints.maxHeight
+                          : null,
+                  width:
+                      currentScale != MangaReaderScale.fitWidth
+                          ? constraints.maxWidth
+                          : null,
+                  image: widget.pages[index],
+                  fit:
+                      currentScale == MangaReaderScale.fitWidth
+                          ? BoxFit.fitWidth
+                          : BoxFit.fitHeight,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return MangaPagePlaceholder(
+                      readerMode: widget.readerMode,
+                      constraints: constraints,
+                    );
+                  },
+                ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
@@ -630,10 +671,7 @@ class _NoPagesView extends StatelessWidget {
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
 
-  const _NoPagesView({
-    required this.contentDetails,
-    required this.mediaItems,
-  });
+  const _NoPagesView({required this.contentDetails, required this.mediaItems});
 
   @override
   Widget build(BuildContext context) {
