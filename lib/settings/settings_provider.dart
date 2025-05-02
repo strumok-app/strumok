@@ -62,19 +62,6 @@ class UserLanguageSetting extends _$UserLanguageSetting {
 }
 
 @riverpod
-class MangaReaderScaleSettings extends _$MangaReaderScaleSettings {
-  @override
-  MangaReaderScale build() {
-    return AppPreferences.mangaReaderScale;
-  }
-
-  void select(MangaReaderScale scale) {
-    AppPreferences.mangaReaderScale = scale;
-    state = scale;
-  }
-}
-
-@riverpod
 class MangaReaderBackgroundSettings extends _$MangaReaderBackgroundSettings {
   @override
   MangaReaderBackground build() {

@@ -60,14 +60,6 @@ String contentTypeLabel(BuildContext context, ContentType type) {
   };
 }
 
-String mangaReaderScaleLabel(BuildContext context, MangaReaderScale mode) {
-  final localization = AppLocalizations.of(context)!;
-  return switch (mode) {
-    MangaReaderScale.fitHeight => localization.mangaReaderScaleFitHeight,
-    MangaReaderScale.fitWidth => localization.mangaReaderScaleFitWidth,
-  };
-}
-
 String mangaReaderBackgroundLabel(
   BuildContext context,
   MangaReaderBackground background,

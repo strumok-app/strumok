@@ -117,17 +117,6 @@ class AppPreferences {
   static Set<String>? getSupplierChannels(String supplierName) =>
       instance.getStringList("suppliers.$supplierName.channels")?.toSet();
 
-  static set mangaReaderScale(MangaReaderScale scale) =>
-      instance.setString("manga_reader_scale", scale.name);
-
-  static MangaReaderScale get mangaReaderScale =>
-      MangaReaderScale.values
-          .where(
-            (type) => type.name == instance.getString("manga_reader_scale"),
-          )
-          .firstOrNull ??
-      MangaReaderScale.fitHeight;
-
   static set mangaReaderBackground(MangaReaderBackground background) =>
       instance.setString("manga_reader_background", background.name);
 

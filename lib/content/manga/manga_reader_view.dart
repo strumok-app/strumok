@@ -143,25 +143,17 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   Widget build(BuildContext context) {
     final readerMode = ref.watch(mangaReaderModeSettingsProvider);
 
-    ref.listen(mangaReaderScaleSettingsProvider, (previous, next) {
-      transformationController.value = Matrix4.diagonal3Values(1, 1, 1);
-    });
-
     return FocusableActionDetector(
-      shortcuts: const {
+      shortcuts: {
         SingleActivator(LogicalKeyboardKey.arrowLeft): PrevPageIntent(),
         SingleActivator(LogicalKeyboardKey.arrowRight): NextPageIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowUp): ScrollUpPageIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowDown): ScrollDownPageIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowUp):
+            (readerMode.scroll ? ScrollUpPageIntent() : PrevPageIntent()),
+        SingleActivator(LogicalKeyboardKey.arrowDown):
+            (readerMode.scroll ? ScrollDownPageIntent() : NextPageIntent()),
         SingleActivator(LogicalKeyboardKey.select): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.space): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.enter): ShowUIIntent(),
-        SingleActivator(LogicalKeyboardKey.digit1): SwitchReaderImageMode(
-          MangaReaderScale.fitHeight,
-        ),
-        SingleActivator(LogicalKeyboardKey.digit2): SwitchReaderImageMode(
-          MangaReaderScale.fitWidth,
-        ),
       },
       actions: {
         PrevPageIntent: CallbackAction<PrevPageIntent>(
@@ -179,9 +171,6 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
                   onPageChanged: _jumpToPage,
                 ),
               ),
-        ),
-        SwitchReaderImageMode: CallbackAction<SwitchReaderImageMode>(
-          onInvoke: (intent) => _swithReaderImageMode(intent.mode),
         ),
         ScrollUpPageIntent: CallbackAction<ScrollUpPageIntent>(
           onInvoke: (_) => _scrollTo(readerMode, 50),
@@ -202,16 +191,16 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
                     ? _ScrolledView(
                       readerMode: readerMode,
                       pages: widget.pages,
-                      initialPage: widget.initialPage,
+                      initialPage: page.value,
                       transformationController: transformationController,
                       scrollOffsetController: scrollOffsetController,
-                      page: page,
+                      pageListinable: page,
                       collectionItemProvider: widget.collectionItemProvider,
                     )
                     : _PagedView(
                       readerMode: readerMode,
                       pages: widget.pages,
-                      initialPage: widget.initialPage,
+                      initialPage: page.value,
                       transformationController: transformationController,
                       pageListinable: page,
                     ),
@@ -251,10 +240,6 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
     }
   }
 
-  void _swithReaderImageMode(MangaReaderScale mode) {
-    ref.read(mangaReaderScaleSettingsProvider.notifier).select(mode);
-  }
-
   void _scrollTo(MangaReaderMode readerMode, double inc) {
     if (readerMode.scroll) {
       scrollOffsetController.animateScroll(
@@ -262,17 +247,6 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
         duration: const Duration(milliseconds: 5),
         curve: Curves.linear,
       );
-    } else {
-      final value = transformationController.value.clone();
-      final scale = ref.read(mangaReaderScaleSettingsProvider);
-
-      switch (scale) {
-        case MangaReaderScale.fitWidth:
-          transformationController.value = value..translate(0.0, inc);
-        case MangaReaderScale.fitHeight:
-          transformationController.value = value..translate(inc, 0.0);
-        case _:
-      }
     }
   }
 }
@@ -465,8 +439,6 @@ class _SinglePageView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scale = ref.watch(mangaReaderScaleSettingsProvider);
-
     return LayoutBuilder(
       builder: (context, constraints) {
         return InteractiveViewer(
@@ -476,7 +448,6 @@ class _SinglePageView extends ConsumerWidget {
           child: _PageImage(
             readerMode: readerMode,
             constraints: constraints,
-            scale: scale,
             page: page,
           ),
         );
@@ -488,13 +459,11 @@ class _SinglePageView extends ConsumerWidget {
 class _PageImage extends StatelessWidget {
   final MangaReaderMode readerMode;
   final BoxConstraints constraints;
-  final MangaReaderScale scale;
   final ImageProvider<Object> page;
 
   const _PageImage({
     required this.readerMode,
     required this.constraints,
-    required this.scale,
     required this.page,
   });
 
@@ -534,7 +503,7 @@ class _ScrolledView extends ConsumerStatefulWidget {
   final int initialPage;
   final TransformationController transformationController;
   final ScrollOffsetController scrollOffsetController;
-  final ValueListenable<int> page;
+  final ValueListenable<int> pageListinable;
   final CollectionItemProvider collectionItemProvider;
 
   const _ScrolledView({
@@ -543,7 +512,7 @@ class _ScrolledView extends ConsumerStatefulWidget {
     required this.initialPage,
     required this.transformationController,
     required this.scrollOffsetController,
-    required this.page,
+    required this.pageListinable,
     required this.collectionItemProvider,
   });
 
@@ -560,7 +529,7 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
   @override
   void initState() {
     widget.transformationController.addListener(_onTransformationChange);
-    widget.page.addListener(_onPageChanged);
+    widget.pageListinable.addListener(_onPageChanged);
     _itemPositionsListener.itemPositions.addListener(_onPositionChanged);
 
     super.initState();
@@ -569,7 +538,7 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
   @override
   void dispose() {
     widget.transformationController.removeListener(_onTransformationChange);
-    widget.page.removeListener(_onPageChanged);
+    widget.pageListinable.removeListener(_onPageChanged);
     _itemPositionsListener.itemPositions.removeListener(_onPositionChanged);
     super.dispose();
   }
@@ -595,7 +564,7 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
 
   void _onPageChanged() {
     _itemScrollController.scrollTo(
-      index: widget.page.value,
+      index: widget.pageListinable.value,
       duration: const Duration(milliseconds: 300),
     );
   }
@@ -613,8 +582,6 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
 
   @override
   Widget build(BuildContext context) {
-    final currentScale = ref.watch(mangaReaderScaleSettingsProvider);
-
     return LayoutBuilder(
       builder: (context, constraints) {
         return InteractiveViewer(
@@ -637,19 +604,7 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
             initialScrollIndex: widget.initialPage,
             itemBuilder:
                 (context, index) => Image(
-                  height:
-                      currentScale != MangaReaderScale.fitWidth
-                          ? constraints.maxHeight
-                          : null,
-                  width:
-                      currentScale != MangaReaderScale.fitWidth
-                          ? constraints.maxWidth
-                          : null,
                   image: widget.pages[index],
-                  fit:
-                      currentScale == MangaReaderScale.fitWidth
-                          ? BoxFit.fitWidth
-                          : BoxFit.fitHeight,
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) {
                       return child;

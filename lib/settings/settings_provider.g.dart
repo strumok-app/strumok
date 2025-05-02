@@ -75,26 +75,6 @@ final userLanguageSettingProvider =
     );
 
 typedef _$UserLanguageSetting = AutoDisposeNotifier<String>;
-String _$mangaReaderScaleSettingsHash() =>
-    r'a98f1278f26331b354ff70df01d929dfccfe51f8';
-
-/// See also [MangaReaderScaleSettings].
-@ProviderFor(MangaReaderScaleSettings)
-final mangaReaderScaleSettingsProvider = AutoDisposeNotifierProvider<
-  MangaReaderScaleSettings,
-  MangaReaderScale
->.internal(
-  MangaReaderScaleSettings.new,
-  name: r'mangaReaderScaleSettingsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$mangaReaderScaleSettingsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$MangaReaderScaleSettings = AutoDisposeNotifier<MangaReaderScale>;
 String _$mangaReaderBackgroundSettingsHash() =>
     r'a70bb3fad601bf78fa78144531b47100f5898ee6';
 

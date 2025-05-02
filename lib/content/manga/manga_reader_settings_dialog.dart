@@ -22,8 +22,6 @@ class MangaReaderSettingsDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentMode = ref.watch(mangaReaderModeSettingsProvider);
-
     return Dialog(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 600),
@@ -42,8 +40,6 @@ class MangaReaderSettingsDialog extends ConsumerWidget {
               const SizedBox(height: 8),
               const _MangaReaderModeSelector(),
               const SizedBox(height: 8),
-              if (currentMode.scaleModes.isNotEmpty)
-                _ImageScaleSelector(mode: currentMode),
             ],
           ),
         ),
@@ -186,43 +182,6 @@ class _MangaReaderModeSelector extends ConsumerWidget {
                               .select(value);
                         },
                         child: Text(mangaReaderModeLabel(context, value)),
-                      ),
-                    )
-                    .toList(),
-      ),
-    );
-  }
-}
-
-class _ImageScaleSelector extends ConsumerWidget {
-  final MangaReaderMode mode;
-  const _ImageScaleSelector({required this.mode});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final currentScale = ref.watch(mangaReaderScaleSettingsProvider);
-
-    return SettingsSection(
-      labelWidth: 400,
-      label: Text(
-        AppLocalizations.of(context)!.mangaReaderScale,
-        style: theme.textTheme.headlineSmall,
-      ),
-      section: Dropdown.button(
-        label: mangaReaderScaleLabel(context, currentScale),
-        menuChildrenBulder:
-            (focusNode) =>
-                mode.scaleModes
-                    .mapIndexed(
-                      (index, value) => MenuItemButton(
-                        focusNode: index == 0 ? focusNode : null,
-                        onPressed: () {
-                          ref
-                              .read(mangaReaderScaleSettingsProvider.notifier)
-                              .select(value);
-                        },
-                        child: Text(mangaReaderScaleLabel(context, value)),
                       ),
                     )
                     .toList(),

@@ -1,4 +1,3 @@
-import 'package:strumok/content/manga/model.dart';
 import 'package:flutter/material.dart';
 
 class NextPageIntent extends Intent {
@@ -27,9 +26,4 @@ class ScrollUpPageIntent extends Intent {
 
 class ShowUIIntent extends Intent {
   const ShowUIIntent();
-}
-
-class SwitchReaderImageMode extends Intent {
-  final MangaReaderScale mode;
-  const SwitchReaderImageMode(this.mode);
 }
