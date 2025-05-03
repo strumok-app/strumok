@@ -4,7 +4,6 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
-import 'package:strumok/collection/sync/collection_sync_provider.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/widgets/focus_indicator.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
@@ -18,9 +17,7 @@ class ActiveCollectionItemsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groups = ref.watch(collectionActiveItemsProvider);
-    final collectionSync = ref.watch(collectionSyncStatusProvider).valueOrNull ?? false;
-
-    if (collectionSync || groups.isLoading) {
+    if (groups.isLoading) {
       return _renderLoading(context);
     }
 
@@ -38,10 +35,11 @@ class ActiveCollectionItemsView extends ConsumerWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
-      itemBuilder: (context, index) => HorizontalListCard(
-        onTap: () {},
-        child: const Center(child: CircularProgressIndicator()),
-      ),
+      itemBuilder:
+          (context, index) => HorizontalListCard(
+            onTap: () {},
+            child: const Center(child: CircularProgressIndicator()),
+          ),
       itemCount: 1,
     );
   }
@@ -71,10 +69,7 @@ class _ActiveCollectionItems extends ConsumerWidget {
 
     return HorizontalList(
       title: FocusIndicator(
-        child: Text(
-          title!,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        child: Text(title!, style: Theme.of(context).textTheme.titleLarge),
       ),
       itemBuilder: (context, index) {
         final item = items![index];
@@ -94,12 +89,13 @@ class _ActiveCollectionItems extends ConsumerWidget {
         AppLocalizations.of(context)!.collectionBegin,
         style: Theme.of(context).textTheme.titleMedium,
       ),
-      itemBuilder: (context, index) => HorizontalListCard(
-        onTap: () {
-          context.router.replace(const SearchRoute());
-        },
-        child: const UseSearchHint(),
-      ),
+      itemBuilder:
+          (context, index) => HorizontalListCard(
+            onTap: () {
+              context.router.replace(const SearchRoute());
+            },
+            child: const UseSearchHint(),
+          ),
       itemCount: 1,
     );
   }

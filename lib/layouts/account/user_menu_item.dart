@@ -4,7 +4,6 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/auth/auth.dart';
 import 'package:strumok/auth/auth_provider.dart';
 import 'package:strumok/layouts/account/connect_tv_code.dart';
-import 'package:strumok/layouts/account/sync_menu_item.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/tv.dart';
 
@@ -27,7 +26,6 @@ class UserMenuItem extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _renderUserInfo(user),
-                SyncMenuItem(),
                 if (!TVDetector.isTV) ConnectTVCode(),
               ],
             )

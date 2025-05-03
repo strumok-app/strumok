@@ -1,13 +1,16 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:strumok/app_database.dart';
 import 'package:strumok/auth/auth.dart' as auth;
 import 'package:strumok/collection/collection_item_model.dart';
-import 'package:strumok/collection/sync/collection_sync.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:firebase_dart/firebase_dart.dart';
 import 'package:strumok/utils/text.dart';
+
+// ignore: implementation_imports
+import 'package:firebase_dart/src/database/impl/firebase_impl.dart';
 
 abstract interface class CollectionRepository {
   Stream<void> get changesStream;
@@ -15,6 +18,8 @@ abstract interface class CollectionRepository {
   FutureOr<void> save(MediaCollectionItem collectionItem);
   FutureOr<Iterable<MediaCollectionItem>> search({String? query});
   FutureOr<void> delete(String supplier, String id);
+
+  void dispose() {}
 }
 
 class LocalCollectionRepository extends CollectionRepository {
@@ -71,7 +76,7 @@ class LocalCollectionRepository extends CollectionRepository {
         filter: filter,
         sortOrders: [
           SortOrder("priority", false),
-          SortOrder("lastSean", false),
+          SortOrder("lastSeen", false),
         ],
       ),
     );
@@ -85,33 +90,102 @@ class LocalCollectionRepository extends CollectionRepository {
 
     await db.transaction((tx) => store.record(itemId).delete(tx));
   }
+
+  void deleteOlder(Map<String, dynamic> remote) {
+    final itemId = _sanitizeId(remote["supplier"], remote["id"]);
+
+    db.transaction((tx) async {
+      final localRecord = await store.record(itemId).get(tx);
+      final localLastSeen = localRecord?["lastSeen"] as int? ?? 0;
+      final remoteLastSeen = remote["lastSeen"] as int? ?? 0;
+
+      if (remoteLastSeen >= localLastSeen) {
+        await store.record(itemId).delete(tx);
+      }
+    });
+  }
+
+  void upsertOlder(Map<String, dynamic> remote) {
+    final itemId = _sanitizeId(remote["supplier"], remote["id"]);
+
+    db.transaction((tx) async {
+      final localRecord = await store.record(itemId).get(tx);
+      final localLastSeen = localRecord?["lastSeen"] as int? ?? 0;
+      final remoteLastSeen = remote["lastSeen"] as int? ?? 0;
+
+      if (remoteLastSeen > localLastSeen) {
+        remote["tokens"] = splitWords(remote["title"]);
+
+        final localPositions =
+            (localRecord?["positions"] as Map<String, dynamic>?) ?? {};
+        final remotePositions =
+            (remote["positions"] as Map<String, dynamic>?) ?? {};
+
+        remote["positions"] = mergeMaps(
+          localPositions,
+          remotePositions,
+          value: (_, v) => v,
+        );
+
+        await store.record(itemId).put(tx, remote);
+      }
+    });
+  }
 }
 
 class FirebaseRepository extends CollectionRepository {
-  final CollectionRepository downstream;
-  final auth.User? user;
+  final LocalCollectionRepository localRepo;
+  final auth.User user;
+  final StreamController<bool> syncStreamController = StreamController();
   late final FirebaseDatabase database;
 
-  FirebaseRepository({required this.downstream, required this.user}) {
-    database = FirebaseDatabase(app: Firebase.app());
+  final List<StreamSubscription> subs = [];
 
-    if (user != null) {
-      CollectionSync.instance.run();
-    }
+  FirebaseRepository({required this.localRepo, required this.user}) {
+    database = FirebaseDatabase(app: Firebase.app());
+  }
+
+  void init() async {
+    await database.setPersistenceEnabled(true);
+
+    final userDocRef = database.reference().child("collection/${user.id}");
+    await userDocRef.keepSynced(true);
+
+    subs.add(
+      userDocRef.onChildAdded.listen(
+        (event) => localRepo.upsertOlder(
+          (event.snapshot as DataSnapshotImpl).treeStructuredData.toJson(true),
+        ),
+      ),
+    );
+
+    subs.add(
+      userDocRef.onChildChanged.listen(
+        (event) => localRepo.upsertOlder(
+          (event.snapshot as DataSnapshotImpl).treeStructuredData.toJson(true),
+        ),
+      ),
+    );
+
+    subs.add(
+      userDocRef.onChildRemoved.listen(
+        (event) => localRepo.deleteOlder(event.snapshot.value),
+      ),
+    );
   }
 
   @override
-  Stream<void> get changesStream => downstream.changesStream;
+  Stream<void> get changesStream => localRepo.changesStream;
 
   @override
   FutureOr<MediaCollectionItem?> getCollectionItem(String supplier, String id) {
-    return downstream.getCollectionItem(supplier, id);
+    return localRepo.getCollectionItem(supplier, id);
   }
 
   @override
   FutureOr<void> save(MediaCollectionItem collectionItem) async {
     _saveToFirebase(collectionItem);
-    await downstream.save(collectionItem);
+    await localRepo.save(collectionItem);
   }
 
   @override
@@ -121,35 +195,34 @@ class FirebaseRepository extends CollectionRepository {
     Set<MediaType>? mediaType,
     Set<String>? suppliersName,
   }) {
-    return downstream.search(query: query);
+    return localRepo.search(query: query);
   }
 
   @override
   FutureOr<void> delete(String supplier, String id) {
     _deleteFromFirebase(supplier, id);
-    return downstream.delete(supplier, id);
+    return localRepo.delete(supplier, id);
   }
 
   Future<void> _saveToFirebase(MediaCollectionItem collectionItem) async {
-    if (user == null) {
-      return;
-    }
-
     final itemId = _sanitizeId(collectionItem.supplier, collectionItem.id);
-    final ref = database.reference().child("collection/${user!.id}/$itemId");
+    final ref = database.reference().child("collection/${user.id}/$itemId");
 
     await ref.set(collectionItem.toJson());
   }
 
   Future<void> _deleteFromFirebase(String supplier, String id) async {
-    if (user == null) {
-      return;
-    }
-
     final itemId = _sanitizeId(supplier, id);
-    final ref = database.reference().child("collection/${user!.id}/$itemId");
+    final ref = database.reference().child("collection/${user.id}/$itemId");
 
     await ref.remove();
+  }
+
+  @override
+  void dispose() {
+    for (var s in subs) {
+      s.cancel();
+    }
   }
 }
 

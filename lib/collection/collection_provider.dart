@@ -47,10 +47,19 @@ CollectionService collectionService(Ref ref) {
   final offlineMode = ref.read(offlineModeProvider);
 
   final localRepository = LocalCollectionRepository();
-  final repository =
-      offlineMode
-          ? localRepository
-          : FirebaseRepository(downstream: localRepository, user: user);
+  CollectionRepository repository = localRepository;
+
+  if (!offlineMode && user != null) {
+    final remoteRepository = FirebaseRepository(
+      localRepo: localRepository,
+      user: user,
+    );
+    remoteRepository.init();
+
+    repository = remoteRepository;
+  }
+
+  ref.onDispose(() => repository.dispose);
 
   return CollectionService(repository: repository);
 }
