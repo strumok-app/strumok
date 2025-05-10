@@ -231,7 +231,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
         notifier.setCurrentItem(contentProgress.currentItem - 1);
       }
     } else if (newPos >= widget.pages.length) {
-      if (contentProgress.currentItem < widget.mediaItems.length) {
+      if (contentProgress.currentItem < widget.mediaItems.length - 1) {
         notifier.setCurrentItem(contentProgress.currentItem + 1);
       }
     } else {
@@ -582,17 +582,17 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
 
   @override
   Widget build(BuildContext context) {
+    final readerMode = widget.readerMode;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return InteractiveViewer(
           transformationController: widget.transformationController,
           scaleEnabled: isScaling,
           panEnabled: isScaling,
-          child: ScrollablePositionedList.separated(
-            reverse: widget.readerMode.rtl,
-            separatorBuilder:
-                (context, index) => const SizedBox.square(dimension: 8),
-            scrollDirection: widget.readerMode.direction,
+          child: ScrollablePositionedList.builder(
+            reverse: readerMode.rtl,
+            scrollDirection: readerMode.direction,
             scrollOffsetController: widget.scrollOffsetController,
             itemScrollController: _itemScrollController,
             itemPositionsListener: _itemPositionsListener,
@@ -602,19 +602,30 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
                     : const ClampingScrollPhysics(),
             itemCount: widget.pages.length,
             initialScrollIndex: widget.initialPage,
-            itemBuilder:
-                (context, index) => Image(
+            itemBuilder: (context, index) {
+              return Padding(
+                padding:
+                    readerMode.direction == Axis.vertical && !isMobileDevice()
+                        ? const EdgeInsets.symmetric(horizontal: 16.0)
+                        : EdgeInsets.zero,
+                child: Image(
+                  fit:
+                      readerMode.direction == Axis.vertical
+                          ? BoxFit.fitWidth
+                          : BoxFit.fitHeight,
                   image: widget.pages[index],
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) {
                       return child;
                     }
                     return MangaPagePlaceholder(
-                      readerMode: widget.readerMode,
+                      readerMode: readerMode,
                       constraints: constraints,
                     );
                   },
                 ),
+              );
+            },
           ),
         );
       },
