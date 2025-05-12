@@ -2,8 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings.dart';
-import 'package:strumok/utils/tv.dart';
-import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
@@ -13,6 +11,7 @@ class SuppliersSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const GeneralLayout(
+      showBackButton: true,
       child: _SuppliersSettingsView(),
     );
   }
@@ -35,22 +34,14 @@ class _SuppliersSettingsView extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  children: [
-                    if (!TVDetector.isTV) ...[
-                      const BackNavButton(),
-                      const SizedBox(width: 8),
-                    ],
-                    Flexible(
-                      child: Text(
-                        AppLocalizations.of(context)!.settingsSuppliersAndRecommendations,
-                        style: theme.textTheme.headlineSmall,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.settingsSuppliersAndRecommendations,
+                  style: theme.textTheme.headlineSmall,
                 ),
               ),
-              SuppliersSettingsSection()
+              SuppliersSettingsSection(),
             ],
           ),
         ),

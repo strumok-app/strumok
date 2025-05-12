@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
@@ -153,13 +154,19 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
           const SingleActivator(LogicalKeyboardKey.escape): onExit,
         },
       },
-      child: BackButtonListener(
-        onBackButtonPressed: () async {
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (bool didPop, result) {
+          if (didPop) {
+            return;
+          }
+
           if (uiShown) {
             onExit();
-            return true;
+            return;
           }
-          return false;
+
+          Navigator.pop(context);
         },
         child: MediaQuery(
           data: MediaQuery.of(
@@ -186,7 +193,9 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
                             child: Column(
                               children: [
                                 // top bar
-                                _renderTopBar(),
+                                _AndroidTVTopBar(
+                                  playerController: widget.playerController,
+                                ),
                                 const Spacer(),
                                 // bottom bar
                                 const _AndroidTVSeekBar(),
@@ -207,37 +216,6 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _renderTopBar() {
-    final playerController = widget.playerController;
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: [0.2, 1.0],
-          colors: [Colors.black45, Colors.transparent],
-        ),
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Row(
-        children: [
-          const SizedBox(width: 8),
-          MediaTitle(
-            contentDetails: playerController.contentDetails,
-            playlistSize: playerController.mediaItems.length,
-          ),
-          const Spacer(),
-          PlayerErrorPopup(),
-          if (widget.playerController.mediaItems.length > 1)
-            PlayerPlaylistButton(
-              playerController: playerController,
-              contentDetails: playerController.contentDetails,
-            ),
-        ],
       ),
     );
   }
@@ -279,6 +257,43 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
           ),
         ],
         inherit: true,
+      ),
+    );
+  }
+}
+
+class _AndroidTVTopBar extends StatelessWidget {
+  const _AndroidTVTopBar({required this.playerController});
+
+  final PlayerController playerController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.2, 1.0],
+          colors: [Colors.black45, Colors.transparent],
+        ),
+      ),
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        children: [
+          const SizedBox(width: 8),
+          MediaTitle(
+            contentDetails: playerController.contentDetails,
+            playlistSize: playerController.mediaItems.length,
+          ),
+          const Spacer(),
+          PlayerErrorPopup(),
+          if (playerController.mediaItems.length > 1)
+            PlayerPlaylistButton(
+              playerController: playerController,
+              contentDetails: playerController.contentDetails,
+            ),
+        ],
       ),
     );
   }

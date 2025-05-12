@@ -7,7 +7,7 @@ class TVDetector {
 
   static bool _isTV = false;
 
-  static bool get isTV => _isTV;
+  static bool get isTV => true; //_isTV;
 
   static Future<bool> detect() async {
     if (!Platform.isAndroid) {
@@ -19,7 +19,8 @@ class TVDetector {
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
     // Check for the presence of features typical of Android TV
-    _isTV = androidInfo.systemFeatures.contains('android.software.leanback') ||
+    _isTV =
+        androidInfo.systemFeatures.contains('android.software.leanback') ||
         androidInfo.systemFeatures.contains('android.software.live_tv');
 
     return _isTV;
