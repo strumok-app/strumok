@@ -132,11 +132,25 @@ jobs:
           path: .packaging/windows/Output
           retention-days: 7
 
+  changelog:
+    runs-on: ubuntu-latest
+    name: "Changelog"
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Generate Changelog
+        id: changelog
+        uses: github-changelog-generator/github-changelog-generator-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          output-file: "false"
+
   release:
     runs-on: ubuntu-latest
     name: "Release"
     permissions: write-all
-    needs: [build-for-android, build-for-linux, build-for-windows]
+    needs: [build-for-android, build-for-linux, build-for-windows, changelog]
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Download artifacts
@@ -167,5 +181,6 @@ jobs:
             strumok-linux.tar.gz
             strumok-windows.zip
             windows-outputs/*
+          body: ${{ steps.changelog.outputs.body }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -7,7 +7,7 @@ class TVDetector {
 
   static bool _isTV = false;
 
-  static bool get isTV => true; //_isTV;
+  static bool get isTV => _isTV;
 
   static Future<bool> detect() async {
     if (!Platform.isAndroid) {
