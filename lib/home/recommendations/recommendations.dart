@@ -84,7 +84,6 @@ class _RecommendationChannel extends HookConsumerWidget {
     }
 
     final list = HorizontalList(
-      // scrollController: scrollController,
       title: Text(channel, style: Theme.of(context).textTheme.titleMedium),
       itemBuilder: (context, index) {
         final item = state.recommendations[index];

@@ -51,6 +51,8 @@ dependencies:
   cached_network_image: ^3.4.1
   wakelock_plus: ^1.1.1 # same as media_kit have
   rounded_background_text: ^0.5.0
+  #crypto
+  pointycastle: 
   #tracing
   sentry_flutter: ^8.14.0
 
@@ -69,6 +71,9 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   riverpod_generator: ^2.6.3
   flutter_launcher_icons: "^0.14.3"
+
+dependency_overrides:
+  pointycastle: ^4.0.0
 
 flutter:
   uses-material-design: true

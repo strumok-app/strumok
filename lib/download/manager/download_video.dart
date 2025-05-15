@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
+import 'package:pointycastle/export.dart';
 import 'package:strumok/download/manager/download_file.dart';
 import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/utils/logger.dart';
@@ -25,13 +27,13 @@ class HLSStream {
 
 class HLSManifest {
   final Uri uri;
-  final bool encrypted;
+  final Uint8List? encryptionKey;
   final List<HLSStream> streams;
   final List<Uri> segments;
 
   HLSManifest({
     required this.uri,
-    required this.encrypted,
+    this.encryptionKey,
     required this.streams,
     required this.segments,
   });
@@ -71,11 +73,7 @@ void downloadVideo(
       final bytes = await res.stream.toBytes();
       final hls = utf8.decode(bytes);
 
-      final master = _parseHLSManifest(uri, hls);
-
-      if (master.encrypted) {
-        throw Exception("stream encrypted");
-      }
+      final master = await _parseHLSManifest(uri, hls);
 
       if (master.streams.isNotEmpty) {
         final sortedStreams = master.streams.sorted(
@@ -139,11 +137,7 @@ Future<void> _downloadHLSStream(
   }
 
   final hls = await res.stream.bytesToString();
-  final streamHls = _parseHLSManifest(stream.uri, hls);
-
-  if (streamHls.encrypted) {
-    throw Exception("stream: ${stream.uri} stream encrypted");
-  }
+  final streamHls = await _parseHLSManifest(stream.uri, hls);
 
   await _downloadStreamSegments(request, task, streamHls, onDone);
 }
@@ -151,9 +145,12 @@ Future<void> _downloadHLSStream(
 Future<void> _downloadStreamSegments(
   VideoDownloadRequest request,
   DownloadTask task,
-  HLSManifest manifets,
+  HLSManifest manifet,
   VoidCallback onDone,
 ) async {
+  final decrypter =
+      manifet.encryptionKey != null ? _Decryptor(manifet.encryptionKey!) : null;
+
   final client = Client();
 
   final partialFilePath = request.fileSrc + partialExtension;
@@ -163,14 +160,14 @@ Future<void> _downloadStreamSegments(
 
   final sink = partialFile.openWrite(mode: FileMode.write);
 
-  for (var i = 0; i < manifets.segments.length; i++) {
+  for (var i = 0; i < manifet.segments.length; i++) {
     if (task.status.value == DownloadStatus.canceled) {
       await sink.close();
       await partialFile.delete();
       return;
     }
 
-    final segment = manifets.segments[i];
+    final segment = manifet.segments[i];
     final segmentReq = Request('GET', segment);
 
     if (request.headers != null) {
@@ -188,11 +185,21 @@ Future<void> _downloadStreamSegments(
       throw Exception("segment: $segment httpStatus: ${res.statusCode}");
     }
 
-    await for (var chunk in res.stream) {
-      sink.add(chunk);
+    if (decrypter != null) {
+      var bytes = await res.stream.toBytes();
+      bytes = decrypter.decrypt(bytes);
 
-      task.progress.value = i / manifets.segments.length;
-      task.bytesDownloaded += chunk.length;
+      sink.add(bytes);
+
+      task.progress.value = i / manifet.segments.length;
+      task.bytesDownloaded += bytes.length;
+    } else {
+      await for (var chunk in res.stream) {
+        sink.add(chunk);
+
+        task.progress.value = i / manifet.segments.length;
+        task.bytesDownloaded += chunk.length;
+      }
     }
   }
 
@@ -201,10 +208,10 @@ Future<void> _downloadStreamSegments(
   await partialFile.rename(request.fileSrc);
 }
 
-HLSManifest _parseHLSManifest(Uri uri, String content) {
+Future<HLSManifest> _parseHLSManifest(Uri uri, String content) async {
   final List<HLSStream> streams = [];
   final List<Uri> segments = [];
-  bool encrypted = false;
+  Uint8List? encryptionKey;
   final lines = content.split('\n');
 
   for (var i = 0; i < lines.length; i++) {
@@ -216,7 +223,7 @@ HLSManifest _parseHLSManifest(Uri uri, String content) {
 
     if (line.startsWith('#')) {
       if (line.startsWith("#EXT-X-KEY:")) {
-        encrypted = true;
+        encryptionKey = await _parseHLSKey(line);
       } else if (line.startsWith("#EXT-X-STREAM-INF:")) {
         final attrs = line.split(':').last.split(',');
         int? bandwidth;
@@ -252,7 +259,7 @@ HLSManifest _parseHLSManifest(Uri uri, String content) {
 
   return HLSManifest(
     uri: uri,
-    encrypted: encrypted,
+    encryptionKey: encryptionKey,
     streams: streams,
     segments: segments,
   );
@@ -265,4 +272,56 @@ Uri _relativeUri(Uri masterUri, String url) {
   }
 
   return masterUri.resolve(url);
+}
+
+Future<Uint8List?> _parseHLSKey(String keyLine) async {
+  if (!keyLine.startsWith('#EXT-X-KEY:')) return null;
+
+  final attrs = keyLine.substring(11).split(',');
+  String? method;
+  String? uri;
+
+  for (final attr in attrs) {
+    final parts = attr.split('=');
+    if (parts.length != 2) continue;
+
+    final key = parts[0].trim();
+    final value = parts[1].replaceAll('"', '').trim();
+
+    if (key == 'METHOD') {
+      method = value;
+    } else if (key == 'URI') {
+      uri = value;
+    }
+  }
+
+  if (method != 'AES-128' || uri == null) return null;
+
+  try {
+    final response = await get(Uri.parse(uri));
+    if (response.statusCode == HttpStatus.ok) {
+      return response.bodyBytes;
+    }
+  } catch (e) {
+    logger.w('Failed to download HLS key: $e');
+  }
+
+  return null;
+}
+
+class _Decryptor {
+  final BlockCipher cipher;
+
+  _Decryptor(Uint8List key)
+    : cipher = PaddedBlockCipher("AES/CBC/PKCS7")..init(
+        false,
+        PaddedBlockCipherParameters(
+          ParametersWithIV(KeyParameter(key), Uint8List(16)),
+          null,
+        ),
+      );
+
+  Uint8List decrypt(Uint8List data) {
+    return cipher.process(data);
+  }
 }
