@@ -1,0 +1,91 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  bump-release: 
+    runs-on: ubuntu-latest
+    name: "Bump Release"
+    permissions: write-all
+    outputs:
+      tag: ${{ steps.changelog.outputs.tag  }}
+      body: ${{ steps.changelog.outputs.clean_changelog }}
+    steps:
+    - name: Clone Repository
+      uses: actions/checkout@v4
+    
+    - name: Conventional Changelog Action
+      id: changelog
+      uses: TriPSs/conventional-changelog-action@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        version-file: "pubspec.yaml"
+        output-file: "false"
+        skip-bump: ${{ inputs.skip_bump }}
+        skip-commit: ${{ inputs.skip_bump }}
+        skip-version-file: ${{ inputs.skip_bump }}
+
+  build-for-android:
+    needs: [bump-release]
+    permissions: write-all
+    uses: ./.github/workflows/build-android.yaml
+    secrets: inherit
+
+  build-for-linux:
+    needs: [bump-release]
+    permissions: write-all
+    uses: ./.github/workflows/build-linux.yaml
+    secrets: inherit
+
+  build-for-windows:
+    needs: [bump-release]
+    permissions: write-all
+    uses: ./.github/workflows/build-windows.yaml
+    secrets: inherit
+
+  release:
+    runs-on: ubuntu-latest
+    name: "Release"
+    permissions: write-all
+    needs: [build-for-android, build-for-linux, build-for-windows, bump-release]
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            CHANGELOG.md
+          sparse-checkout-cone-mode: false
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-outputs
+          path: android-outputs
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-outputs
+          path: linux-outputs
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-outputs
+          path: windows-outputs
+      - name: RePackage Desktops
+        run: |
+          chmod +x linux-outputs/strumok
+          tar -czf strumok-linux.tar.gz -C linux-outputs .
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          body_path: CHANGELOG.md
+          files: |
+            android-outputs/*
+            strumok-linux.tar.gz
+            strumok-windows.zip
+            windows-outputs/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
