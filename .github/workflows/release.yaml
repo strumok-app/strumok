@@ -43,7 +43,7 @@ jobs:
   create-release:
     permissions: write-all
     needs: [build-for-android, build-for-linux, build-for-windows, bump-release]
-    uses: ./.github/workflows/create-release.yaml
+    uses: ./.github/workflows/upload-release.yaml
     secrets: inherit
     with:
       tag_name: ${{ needs.bump-release.outputs.tag }}

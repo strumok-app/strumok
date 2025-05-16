@@ -1,3 +1,5 @@
+name: Upload Release
+
 on:
   workflow_call:
     inputs:

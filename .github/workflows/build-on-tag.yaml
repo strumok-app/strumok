@@ -1,4 +1,4 @@
-name: Build Release
+name: Release On Tag
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
   create-release:
     permissions: write-all
     needs: [build-for-android, build-for-linux, build-for-windows]
-    uses: ./.github/workflows/create-release:.yaml
+    uses: ./.github/workflows/upload-release.yaml
     secrets: inherit
     with:
       tag_name: ${{ github.ref_name }}
