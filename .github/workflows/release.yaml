@@ -2,7 +2,7 @@ name: Release
 
 on:
   workflow_dispatch:
-    input: 
+    inputs: 
       skip_bump:
         required: false
         default: false
