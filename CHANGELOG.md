@@ -1,12 +1,9 @@
-# [1.14.0](https://github.com/strumok-app/strumok/compare/v1.13.0...v1.14.0) (2025-05-16)
+## [1.14.1](https://github.com/strumok-app/strumok/compare/v1.14.0...v1.14.1) (2025-05-16)
 
 
-### Features
+### Bug Fixes
 
-* add changelog ([3c7de73](https://github.com/strumok-app/strumok/commit/3c7de73fec71a3e309e17f9fe88546e71b41c5b1))
-* add support for encrypted HLS download ([368623a](https://github.com/strumok-app/strumok/commit/368623aa1fea6dfe2db6565719018ebeb41b1fa5))
-* change manga vertical scroll mode ([1043235](https://github.com/strumok-app/strumok/commit/104323539dc5b6dd00f6217534bfe2afdad07d4d))
-* change TV controls ([156e741](https://github.com/strumok-app/strumok/commit/156e741048df75da18eef25c3090032306f34a62))
+* channels focus gone on "load more" issue ([4479b98](https://github.com/strumok-app/strumok/commit/4479b98c74f12d68aa68c96f4b13aeb2b4ca9c9e))
 
 
 
