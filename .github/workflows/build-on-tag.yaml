@@ -1,0 +1,30 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build-for-android:
+    permissions: write-all
+    uses: ./.github/workflows/build-android.yaml
+    secrets: inherit
+
+  build-for-linux:
+    permissions: write-all
+    uses: ./.github/workflows/build-linux.yaml
+    secrets: inherit
+
+  build-for-windows:
+    permissions: write-all
+    uses: ./.github/workflows/build-windows.yaml
+    secrets: inherit
+
+  create-release:
+    permissions: write-all
+    needs: [build-for-android, build-for-linux, build-for-windows]
+    uses: ./.github/workflows/create-release:.yaml
+    secrets: inherit
+    with:
+      tag_name: ${{ github.ref_name }}

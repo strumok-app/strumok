@@ -1,38 +1,21 @@
-name: Build Release
-
 on:
-  create:
-    tags:
-      - "v*.*.*"
-  push:
-    tags:
-      - "v*.*.*"
+  workflow_call:
+    inputs:
+      tag_name:
+        description: "Release Name"
+        required: true
+        type: string
 
 jobs:
-  build-for-android:
-    permissions: write-all
-    uses: ./.github/workflows/build-android.yaml
-    secrets: inherit
-
-  build-for-linux:
-    permissions: write-all
-    uses: ./.github/workflows/build-linux.yaml
-    secrets: inherit
-
-  build-for-windows:
-    permissions: write-all
-    uses: ./.github/workflows/build-windows.yaml
-    secrets: inherit
-
   release:
     runs-on: ubuntu-latest
     name: "Create Release"
     permissions: write-all
-    needs: [build-for-android, build-for-linux, build-for-windows]
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
         with:
+          tag_name: ${{ inputs.tag_name }}
           sparse-checkout: |
             CHANGELOG.md
           sparse-checkout-cone-mode: false
@@ -59,11 +42,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           prerelease: true
-          body_path: CHANGELOG.md
+          name: ${{ inputs.tag_name }}
+          tag_name: ${{ inputs.tag_name }}
+          body: CHANGELOG.md
           files: |
             android-outputs/*
             strumok-linux.tar.gz
             strumok-windows.zip
             windows-outputs/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
