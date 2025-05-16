@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
       - name: Create secrets
         run: echo "$SECRETS_JSON" | base64 -di > secrets.json
         env:
