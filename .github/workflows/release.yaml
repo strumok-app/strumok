@@ -1,158 +1,53 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
   workflow_dispatch:
-    inputs:
-      android:
-        description: 'Build Android'
+    input: 
+      skip_bump:
         required: false
-        type: boolean
-      linux:
-        description: 'Build Linux'
-        required: false
-        type: boolean
-      windows:
-        description: 'Build Windows'
-        required: false
+        default: false
         type: boolean
 
 jobs:
-  build-for-android:
+  bump-release: 
     runs-on: ubuntu-latest
-    name: "Build for Android"
+    name: "Conventional Release"
     permissions: write-all
-    if: startsWith(github.ref, 'refs/tags/') || inputs.android
+    outputs:
+      tag: ${{ steps.changelog.outputs.tag  }}
+      body: ${{ steps.changelog.outputs.clean_changelog }}
     steps:
-      - name: Clone Repository
-        uses: actions/checkout@v4
-      - name: Create secrets
-        run: |
-          echo "$SECRETS_JSON" | base64 -di > secrets.json
-          echo "$GOOGLE_SERVICE_JSON" | base64 -di > android/app/google-services.json
-          echo "$ANDROID_KEYSTORE" | base64 -di > android/app/strumok.jks
-        env:
-          SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
-          GOOGLE_SERVICE_JSON: ${{ secrets.GOOGLE_SERVICE_JSON }}
-          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-        shell: bash
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'  
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version-file: pubspec.yaml
-          cache: true
-      - name: Get Flutter dependencies
-        run: flutter pub get
-      - name: Build Flutter for Android
-        run: flutter build apk --dart-define-from-file=secrets.json
-      - name: Upload android outputs
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-outputs
-          path: build/app/outputs/flutter-apk/*.apk
-          retention-days: 7
+    - name: Clone Repository
+      uses: actions/checkout@v4
+    
+    - name: Conventional Changelog Action
+      id: changelog
+      uses: TriPSs/conventional-changelog-action@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        version-file: "pubspec.yaml"
+        output-file: "false"
+        skip-bump: ${{ inputs.skip_bump }}
+        skip-commit: ${{ inputs.skip_bump }}
+        skip-version-file: ${{ inputs.skip_bump }}
+
+  build-for-android:
+    needs: [bump-release]
+    uses: ./.github/workflows/build-android.yaml
 
   build-for-linux:
-    runs-on: ubuntu-latest
-    name: "Buid for Linux"
-    permissions: write-all
-    if: startsWith(github.ref, 'refs/tags/') || inputs.linux
-    steps:
-      - name: Clone Repository
-        uses: actions/checkout@v4
-      - name: Create secrets
-        run: echo "$SECRETS_JSON" | base64 -di > secrets.json
-        env:
-          SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -m -y clang cmake libgtk-3-dev ninja-build libstdc++-12-dev liblzma-dev mpv unzip libmpv-dev libcurl4-openssl-dev
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version-file: pubspec.yaml
-          cache: true
-      - name: Get Flutter dependencies
-        run: flutter pub get
-      - name: Build Flutter for Linux
-        run: flutter build linux --dart-define-from-file=secrets.json
-      - name: Upload linux outputs
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-outputs
-          path: build/linux/x64/release/bundle/
-          retention-days: 7
+    needs: [bump-release]
+    uses: ./.github/workflows/build-linux.yaml
 
   build-for-windows:
-    runs-on: windows-latest
-    name: "Build for Windows"
-    permissions: write-all
-    if: startsWith(github.ref, 'refs/tags/') || inputs.windows
-    steps:
-      - name: Clone Repository
-        uses: actions/checkout@v4
-      - name: Create secrets
-        run: echo "$SECRETS_JSON" | base64 -di > secrets.json
-        shell: bash
-        env:
-          SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
-      - run: choco install yq
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version-file: pubspec.yaml
-          cache: true
-      - name: Get Flutter dependencies
-        run: flutter pub get
-      - name: Build Flutter for Windows
-        run: flutter build windows --dart-define-from-file=secrets.json
-        shell: bash
-      - name: Build Installer
-        run: |
-          VERSION=$(yq -r '.version' pubspec.yaml)
-          cd .packaging/windows
-          sed -i -e 's/MyAppVersion ""/MyAppVersion "'$VERSION'"/g' strumok.iss
-          iscc.exe strumok.iss
-        shell: bash
-      - name: Upload windows outputs
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-outputs
-          path: .packaging/windows/Output
-          retention-days: 7
-
-  changelog:
-    runs-on: ubuntu-latest
-    name: "Changelog"
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Generate Changelog
-        id: changelog
-        uses: requarks/changelog-action@v1
-        with:
-          token: ${{ github.token }}
-          tag: ${{ github.ref_name }}
-          writeToFile: false
+    needs: [bump-release]
+    uses: ./.github/workflows/build-window.yaml
 
   release:
     runs-on: ubuntu-latest
     name: "Release"
     permissions: write-all
-    needs: [build-for-android, build-for-linux, build-for-windows, changelog]
-    if: startsWith(github.ref, 'refs/tags/')
+    needs: [build-for-android, build-for-linux, build-for-windows, bump-release]
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -177,7 +72,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           prerelease: true
-          body: ${{ steps.changelog.outputs.changes }}
+          name: ${{ needs.bump-release.outputs.tag }}
+          tag_name: ${{ needs.bump-release.outputs.tag }}
+          body: ${{ needs.bump-release.outputs.body }}
           files: |
             android-outputs/*
             strumok-linux.tar.gz

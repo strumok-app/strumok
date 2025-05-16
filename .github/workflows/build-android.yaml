@@ -1,0 +1,44 @@
+name: Build Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: "Build for Android"
+    permissions: write-all
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+      - name: Create secrets
+        run: |
+          echo "$SECRETS_JSON" | base64 -di > secrets.json
+          echo "$GOOGLE_SERVICE_JSON" | base64 -di > android/app/google-services.json
+          echo "$ANDROID_KEYSTORE" | base64 -di > android/app/strumok.jks
+        env:
+          SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
+          GOOGLE_SERVICE_JSON: ${{ secrets.GOOGLE_SERVICE_JSON }}
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        shell: bash
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'  
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+      - name: Get Flutter dependencies
+        run: flutter pub get
+      - name: Build Flutter for Android
+        run: flutter build apk --dart-define-from-file=secrets.json
+      - name: Upload android outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-outputs
+          path: build/app/outputs/flutter-apk/*.apk
+          retention-days: 7

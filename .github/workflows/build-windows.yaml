@@ -1,0 +1,43 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-for-windows:
+    runs-on: windows-latest
+    name: "Build for Windows"
+    permissions: write-all
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+      - name: Create secrets
+        run: echo "$SECRETS_JSON" | base64 -di > secrets.json
+        shell: bash
+        env:
+          SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
+      - run: choco install yq
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+      - name: Get Flutter dependencies
+        run: flutter pub get
+      - name: Build Flutter for Windows
+        run: flutter build windows --dart-define-from-file=secrets.json
+        shell: bash
+      - name: Build Installer
+        run: |
+          VERSION=$(yq -r '.version' pubspec.yaml)
+          cd .packaging/windows
+          sed -i -e 's/MyAppVersion ""/MyAppVersion "'$VERSION'"/g' strumok.iss
+          iscc.exe strumok.iss
+        shell: bash
+      - name: Upload windows outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-outputs
+          path: .packaging/windows/Output
+          retention-days: 7

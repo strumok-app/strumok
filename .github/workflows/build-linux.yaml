@@ -1,0 +1,37 @@
+name: Build Linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: "Buid for Linux"
+    permissions: write-all
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+      - name: Create secrets
+        run: echo "$SECRETS_JSON" | base64 -di > secrets.json
+        env:
+          SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -m -y clang cmake libgtk-3-dev ninja-build libstdc++-12-dev liblzma-dev mpv unzip libmpv-dev libcurl4-openssl-dev
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+      - name: Get Flutter dependencies
+        run: flutter pub get
+      - name: Build Flutter for Linux
+        run: flutter build linux --dart-define-from-file=secrets.json
+      - name: Upload linux outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-outputs
+          path: build/linux/x64/release/bundle/
+          retention-days: 7
