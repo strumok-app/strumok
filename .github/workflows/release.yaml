@@ -11,7 +11,7 @@ on:
 jobs:
   bump-release: 
     runs-on: ubuntu-latest
-    name: "Conventional Release"
+    name: "Bump Release"
     permissions: write-all
     outputs:
       tag: ${{ steps.changelog.outputs.tag  }}
@@ -35,16 +35,19 @@ jobs:
     needs: [bump-release]
     permissions: write-all
     uses: ./.github/workflows/build-android.yaml
+    secrets: inherit
 
   build-for-linux:
     needs: [bump-release]
     permissions: write-all
     uses: ./.github/workflows/build-linux.yaml
+    secrets: inherit
 
   build-for-windows:
     needs: [bump-release]
     permissions: write-all
     uses: ./.github/workflows/build-windows.yaml
+    secrets: inherit
 
   release:
     runs-on: ubuntu-latest
