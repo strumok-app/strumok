@@ -4,9 +4,12 @@ on:
   workflow_call:
     inputs:
       tag_name:
-        description: "Release Name"
         required: true
         type: string
+      ref:
+        required: true
+        type: string
+        default: ${{ github.ref_name }}
 
 jobs:
   release:
@@ -17,7 +20,7 @@ jobs:
       - name: Clone Repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag_name }}
+          ref: ${{ inputs.ref }}
           sparse-checkout: |
             CHANGELOG.md
           sparse-checkout-cone-mode: false

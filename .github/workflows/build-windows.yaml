@@ -2,6 +2,11 @@ name: Build Windows
 
 on:
   workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+        default: ${{ github.ref_name }}
   workflow_dispatch:
 
 jobs:
