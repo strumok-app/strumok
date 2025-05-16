@@ -16,7 +16,11 @@ class LoadMoreItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HorizontalListCard(
-      onTap: onTap,
+      focusNode: FocusNode(canRequestFocus: !loading),
+      onTap: () {
+        FocusManager.instance.primaryFocus?.previousFocus();
+        onTap();
+      },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
