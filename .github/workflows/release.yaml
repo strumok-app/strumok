@@ -41,7 +41,7 @@ jobs:
 
   build-for-windows:
     needs: [bump-release]
-    uses: ./.github/workflows/build-window.yaml
+    uses: ./.github/workflows/build-windows.yaml
 
   release:
     runs-on: ubuntu-latest
