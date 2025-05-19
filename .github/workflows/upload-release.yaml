@@ -10,6 +10,10 @@ on:
         required: true
         type: string
         default: ${{ github.ref_name }}
+      prerelease:
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   release:
@@ -46,7 +50,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          prerelease: true
+          prerelease: ${{ inputs.prerelease }}
           name: ${{ inputs.tag_name }}
           tag_name: ${{ inputs.tag_name }}
           body_path: CHANGELOG.md

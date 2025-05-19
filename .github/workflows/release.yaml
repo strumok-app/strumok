@@ -2,6 +2,11 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      prerelease:
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   bump-release: 
@@ -52,5 +57,6 @@ jobs:
     uses: ./.github/workflows/upload-release.yaml
     secrets: inherit
     with:
+      prerelease: ${{ inputs.prerelease }}
       ref: ${{ needs.bump-release.outputs.tag }}
       tag_name: ${{ needs.bump-release.outputs.tag }}

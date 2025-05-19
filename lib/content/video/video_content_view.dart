@@ -266,12 +266,12 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
     }
 
     _videoController =
-        Platform.isAndroid
+        TVDetector.isTV
             ? VideoController(
               _player,
               configuration: const VideoControllerConfiguration(
                 vo: "gpu",
-                hwdec: "auto",
+                hwdec: "mediacodec",
                 enableHardwareAcceleration: true,
               ),
             )
