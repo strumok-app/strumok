@@ -270,8 +270,9 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
             ? VideoController(
               _player,
               configuration: const VideoControllerConfiguration(
-                vo: "mediacodec_embed",
-                hwdec: "mediacodec",
+                vo: "gpu",
+                hwdec: "auto",
+                enableHardwareAcceleration: true,
               ),
             )
             : VideoController(_player);

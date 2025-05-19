@@ -25,9 +25,9 @@ dependencies:
   sembast: ^3.8.4+1
   shared_preferences: ^2.5.2
   # media kit
-  media_kit: 1.1.11                              
-  media_kit_video: 1.2.5                         
-  media_kit_libs_video: 1.0.5
+  media_kit: 1.2.0                              
+  media_kit_video: 1.3.0                         
+  media_kit_libs_video: 1.0.6
   subtitle: ^0.1.4
   # Utility widgets
   scrollable_positioned_list: ^0.3.8
