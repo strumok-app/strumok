@@ -147,11 +147,11 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
             onPressed: _switchToPipMode,
             icon: const Icon(Symbols.pip),
           ),
-        const PlayerSettingsButton(),
         SourceSelector(
           mediaItems: playerController.mediaItems,
           contentDetails: playerController.contentDetails,
         ),
+        const PlayerSettingsButton(),
         const MaterialDesktopFullscreenButton(),
       ],
       keyboardShortcuts: _keyboardShortcuts,

@@ -387,11 +387,11 @@ class _AndroidTVBottomBar extends ConsumerWidget {
             focusNode: isLastItem ? playPauseFocusNode : null,
           ),
           const Spacer(),
-          const PlayerSettingsButton(),
           SourceSelector(
             mediaItems: playerController.mediaItems,
             contentDetails: contentDetails,
           ),
+          const PlayerSettingsButton(),
         ],
       ),
     );

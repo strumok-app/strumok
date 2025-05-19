@@ -100,11 +100,11 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
       bottomButtonBar: [
         const MaterialPositionIndicator(),
         const Spacer(),
-        const PlayerSettingsButton(),
         SourceSelector(
           mediaItems: widget.playerController.mediaItems,
           contentDetails: widget.playerController.contentDetails,
         ),
+        const PlayerSettingsButton(),
         const MaterialFullscreenButton(),
       ],
       seekGesture: true,
