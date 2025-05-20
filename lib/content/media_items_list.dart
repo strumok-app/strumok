@@ -9,11 +9,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 typedef SelectCallback = void Function(ContentMediaItem);
-typedef MediaItemsListBuilder = Widget Function(
-  ContentMediaItem,
-  ContentProgress?,
-  SelectCallback,
-);
+typedef MediaItemsListBuilder =
+    Widget Function(ContentMediaItem, ContentProgress?, SelectCallback);
 
 class MediaItemsListRoute<T> extends PopupRoute<T> {
   final String title;
@@ -43,7 +40,11 @@ class MediaItemsListRoute<T> extends PopupRoute<T> {
   Duration get transitionDuration => const Duration(milliseconds: 500);
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
     const begin = Offset(1.0, 0.0);
     const end = Offset.zero;
     const curve = Curves.ease;
@@ -121,7 +122,7 @@ class _MediaItemsListView extends StatelessWidget {
                 onSelect: onSelect,
                 itemBuilder: itemBuilder,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -137,10 +138,7 @@ class _MediaItemsListView extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
-          child: Text(
-            title,
-            style: theme.textTheme.headlineMedium,
-          ),
+          child: Text(title, style: theme.textTheme.headlineMedium),
         ),
         Padding(
           padding: const EdgeInsets.all(4.0),
@@ -150,7 +148,7 @@ class _MediaItemsListView extends StatelessWidget {
             },
             icon: const Icon(Icons.close),
           ),
-        )
+        ),
       ],
     );
   }
@@ -196,18 +194,19 @@ class _MediaItemsList extends HookWidget {
           ),
           Expanded(
             child: TabBarView(
-              children: groups.values
-                  .map(
-                    (e) => _MediaItemsListSection(
-                      list: e,
-                      contentProgress: contentProgress,
-                      onSelect: onSelect,
-                      itemBuilder: itemBuilder,
-                    ),
-                  )
-                  .toList(),
+              children:
+                  groups.values
+                      .map(
+                        (e) => _MediaItemsListSection(
+                          list: e,
+                          contentProgress: contentProgress,
+                          onSelect: onSelect,
+                          itemBuilder: itemBuilder,
+                        ),
+                      )
+                      .toList(),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -264,14 +263,15 @@ class MediaItemsListItem extends HookWidget {
   final IconData selectIcon;
   final Widget? trailing;
 
-  const MediaItemsListItem(
-      {super.key,
-      required this.item,
-      required this.selected,
-      required this.selectIcon,
-      required this.progress,
-      required this.onTap,
-      this.trailing});
+  const MediaItemsListItem({
+    super.key,
+    required this.item,
+    required this.selected,
+    required this.selectIcon,
+    required this.progress,
+    required this.onTap,
+    this.trailing,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +281,8 @@ class MediaItemsListItem extends HookWidget {
     final image = item.image;
     final colorScheme = theme.colorScheme;
     final accentColor = colorScheme.surfaceTint.withValues(alpha: 0.5);
-    final focusColor = focused.value ? colorScheme.onSurfaceVariant : accentColor;
+    final focusColor =
+        focused.value ? colorScheme.onSurfaceVariant : accentColor;
     final isTv = TVDetector.isTV;
 
     return Card.filled(
@@ -291,56 +292,72 @@ class MediaItemsListItem extends HookWidget {
       ),
       clipBehavior: Clip.antiAlias,
       color: Colors.transparent,
-      child: SizedBox(
-        height: 64,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (image != null)
-              Container(
-                width: 80,
-                decoration: BoxDecoration(
-                  image: DecorationImage(image: CachedNetworkImageProvider(image), fit: BoxFit.cover),
-                ),
-                child: selected
-                    ? Center(
-                        child: Icon(selectIcon, color: Colors.white, size: 48),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-            Expanded(
-              child: ListTile(
-                autofocus: selected,
-                onFocusChange: (value) => focused.value = value,
-                onTap: onTap,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                mouseCursor: SystemMouseCursors.click,
-                title: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (image == null && selected) ...[
-                      const SizedBox(width: 8),
-                      Icon(selectIcon),
-                    ],
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: onTap,
+          child: SizedBox(
+            height: 64,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (image != null)
+                  Container(
+                    width: 80,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(image),
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    if (!isTv && trailing != null) trailing!,
-                  ],
+                    child:
+                        selected
+                            ? Center(
+                              child: Icon(
+                                selectIcon,
+                                color: Colors.white,
+                                size: 48,
+                              ),
+                            )
+                            : const SizedBox.shrink(),
+                  ),
+                Expanded(
+                  child: ListTile(
+                    autofocus: selected,
+                    onFocusChange: (value) => focused.value = value,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                    title: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (image == null && selected) ...[
+                          const SizedBox(width: 8),
+                          Icon(selectIcon),
+                        ],
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (!isTv && trailing != null) trailing!,
+                      ],
+                    ),
+                    subtitle: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: LinearProgressIndicator(value: progress),
+                    ),
+                  ),
                 ),
-                subtitle: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: LinearProgressIndicator(value: progress),
-                ),
-              ),
+                if (isTv && trailing != null)
+                  Container(
+                    color: accentColor,
+                    child: Center(child: trailing!),
+                  ),
+              ],
             ),
-            if (isTv && trailing != null)
-              Container(
-                color: accentColor,
-                child: Center(child: trailing!),
-              ),
-          ],
+          ),
         ),
       ),
     );
