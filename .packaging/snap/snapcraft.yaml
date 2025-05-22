@@ -9,13 +9,22 @@ confinement: devmode # use 'strict' once you have the right plugs and slots
 
 parts:
   strumok-part:
-    # See 'snapcraft plugins'
     plugin: dump
     source: https://github.com/strumok-app/strumok/releases/latest/download/strumok-linux.tar.gz
     stage-packages:
     - libmpv2
-    - libgtk-3-0
 
 apps:
   strumok:
     command: strumok
+    extensions: [gnome]
+    plugs:
+    - network
+    slots:
+    - strumok-app
+
+slots:
+  strumok-app: # adjust accordingly to your app name
+    interface: dbus
+    bus: session
+    name: strumok.app
