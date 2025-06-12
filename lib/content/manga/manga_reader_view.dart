@@ -278,6 +278,7 @@ class _ReaderGestureDetectorState
       valueListenable: widget.transformationController,
       builder: (context, value, child) {
         return GestureDetector(
+          onDoubleTapDown: (details) => _lastTapDetails = details,
           onTapDown: (details) => _lastTapDetails = details,
           onDoubleTap: _toggleZoom,
           onTap: value.isScaled() ? null : _tapZones,
@@ -330,7 +331,10 @@ class _ReaderGestureDetectorState
     final position = _lastTapDetails!.globalPosition;
     final transfomationController = widget.transformationController;
 
+    print("position: $position");
+
     if (!_isInZone(2, 3, position)) {
+      print("Not in zone: $position");
       return;
     }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strumok/widgets/horizontal_list_card.dart';
 
 class HorizontalList extends StatelessWidget {
   final Widget title;
@@ -20,11 +21,8 @@ class HorizontalList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var items = List.generate(itemCount, (idx) => itemBuilder(context, idx));
-
-    if (trailing != null) {
-      items.add(trailing!);
-    }
+    final size = HorizontalListCard.calcSize(context);
+    final fullItemsCount = trailing != null ? itemCount + 1 : itemCount;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: paddings),
@@ -35,13 +33,19 @@ class HorizontalList extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: title,
           ),
-          SizedBox(
-            child: SingleChildScrollView(
-              controller: scrollController,
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 8),
-                child: Row(mainAxisSize: MainAxisSize.min, children: items),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: SizedBox(
+              height: size.height,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                controller: scrollController,
+                itemCount: fullItemsCount,
+                itemBuilder:
+                    (context, index) =>
+                        trailing != null && index == fullItemsCount - 1
+                            ? trailing
+                            : itemBuilder(context, index),
               ),
             ),
           ),

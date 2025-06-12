@@ -85,33 +85,33 @@ class PlayerController {
 
       final link = await video.link;
 
-      final startPosition = AppPreferences.videoPlayerSettingStarFrom;
-
-      final currentItemPosition = progress.currentMediaItemPosition;
-      int start = switch (startPosition) {
-        StarVideoPosition.fromBeginning => 0,
-        StarVideoPosition.fromRemembered => progress.currentPosition,
-        StarVideoPosition.fromFixedPosition =>
-          AppPreferences.videoPlayerSettingFixedPosition,
-      };
-
-      if (currentItemPosition.length > 0 &&
-          start > currentItemPosition.length - 60) {
-        start = start - 60;
-      } else if (start < 0) {
-        start = 0;
-      }
-
-      final media = Media(
-        link.toString(),
-        httpHeaders: video.headers,
-        start: Duration(seconds: start),
-      );
-
-      _ref.read(playerErrorsProvider.notifier).reset();
-
       if (progress.currentItem == itemIdx &&
           progress.currentSourceName == sourceName) {
+        final startPosition = AppPreferences.videoPlayerSettingStarFrom;
+
+        final currentItemPosition = progress.currentMediaItemPosition;
+        int start = switch (startPosition) {
+          StarVideoPosition.fromBeginning => 0,
+          StarVideoPosition.fromRemembered => progress.currentPosition,
+          StarVideoPosition.fromFixedPosition =>
+            AppPreferences.videoPlayerSettingFixedPosition,
+        };
+
+        if (currentItemPosition.length > 0 &&
+            start > currentItemPosition.length - 60) {
+          start = start - 60;
+        } else if (start < 0) {
+          start = 0;
+        }
+
+        _ref.read(playerErrorsProvider.notifier).reset();
+
+        final media = Media(
+          link.toString(),
+          httpHeaders: video.headers,
+          start: Duration(seconds: start),
+        );
+
         logger.i("Starting video: $media");
         await _player.open(media);
         isLoading.value = false;

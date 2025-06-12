@@ -30,12 +30,11 @@ class HorizontalListCard extends HookWidget {
     final theme = Theme.of(context);
     final focused = useState(false);
     final mobile = isMobile(context);
-    final width = mobile ? _calcMobileSize(context) : 200.0;
-    final height = width * 1.3;
+    final size = calcSize(context);
 
     return SizedBox(
-      width: width,
-      height: height,
+      width: size.width,
+      height: size.height,
       child: Card(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         shape: RoundedRectangleBorder(
@@ -86,8 +85,14 @@ class HorizontalListCard extends HookWidget {
     );
   }
 
-  double _calcMobileSize(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    return (screenWidth - 24) / 2;
+  static Size calcSize(BuildContext context) {
+    var width = 200.0;
+
+    if (isMobile(context)) {
+      var screenWidth = MediaQuery.of(context).size.width;
+      width = (screenWidth - 24) / 2;
+    }
+
+    return Size(width, width * 1.3);
   }
 }

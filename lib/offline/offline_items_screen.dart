@@ -123,6 +123,7 @@ class OfflineItem extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return HorizontalListCard(
+      key: Key("${info.supplier}/${info.id}"),
       onTap: () => navigateToContentDetails(context, info),
       background: CachedNetworkImage(
         imageUrl: info.image,

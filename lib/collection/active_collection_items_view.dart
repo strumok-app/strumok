@@ -37,6 +37,7 @@ class ActiveCollectionItemsView extends ConsumerWidget {
       ),
       itemBuilder:
           (context, index) => HorizontalListCard(
+            key: Key("loading"),
             onTap: () {},
             child: const Center(child: CircularProgressIndicator()),
           ),
@@ -91,6 +92,7 @@ class _ActiveCollectionItems extends ConsumerWidget {
       ),
       itemBuilder:
           (context, index) => HorizontalListCard(
+            key: Key("empty"),
             onTap: () {
               context.router.replace(const SearchRoute());
             },

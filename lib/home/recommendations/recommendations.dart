@@ -53,6 +53,7 @@ class Recommendations extends ConsumerWidget {
       title: const SizedBox.shrink(),
       itemBuilder:
           (context, index) => HorizontalListCard(
+            key: Key("empty"),
             onTap: () {
               context.navigateTo(const SuppliersSettingsRoute());
             },

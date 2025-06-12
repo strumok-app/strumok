@@ -96,9 +96,8 @@ class ContentLanguageSettings extends _$ContentLanguageSettings {
       return langs;
     }
 
-    final lang = platformLang;
-    if (lang != null) {
-      return {lang};
+    if (platformLang == ContentLanguage.en) {
+      return {ContentLanguage.en};
     }
 
     return ContentLanguage.values.toSet();

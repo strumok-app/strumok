@@ -31,6 +31,7 @@ class ContentInfoCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return HorizontalListCard(
+      key: Key("${contentInfo.supplier}/${contentInfo.id}"),
       focusNode: focusNode,
       onTap: onTap ?? () => navigateToContentDetails(context, contentInfo),
       onHover: onHover,
