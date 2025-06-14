@@ -16,14 +16,12 @@ class ActiveCollectionItemsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final groups = ref.watch(collectionActiveItemsProvider);
-    if (groups.isLoading) {
-      return _renderLoading(context);
-    }
+    final items = ref.watch(collectionActiveItemsProvider);
 
-    return groups.maybeWhen(
-      data: (value) => _ActiveCollectionItems(groups: value),
-      orElse: () => const SizedBox.shrink(),
+    return items.when(
+      data: (value) => _ActiveCollectionItems(items: value),
+      error: (e, s) => const SizedBox.shrink(),
+      loading: () => _renderLoading(context),
     );
   }
 
@@ -47,33 +45,25 @@ class ActiveCollectionItemsView extends ConsumerWidget {
 }
 
 class _ActiveCollectionItems extends ConsumerWidget {
-  final Map<MediaCollectionItemStatus, List<MediaCollectionItem>> groups;
+  final List<MediaCollectionItem> items;
 
-  const _ActiveCollectionItems({required this.groups});
+  const _ActiveCollectionItems({required this.items});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<MediaCollectionItem>? items;
-    String? title;
-
-    if (groups.containsKey(MediaCollectionItemStatus.inProgress)) {
-      items = groups[MediaCollectionItemStatus.inProgress]?.toList();
-      title = AppLocalizations.of(context)!.collectionContinue;
-    } else if (groups.containsKey(MediaCollectionItemStatus.latter)) {
-      items = groups[MediaCollectionItemStatus.latter]?.toList();
-      title = AppLocalizations.of(context)!.collectionBegin;
-    }
-
-    if (items == null) {
+    if (items.isEmpty) {
       return _renderEmptyCollection(context);
     }
 
     return HorizontalList(
       title: FocusIndicator(
-        child: Text(title!, style: Theme.of(context).textTheme.titleLarge),
+        child: Text(
+          AppLocalizations.of(context)!.collectionContinue,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
       itemBuilder: (context, index) {
-        final item = items![index];
+        final item = items[index];
 
         return ContentInfoCard(
           key: Key("${item.supplier}/${item.id}"),

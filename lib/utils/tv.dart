@@ -10,6 +10,12 @@ class TVDetector {
   static bool get isTV => _isTV;
 
   static Future<bool> detect() async {
+    final forceTvMode = const bool.fromEnvironment("FORCE_TV_MODE");
+    if (forceTvMode) {
+      _isTV = true;
+      return _isTV;
+    }
+
     if (!Platform.isAndroid) {
       _isTV = false;
       return _isTV;

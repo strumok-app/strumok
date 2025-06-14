@@ -283,6 +283,10 @@ class MediaItemsListItem extends HookWidget {
     final accentColor = colorScheme.surfaceTint.withValues(alpha: 0.5);
     final focusColor =
         focused.value ? colorScheme.onSurfaceVariant : accentColor;
+    final backgroundColor =
+        focused.value
+            ? colorScheme.onSurface.withValues(alpha: 0.15)
+            : Colors.transparent;
     final isTv = TVDetector.isTV;
 
     return Card.filled(
@@ -291,7 +295,7 @@ class MediaItemsListItem extends HookWidget {
         side: BorderSide(color: focusColor),
       ),
       clipBehavior: Clip.antiAlias,
-      color: Colors.transparent,
+      color: backgroundColor,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
@@ -322,31 +326,33 @@ class MediaItemsListItem extends HookWidget {
                             : const SizedBox.shrink(),
                   ),
                 Expanded(
-                  child: ListTile(
+                  child: Focus(
                     autofocus: selected,
                     onFocusChange: (value) => focused.value = value,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                    title: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (image == null && selected) ...[
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                      title: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (image == null && selected) ...[
+                            const SizedBox(width: 8),
+                            Icon(selectIcon),
+                          ],
                           const SizedBox(width: 8),
-                          Icon(selectIcon),
-                        ],
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                          Expanded(
+                            child: Text(
+                              title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
-                        if (!isTv && trailing != null) trailing!,
-                      ],
-                    ),
-                    subtitle: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: LinearProgressIndicator(value: progress),
+                          if (!isTv && trailing != null) trailing!,
+                        ],
+                      ),
+                      subtitle: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: LinearProgressIndicator(value: progress),
+                      ),
                     ),
                   ),
                 ),
