@@ -331,10 +331,7 @@ class _ReaderGestureDetectorState
     final position = _lastTapDetails!.globalPosition;
     final transfomationController = widget.transformationController;
 
-    print("position: $position");
-
     if (!_isInZone(2, 3, position)) {
-      print("Not in zone: $position");
       return;
     }
 

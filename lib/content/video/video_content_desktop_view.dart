@@ -111,7 +111,6 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
     ThemeData theme,
     bool fullscreen,
   ) {
-    // const margin = EdgeInsets.symmetric(horizontal: 20.0);
     final playerController = widget.playerController;
     final colorScheme = theme.colorScheme;
 

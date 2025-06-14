@@ -40,10 +40,11 @@ class HorizontalListCard extends HookWidget {
         shape: RoundedRectangleBorder(
           side:
               !mobile && focused.value
-                  ? BorderSide(color: theme.colorScheme.primary, width: 2)
+                  ? BorderSide(color: Colors.white54, width: 2)
                   : BorderSide.none,
           borderRadius: BorderRadius.circular(8),
         ),
+        elevation: !mobile && focused.value ? 16 : 0,
         child: InkWell(
           focusNode: focusNode,
           onTap: onTap,
