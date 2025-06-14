@@ -65,7 +65,7 @@ class _SubtitleView extends StatefulWidget {
 
 class _SubtitleViewState extends State<_SubtitleView> {
   StreamSubscription? _subscription;
-  Subtitle? _subtitle;
+  List<Subtitle> _subtitles = List.empty();
 
   @override
   void initState() {
@@ -74,14 +74,14 @@ class _SubtitleViewState extends State<_SubtitleView> {
     _subscription = widget.player.stream.position.listen((position) {
       final time = position + widget.subtitlesOffset;
 
-      if (_subtitle?.inRange(time) == true) {
+      if (_subtitles.firstOrNull?.inRange(time) == true) {
         return;
       }
 
-      final sub = widget.subtitleController.durationSearch(time);
+      final subs = widget.subtitleController.multiDurationSearch(time);
 
       setState(() {
-        _subtitle = sub;
+        _subtitles = subs;
       });
     });
   }
@@ -96,24 +96,26 @@ class _SubtitleViewState extends State<_SubtitleView> {
   @override
   void didUpdateWidget(covariant _SubtitleView oldWidget) {
     final time = widget.player.state.position + widget.subtitlesOffset;
-    final sub = widget.subtitleController.durationSearch(time);
+    final subs = widget.subtitleController.multiDurationSearch(time);
 
-    _subtitle = sub;
+    _subtitles = subs;
 
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_subtitle == null) {
+    if (_subtitles.isEmpty) {
       return SizedBox.shrink();
     }
+
+    final text = _subtitles.map((s) => s.data).nonNulls.join("\n");
 
     return Container(
       padding: const EdgeInsets.only(bottom: 16),
       alignment: Alignment.bottomCenter,
       child: RoundedBackgroundText(
-        _subtitle!.data,
+        text,
         style: TextStyle(
           height: 1.4,
           fontSize: 32.0,

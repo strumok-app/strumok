@@ -115,8 +115,7 @@ Future<Set<String>> collectionItemsSuppliers(Ref ref) async {
 }
 
 @riverpod
-Future<Map<MediaCollectionItemStatus, List<MediaCollectionItem>>>
-collectionActiveItems(Ref ref) async {
+Future<List<MediaCollectionItem>> collectionActiveItems(Ref ref) async {
   ref.watch(collectionChangesProvider);
 
   final repository = ref.watch(collectionServiceProvider);
@@ -130,7 +129,13 @@ collectionActiveItems(Ref ref) async {
 
   final activeItems = collectionItems.groupListsBy((e) => e.status);
 
-  return activeItems;
+  if (activeItems.containsKey(MediaCollectionItemStatus.inProgress)) {
+    return activeItems[MediaCollectionItemStatus.inProgress]!.toList();
+  } else if (activeItems.containsKey(MediaCollectionItemStatus.latter)) {
+    return activeItems[MediaCollectionItemStatus.latter]!.toList();
+  }
+
+  return const [];
 }
 
 @immutable

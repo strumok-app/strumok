@@ -6,7 +6,7 @@ part of 'collection_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$collectionServiceHash() => r'3fbf812b05a98f030dc658e9bf4028e235f1ba47';
+String _$collectionServiceHash() => r'49687ae478e54466a3021b3ab6e80c7a7e8b19f8';
 
 /// See also [collectionService].
 @ProviderFor(collectionService)
@@ -89,29 +89,26 @@ final collectionItemsSuppliersProvider =
 // ignore: unused_element
 typedef CollectionItemsSuppliersRef = AutoDisposeFutureProviderRef<Set<String>>;
 String _$collectionActiveItemsHash() =>
-    r'3bb2056ae84300d6fc2cd2d42c7d072b504eb523';
+    r'ed9a16fec50ee42f0dae5bff75d84ca655516ef9';
 
 /// See also [collectionActiveItems].
 @ProviderFor(collectionActiveItems)
-final collectionActiveItemsProvider = AutoDisposeFutureProvider<
-  Map<MediaCollectionItemStatus, List<MediaCollectionItem>>
->.internal(
-  collectionActiveItems,
-  name: r'collectionActiveItemsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$collectionActiveItemsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final collectionActiveItemsProvider =
+    AutoDisposeFutureProvider<List<MediaCollectionItem>>.internal(
+      collectionActiveItems,
+      name: r'collectionActiveItemsProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$collectionActiveItemsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CollectionActiveItemsRef =
-    AutoDisposeFutureProviderRef<
-      Map<MediaCollectionItemStatus, List<MediaCollectionItem>>
-    >;
+    AutoDisposeFutureProviderRef<List<MediaCollectionItem>>;
 String _$collectionChangesHash() => r'9cdbf00aee59ae6661f58a392677e0a6aa07d663';
 
 /// See also [CollectionChanges].

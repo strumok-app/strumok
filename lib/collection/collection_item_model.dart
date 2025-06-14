@@ -25,7 +25,10 @@ Map<String, dynamic> _mapPositions(Map<int, MediaItemPosition> positions) {
 }
 
 @JsonSerializable()
-class MediaCollectionItem with ContentProgress implements ContentInfo {
+// ignore: must_be_immutable
+class MediaCollectionItem extends Equatable
+    with ContentProgress
+    implements ContentInfo {
   @override
   final String id;
   @override
@@ -118,6 +121,9 @@ class MediaCollectionItem with ContentProgress implements ContentInfo {
       _$MediaCollectionItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$MediaCollectionItemToJson(this);
+
+  @override
+  List<Object?> get props => [id, supplier];
 }
 
 @immutable

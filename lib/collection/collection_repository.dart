@@ -27,9 +27,10 @@ class LocalCollectionRepository extends CollectionRepository {
       .store("collection");
 
   final Database db = AppDatabase().db();
+  final StreamController<void> syncStreamController = StreamController();
 
   @override
-  Stream<void> get changesStream => store.query().onSnapshot(db);
+  Stream<void> get changesStream => syncStreamController.stream;
 
   @override
   FutureOr<MediaCollectionItem?> getCollectionItem(
@@ -55,6 +56,8 @@ class LocalCollectionRepository extends CollectionRepository {
     recordValue["tokens"] = splitWords(collectionItem.title);
 
     await db.transaction((tx) => store.record(itemId).put(tx, recordValue));
+
+    syncStreamController.add(null);
   }
 
   @override
@@ -89,6 +92,8 @@ class LocalCollectionRepository extends CollectionRepository {
     final itemId = _sanitizeId(supplier, id);
 
     await db.transaction((tx) => store.record(itemId).delete(tx));
+
+    syncStreamController.sink.add(null);
   }
 
   void deleteOlder(Map<String, dynamic> remote) {
@@ -101,6 +106,10 @@ class LocalCollectionRepository extends CollectionRepository {
 
       if (remoteLastSeen >= localLastSeen) {
         await store.record(itemId).delete(tx);
+      }
+
+      if (localRecord != null) {
+        syncStreamController.sink.add(null);
       }
     });
   }
@@ -129,6 +138,10 @@ class LocalCollectionRepository extends CollectionRepository {
 
         await store.record(itemId).put(tx, remote);
       }
+
+      if (localRecord?["status"] != remote["status"]) {
+        syncStreamController.sink.add(null);
+      }
     });
   }
 }
@@ -136,7 +149,6 @@ class LocalCollectionRepository extends CollectionRepository {
 class FirebaseRepository extends CollectionRepository {
   final LocalCollectionRepository localRepo;
   final auth.User user;
-  final StreamController<bool> syncStreamController = StreamController();
   late final FirebaseDatabase database;
 
   final List<StreamSubscription> subs = [];

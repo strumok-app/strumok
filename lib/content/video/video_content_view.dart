@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:math';
 
 import 'package:strumok/app_localizations.dart';
@@ -155,16 +156,19 @@ class PlayerController {
             as MediaFileItemSource?;
 
     if (subtitle != null) {
-      final link = await subtitle.link;
-
-      if (progress.currentItem == itemIdx &&
-          currentSubtitle == progress.currentSubtitleName) {
-        logger.i("Subtitle: $subtitle");
-
+      final controller = await Isolate.run(() async {
+        final link = await subtitle.link;
         final controller = SubtitleController(
           provider: NetworkSubtitle(link, headers: subtitle.headers),
         );
         await controller.initial();
+
+        return controller;
+      }, debugName: "subtitles");
+
+      if (progress.currentItem == itemIdx &&
+          currentSubtitle == progress.currentSubtitleName) {
+        logger.i("Subtitle: $subtitle");
 
         _ref
             .read(currentSubtitleControllerProvider.notifier)

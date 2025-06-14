@@ -30,7 +30,7 @@ class HorizontalListCard extends HookWidget {
     final theme = Theme.of(context);
     final focused = useState(false);
     final mobile = isMobile(context);
-    final size = calcSize(context);
+    var size = calcSize(context);
 
     return SizedBox(
       width: size.width,
@@ -40,7 +40,7 @@ class HorizontalListCard extends HookWidget {
         shape: RoundedRectangleBorder(
           side:
               !mobile && focused.value
-                  ? BorderSide(color: theme.colorScheme.primary, width: 1)
+                  ? BorderSide(color: theme.colorScheme.primary, width: 2)
                   : BorderSide.none,
           borderRadius: BorderRadius.circular(8),
         ),

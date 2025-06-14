@@ -117,7 +117,7 @@ final mangaReaderModeSettingsProvider = AutoDisposeNotifierProvider<
 
 typedef _$MangaReaderModeSettings = AutoDisposeNotifier<MangaReaderMode>;
 String _$contentLanguageSettingsHash() =>
-    r'e9029df7282054df00e61db7e9045392d5d77ab3';
+    r'9cfaa9ad74562d0aaca33ae99beb818a9e4a5123';
 
 /// See also [ContentLanguageSettings].
 @ProviderFor(ContentLanguageSettings)
