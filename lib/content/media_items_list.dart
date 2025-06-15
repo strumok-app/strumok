@@ -298,15 +298,15 @@ class MediaItemsListItem extends HookWidget {
       color: backgroundColor,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: onTap,
-          child: SizedBox(
-            height: 64,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (image != null)
-                  Container(
+        child: SizedBox(
+          height: 64,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (image != null)
+                GestureDetector(
+                  onTap: onTap,
+                  child: Container(
                     width: 80,
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -325,43 +325,40 @@ class MediaItemsListItem extends HookWidget {
                             )
                             : const SizedBox.shrink(),
                   ),
-                Expanded(
-                  child: ListTile(
-                    onTap: onTap,
-                    autofocus: selected,
-                    onFocusChange: (value) => focused.value = value,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                    title: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (image == null && selected) ...[
-                          const SizedBox(width: 8),
-                          Icon(selectIcon),
-                        ],
+                ),
+              Expanded(
+                child: ListTile(
+                  onTap: onTap,
+                  autofocus: selected,
+                  onFocusChange: (value) => focused.value = value,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  title: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (image == null && selected) ...[
                         const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (!isTv && trailing != null) trailing!,
+                        Icon(selectIcon),
                       ],
-                    ),
-                    subtitle: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: LinearProgressIndicator(value: progress),
-                    ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (!isTv && trailing != null) trailing!,
+                    ],
+                  ),
+                  subtitle: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: LinearProgressIndicator(value: progress),
                   ),
                 ),
-                if (isTv && trailing != null)
-                  Container(
-                    color: accentColor,
-                    child: Center(child: trailing!),
-                  ),
-              ],
-            ),
+              ),
+              if (isTv && trailing != null)
+                Container(color: accentColor, child: Center(child: trailing!)),
+            ],
           ),
         ),
       ),

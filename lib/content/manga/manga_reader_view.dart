@@ -218,7 +218,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   }
 
   void _movePage(MangaReaderMode readerMode, int inc) async {
-    if (_isPageMoving) {
+    if (_isPageMoving || _isScrolling) {
       return;
     }
 
@@ -243,7 +243,6 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
         notifier.setCurrentItem(contentProgress.currentItem + 1);
       }
     } else {
-      print(newPos);
       notifier.setCurrentPosition(newPos);
       page.value = newPos;
     }
@@ -253,7 +252,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
 
   void _scrollTo(MangaReaderMode readerMode, double inc) async {
     if (readerMode.scroll) {
-      if (_isScrolling) {
+      if (_isScrolling || _isPageMoving) {
         return;
       }
 
