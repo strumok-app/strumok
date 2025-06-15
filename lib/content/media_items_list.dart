@@ -326,33 +326,32 @@ class MediaItemsListItem extends HookWidget {
                             : const SizedBox.shrink(),
                   ),
                 Expanded(
-                  child: Focus(
+                  child: ListTile(
+                    onTap: onTap,
                     autofocus: selected,
                     onFocusChange: (value) => focused.value = value,
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                      title: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (image == null && selected) ...[
-                            const SizedBox(width: 8),
-                            Icon(selectIcon),
-                          ],
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                    title: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (image == null && selected) ...[
                           const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              title,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          if (!isTv && trailing != null) trailing!,
+                          Icon(selectIcon),
                         ],
-                      ),
-                      subtitle: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: LinearProgressIndicator(value: progress),
-                      ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (!isTv && trailing != null) trailing!,
+                      ],
+                    ),
+                    subtitle: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: LinearProgressIndicator(value: progress),
                     ),
                   ),
                 ),

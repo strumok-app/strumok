@@ -115,6 +115,8 @@ class _MangaPagesReaderView extends ConsumerStatefulWidget {
 class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   final transformationController = TransformationController();
   final scrollOffsetController = ScrollOffsetController();
+  bool _isScrolling = false;
+  bool _isPageMoving = false;
   late final ValueNotifier<int> page;
 
   @override
@@ -173,10 +175,10 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
               ),
         ),
         ScrollUpPageIntent: CallbackAction<ScrollUpPageIntent>(
-          onInvoke: (_) => _scrollTo(readerMode, 50),
+          onInvoke: (_) => _scrollTo(readerMode, 1),
         ),
         ScrollDownPageIntent: CallbackAction<ScrollDownPageIntent>(
-          onInvoke: (_) => _scrollTo(readerMode, -50),
+          onInvoke: (_) => _scrollTo(readerMode, -1),
         ),
       },
       autofocus: true,
@@ -216,6 +218,12 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
   }
 
   void _movePage(MangaReaderMode readerMode, int inc) async {
+    if (_isPageMoving) {
+      return;
+    }
+
+    _isPageMoving = true;
+
     inc = readerMode.rtl ? -inc : inc;
 
     final contentProgress = (await ref.read(
@@ -235,18 +243,33 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView> {
         notifier.setCurrentItem(contentProgress.currentItem + 1);
       }
     } else {
+      print(newPos);
       notifier.setCurrentPosition(newPos);
       page.value = newPos;
     }
+
+    _isPageMoving = false;
   }
 
-  void _scrollTo(MangaReaderMode readerMode, double inc) {
+  void _scrollTo(MangaReaderMode readerMode, double inc) async {
     if (readerMode.scroll) {
-      scrollOffsetController.animateScroll(
-        offset: -inc,
-        duration: const Duration(milliseconds: 5),
+      if (_isScrolling) {
+        return;
+      }
+
+      _isScrolling = true;
+
+      final speed = 1.5; // px in ms
+      final duration = 100;
+      final distance = speed * duration;
+
+      await scrollOffsetController.animateScroll(
+        offset: -inc * distance,
+        duration: Duration(milliseconds: duration),
         curve: Curves.linear,
       );
+
+      _isScrolling = false;
     }
   }
 }
@@ -594,6 +617,10 @@ class _ScrolledViewState extends ConsumerState<_ScrolledView> {
           child: ScrollablePositionedList.builder(
             reverse: readerMode.rtl,
             scrollDirection: readerMode.direction,
+            minCacheExtent:
+                readerMode.direction == Axis.vertical
+                    ? constraints.maxHeight * 3
+                    : constraints.maxWidth * 3,
             scrollOffsetController: widget.scrollOffsetController,
             itemScrollController: _itemScrollController,
             itemPositionsListener: _itemPositionsListener,
