@@ -11,12 +11,12 @@ import 'package:strumok/utils/visual.dart';
 class MangaReaderControlsRoute<T> extends PopupRoute<T> {
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
-  final ValueChanged<int> onPageChanged;
+  final ValueNotifier<int> pagesController;
 
   MangaReaderControlsRoute({
     required this.contentDetails,
     required this.mediaItems,
-    required this.onPageChanged,
+    required this.pagesController,
   });
 
   @override
@@ -40,7 +40,7 @@ class MangaReaderControlsRoute<T> extends PopupRoute<T> {
         child: MangaReaderControls(
           contentDetails: contentDetails,
           mediaItems: mediaItems,
-          onPageChanged: onPageChanged,
+          pagesController: pagesController,
         ),
       ),
     );
@@ -50,13 +50,13 @@ class MangaReaderControlsRoute<T> extends PopupRoute<T> {
 class MangaReaderControls extends StatelessWidget {
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
-  final ValueChanged<int> onPageChanged;
+  final ValueNotifier<int> pagesController;
 
   const MangaReaderControls({
     super.key,
     required this.contentDetails,
     required this.mediaItems,
-    required this.onPageChanged,
+    required this.pagesController,
   });
 
   @override
@@ -77,7 +77,7 @@ class MangaReaderControls extends StatelessWidget {
             MangaReaderControlBottomBar(
               contentDetails: contentDetails,
               mediaItems: mediaItems,
-              onPageChanged: onPageChanged,
+              pagesController: pagesController,
             ),
           ],
         ),
@@ -158,47 +158,32 @@ class MangaReaderControlTopBar extends ConsumerWidget {
   }
 }
 
-class MangaReaderControlBottomBar extends ConsumerStatefulWidget {
+class MangaReaderControlBottomBar extends ConsumerWidget {
   final List<ContentMediaItem> mediaItems;
   final ContentDetails contentDetails;
-  final ValueChanged<int> onPageChanged;
+  final ValueNotifier<int> pagesController;
 
   const MangaReaderControlBottomBar({
     super.key,
     required this.contentDetails,
     required this.mediaItems,
-    required this.onPageChanged,
+    required this.pagesController,
   });
 
   @override
-  ConsumerState<MangaReaderControlBottomBar> createState() =>
-      _MangaReaderControlBottomBarState();
-}
-
-class _MangaReaderControlBottomBarState
-    extends ConsumerState<MangaReaderControlBottomBar> {
-  int? tragetPage;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    final position =
-        ref
-            .watch(
-              collectionItemCurrentMediaItemPositionProvider(
-                widget.contentDetails,
-              ),
-            )
-            .value;
+    final provider = collectionItemCurrentMediaItemPositionProvider(
+      contentDetails,
+    );
+    final position = ref.watch(provider).value;
 
     if (position == null) {
       return const SizedBox.shrink();
     }
 
     final pageNumbers = position.length;
-    final pageIndex = tragetPage ?? position.position;
-    final pageNumber = pageIndex + 1;
 
     final mobile = isMobile(context);
 
@@ -214,45 +199,78 @@ class _MangaReaderControlBottomBarState
             mainAxisSize: MainAxisSize.max,
             children: [
               if (!mobile)
-                Text(
-                  "$pageNumber / $pageNumbers",
-                  style: theme.textTheme.bodyMedium!.copyWith(
-                    color: Colors.white,
-                  ),
+                ValueListenableBuilder(
+                  valueListenable: pagesController,
+                  builder: (context, pageIndex, child) {
+                    final pageNumber = pageIndex + 1;
+                    return Text(
+                      "$pageNumber / $pageNumbers",
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        color: Colors.white,
+                      ),
+                    );
+                  },
                 ),
               Expanded(
-                child: SliderTheme(
-                  data: SliderThemeData(
-                    tickMarkShape: SliderTickMarkShape.noTickMark,
-                  ),
-                  child: Slider(
-                    allowedInteraction: SliderInteraction.tapAndSlide,
-                    max: pageNumbers.toDouble() - 1,
-                    value: pageIndex.toDouble(),
-                    label: pageNumber.toString(),
-                    divisions: pageNumbers - 1,
-                    onChanged: (value) {
-                      setState(() {
-                        tragetPage = value.round();
-                      });
-                    },
-                    onChangeEnd: (value) {
-                      setState(() {
-                        tragetPage = value.round();
-                      });
-                      widget.onPageChanged(value.round());
-                    },
-                  ),
+                child: MangaPagesSlider(
+                  pageNumbers: pageNumbers,
+                  pagesController: pagesController,
                 ),
               ),
               MangaSettingsButton(
-                contentDetails: widget.contentDetails,
-                mediaItems: widget.mediaItems,
+                contentDetails: contentDetails,
+                mediaItems: mediaItems,
                 color: Colors.white,
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MangaPagesSlider extends StatefulWidget {
+  final int pageNumbers;
+  final ValueNotifier<int> pagesController;
+
+  const MangaPagesSlider({
+    super.key,
+    required this.pageNumbers,
+    required this.pagesController,
+  });
+
+  @override
+  State<MangaPagesSlider> createState() => _MangaPagesSliderState();
+}
+
+class _MangaPagesSliderState extends State<MangaPagesSlider> {
+  int? tragetPage;
+
+  @override
+  Widget build(BuildContext context) {
+    final pageIndex = tragetPage ?? widget.pagesController.value;
+    final pageNumber = pageIndex + 1;
+
+    return SliderTheme(
+      data: SliderThemeData(tickMarkShape: SliderTickMarkShape.noTickMark),
+      child: Slider(
+        allowedInteraction: SliderInteraction.tapAndSlide,
+        max: widget.pageNumbers.toDouble() - 1,
+        value: pageIndex.toDouble(),
+        label: pageNumber.toString(),
+        divisions: widget.pageNumbers - 1,
+        onChanged: (value) {
+          setState(() {
+            tragetPage = value.round();
+          });
+        },
+        onChangeEnd: (value) {
+          widget.pagesController.value = value.round();
+          setState(() {
+            tragetPage = null;
+          });
+        },
       ),
     );
   }

@@ -50,7 +50,8 @@ class VolumesButton extends ConsumerWidget {
             title: AppLocalizations.of(context)!.mangaChapter,
             mediaItems: mediaItems,
             contentProgress: collectionItem,
-            onSelect: onSelect ??
+            onSelect:
+                onSelect ??
                 (item) {
                   ref.read(provider.notifier).setCurrentItem(item.number);
                   navigateToContent(context, contentDetails);
@@ -67,7 +68,9 @@ class VolumesButton extends ConsumerWidget {
   }
 }
 
-MediaItemsListBuilder mangaChapterListItemBuilder(ContentDetails contentDetails) {
+MediaItemsListBuilder mangaChapterListItemBuilder(
+  ContentDetails contentDetails,
+) {
   return (
     ContentMediaItem item,
     ContentProgress? contentProgress,
@@ -83,7 +86,10 @@ MediaItemsListBuilder mangaChapterListItemBuilder(ContentDetails contentDetails)
       onTap: () {
         onSelect(item);
       },
-      trailing: MediaItemDownloadButton(contentDetails: contentDetails, item: item),
+      trailing: MediaItemDownloadButton(
+        contentDetails: contentDetails,
+        item: item,
+      ),
     );
   };
 }
@@ -118,7 +124,12 @@ class MangaChapterProgressIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pos = ref.watch(collectionItemCurrentMediaItemPositionProvider(contentDetails)).valueOrNull;
+    final pos =
+        ref
+            .watch(
+              collectionItemCurrentMediaItemPositionProvider(contentDetails),
+            )
+            .valueOrNull;
 
     if (pos == null || pos.length == 0) {
       return const SizedBox.shrink();
@@ -128,16 +139,50 @@ class MangaChapterProgressIndicator extends ConsumerWidget {
   }
 }
 
+class MangaPageImage extends StatelessWidget {
+  final Axis direction;
+  final BoxConstraints constraints;
+  final ImageProvider<Object> page;
+
+  const MangaPageImage({
+    super.key,
+    required this.direction,
+    required this.constraints,
+    required this.page,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: BoxConstraints(
+        minHeight: constraints.maxHeight,
+        minWidth: constraints.maxWidth,
+      ),
+      alignment: Alignment.topCenter,
+      child: SizedBox(
+        height: constraints.maxHeight,
+        width: constraints.maxWidth,
+        child: Image(
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) {
+              return child;
+            }
+
+            return MangaPagePlaceholder(direction: direction);
+          },
+          fit: BoxFit.contain,
+          image: page,
+        ),
+      ),
+    );
+  }
+}
+
 class MangaPagePlaceholder extends StatefulWidget {
   static const aspectRation = 1.5;
-  final MangaReaderMode readerMode;
-  final BoxConstraints constraints;
+  final Axis direction;
 
-  const MangaPagePlaceholder({
-    super.key,
-    required this.readerMode,
-    required this.constraints,
-  });
+  const MangaPagePlaceholder({super.key, required this.direction});
 
   @override
   State<MangaPagePlaceholder> createState() => _MangaPagePlaceholderState();
@@ -160,16 +205,20 @@ class _MangaPagePlaceholderState extends State<MangaPagePlaceholder> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return AnimatedOpacity(
       opacity: _opacity,
       duration: const Duration(milliseconds: 1800),
       child: Container(
-        width: widget.readerMode.direction == Axis.vertical
-            ? widget.constraints.maxWidth
-            : widget.constraints.maxHeight / MangaPagePlaceholder.aspectRation,
-        height: widget.readerMode.direction == Axis.horizontal
-            ? widget.constraints.maxHeight
-            : widget.constraints.maxWidth * MangaPagePlaceholder.aspectRation,
+        width:
+            widget.direction == Axis.vertical
+                ? size.width
+                : size.height / MangaPagePlaceholder.aspectRation,
+        height:
+            widget.direction == Axis.horizontal
+                ? size.height
+                : size.width * MangaPagePlaceholder.aspectRation,
         color: Colors.grey.shade400,
       ),
       onEnd: () {

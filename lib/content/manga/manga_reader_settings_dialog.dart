@@ -104,7 +104,7 @@ class MangaTranslationSelector extends ConsumerWidget {
             .valueOrNull;
 
     return ref
-            .watch(mangaChapterScansProvider(contentDetails, mediaItems))
+            .watch(mangaMediaItemSourcesProvider(contentDetails, mediaItems))
             .whenOrNull(
               data:
                   (value) => _renderSources(context, ref, value, currentSource),

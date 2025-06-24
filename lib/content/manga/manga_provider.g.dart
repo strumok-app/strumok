@@ -6,7 +6,8 @@ part of 'manga_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$mangaChapterScansHash() => r'390963c39d61a75bdec001fc8838d13b3a40f2ee';
+String _$mangaMediaItemSourcesHash() =>
+    r'8a7de16220d3f54517b2b46af8f0f1b8e179c6af';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,27 +30,27 @@ class _SystemHash {
   }
 }
 
-/// See also [mangaChapterScans].
-@ProviderFor(mangaChapterScans)
-const mangaChapterScansProvider = MangaChapterScansFamily();
+/// See also [mangaMediaItemSources].
+@ProviderFor(mangaMediaItemSources)
+const mangaMediaItemSourcesProvider = MangaMediaItemSourcesFamily();
 
-/// See also [mangaChapterScans].
-class MangaChapterScansFamily
+/// See also [mangaMediaItemSources].
+class MangaMediaItemSourcesFamily
     extends Family<AsyncValue<List<MangaMediaItemSource>>> {
-  /// See also [mangaChapterScans].
-  const MangaChapterScansFamily();
+  /// See also [mangaMediaItemSources].
+  const MangaMediaItemSourcesFamily();
 
-  /// See also [mangaChapterScans].
-  MangaChapterScansProvider call(
+  /// See also [mangaMediaItemSources].
+  MangaMediaItemSourcesProvider call(
     ContentDetails contentDetails,
     List<ContentMediaItem> mediaItems,
   ) {
-    return MangaChapterScansProvider(contentDetails, mediaItems);
+    return MangaMediaItemSourcesProvider(contentDetails, mediaItems);
   }
 
   @override
-  MangaChapterScansProvider getProviderOverride(
-    covariant MangaChapterScansProvider provider,
+  MangaMediaItemSourcesProvider getProviderOverride(
+    covariant MangaMediaItemSourcesProvider provider,
   ) {
     return call(provider.contentDetails, provider.mediaItems);
   }
@@ -66,36 +67,36 @@ class MangaChapterScansFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'mangaChapterScansProvider';
+  String? get name => r'mangaMediaItemSourcesProvider';
 }
 
-/// See also [mangaChapterScans].
-class MangaChapterScansProvider
+/// See also [mangaMediaItemSources].
+class MangaMediaItemSourcesProvider
     extends AutoDisposeFutureProvider<List<MangaMediaItemSource>> {
-  /// See also [mangaChapterScans].
-  MangaChapterScansProvider(
+  /// See also [mangaMediaItemSources].
+  MangaMediaItemSourcesProvider(
     ContentDetails contentDetails,
     List<ContentMediaItem> mediaItems,
   ) : this._internal(
-        (ref) => mangaChapterScans(
-          ref as MangaChapterScansRef,
+        (ref) => mangaMediaItemSources(
+          ref as MangaMediaItemSourcesRef,
           contentDetails,
           mediaItems,
         ),
-        from: mangaChapterScansProvider,
-        name: r'mangaChapterScansProvider',
+        from: mangaMediaItemSourcesProvider,
+        name: r'mangaMediaItemSourcesProvider',
         debugGetCreateSourceHash:
             const bool.fromEnvironment('dart.vm.product')
                 ? null
-                : _$mangaChapterScansHash,
-        dependencies: MangaChapterScansFamily._dependencies,
+                : _$mangaMediaItemSourcesHash,
+        dependencies: MangaMediaItemSourcesFamily._dependencies,
         allTransitiveDependencies:
-            MangaChapterScansFamily._allTransitiveDependencies,
+            MangaMediaItemSourcesFamily._allTransitiveDependencies,
         contentDetails: contentDetails,
         mediaItems: mediaItems,
       );
 
-  MangaChapterScansProvider._internal(
+  MangaMediaItemSourcesProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -111,13 +112,15 @@ class MangaChapterScansProvider
 
   @override
   Override overrideWith(
-    FutureOr<List<MangaMediaItemSource>> Function(MangaChapterScansRef provider)
+    FutureOr<List<MangaMediaItemSource>> Function(
+      MangaMediaItemSourcesRef provider,
+    )
     create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: MangaChapterScansProvider._internal(
-        (ref) => create(ref as MangaChapterScansRef),
+      override: MangaMediaItemSourcesProvider._internal(
+        (ref) => create(ref as MangaMediaItemSourcesRef),
         from: from,
         name: null,
         dependencies: null,
@@ -131,12 +134,12 @@ class MangaChapterScansProvider
 
   @override
   AutoDisposeFutureProviderElement<List<MangaMediaItemSource>> createElement() {
-    return _MangaChapterScansProviderElement(this);
+    return _MangaMediaItemSourcesProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is MangaChapterScansProvider &&
+    return other is MangaMediaItemSourcesProvider &&
         other.contentDetails == contentDetails &&
         other.mediaItems == mediaItems;
   }
@@ -153,7 +156,7 @@ class MangaChapterScansProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin MangaChapterScansRef
+mixin MangaMediaItemSourcesRef
     on AutoDisposeFutureProviderRef<List<MangaMediaItemSource>> {
   /// The parameter `contentDetails` of this provider.
   ContentDetails get contentDetails;
@@ -162,41 +165,43 @@ mixin MangaChapterScansRef
   List<ContentMediaItem> get mediaItems;
 }
 
-class _MangaChapterScansProviderElement
+class _MangaMediaItemSourcesProviderElement
     extends AutoDisposeFutureProviderElement<List<MangaMediaItemSource>>
-    with MangaChapterScansRef {
-  _MangaChapterScansProviderElement(super.provider);
+    with MangaMediaItemSourcesRef {
+  _MangaMediaItemSourcesProviderElement(super.provider);
 
   @override
   ContentDetails get contentDetails =>
-      (origin as MangaChapterScansProvider).contentDetails;
+      (origin as MangaMediaItemSourcesProvider).contentDetails;
   @override
   List<ContentMediaItem> get mediaItems =>
-      (origin as MangaChapterScansProvider).mediaItems;
+      (origin as MangaMediaItemSourcesProvider).mediaItems;
 }
 
-String _$mangaChapterScanHash() => r'a8c9f04c4b9d7dd8e0eef2cc892c2e847f3221ad';
+String _$currentMangaMediaItemSourceHash() =>
+    r'4a6dd37398e33f5c0b2d5367ab8e520ded1d0292';
 
-/// See also [mangaChapterScan].
-@ProviderFor(mangaChapterScan)
-const mangaChapterScanProvider = MangaChapterScanFamily();
+/// See also [currentMangaMediaItemSource].
+@ProviderFor(currentMangaMediaItemSource)
+const currentMangaMediaItemSourceProvider = CurrentMangaMediaItemSourceFamily();
 
-/// See also [mangaChapterScan].
-class MangaChapterScanFamily extends Family<AsyncValue<MangaMediaItemSource?>> {
-  /// See also [mangaChapterScan].
-  const MangaChapterScanFamily();
+/// See also [currentMangaMediaItemSource].
+class CurrentMangaMediaItemSourceFamily
+    extends Family<AsyncValue<MangaMediaItemSource?>> {
+  /// See also [currentMangaMediaItemSource].
+  const CurrentMangaMediaItemSourceFamily();
 
-  /// See also [mangaChapterScan].
-  MangaChapterScanProvider call(
+  /// See also [currentMangaMediaItemSource].
+  CurrentMangaMediaItemSourceProvider call(
     ContentDetails contentDetails,
     List<ContentMediaItem> mediaItems,
   ) {
-    return MangaChapterScanProvider(contentDetails, mediaItems);
+    return CurrentMangaMediaItemSourceProvider(contentDetails, mediaItems);
   }
 
   @override
-  MangaChapterScanProvider getProviderOverride(
-    covariant MangaChapterScanProvider provider,
+  CurrentMangaMediaItemSourceProvider getProviderOverride(
+    covariant CurrentMangaMediaItemSourceProvider provider,
   ) {
     return call(provider.contentDetails, provider.mediaItems);
   }
@@ -213,36 +218,36 @@ class MangaChapterScanFamily extends Family<AsyncValue<MangaMediaItemSource?>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'mangaChapterScanProvider';
+  String? get name => r'currentMangaMediaItemSourceProvider';
 }
 
-/// See also [mangaChapterScan].
-class MangaChapterScanProvider
+/// See also [currentMangaMediaItemSource].
+class CurrentMangaMediaItemSourceProvider
     extends AutoDisposeFutureProvider<MangaMediaItemSource?> {
-  /// See also [mangaChapterScan].
-  MangaChapterScanProvider(
+  /// See also [currentMangaMediaItemSource].
+  CurrentMangaMediaItemSourceProvider(
     ContentDetails contentDetails,
     List<ContentMediaItem> mediaItems,
   ) : this._internal(
-        (ref) => mangaChapterScan(
-          ref as MangaChapterScanRef,
+        (ref) => currentMangaMediaItemSource(
+          ref as CurrentMangaMediaItemSourceRef,
           contentDetails,
           mediaItems,
         ),
-        from: mangaChapterScanProvider,
-        name: r'mangaChapterScanProvider',
+        from: currentMangaMediaItemSourceProvider,
+        name: r'currentMangaMediaItemSourceProvider',
         debugGetCreateSourceHash:
             const bool.fromEnvironment('dart.vm.product')
                 ? null
-                : _$mangaChapterScanHash,
-        dependencies: MangaChapterScanFamily._dependencies,
+                : _$currentMangaMediaItemSourceHash,
+        dependencies: CurrentMangaMediaItemSourceFamily._dependencies,
         allTransitiveDependencies:
-            MangaChapterScanFamily._allTransitiveDependencies,
+            CurrentMangaMediaItemSourceFamily._allTransitiveDependencies,
         contentDetails: contentDetails,
         mediaItems: mediaItems,
       );
 
-  MangaChapterScanProvider._internal(
+  CurrentMangaMediaItemSourceProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -258,13 +263,15 @@ class MangaChapterScanProvider
 
   @override
   Override overrideWith(
-    FutureOr<MangaMediaItemSource?> Function(MangaChapterScanRef provider)
+    FutureOr<MangaMediaItemSource?> Function(
+      CurrentMangaMediaItemSourceRef provider,
+    )
     create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: MangaChapterScanProvider._internal(
-        (ref) => create(ref as MangaChapterScanRef),
+      override: CurrentMangaMediaItemSourceProvider._internal(
+        (ref) => create(ref as CurrentMangaMediaItemSourceRef),
         from: from,
         name: null,
         dependencies: null,
@@ -278,12 +285,12 @@ class MangaChapterScanProvider
 
   @override
   AutoDisposeFutureProviderElement<MangaMediaItemSource?> createElement() {
-    return _MangaChapterScanProviderElement(this);
+    return _CurrentMangaMediaItemSourceProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is MangaChapterScanProvider &&
+    return other is CurrentMangaMediaItemSourceProvider &&
         other.contentDetails == contentDetails &&
         other.mediaItems == mediaItems;
   }
@@ -300,7 +307,7 @@ class MangaChapterScanProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin MangaChapterScanRef
+mixin CurrentMangaMediaItemSourceRef
     on AutoDisposeFutureProviderRef<MangaMediaItemSource?> {
   /// The parameter `contentDetails` of this provider.
   ContentDetails get contentDetails;
@@ -309,17 +316,17 @@ mixin MangaChapterScanRef
   List<ContentMediaItem> get mediaItems;
 }
 
-class _MangaChapterScanProviderElement
+class _CurrentMangaMediaItemSourceProviderElement
     extends AutoDisposeFutureProviderElement<MangaMediaItemSource?>
-    with MangaChapterScanRef {
-  _MangaChapterScanProviderElement(super.provider);
+    with CurrentMangaMediaItemSourceRef {
+  _CurrentMangaMediaItemSourceProviderElement(super.provider);
 
   @override
   ContentDetails get contentDetails =>
-      (origin as MangaChapterScanProvider).contentDetails;
+      (origin as CurrentMangaMediaItemSourceProvider).contentDetails;
   @override
   List<ContentMediaItem> get mediaItems =>
-      (origin as MangaChapterScanProvider).mediaItems;
+      (origin as CurrentMangaMediaItemSourceProvider).mediaItems;
 }
 
 String _$currentMangaPagesHash() => r'05a44a76b332ff99ec004ed200b7f8481ac5cfb1';
