@@ -8,7 +8,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'manga_provider.g.dart';
 
 @riverpod
-Future<List<MangaMediaItemSource>> mangaChapterScans(
+Future<List<MangaMediaItemSource>> mangaMediaItemSources(
   Ref ref,
   ContentDetails contentDetails,
   List<ContentMediaItem> mediaItems,
@@ -27,13 +27,13 @@ Future<List<MangaMediaItemSource>> mangaChapterScans(
 }
 
 @riverpod
-Future<MangaMediaItemSource?> mangaChapterScan(
+Future<MangaMediaItemSource?> currentMangaMediaItemSource(
   Ref ref,
   ContentDetails contentDetails,
   List<ContentMediaItem> mediaItems,
 ) async {
   final sources = await ref.watch(
-    mangaChapterScansProvider(contentDetails, mediaItems).future,
+    mangaMediaItemSourcesProvider(contentDetails, mediaItems).future,
   );
 
   final currentSource = await ref.watch(
@@ -52,7 +52,7 @@ Future<List<ImageProvider>> currentMangaPages(
   List<ContentMediaItem> mediaItems,
 ) async {
   final currentSource = await ref.watch(
-    mangaChapterScanProvider(contentDetails, mediaItems).future,
+    currentMangaMediaItemSourceProvider(contentDetails, mediaItems).future,
   );
 
   if (currentSource == null) {
