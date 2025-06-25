@@ -187,22 +187,20 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
 
       _scheduleUpdate = false;
 
-      if (sortedVisiablePages.length <= 4) {
-        var revVisiablePages = sortedVisiablePages.toList().reversed;
-        var firstPage = revVisiablePages.first;
-        for (final p in revVisiablePages) {
-          if (p == firstPage - 1 || p == firstPage) {
-            firstPage = p;
-          } else {
-            break;
-          }
+      var revVisiablePages = sortedVisiablePages.toList().reversed;
+      var firstPage = revVisiablePages.first;
+      for (final p in revVisiablePages) {
+        if (p == firstPage - 1 || p == firstPage) {
+          firstPage = p;
+        } else {
+          break;
         }
+      }
 
-        final currentPage = widget.pageListenable.value;
-        if (firstPage != currentPage) {
-          _firstVisiablePage = firstPage;
-          widget.pageListenable.value = firstPage;
-        }
+      final currentPage = widget.pageListenable.value;
+      if (firstPage != currentPage) {
+        _firstVisiablePage = firstPage;
+        widget.pageListenable.value = firstPage;
       }
     });
   }
