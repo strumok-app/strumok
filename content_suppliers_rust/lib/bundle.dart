@@ -9,7 +9,7 @@ import 'package:content_suppliers_rust/rust/models.dart' as models;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-const compatibleApiVersoin = 2;
+const compatibleApiVersoin = 3;
 
 // ignore_for_file: invalid_use_of_internal_member
 class RustContentSuppliersBundle implements ContentSupplierBundle {
