@@ -23,22 +23,25 @@ class VideoContentScreen extends ConsumerWidget {
     return SafeArea(
       child: Scaffold(
         body: result.when(
-          data: (data) => VideoContentView(
-            contentDetails: data.contentDetails,
-            mediaItems: data.mediaItems,
-          ),
-          error: (error, stackTrace) => DisplayError(
-            error: error,
-            onRefresh: () => ref.invalidate(detailsProvider(supplier, id)),
-          ),
-          loading: () => const Material(
-            color: Colors.black,
-            child: Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
+          skipLoadingOnRefresh: false,
+          data:
+              (data) => VideoContentView(
+                contentDetails: data.contentDetails,
+                mediaItems: data.mediaItems,
               ),
-            ),
-          ),
+          error:
+              (error, stackTrace) => DisplayError(
+                error: error,
+                onRefresh:
+                    () => ref.refresh(detailsProvider(supplier, id).future),
+              ),
+          loading:
+              () => const Material(
+                color: Colors.black,
+                child: Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+              ),
         ),
       ),
     );

@@ -4,7 +4,7 @@ import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/search/search_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
-import 'package:strumok/widgets/load_more_list_item.dart';
+import 'package:strumok/widgets/horizontal_list_card.dart';
 import 'package:strumok/widgets/nothing_to_show.dart';
 
 class SearchResults extends ConsumerWidget {

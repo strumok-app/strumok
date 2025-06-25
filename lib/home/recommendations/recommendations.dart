@@ -9,7 +9,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
-import 'package:strumok/widgets/load_more_list_item.dart';
 import 'package:strumok/widgets/set_recommendations_hint.dart';
 
 class Recommendations extends ConsumerWidget {
@@ -78,28 +77,55 @@ class _RecommendationChannel extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = recommendationChannelProvider(supplierName, channel);
-    final state = ref.watch(provider).valueOrNull;
+    final asyncState = ref.watch(provider);
 
-    if (state == null || state.recommendations.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    final res = asyncState.when(
+      skipLoadingOnRefresh: false,
+      data:
+          (state) => HorizontalList(
+            title: Row(
+              children: [
+                Text(channel, style: Theme.of(context).textTheme.titleMedium),
+                SizedBox(width: 8),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(),
+                  onPressed: () => ref.refresh(provider.future),
+                  icon: Icon(Icons.refresh),
+                ),
+              ],
+            ),
+            itemBuilder: (context, index) {
+              final item = state.recommendations[index];
 
-    final list = HorizontalList(
-      title: Text(channel, style: Theme.of(context).textTheme.titleMedium),
-      itemBuilder: (context, index) {
-        final item = state.recommendations[index];
-
-        return ContentInfoCard(contentInfo: item, showSupplier: false);
-      },
-      itemCount: state.recommendations.length,
-      trailing:
-          state.hasMore
-              ? LoadMoreItems(
-                label: AppLocalizations.of(context)!.loadMore,
-                onTap: () => ref.read(provider.notifier).loadNext(),
-                loading: state.isLoading,
-              )
-              : null,
+              return ContentInfoCard(contentInfo: item, showSupplier: false);
+            },
+            itemCount: state.recommendations.length,
+            trailing:
+                state.hasMore
+                    ? LoadMoreItems(
+                      label: AppLocalizations.of(context)!.loadMore,
+                      onTap: () => ref.read(provider.notifier).loadNext(),
+                      loading: state.isLoading,
+                    )
+                    : null,
+          ),
+      loading:
+          () => HorizontalList(
+            title: Row(
+              children: [
+                Text(channel, style: Theme.of(context).textTheme.titleMedium),
+              ],
+            ),
+            itemBuilder:
+                (context, index) => HorizontalListCard(
+                  key: Key("loading"),
+                  onTap: () {},
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+            itemCount: 1,
+          ),
+      error: (e, s) => const SizedBox.shrink(),
     );
 
     if (channelIdx == 0) {
@@ -112,11 +138,11 @@ class _RecommendationChannel extends HookConsumerWidget {
             padding: const EdgeInsets.only(left: 8),
             child: Text(supplierName, style: theme.textTheme.titleLarge),
           ),
-          list,
+          res,
         ],
       );
     }
 
-    return list;
+    return res;
   }
 }

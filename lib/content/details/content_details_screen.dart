@@ -27,11 +27,13 @@ class ContentDetailsScreen extends ConsumerWidget {
     return GeneralLayout(
       showBackButton: true,
       child: details.when(
+        skipLoadingOnRefresh: false,
         data: (data) => ContentDetailsView(data),
         error:
             (error, stackTrace) => DisplayError(
               error: error,
-              onRefresh: () => ref.invalidate(detailsProvider(supplier, id)),
+              onRefresh:
+                  () => ref.refresh(detailsProvider(supplier, id).future),
               actions: [
                 _RemoveFromCollectionButton(supplier: supplier, id: id),
               ],

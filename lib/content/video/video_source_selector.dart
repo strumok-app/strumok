@@ -24,10 +24,11 @@ class SourceSelector extends StatelessWidget {
       onPressed: () {
         showDialog(
           context: context,
-          builder: (context) => _SourceSelectDialog(
-            mediaItems: mediaItems,
-            contentDetails: contentDetails,
-          ),
+          builder:
+              (context) => _SourceSelectDialog(
+                mediaItems: mediaItems,
+                contentDetails: contentDetails,
+              ),
         );
       },
       icon: const Icon(Icons.track_changes),
@@ -48,19 +49,27 @@ class _SourceSelectDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sourceSelectorValue = ref.watch(sourceSelectorProvider(contentDetails, mediaItems));
+    final sourceSelectorValue = ref.watch(
+      sourceSelectorProvider(contentDetails, mediaItems),
+    );
 
     return Dialog(
       child: sourceSelectorValue.when(
         data: (model) {
-          return _SourceSelectorContent(contentDetails: contentDetails, model: model);
+          return _SourceSelectorContent(
+            contentDetails: contentDetails,
+            model: model,
+          );
         },
-        loading: () => const SizedBox(
-          width: 60,
-          height: 60,
-          child: Center(child: CircularProgressIndicator()),
-        ),
-        error: (error, stackTrace) => Text(AppLocalizations.of(context)!.videoNoSources),
+        loading:
+            () => const SizedBox(
+              width: 60,
+              height: 60,
+              child: Center(child: CircularProgressIndicator()),
+            ),
+        error:
+            (error, stackTrace) =>
+                Text(AppLocalizations.of(context)!.videoNoSources),
       ),
     );
   }
@@ -82,10 +91,7 @@ class _SourceSelectorContent extends StatelessWidget {
 
     if (videos.isEmpty) {
       return Container(
-        constraints: const BoxConstraints.tightFor(
-          height: 60,
-          width: 60,
-        ),
+        constraints: const BoxConstraints.tightFor(height: 60, width: 60),
         child: Center(
           child: Text(AppLocalizations.of(context)!.videoNoSources),
         ),
@@ -96,19 +102,21 @@ class _SourceSelectorContent extends StatelessWidget {
       builder: (context, constraints) {
         if (constraints.maxWidth < mobileWidth) {
           return SingleChildScrollView(
-            child: Column(children: [
-              _VideoSources(
-                contentDetails: contentDetails,
-                sources: videos,
-                currentSourceName: model.currentSource,
-              ),
-              if (subtitles.isNotEmpty)
-                _SubtitleSources(
+            child: Column(
+              children: [
+                _VideoSources(
                   contentDetails: contentDetails,
-                  sources: subtitles,
-                  currentSubtitleName: model.currentSubtitle,
+                  sources: videos,
+                  currentSourceName: model.currentSource,
                 ),
-            ]),
+                if (subtitles.isNotEmpty)
+                  _SubtitleSources(
+                    contentDetails: contentDetails,
+                    sources: subtitles,
+                    currentSubtitleName: model.currentSubtitle,
+                  ),
+              ],
+            ),
           );
         } else {
           return FocusScope(
@@ -158,7 +166,9 @@ class _VideoSources extends ConsumerWidget {
       currentSourceName: currentSourceName,
       onSelect: (source) {
         Navigator.of(context).pop();
-        final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
+        final notifier = ref.read(
+          collectionItemProvider(contentDetails).notifier,
+        );
         notifier.setCurrentSource(source.description);
       },
       sourceIcon: const Icon(Icons.video_file_outlined),
@@ -185,7 +195,9 @@ class _SubtitleSources extends ConsumerWidget {
       currentSourceName: currentSubtitleName,
       onSelect: (source) {
         Navigator.of(context).pop();
-        final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
+        final notifier = ref.read(
+          collectionItemProvider(contentDetails).notifier,
+        );
         notifier.setCurrentSubtitle(source.description);
       },
       sourceIcon: const Icon(Icons.subtitles),
@@ -194,7 +206,9 @@ class _SubtitleSources extends ConsumerWidget {
         leading: const Icon(Icons.subtitles),
         trailing: currentSubtitleName == null ? const Icon(Icons.check) : null,
         onTap: () {
-          final notifier = ref.read(collectionItemProvider(contentDetails).notifier);
+          final notifier = ref.read(
+            collectionItemProvider(contentDetails).notifier,
+          );
           notifier.setCurrentSubtitle(null);
           Navigator.of(context).pop();
         },
@@ -236,7 +250,10 @@ class _SourcesList extends ConsumerWidget {
             (idx, source) => ListTile(
               visualDensity: VisualDensity.compact,
               leading: sourceIcon,
-              trailing: currentSourceName == source.description ? const Icon(Icons.check) : null,
+              trailing:
+                  currentSourceName == source.description
+                      ? const Icon(Icons.check)
+                      : null,
               onTap: () => onSelect(source),
               title: Text(
                 source.description,
@@ -245,7 +262,7 @@ class _SourcesList extends ConsumerWidget {
               ),
               autofocus: autofocus && idx == 0,
             ),
-          )
+          ),
         ],
       ),
     );
