@@ -3,19 +3,22 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/content/manga/widgets.dart';
+import 'package:strumok/utils/matrix.dart';
 
 class MangaScrolledViewer extends StatefulWidget {
   final List<ImageProvider<Object>> pages;
-  final ValueNotifier<int> pageListenable;
-  final ScrollController scrollController;
   final Axis direction;
+  final ScrollController scrollController;
+  final TransformationController transformationController;
+  final ValueNotifier<int> pageListenable;
 
   const MangaScrolledViewer({
     super.key,
     required this.pages,
-    required this.pageListenable,
-    required this.scrollController,
     required this.direction,
+    required this.pageListenable,
+    required this.transformationController,
+    required this.scrollController,
   });
 
   @override
@@ -26,42 +29,66 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
   final Key _centerKey = UniqueKey();
   final Set<_PageElement> _registeredPageElement = {};
 
+  bool _scaling = false;
   bool _scheduleUpdate = false;
-  Set<int> _visiablePages = {};
   late int _page;
+  int _firstVisiablePage = 0;
+
+  void _handleTransformationChange() {
+    final newScaling = widget.transformationController.value.isScaled();
+    if (_scaling != newScaling) {
+      if (mounted) {
+        setState(() {
+          _scaling = newScaling;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return CustomScrollView(
-      physics: AlwaysScrollableScrollPhysics(),
-      center: _centerKey,
-      controller: widget.scrollController,
-      scrollDirection: widget.direction,
-      slivers: [
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => buildImage(_page - index - 1),
-            childCount: _page,
-            addSemanticIndexes: false,
+    return InteractiveViewer(
+      transformationController: widget.transformationController,
+      scaleEnabled: _scaling,
+      panEnabled: _scaling,
+      child: CustomScrollView(
+        physics:
+            _scaling
+                ? NeverScrollableScrollPhysics()
+                : AlwaysScrollableScrollPhysics(),
+        center: _centerKey,
+        controller: widget.scrollController,
+        scrollDirection: widget.direction,
+        slivers: [
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => buildImage(_page - index - 1),
+              childCount: _page,
+            ),
           ),
-        ),
-        SliverList(
-          key: _centerKey,
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => buildImage(_page + index),
-            childCount: widget.pages.length - _page,
-            addSemanticIndexes: false,
+          SliverList(
+            key: _centerKey,
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => buildImage(_page + index),
+              childCount: 1,
+            ),
           ),
-        ),
-        SliverPadding(
-          padding: EdgeInsets.only(
-            right: widget.direction == Axis.horizontal ? size.width * 0.7 : 0,
-            bottom: widget.direction == Axis.vertical ? size.height * 0.7 : 0,
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => buildImage(_page + index + 1),
+              childCount: widget.pages.length - _page - 1,
+            ),
           ),
-        ),
-      ],
+          SliverPadding(
+            padding: EdgeInsets.only(
+              right: widget.direction == Axis.horizontal ? size.width * 0.7 : 0,
+              bottom: widget.direction == Axis.vertical ? size.height * 0.7 : 0,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -70,6 +97,7 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
     _page = widget.pageListenable.value;
     widget.pageListenable.addListener(_handlePageChange);
     widget.scrollController.addListener(_handleScroll);
+    widget.transformationController.addListener(_handleTransformationChange);
 
     super.initState();
   }
@@ -78,6 +106,7 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
   void dispose() {
     widget.pageListenable.removeListener(_handlePageChange);
     widget.scrollController.removeListener(_handleScroll);
+    widget.transformationController.removeListener(_handleTransformationChange);
 
     super.dispose();
   }
@@ -85,7 +114,8 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
   void _handlePageChange() {
     final page = widget.pageListenable.value;
 
-    if (_visiablePages.firstOrNull != page) {
+    if (_firstVisiablePage != page) {
+      print("!!!");
       setState(() {
         widget.scrollController.jumpTo(0);
         _page = page;
@@ -133,7 +163,7 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
 
       final screanSize = MediaQuery.of(context).size;
       final viewport = Rect.fromLTWH(0, 0, screanSize.width, screanSize.height);
-      final Set<int> newVisiablePages = SplayTreeSet();
+      final Set<int> sortedVisiablePages = SplayTreeSet();
 
       for (final pe in _registeredPageElement) {
         final renderBox = pe.element.renderObject as RenderBox;
@@ -151,20 +181,28 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
         );
 
         if (viewport.overlaps(drawRect)) {
-          newVisiablePages.add(pe.page);
+          sortedVisiablePages.add(pe.page);
         }
       }
 
       _scheduleUpdate = false;
-      if (newVisiablePages.length <= 4) {
-        _visiablePages = newVisiablePages;
 
-        final firstPage = _visiablePages.firstOrNull;
-        if (firstPage != null) {
-          final currentPage = widget.pageListenable.value;
-          if (firstPage != currentPage) {
-            widget.pageListenable.value = firstPage;
+      if (sortedVisiablePages.length <= 4) {
+        var revVisiablePages = sortedVisiablePages.toList().reversed;
+        var firstPage = revVisiablePages.first;
+        for (final p in revVisiablePages) {
+          if (p == firstPage - 1 || p == firstPage) {
+            firstPage = p;
+          } else {
+            break;
           }
+        }
+
+        final currentPage = widget.pageListenable.value;
+        if (firstPage != currentPage) {
+          print(firstPage);
+          _firstVisiablePage = firstPage;
+          widget.pageListenable.value = firstPage;
         }
       }
     });

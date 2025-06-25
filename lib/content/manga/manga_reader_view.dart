@@ -10,6 +10,7 @@ import 'package:strumok/content/manga/manga_scrolled_viewer.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/settings/settings_provider.dart';
+import 'package:strumok/utils/matrix.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:strumok/widgets/display_error.dart';
@@ -215,13 +216,13 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
                 readerMode.scroll
                     ? MangaScrolledViewer(
                       pages: widget.pages,
-                      pageListenable: pageListenable,
-                      scrollController: scrollController,
                       direction: readerMode.direction,
+                      scrollController: scrollController,
+                      transformationController: transformationController,
+                      pageListenable: pageListenable,
                     )
                     : MangaPagedViewer(
                       pages: widget.pages,
-                      initialPage: pageListenable.value,
                       direction: readerMode.direction,
                       transformationController: transformationController,
                       pageListenable: pageListenable,
@@ -480,8 +481,4 @@ class _NoPagesView extends StatelessWidget {
       ),
     );
   }
-}
-
-extension on Matrix4 {
-  bool isScaled() => entry(0, 0) != 1.0;
 }

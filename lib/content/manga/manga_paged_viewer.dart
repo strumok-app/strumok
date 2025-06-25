@@ -5,7 +5,6 @@ import 'package:strumok/content/manga/widgets.dart';
 
 class MangaPagedViewer extends ConsumerStatefulWidget {
   final List<ImageProvider<Object>> pages;
-  final int initialPage;
   final Axis direction;
   final TransformationController transformationController;
   final ValueListenable<int> pageListenable;
@@ -13,7 +12,6 @@ class MangaPagedViewer extends ConsumerStatefulWidget {
   const MangaPagedViewer({
     super.key,
     required this.pages,
-    required this.initialPage,
     required this.direction,
     required this.transformationController,
     required this.pageListenable,
@@ -28,7 +26,7 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
 
   @override
   void initState() {
-    _pageController = PageController(initialPage: widget.initialPage);
+    _pageController = PageController(initialPage: widget.pageListenable.value);
     widget.pageListenable.addListener(_onPageChanged);
 
     super.initState();

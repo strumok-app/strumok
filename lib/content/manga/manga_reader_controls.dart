@@ -26,7 +26,7 @@ class MangaReaderControlsRoute<T> extends PopupRoute<T> {
   @override
   String? get barrierLabel => 'Dissmiss';
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 100);
+  Duration get transitionDuration => Duration.zero;
 
   @override
   Widget buildPage(
@@ -127,12 +127,18 @@ class MangaReaderControlTopBar extends ConsumerWidget {
               ),
               const SizedBox(width: 8),
             ],
-            Text(
-              [
-                contentDetails.title,
-                if (item != null) mediaItems[item].title,
-              ].join(" - "),
-              style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),
+            Expanded(
+              child: Text(
+                [
+                  contentDetails.title,
+                  if (item != null) mediaItems[item].title,
+                ].join(" - "),
+                style: theme.textTheme.titleMedium!.copyWith(
+                  color: Colors.white,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.fade,
+              ),
             ),
             const Spacer(),
             _renderVolumesBotton(context, ref),
@@ -198,19 +204,18 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              if (!mobile)
-                ValueListenableBuilder(
-                  valueListenable: pagesController,
-                  builder: (context, pageIndex, child) {
-                    final pageNumber = pageIndex + 1;
-                    return Text(
-                      "$pageNumber / $pageNumbers",
-                      style: theme.textTheme.bodyMedium!.copyWith(
-                        color: Colors.white,
-                      ),
-                    );
-                  },
-                ),
+              ValueListenableBuilder(
+                valueListenable: pagesController,
+                builder: (context, pageIndex, child) {
+                  final pageNumber = pageIndex + 1;
+                  return Text(
+                    "$pageNumber / $pageNumbers",
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      color: Colors.white,
+                    ),
+                  );
+                },
+              ),
               Expanded(
                 child: MangaPagesSlider(
                   pageNumbers: pageNumbers,
