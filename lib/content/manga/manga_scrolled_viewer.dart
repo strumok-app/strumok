@@ -200,7 +200,6 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
 
         final currentPage = widget.pageListenable.value;
         if (firstPage != currentPage) {
-          print(firstPage);
           _firstVisiablePage = firstPage;
           widget.pageListenable.value = firstPage;
         }
