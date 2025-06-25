@@ -27,7 +27,6 @@ class HorizontalListCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final focused = useState(false);
     final mobile = isMobile(context);
     var size = calcSize(context);
