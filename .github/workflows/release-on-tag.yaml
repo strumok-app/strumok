@@ -10,16 +10,22 @@ jobs:
     permissions: write-all
     uses: ./.github/workflows/build-android.yaml
     secrets: inherit
+    with:
+      ref: ${{ github.ref_name }}
 
   build-for-linux:
     permissions: write-all
     uses: ./.github/workflows/build-linux.yaml
     secrets: inherit
+    with:
+      ref: ${{ github.ref_name }}
 
   build-for-windows:
     permissions: write-all
     uses: ./.github/workflows/build-windows.yaml
     secrets: inherit
+    with:
+      ref: ${{ github.ref_name }}
 
   create-release:
     permissions: write-all
@@ -28,3 +34,4 @@ jobs:
     secrets: inherit
     with:
       ref: ${{ github.ref_name }}
+      tag_name: ${{ github.ref_name }}
