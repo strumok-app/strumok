@@ -7,7 +7,6 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/content/details/widgets.dart';
 import 'package:strumok/content/manga/content_details_manga_actions.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
-import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:strumok/widgets/nothing_to_show.dart';
 
 class ContentDetailsMobileView extends StatelessWidget {

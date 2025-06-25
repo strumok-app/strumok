@@ -85,7 +85,15 @@ class _RecommendationChannel extends HookConsumerWidget {
           (state) => HorizontalList(
             title: Row(
               children: [
-                Text(channel, style: Theme.of(context).textTheme.titleMedium),
+                SizedBox(
+                  height: 36,
+                  child: Center(
+                    child: Text(
+                      channel,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                ),
                 SizedBox(width: 8),
                 IconButton(
                   padding: EdgeInsets.zero,
@@ -112,10 +120,15 @@ class _RecommendationChannel extends HookConsumerWidget {
           ),
       loading:
           () => HorizontalList(
-            title: Row(
-              children: [
-                Text(channel, style: Theme.of(context).textTheme.titleMedium),
-              ],
+            title: SizedBox(
+              height: 36,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  channel,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
             ),
             itemBuilder:
                 (context, index) => HorizontalListCard(

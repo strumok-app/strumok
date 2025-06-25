@@ -10,8 +10,10 @@ import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
 
 class MediaCollectionItemButtons extends ConsumerWidget {
-  MediaCollectionItemButtons({super.key, required ContentDetails contentDetails})
-      : provider = collectionItemProvider(contentDetails);
+  MediaCollectionItemButtons({
+    super.key,
+    required ContentDetails contentDetails,
+  }) : provider = collectionItemProvider(contentDetails);
 
   final CollectionItemProvider provider;
 
@@ -19,7 +21,9 @@ class MediaCollectionItemButtons extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: ref.watch(provider).maybeWhen(
+      child: ref
+          .watch(provider)
+          .maybeWhen(
             data: (data) => _render(context, ref, data),
             orElse: () => const SizedBox(height: 40),
           ),
@@ -33,7 +37,7 @@ class MediaCollectionItemButtons extends ConsumerWidget {
   ) {
     return Row(
       children: [
-        const SizedBox(height: 40),
+        const SizedBox(height: 42),
         SizedBox(
           width: 200,
           child: CollectionItemStatusSelector.button(
@@ -50,17 +54,14 @@ class MediaCollectionItemButtons extends ConsumerWidget {
             onSelect: (priority) {
               ref.read(provider.notifier).setPriority(priority);
             },
-          )
+          ),
       ],
     );
   }
 }
 
 class SimilarBlock extends StatelessWidget {
-  const SimilarBlock({
-    super.key,
-    required this.contentDetails,
-  });
+  const SimilarBlock({super.key, required this.contentDetails});
 
   final ContentDetails contentDetails;
 
@@ -74,20 +75,18 @@ class SimilarBlock extends StatelessWidget {
         AppLocalizations.of(context)!.recommendations,
         style: theme.textTheme.headlineSmall,
       ),
-      itemBuilder: (context, index) => ContentInfoCard(
-        contentInfo: contentDetails.similar[index],
-        showSupplier: false,
-      ),
+      itemBuilder:
+          (context, index) => ContentInfoCard(
+            contentInfo: contentDetails.similar[index],
+            showSupplier: false,
+          ),
       itemCount: contentDetails.similar.length,
     );
   }
 }
 
 class AdditionalInfoBlock extends StatelessWidget {
-  const AdditionalInfoBlock({
-    super.key,
-    required this.contentDetails,
-  });
+  const AdditionalInfoBlock({super.key, required this.contentDetails});
 
   final ContentDetails contentDetails;
 
