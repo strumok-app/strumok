@@ -157,12 +157,7 @@ class _TitleBox extends StatelessWidget {
                 end: Alignment.topCenter,
               ),
             ),
-            child: Row(
-              children: [
-                const BackNavButton(color: Colors.white),
-                Flexible(child: title),
-              ],
-            ),
+            child: title,
           ),
         ],
       ),

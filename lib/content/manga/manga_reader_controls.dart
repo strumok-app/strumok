@@ -117,7 +117,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            if (!TVDetector.isTV) ...[
+            if (!TVDetector.isTV && !mobile) ...[
               BackButton(
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -190,8 +190,6 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
     }
 
     final pageNumbers = position.length;
-
-    final mobile = isMobile(context);
 
     return MediaQuery(
       data: MediaQuery.of(

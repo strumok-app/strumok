@@ -10,7 +10,9 @@ class SuppliersSettingsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final suppliersOrder = ref.watch(suppliersSettingsProvider.select((value) => value.suppliersOrder));
+    final suppliersOrder = ref.watch(
+      suppliersSettingsProvider.select((value) => value.suppliersOrder),
+    );
 
     return Container(
       constraints: const BoxConstraints.tightFor(width: 800),
@@ -20,19 +22,22 @@ class SuppliersSettingsSection extends ConsumerWidget {
         proxyDecorator: _proxyDecorator,
         buildDefaultDragHandles: false,
         onReorder: (oldIndex, newIndex) {
-          ref.read(suppliersSettingsProvider.notifier).reorder(oldIndex, newIndex);
+          ref
+              .read(suppliersSettingsProvider.notifier)
+              .reorder(oldIndex, newIndex);
         },
-        children: suppliersOrder
-            .mapIndexed(
-              (index, supplier) => Container(
-                key: ValueKey(supplier),
-                child: _RecommendationsSettingsItem(
-                  supplierName: supplier,
-                  index: index,
-                ),
-              ),
-            )
-            .toList(),
+        children:
+            suppliersOrder
+                .mapIndexed(
+                  (index, supplier) => Container(
+                    key: ValueKey(supplier),
+                    child: _RecommendationsSettingsItem(
+                      supplierName: supplier,
+                      index: index,
+                    ),
+                  ),
+                )
+                .toList(),
       ),
     );
   }
@@ -96,18 +101,19 @@ class _RecommendationsSettingsItem extends ConsumerWidget {
           value: config.enabled,
           onChanged: (value) {
             if (value == true) {
-              ref.read(suppliersSettingsProvider.notifier).enableSupplier(supplierName);
+              ref
+                  .read(suppliersSettingsProvider.notifier)
+                  .enableSupplier(supplierName);
             } else {
-              ref.read(suppliersSettingsProvider.notifier).disableSupplier(supplierName);
+              ref
+                  .read(suppliersSettingsProvider.notifier)
+                  .disableSupplier(supplierName);
             }
           },
         ),
         const SizedBox(width: 8),
         // supplier name
-        Text(
-          supplierName,
-          style: theme.textTheme.titleMedium,
-        ),
+        Text(supplierName, style: theme.textTheme.titleMedium),
         const SizedBox(width: 8),
         // supplier languages
         ...supplier.supportedLanguages.map(
@@ -141,26 +147,31 @@ class _RecommendationsSettingsItem extends ConsumerWidget {
     return channels.isEmpty
         ? const SizedBox.shrink()
         : Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: channels
-                  .map(
-                    (channel) => ChoiceChip(
-                      selected: config.channels.contains(channel),
-                      label: Text(channel),
-                      onSelected: (value) {
-                        if (value) {
-                          ref.read(suppliersSettingsProvider.notifier).enableChannel(supplierName, channel);
-                        } else {
-                          ref.read(suppliersSettingsProvider.notifier).disableChannel(supplierName, channel);
-                        }
-                      },
-                    ),
-                  )
-                  .toList(),
-            ),
-          );
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children:
+                channels
+                    .map(
+                      (channel) => ChoiceChip(
+                        selected: config.channels.contains(channel),
+                        label: Text(channel),
+                        onSelected: (value) {
+                          if (value) {
+                            ref
+                                .read(suppliersSettingsProvider.notifier)
+                                .enableChannel(supplierName, channel);
+                          } else {
+                            ref
+                                .read(suppliersSettingsProvider.notifier)
+                                .disableChannel(supplierName, channel);
+                          }
+                        },
+                      ),
+                    )
+                    .toList(),
+          ),
+        );
   }
 }

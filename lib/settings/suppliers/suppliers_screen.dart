@@ -33,7 +33,7 @@ class _SuppliersSettingsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.all(8),
                 child: Text(
                   AppLocalizations.of(
                     context,

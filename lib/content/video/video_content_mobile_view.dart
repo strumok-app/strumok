@@ -68,8 +68,6 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
       seekBarPositionColor: colorScheme.primary,
       buttonBarButtonColor: Colors.white,
       topButtonBar: [
-        ExitButton(contentDetails: widget.playerController.contentDetails),
-        const SizedBox(width: 8),
         MediaTitle(
           playlistSize: widget.playerController.mediaItems.length,
           contentDetails: widget.playerController.contentDetails,
