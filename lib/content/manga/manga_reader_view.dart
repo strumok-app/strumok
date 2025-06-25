@@ -137,6 +137,12 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
       readerMode.direction,
     );
 
+    pageListenable.addListener(() {
+      ref
+          .read(widget.collectionItemProvider.notifier)
+          .setCurrentPosition(pageListenable.value);
+    });
+
     super.initState();
   }
 
@@ -211,12 +217,12 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
                       pages: widget.pages,
                       pageListenable: pageListenable,
                       scrollController: scrollController,
+                      direction: readerMode.direction,
                     )
                     : MangaPagedViewer(
                       pages: widget.pages,
                       initialPage: pageListenable.value,
                       direction: readerMode.direction,
-                      rtl: readerMode.rtl,
                       transformationController: transformationController,
                       pageListenable: pageListenable,
                     ),
@@ -231,7 +237,6 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
       animetedScrollController.scrollScrean(context, forward);
     } else {
       int inc = forward ? 1 : -1;
-      inc = readerMode.rtl ? -inc : inc;
 
       final provider = widget.collectionItemProvider;
       final notifier = ref.read(provider.notifier);

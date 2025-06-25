@@ -76,12 +76,9 @@ String mangaReaderModeLabel(BuildContext context, MangaReaderMode mode) {
   return switch (mode) {
     MangaReaderMode.vertical => localization.mangaReaderModeVertical,
     MangaReaderMode.leftToRight => localization.mangaReaderModeLeftToRight,
-    MangaReaderMode.rightToLeft => localization.mangaReaderModeRightToLeft,
     MangaReaderMode.vericalScroll => localization.mangaReaderModeVerticalScroll,
     MangaReaderMode.hotizontalScroll =>
       localization.mangaReaderModeHorizontalScroll,
-    MangaReaderMode.hotizontalRtlScroll =>
-      localization.mangaReaderModeHorizontalRtlScroll,
   };
 }
 

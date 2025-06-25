@@ -7,7 +7,6 @@ class MangaPagedViewer extends ConsumerStatefulWidget {
   final List<ImageProvider<Object>> pages;
   final int initialPage;
   final Axis direction;
-  final bool rtl;
   final TransformationController transformationController;
   final ValueListenable<int> pageListenable;
 
@@ -16,7 +15,6 @@ class MangaPagedViewer extends ConsumerStatefulWidget {
     required this.pages,
     required this.initialPage,
     required this.direction,
-    required this.rtl,
     required this.transformationController,
     required this.pageListenable,
   });
@@ -72,7 +70,6 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
     return PageView.builder(
       controller: _pageController,
       physics: const NeverScrollableScrollPhysics(),
-      reverse: widget.rtl,
       itemBuilder: (context, index) {
         return _SinglePageView(
           direction: widget.direction,

@@ -19,10 +19,7 @@ class CollectionItem extends _$CollectionItem {
   @override
   FutureOr<MediaCollectionItem> build(ContentDetails details) async {
     final service = ref.read(collectionServiceProvider);
-    final item = await service.getCollectionItem(
-      details.supplier,
-      details.id,
-    );
+    final item = await service.getCollectionItem(details.supplier, details.id);
 
     return item?.copyWith(title: details.title, image: details.image) ??
         MediaCollectionItem.fromContentDetails(details);
@@ -132,11 +129,12 @@ class CollectionItem extends _$CollectionItem {
 }
 
 @riverpod
-Future<int> collectionItemCurrentItem(
-  Ref ref,
-  ContentDetails contentDetails,
-) {
-  return ref.watch(collectionItemProvider(contentDetails).selectAsync((value) => value.currentItem));
+Future<int> collectionItemCurrentItem(Ref ref, ContentDetails contentDetails) {
+  return ref.watch(
+    collectionItemProvider(
+      contentDetails,
+    ).selectAsync((value) => value.currentItem),
+  );
 }
 
 @riverpod
@@ -144,7 +142,11 @@ Future<String?> collectionItemCurrentSourceName(
   Ref ref,
   ContentDetails contentDetails,
 ) async {
-  return ref.watch(collectionItemProvider(contentDetails).selectAsync((value) => value.currentSourceName));
+  return ref.watch(
+    collectionItemProvider(
+      contentDetails,
+    ).selectAsync((value) => value.currentSourceName),
+  );
 }
 
 @riverpod
@@ -152,7 +154,11 @@ Future<String?> collectionItemCurrentSubtitleName(
   Ref ref,
   ContentDetails contentDetails,
 ) async {
-  return ref.watch(collectionItemProvider(contentDetails).selectAsync((value) => value.currentSubtitleName));
+  return ref.watch(
+    collectionItemProvider(
+      contentDetails,
+    ).selectAsync((value) => value.currentSubtitleName),
+  );
 }
 
 @riverpod
@@ -160,7 +166,11 @@ Future<int> collectionItemCurrentPosition(
   Ref ref,
   ContentDetails contentDetails,
 ) async {
-  return ref.watch(collectionItemProvider(contentDetails).selectAsync((value) => value.currentPosition));
+  return ref.watch(
+    collectionItemProvider(
+      contentDetails,
+    ).selectAsync((value) => value.currentPosition),
+  );
 }
 
 @riverpod
@@ -168,5 +178,9 @@ Future<MediaItemPosition> collectionItemCurrentMediaItemPosition(
   Ref ref,
   ContentDetails contentDetails,
 ) async {
-  return ref.watch(collectionItemProvider(contentDetails).selectAsync((value) => value.currentMediaItemPosition));
+  return ref.watch(
+    collectionItemProvider(
+      contentDetails,
+    ).selectAsync((value) => value.currentMediaItemPosition),
+  );
 }
