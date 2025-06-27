@@ -373,6 +373,19 @@ class _ReaderGestureDetectorState
     return ValueListenableBuilder(
       valueListenable: widget.transformationController,
       builder: (context, value, child) {
+        if (widget.readerMode.scroll && isMobileDevice()) {
+          return GestureDetector(
+            onDoubleTap: _toggleZoom,
+            onTap: _toggleUI,
+            child: Container(
+              width: size.width,
+              height: size.height,
+              color: Colors.transparent,
+              child: widget.child,
+            ),
+          );
+        }
+
         return GestureDetector(
           onDoubleTapDown: (details) => _lastTapDetails = details,
           onTapDown: (details) => _lastTapDetails = details,
@@ -415,8 +428,12 @@ class _ReaderGestureDetectorState
     } else if (_isInZone(3, 3, _lastTapDetails!.globalPosition)) {
       Actions.invoke(context, const NextPageIntent());
     } else {
-      Actions.invoke(context, const ShowUIIntent());
+      _toggleUI();
     }
+  }
+
+  void _toggleUI() {
+    Actions.invoke(context, const ShowUIIntent());
   }
 
   void _toggleZoom() {
