@@ -2,6 +2,9 @@ require("flutter-tools").setup_project({
 	{
 		name = "Default",
 		dart_define_from_file = "secrets.json",
+		dart_define = {
+			FORCE_TV_MODE = "true",
+		},
 	},
 	{
 		name = "External lib",

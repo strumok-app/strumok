@@ -134,32 +134,29 @@ class _TitleBox extends StatelessWidget {
     final title = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 8),
         Text(contentDetails.title, style: textTheme.bodyLarge),
         if (contentDetails.secondaryTitle != null)
           Text(contentDetails.secondaryTitle!, style: textTheme.bodyLarge),
-        const SizedBox(height: 8),
       ],
     );
 
-    return SizedBox(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.transparent, Colors.black54, Colors.black87],
-                stops: [0, 0.3, 1.0],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.transparent, Colors.black54, Colors.black87],
+              stops: [0, 0.3, 1.0],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
             ),
-            child: title,
           ),
-        ],
-      ),
+          child: title,
+        ),
+      ],
     );
   }
 }

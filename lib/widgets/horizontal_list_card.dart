@@ -27,7 +27,6 @@ class HorizontalListCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final focused = useState(false);
     final mobile = isMobile(context);
     var size = calcSize(context);
 
@@ -36,24 +35,15 @@ class HorizontalListCard extends HookWidget {
       height: size.height,
       child: Card(
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        shape: RoundedRectangleBorder(
-          side:
-              !mobile && focused.value
-                  ? BorderSide(color: Colors.white54, width: 2)
-                  : BorderSide.none,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        elevation: !mobile && focused.value ? 16 : 0,
         child: InkWell(
           focusNode: focusNode,
           onTap: onTap,
           onLongPress: onLongPress,
           onHover: onHover,
-          onFocusChange: mobile ? null : (value) => focused.value = value,
           child: Stack(
             children: [
               if (background != null) Positioned.fill(child: background!),
-              _buildContent(mobile, focused),
+              _buildContent(mobile),
               if (badge != null) _buildBadge(),
               if (corner != null) _buildCorner(),
             ],
@@ -63,7 +53,7 @@ class HorizontalListCard extends HookWidget {
     );
   }
 
-  Widget _buildContent(bool mobile, ValueNotifier<bool> focused) {
+  Widget _buildContent(bool mobile) {
     return Positioned.fill(
       child: Material(color: Colors.transparent, child: child),
     );
