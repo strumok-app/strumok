@@ -30,7 +30,7 @@ class HorizontalList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.only(top: 8, bottom: 8, left: 4),
             child: title,
           ),
           Padding(

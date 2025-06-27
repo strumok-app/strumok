@@ -3,6 +3,7 @@ import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/home/recommendations/recommendations_provider.dart';
 import 'package:strumok/l10n/app_localizations.dart';
+import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/widgets/focus_indicator.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
@@ -19,7 +20,12 @@ class Recommendations extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(suppliersSettingsProvider);
+    final offlineMode = ref.watch(offlineModeProvider);
     final enabledSuppliers = ref.watch(enabledSuppliersProvider);
+
+    if (offlineMode) {
+      return SizedBox.shrink();
+    }
 
     final recommendations =
         enabledSuppliers
@@ -132,7 +138,7 @@ class _RecommendationChannel extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 8),
+            padding: const EdgeInsets.only(left: 12),
             child: Text(supplierName, style: theme.textTheme.titleLarge),
           ),
           res,

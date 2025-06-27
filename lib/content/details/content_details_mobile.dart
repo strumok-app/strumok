@@ -145,7 +145,7 @@ class _TitleBox extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [Colors.transparent, Colors.black54, Colors.black87],

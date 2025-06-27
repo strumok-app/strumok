@@ -1,7 +1,6 @@
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:strumok/settings/settings_provider.dart';
 
 part 'recommendations_provider.g.dart';
 
@@ -40,11 +39,6 @@ class RecommendationChannel extends _$RecommendationChannel {
     String supplierName,
     String channel,
   ) async {
-    final offlineMode = ref.watch(offlineModeProvider);
-    if (offlineMode) {
-      return RecommendationChannelState(recommendations: []);
-    }
-
     final recommendations = await ContentSuppliers().loadRecommendationsChannel(
       supplierName,
       channel,
