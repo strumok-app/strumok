@@ -1,9 +1,9 @@
-# [1.16.0](https://github.com/strumok-app/strumok/compare/v1.15.2...v1.16.0) (2025-06-24)
+## [1.16.1](https://github.com/strumok-app/strumok/compare/v1.16.0...v1.16.1) (2025-06-27)
 
 
-### Features
+### Bug Fixes
 
-* update suppliers api lib version ([23b26c0](https://github.com/strumok-app/strumok/commit/23b26c0e1ab9c03e9fabf8f72df6b3738003e573))
+* tv items aligment and reccomendations in offline mode ([7dce96e](https://github.com/strumok-app/strumok/commit/7dce96ec21616391272636cdd307a0931722f347))
 
 
 
