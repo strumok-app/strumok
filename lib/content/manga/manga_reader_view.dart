@@ -10,7 +10,6 @@ import 'package:strumok/content/manga/manga_scrolled_viewer.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/settings/settings_provider.dart';
-import 'package:strumok/utils/matrix.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:strumok/widgets/display_error.dart';
@@ -117,7 +116,6 @@ class _MangaPagesReaderView extends ConsumerStatefulWidget {
 
 class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
     with SingleTickerProviderStateMixin {
-  final transformationController = TransformationController();
   late final ValueNotifier<int> pageListenable;
 
   final scrollController = ScrollController();
@@ -209,25 +207,18 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
       child: Stack(
         children: [
           const MangaBackground(),
-          _ReaderGestureDetector(
-            readerMode: readerMode,
-            transformationController: transformationController,
-            child:
-                readerMode.scroll
-                    ? MangaScrolledViewer(
-                      pages: widget.pages,
-                      direction: readerMode.direction,
-                      scrollController: scrollController,
-                      transformationController: transformationController,
-                      pageListenable: pageListenable,
-                    )
-                    : MangaPagedViewer(
-                      pages: widget.pages,
-                      direction: readerMode.direction,
-                      transformationController: transformationController,
-                      pageListenable: pageListenable,
-                    ),
-          ),
+          readerMode.scroll
+              ? MangaScrolledViewer(
+                pages: widget.pages,
+                direction: readerMode.direction,
+                scrollController: scrollController,
+                pageListenable: pageListenable,
+              )
+              : MangaPagedViewer(
+                pages: widget.pages,
+                direction: readerMode.direction,
+                pageListenable: pageListenable,
+              ),
         ],
       ),
     );
@@ -343,119 +334,6 @@ class AnimatedScrollController {
 
     if (_distanceLeftToScroll <= 0) {
       stop();
-    }
-  }
-}
-
-class _ReaderGestureDetector extends ConsumerStatefulWidget {
-  final MangaReaderMode readerMode;
-  final TransformationController transformationController;
-  final Widget child;
-
-  const _ReaderGestureDetector({
-    required this.readerMode,
-    required this.transformationController,
-    required this.child,
-  });
-
-  @override
-  ConsumerState<_ReaderGestureDetector> createState() =>
-      _ReaderGestureDetectorState();
-}
-
-class _ReaderGestureDetectorState
-    extends ConsumerState<_ReaderGestureDetector> {
-  TapDownDetails? _lastTapDetails;
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return ValueListenableBuilder(
-      valueListenable: widget.transformationController,
-      builder: (context, value, child) {
-        if (widget.readerMode.scroll && isMobileDevice()) {
-          return GestureDetector(
-            onDoubleTap: _toggleZoom,
-            onTap: _toggleUI,
-            child: Container(
-              width: size.width,
-              height: size.height,
-              color: Colors.transparent,
-              child: widget.child,
-            ),
-          );
-        }
-
-        return GestureDetector(
-          onDoubleTapDown: (details) => _lastTapDetails = details,
-          onTapDown: (details) => _lastTapDetails = details,
-          onDoubleTap: _toggleZoom,
-          onTap: value.isScaled() ? null : _tapZones,
-          child: Container(
-            width: size.width,
-            height: size.height,
-            color: Colors.transparent,
-            child: widget.child,
-          ),
-        );
-      },
-    );
-  }
-
-  bool _isInZone(int testZone, int zonesNum, Offset point) {
-    final viewport = MediaQuery.sizeOf(context);
-    final position =
-        widget.readerMode.direction == Axis.horizontal ? point.dx : point.dy;
-    final range =
-        widget.readerMode.direction == Axis.horizontal
-            ? viewport.width
-            : viewport.height;
-
-    final zoneSize = range / zonesNum.toDouble();
-    final lowerBoundry = (testZone - 1) * zoneSize;
-    final upperBoundry = testZone * zoneSize;
-
-    return lowerBoundry <= position && position < upperBoundry;
-  }
-
-  void _tapZones() {
-    if (_lastTapDetails == null) {
-      return;
-    }
-
-    if (_isInZone(1, 3, _lastTapDetails!.globalPosition)) {
-      Actions.invoke(context, const PrevPageIntent());
-    } else if (_isInZone(3, 3, _lastTapDetails!.globalPosition)) {
-      Actions.invoke(context, const NextPageIntent());
-    } else {
-      _toggleUI();
-    }
-  }
-
-  void _toggleUI() {
-    Actions.invoke(context, const ShowUIIntent());
-  }
-
-  void _toggleZoom() {
-    if (_lastTapDetails == null) {
-      return;
-    }
-
-    final position = _lastTapDetails!.globalPosition;
-    final transfomationController = widget.transformationController;
-
-    if (!_isInZone(2, 3, position)) {
-      return;
-    }
-
-    if (!transfomationController.value.isIdentity()) {
-      transfomationController.value = Matrix4.identity();
-    } else {
-      // For a 3x zoom
-      transfomationController.value =
-          Matrix4.identity()
-            ..translate(-position.dx, -position.dy)
-            ..scale(2.0);
     }
   }
 }

@@ -205,20 +205,11 @@ class _MangaPagePlaceholderState extends State<MangaPagePlaceholder> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return AnimatedOpacity(
       opacity: _opacity,
       duration: const Duration(milliseconds: 1800),
-      child: Container(
-        width:
-            widget.direction == Axis.vertical
-                ? size.width
-                : size.height / MangaPagePlaceholder.aspectRation,
-        height:
-            widget.direction == Axis.horizontal
-                ? size.height
-                : size.width * MangaPagePlaceholder.aspectRation,
+      child: ManagPageAspectContainer(
+        direction: widget.direction,
         color: Colors.grey.shade400,
       ),
       onEnd: () {
@@ -226,6 +217,38 @@ class _MangaPagePlaceholderState extends State<MangaPagePlaceholder> {
           _opacity = _opacity == 0 ? 1.0 : 0.0;
         });
       },
+    );
+  }
+}
+
+class ManagPageAspectContainer extends StatelessWidget {
+  final Widget? child;
+  final Axis direction;
+  final Color? color;
+
+  const ManagPageAspectContainer({
+    super.key,
+    this.child,
+    required this.direction,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Container(
+      constraints: BoxConstraints(
+        minWidth:
+            direction == Axis.vertical
+                ? size.width
+                : size.height / MangaPagePlaceholder.aspectRation,
+        minHeight:
+            direction == Axis.horizontal
+                ? size.height
+                : size.width * MangaPagePlaceholder.aspectRation,
+      ),
+      color: color,
+      child: child,
     );
   }
 }

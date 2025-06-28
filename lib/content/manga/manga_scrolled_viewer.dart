@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:strumok/content/manga/intents.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/utils/matrix.dart';
 
@@ -9,7 +10,6 @@ class MangaScrolledViewer extends StatefulWidget {
   final List<ImageProvider<Object>> pages;
   final Axis direction;
   final ScrollController scrollController;
-  final TransformationController transformationController;
   final ValueNotifier<int> pageListenable;
 
   const MangaScrolledViewer({
@@ -17,7 +17,6 @@ class MangaScrolledViewer extends StatefulWidget {
     required this.pages,
     required this.direction,
     required this.pageListenable,
-    required this.transformationController,
     required this.scrollController,
   });
 
@@ -26,6 +25,7 @@ class MangaScrolledViewer extends StatefulWidget {
 }
 
 class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
+  final _transformationController = TransformationController();
   final Key _centerKey = UniqueKey();
   final Set<_PageElement> _registeredPageElement = {};
 
@@ -35,7 +35,7 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
   int _firstVisiablePage = 0;
 
   void _handleTransformationChange() {
-    final newScaling = widget.transformationController.value.isScaled();
+    final newScaling = _transformationController.value.isScaled();
     if (_scaling != newScaling) {
       if (mounted) {
         setState(() {
@@ -49,45 +49,50 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return InteractiveViewer(
-      transformationController: widget.transformationController,
-      scaleEnabled: _scaling,
-      panEnabled: _scaling,
-      child: CustomScrollView(
-        physics:
-            _scaling
-                ? NeverScrollableScrollPhysics()
-                : AlwaysScrollableScrollPhysics(),
-        center: _centerKey,
-        controller: widget.scrollController,
-        scrollDirection: widget.direction,
-        slivers: [
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => buildImage(_page - index - 1),
-              childCount: _page,
+    return _ReaderGestureDetector(
+      transformationController: _transformationController,
+      child: InteractiveViewer(
+        transformationController: _transformationController,
+        scaleEnabled: _scaling,
+        panEnabled: _scaling,
+        child: CustomScrollView(
+          physics:
+              _scaling
+                  ? NeverScrollableScrollPhysics()
+                  : AlwaysScrollableScrollPhysics(),
+          center: _centerKey,
+          controller: widget.scrollController,
+          scrollDirection: widget.direction,
+          slivers: [
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => buildImage(_page - index - 1),
+                childCount: _page,
+              ),
             ),
-          ),
-          SliverList(
-            key: _centerKey,
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => buildImage(_page + index),
-              childCount: 1,
+            SliverList(
+              key: _centerKey,
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => buildImage(_page + index),
+                childCount: 1,
+              ),
             ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => buildImage(_page + index + 1),
-              childCount: widget.pages.length - _page - 1,
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => buildImage(_page + index + 1),
+                childCount: widget.pages.length - _page - 1,
+              ),
             ),
-          ),
-          SliverPadding(
-            padding: EdgeInsets.only(
-              right: widget.direction == Axis.horizontal ? size.width * 0.7 : 0,
-              bottom: widget.direction == Axis.vertical ? size.height * 0.7 : 0,
+            SliverPadding(
+              padding: EdgeInsets.only(
+                right:
+                    widget.direction == Axis.horizontal ? size.width * 0.7 : 0,
+                bottom:
+                    widget.direction == Axis.vertical ? size.height * 0.7 : 0,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -97,7 +102,7 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
     _page = widget.pageListenable.value;
     widget.pageListenable.addListener(_handlePageChange);
     widget.scrollController.addListener(_handleScroll);
-    widget.transformationController.addListener(_handleTransformationChange);
+    _transformationController.addListener(_handleTransformationChange);
 
     super.initState();
   }
@@ -106,7 +111,7 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
   void dispose() {
     widget.pageListenable.removeListener(_handlePageChange);
     widget.scrollController.removeListener(_handleScroll);
-    widget.transformationController.removeListener(_handleTransformationChange);
+    _transformationController.removeListener(_handleTransformationChange);
 
     super.dispose();
   }
@@ -115,7 +120,6 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
     final page = widget.pageListenable.value;
 
     if (_firstVisiablePage != page) {
-      print("!!!");
       setState(() {
         widget.scrollController.jumpTo(0);
         _page = page;
@@ -141,9 +145,12 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
         image: widget.pages[index],
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) {
-            return child;
+            return ManagPageAspectContainer(
+              direction: widget.direction,
+              child: child,
+            );
           }
-          return MangaPagePlaceholder(direction: Axis.vertical);
+          return MangaPagePlaceholder(direction: widget.direction);
         },
       ),
     );
@@ -250,5 +257,67 @@ class _RegisterWidgetElement extends ProxyElement {
   void unmount() {
     onMountChange(false, this);
     super.unmount();
+  }
+}
+
+class _ReaderGestureDetector extends StatefulWidget {
+  final TransformationController transformationController;
+  final Widget child;
+
+  const _ReaderGestureDetector({
+    required this.transformationController,
+    required this.child,
+  });
+
+  @override
+  State<_ReaderGestureDetector> createState() => _ReaderGestureDetectorState();
+}
+
+class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
+  TapDownDetails? _lastTapDetails;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return ValueListenableBuilder(
+      valueListenable: widget.transformationController,
+      builder: (context, value, child) {
+        return GestureDetector(
+          onDoubleTapDown: (details) => _lastTapDetails = details,
+          onTapDown: (details) => _lastTapDetails = details,
+          onDoubleTap: _toggleZoom,
+          onTap: value.isScaled() ? null : _toggleUI,
+          child: Container(
+            width: size.width,
+            height: size.height,
+            color: Colors.transparent,
+            child: widget.child,
+          ),
+        );
+      },
+    );
+  }
+
+  void _toggleUI() {
+    Actions.invoke(context, const ShowUIIntent());
+  }
+
+  void _toggleZoom() {
+    if (_lastTapDetails == null) {
+      return;
+    }
+
+    final position = _lastTapDetails!.globalPosition;
+    final transfomationController = widget.transformationController;
+
+    if (!transfomationController.value.isIdentity()) {
+      transfomationController.value = Matrix4.identity();
+    } else {
+      // For a 3x zoom
+      transfomationController.value =
+          Matrix4.identity()
+            ..translate(-position.dx, -position.dy)
+            ..scale(2.0);
+    }
   }
 }
