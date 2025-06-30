@@ -160,11 +160,9 @@ class _RecommendationChannel extends HookConsumerWidget {
         SizedBox(
           height: 48,
           child: Center(
-            child: FocusIndicator(
-              child: Text(
-                channel,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+            child: Text(
+              channel,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
         ),

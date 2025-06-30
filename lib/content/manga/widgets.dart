@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/utils/nav.dart';
 
+const mangaPageAspectRatio = 1.42;
+
 class VolumesButton extends ConsumerWidget {
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
@@ -179,7 +181,6 @@ class MangaPageImage extends StatelessWidget {
 }
 
 class MangaPagePlaceholder extends StatefulWidget {
-  static const aspectRation = 1.5;
   final Axis direction;
 
   const MangaPagePlaceholder({super.key, required this.direction});
@@ -241,11 +242,11 @@ class ManagPageAspectContainer extends StatelessWidget {
         minWidth:
             direction == Axis.vertical
                 ? size.width
-                : size.height / MangaPagePlaceholder.aspectRation,
+                : size.height / mangaPageAspectRatio,
         minHeight:
             direction == Axis.horizontal
                 ? size.height
-                : size.width * MangaPagePlaceholder.aspectRation,
+                : size.width * mangaPageAspectRatio,
       ),
       color: color,
       child: child,
