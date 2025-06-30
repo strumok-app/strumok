@@ -5,7 +5,6 @@ import 'package:strumok/home/recommendations/recommendations_provider.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
-import 'package:strumok/widgets/focus_indicator.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
