@@ -141,40 +141,9 @@ class PlayerController {
   }
 
   Future<void> setSubtitle(ContentProgress progress) async {
-    final itemIdx = progress.currentItem;
-    final currentSubtitle = progress.currentSubtitleName;
-
-    if (currentSubtitle == null) {
-      _ref.read(currentSubtitleControllerProvider.notifier).setController(null);
-      return;
-    }
-
-    final subtitles =
-        _currentSources!.where((s) => s.kind == FileKind.subtitle).toList();
-    final subtitle =
-        subtitles.firstWhereOrNull((s) => s.description == currentSubtitle)
-            as MediaFileItemSource?;
-
-    if (subtitle != null) {
-      final controller = await Isolate.run(() async {
-        final link = await subtitle.link;
-        final controller = SubtitleController(
-          provider: NetworkSubtitle(link, headers: subtitle.headers),
-        );
-        await controller.initial();
-
-        return controller;
-      }, debugName: "subtitles");
-
-      if (progress.currentItem == itemIdx &&
-          currentSubtitle == progress.currentSubtitleName) {
-        logger.i("Subtitle: $subtitle");
-
-        _ref
-            .read(currentSubtitleControllerProvider.notifier)
-            .setController(controller);
-      }
-    }
+    _ref
+        .read(currentSubtitleControllerProvider.notifier)
+        .setSubtitles(_currentSources!, progress);
   }
 
   void nextItem() {

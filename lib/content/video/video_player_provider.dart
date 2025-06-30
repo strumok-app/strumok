@@ -1,9 +1,15 @@
+import 'dart:ffi';
+import 'dart:isolate';
+
+import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/app_preferences.dart';
+import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/model.dart';
+import 'package:strumok/utils/logger.dart';
 import 'package:subtitle/subtitle.dart';
 
 part 'video_player_provider.g.dart';
@@ -15,8 +21,42 @@ class CurrentSubtitleController extends _$CurrentSubtitleController {
     return null;
   }
 
-  void setController(SubtitleController? subtitleController) {
-    state = subtitleController;
+  Future<void> setSubtitles(
+    List<ContentMediaItemSource> currentSources,
+    ContentProgress progress,
+  ) async {
+    final itemIdx = progress.currentItem;
+    final currentSubtitle = progress.currentSubtitleName;
+
+    if (currentSubtitle == null) {
+      state = null;
+      return;
+    }
+
+    final subtitles =
+        currentSources.where((s) => s.kind == FileKind.subtitle).toList();
+    final subtitle =
+        subtitles.firstWhereOrNull((s) => s.description == currentSubtitle)
+            as MediaFileItemSource?;
+
+    if (subtitle != null) {
+      final controller = await Isolate.run(() async {
+        final link = await subtitle.link;
+        final controller = SubtitleController(
+          provider: NetworkSubtitle(link, headers: subtitle.headers),
+        );
+        await controller.initial();
+
+        return controller;
+      }, debugName: "subtitles");
+
+      if (progress.currentItem == itemIdx &&
+          currentSubtitle == progress.currentSubtitleName) {
+        logger.i("Subtitle: $subtitle");
+
+        state = controller;
+      }
+    }
   }
 }
 
