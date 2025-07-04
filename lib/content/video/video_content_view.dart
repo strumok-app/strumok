@@ -57,14 +57,20 @@ class PlayerController {
 
   Future<void> play(ContentProgress progress) async {
     try {
-      isLoading.value = true;
-      await _player.stop();
-
       final itemIdx = progress.currentItem;
       final sourceName = progress.currentSourceName;
 
+      isLoading.value = true;
+      await _player.stop();
+
       final item = mediaItems[itemIdx];
       final sources = await item.sources;
+
+      if (progress.currentItem != itemIdx ||
+          progress.currentSourceName != sourceName) {
+        return;
+      }
+
       final videos = sources.where((s) => s.kind == FileKind.video).toList();
 
       var video =
@@ -81,43 +87,45 @@ class PlayerController {
       }
 
       if (video == null) {
-        throw Exception("No avalaible video sources");
+        return;
       }
 
       final link = await video.link;
 
-      if (progress.currentItem == itemIdx &&
-          progress.currentSourceName == sourceName) {
-        final startPosition = AppPreferences.videoPlayerSettingStarFrom;
-
-        final currentItemPosition = progress.currentMediaItemPosition;
-        int start = switch (startPosition) {
-          StarVideoPosition.fromBeginning => 0,
-          StarVideoPosition.fromRemembered => progress.currentPosition,
-          StarVideoPosition.fromFixedPosition =>
-            AppPreferences.videoPlayerSettingFixedPosition,
-        };
-
-        if (currentItemPosition.length > 0 &&
-            start > currentItemPosition.length - 60) {
-          start = start - 60;
-        } else if (start < 0) {
-          start = 0;
-        }
-
-        _ref.read(playerErrorsProvider.notifier).reset();
-
-        final media = Media(
-          link.toString(),
-          httpHeaders: video.headers,
-          start: Duration(seconds: start),
-        );
-
-        logger.i("Starting video: $media");
-        await _player.open(media);
-        isLoading.value = false;
-        _currentSources = sources;
+      if (progress.currentItem != itemIdx ||
+          progress.currentSourceName != sourceName) {
+        return;
       }
+
+      final startPosition = AppPreferences.videoPlayerSettingStarFrom;
+
+      final currentItemPosition = progress.currentMediaItemPosition;
+      int start = switch (startPosition) {
+        StarVideoPosition.fromBeginning => 0,
+        StarVideoPosition.fromRemembered => progress.currentPosition,
+        StarVideoPosition.fromFixedPosition =>
+          AppPreferences.videoPlayerSettingFixedPosition,
+      };
+
+      if (currentItemPosition.length > 0 &&
+          start > currentItemPosition.length - 60) {
+        start = start - 60;
+      } else if (start < 0) {
+        start = 0;
+      }
+
+      _ref.read(playerErrorsProvider.notifier).reset();
+
+      final media = Media(
+        link.toString(),
+        httpHeaders: video.headers,
+        start: Duration(seconds: start),
+      );
+
+      logger.i("Starting video: $media");
+      await _player.open(media);
+      isLoading.value = false;
+      _currentSources = sources;
 
       await setSubtitle(progress);
     } on Exception catch (e, stackTrace) {

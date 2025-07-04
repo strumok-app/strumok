@@ -22,29 +22,35 @@ class ContentDetailsDesktopView extends StatelessWidget {
     final screanWidth = size.width;
     final compact = _isCompactLayout(context);
 
-    return SizedBox.expand(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Flexible(
-            child: _InfoBlock(contentDetails: contentDetails, compact: compact),
-          ),
-          if (!compact)
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Container(
-                constraints: BoxConstraints(maxWidth: screanWidth * .4),
-                child: CachedNetworkImage(
-                  imageUrl: contentDetails.image,
-                  height: screanHeight,
-                  fit: BoxFit.contain,
-                  errorWidget:
-                      (context, url, error) => Center(child: NothingToShow()),
-                ),
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: _InfoBlock(contentDetails: contentDetails, compact: compact),
+        ),
+        if (!compact)
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Container(
+              constraints: BoxConstraints(maxWidth: screanWidth * .4),
+              child: Image(
+                image: CachedNetworkImageProvider(contentDetails.image),
+                height: screanHeight,
+                fit: BoxFit.fitHeight,
+                errorBuilder:
+                    (context, url, error) => Center(child: NothingToShow()),
               ),
+              // child: CachedNetworkImage(
+              //   imageUrl: contentDetails.image,
+              //   height: screanHeight,
+              //   fit: BoxFit.fitHeight,
+              //   errorWidget:
+              //       (context, url, error) => Center(child: NothingToShow()),
+              // ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
