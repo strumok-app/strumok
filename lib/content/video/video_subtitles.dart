@@ -64,6 +64,7 @@ class _SubtitleView extends StatefulWidget {
 }
 
 class _SubtitleViewState extends State<_SubtitleView> {
+  static final _htmlCharsEntries = RegExp(r'&([^;]+);');
   StreamSubscription? _subscription;
   List<Subtitle> _subtitles = List.empty();
 
@@ -79,7 +80,6 @@ class _SubtitleViewState extends State<_SubtitleView> {
       }
 
       final subs = widget.subtitleController.multiDurationSearch(time);
-
       setState(() {
         _subtitles = subs;
       });
@@ -109,7 +109,18 @@ class _SubtitleViewState extends State<_SubtitleView> {
       return SizedBox.shrink();
     }
 
-    final text = _subtitles.map((s) => s.data).nonNulls.join("\n");
+    final text = _subtitles
+        .map((s) => s.data)
+        .nonNulls
+        .join('\n')
+        .replaceAllMapped(_htmlCharsEntries, (match) {
+          return switch (match.group(1)) {
+            'lt' => '<',
+            'gt' => '>',
+            'quot' => '"',
+            _ => match.group(1) ?? '',
+          };
+        });
 
     return Container(
       padding: const EdgeInsets.only(bottom: 16),

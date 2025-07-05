@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:math';
 
 import 'package:strumok/app_localizations.dart';
@@ -23,7 +22,6 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:subtitle/subtitle.dart';
 
 extension PlayerExt on Player {
   void safeSeek(Duration position) {
@@ -123,10 +121,10 @@ class PlayerController {
       );
 
       logger.i("Starting video: $media");
-      await _player.open(media);
       isLoading.value = false;
       _currentSources = sources;
 
+      await _player.open(media);
       await setSubtitle(progress);
     } on Exception catch (e, stackTrace) {
       if (e is ContentSuppliersException) {
