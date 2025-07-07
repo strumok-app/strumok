@@ -1,9 +1,9 @@
-## [1.16.5](https://github.com/strumok-app/strumok/compare/v1.16.4...v1.16.5) (2025-07-04)
+## [1.16.6](https://github.com/strumok-app/strumok/compare/v1.16.5...v1.16.6) (2025-07-05)
 
 
 ### Bug Fixes
 
-* small ui fixes ([61e793b](https://github.com/strumok-app/strumok/commit/61e793b97b66ecf402e1c7f3231d0dec8b642aa2))
+* subtitle html characters entirs ([524ec57](https://github.com/strumok-app/strumok/commit/524ec57ccfcecfb8d9d1ee6473554016164e4004))
 
 
 
