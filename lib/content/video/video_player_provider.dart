@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:isolate';
 
 import 'package:collection/collection.dart';
