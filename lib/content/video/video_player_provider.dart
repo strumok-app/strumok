@@ -39,23 +39,26 @@ class CurrentSubtitleController extends _$CurrentSubtitleController {
         subtitles.firstWhereOrNull((s) => s.description == currentSubtitle)
             as MediaFileItemSource?;
 
-    if (subtitle != null) {
-      final controller = await Isolate.run(() async {
-        final link = await subtitle.link;
-        final controller = SubtitleController(
-          provider: NetworkSubtitle(link, headers: subtitle.headers),
-        );
-        await controller.initial();
+    if (subtitle == null) {
+      state = null;
+      return;
+    }
 
-        return controller;
-      }, debugName: "subtitles");
+    final controller = await Isolate.run(() async {
+      final link = await subtitle.link;
+      final controller = SubtitleController(
+        provider: NetworkSubtitle(link, headers: subtitle.headers),
+      );
+      await controller.initial();
 
-      if (progress.currentItem == itemIdx &&
-          currentSubtitle == progress.currentSubtitleName) {
-        logger.i("Subtitle: $subtitle");
+      return controller;
+    }, debugName: "subtitles");
 
-        state = controller;
-      }
+    if (progress.currentItem == itemIdx &&
+        currentSubtitle == progress.currentSubtitleName) {
+      logger.i("Subtitle: $subtitle");
+
+      state = controller;
     }
   }
 }

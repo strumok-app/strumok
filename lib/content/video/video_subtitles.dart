@@ -73,7 +73,7 @@ class _SubtitleViewState extends State<_SubtitleView> {
     super.initState();
 
     _subscription = widget.player.stream.position.listen((position) {
-      final time = position + widget.subtitlesOffset;
+      final time = position - widget.subtitlesOffset;
 
       if (_subtitles.firstOrNull?.inRange(time) == true) {
         return;
