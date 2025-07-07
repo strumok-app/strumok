@@ -1,9 +1,9 @@
-## [1.16.6](https://github.com/strumok-app/strumok/compare/v1.16.5...v1.16.6) (2025-07-05)
+## [1.16.7](https://github.com/strumok-app/strumok/compare/v1.16.6...v1.16.7) (2025-07-07)
 
 
 ### Bug Fixes
 
-* subtitle html characters entirs ([524ec57](https://github.com/strumok-app/strumok/commit/524ec57ccfcecfb8d9d1ee6473554016164e4004))
+* inverts subs sync time, some fix if no subs ([7f35079](https://github.com/strumok-app/strumok/commit/7f350790e7b4230ce65506c9b43394bc538dc1e4))
 
 
 
