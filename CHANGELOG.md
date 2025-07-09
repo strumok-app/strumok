@@ -1,9 +1,9 @@
-## [1.16.7](https://github.com/strumok-app/strumok/compare/v1.16.6...v1.16.7) (2025-07-07)
+# [1.17.0](https://github.com/strumok-app/strumok/compare/v1.16.7...v1.17.0) (2025-07-09)
 
 
-### Bug Fixes
+### Features
 
-* inverts subs sync time, some fix if no subs ([7f35079](https://github.com/strumok-app/strumok/commit/7f350790e7b4230ce65506c9b43394bc538dc1e4))
+* Video and audio track selector. Video player refactoring ([85b017b](https://github.com/strumok-app/strumok/commit/85b017b8bde01fc20bf36c606481c0b86b161af1))
 
 
 
