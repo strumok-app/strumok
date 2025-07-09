@@ -5,19 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
-import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:subtitle/subtitle.dart';
 
 class WithSubtitles extends ConsumerWidget {
   final Widget child;
-  final PlayerController playerController;
 
-  const WithSubtitles({
-    super.key,
-    required this.playerController,
-    required this.child,
-  });
+  const WithSubtitles({super.key, required this.child});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -73,7 +67,7 @@ class _SubtitleViewState extends State<_SubtitleView> {
     super.initState();
 
     _subscription = widget.player.stream.position.listen((position) {
-      final time = position - widget.subtitlesOffset;
+      final time = position + widget.subtitlesOffset;
 
       if (_subtitles.firstOrNull?.inRange(time) == true) {
         return;

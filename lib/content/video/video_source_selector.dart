@@ -5,21 +5,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/model.dart';
+import 'package:strumok/content/video/video_context.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/utils/visual.dart';
 
 class SourceSelector extends StatelessWidget {
-  final List<ContentMediaItem> mediaItems;
-  final ContentDetails contentDetails;
-
-  const SourceSelector({
-    super.key,
-    required this.mediaItems,
-    required this.contentDetails,
-  });
+  const SourceSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final videoContext = VideoContext.of(context);
+    final contentDetails = videoContext.contentDetails;
+    final mediaItems = videoContext.mediaItems;
+
     return IconButton(
       onPressed: () {
         showDialog(
@@ -31,7 +29,8 @@ class SourceSelector extends StatelessWidget {
               ),
         );
       },
-      icon: const Icon(Icons.track_changes),
+      tooltip: AppLocalizations.of(context)!.videoPlayerBtnHintServers,
+      icon: const Icon(Icons.cloud),
       color: Colors.white,
       disabledColor: Colors.white.withValues(alpha: 0.7),
     );
@@ -242,7 +241,6 @@ class _SourcesList extends ConsumerWidget {
     return SizedBox(
       width: 320,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           if (leading != null) leading!,

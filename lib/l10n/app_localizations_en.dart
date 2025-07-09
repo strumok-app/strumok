@@ -206,6 +206,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoPlayerSettingStarFromFixed => 'Fixed second';
 
   @override
+  String get videoPlayerBtnHintServers => 'Servers';
+
+  @override
+  String get videoPlayerBtnHintTracks => 'Videos and audio tracks';
+
+  @override
+  String get videoPlayerAudioTracks => 'Audio tracks';
+
+  @override
+  String get videoPlayerVideoTracks => 'Video tracks';
+
+  @override
   String get settingsUnableDownloadNewVersion => 'Failed to download new version';
 
   @override

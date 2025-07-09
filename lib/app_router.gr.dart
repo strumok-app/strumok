@@ -83,6 +83,16 @@ class ContentDetailsRouteArgs {
   String toString() {
     return 'ContentDetailsRouteArgs{key: $key, supplier: $supplier, id: $id}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ContentDetailsRouteArgs) return false;
+    return key == other.key && supplier == other.supplier && id == other.id;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ supplier.hashCode ^ id.hashCode;
 }
 
 /// generated route for
@@ -147,6 +157,16 @@ class MangaContentRouteArgs {
   String toString() {
     return 'MangaContentRouteArgs{key: $key, supplier: $supplier, id: $id}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MangaContentRouteArgs) return false;
+    return key == other.key && supplier == other.supplier && id == other.id;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ supplier.hashCode ^ id.hashCode;
 }
 
 /// generated route for
@@ -259,4 +279,14 @@ class VideoContentRouteArgs {
   String toString() {
     return 'VideoContentRouteArgs{key: $key, supplier: $supplier, id: $id}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! VideoContentRouteArgs) return false;
+    return key == other.key && supplier == other.supplier && id == other.id;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ supplier.hashCode ^ id.hashCode;
 }

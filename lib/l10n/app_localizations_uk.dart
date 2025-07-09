@@ -173,7 +173,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get videoNoSources => 'Немає доступних джерел відео';
 
   @override
-  String get videoSubtitlesOff => 'Вимкнути субтитрів';
+  String get videoSubtitlesOff => 'Без субтитрів';
 
   @override
   String get videoSubtitlesOffset => 'Змішення субтитрів';
@@ -204,6 +204,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get videoPlayerSettingStarFromFixed => 'Фіксованої секунди';
+
+  @override
+  String get videoPlayerBtnHintServers => 'Сервери';
+
+  @override
+  String get videoPlayerBtnHintTracks => 'Відео та аудіо потоки';
+
+  @override
+  String get videoPlayerAudioTracks => 'Аудіо потоки';
+
+  @override
+  String get videoPlayerVideoTracks => 'Відео потоки';
 
   @override
   String get settingsUnableDownloadNewVersion => 'Не вдається завантажити нову версію';

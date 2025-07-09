@@ -485,6 +485,30 @@ abstract class AppLocalizations {
   /// **'Fixed second'**
   String get videoPlayerSettingStarFromFixed;
 
+  /// No description provided for @videoPlayerBtnHintServers.
+  ///
+  /// In en, this message translates to:
+  /// **'Servers'**
+  String get videoPlayerBtnHintServers;
+
+  /// No description provided for @videoPlayerBtnHintTracks.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos and audio tracks'**
+  String get videoPlayerBtnHintTracks;
+
+  /// No description provided for @videoPlayerAudioTracks.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio tracks'**
+  String get videoPlayerAudioTracks;
+
+  /// No description provided for @videoPlayerVideoTracks.
+  ///
+  /// In en, this message translates to:
+  /// **'Video tracks'**
+  String get videoPlayerVideoTracks;
+
   /// No description provided for @settingsUnableDownloadNewVersion.
   ///
   /// In en, this message translates to:

@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:strumok/collection/collection_item_provider.dart';
+import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_context.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
 import 'package:strumok/content/video/video_subtitles.dart';
 import 'package:strumok/content/video/widgets.dart';
-import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -19,13 +20,11 @@ import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/vi
 class VideoContentTVView extends StatelessWidget {
   final Player player;
   final VideoController videoController;
-  final PlayerController playerController;
 
   const VideoContentTVView({
     super.key,
     required this.player,
     required this.videoController,
-    required this.playerController,
   });
 
   @override
@@ -33,32 +32,21 @@ class VideoContentTVView extends StatelessWidget {
     return Video(
       controller: videoController,
       controls:
-          (state) => WithSubtitles(
-            playerController: playerController,
-            child: _renderControls(context, state),
-          ),
+          (state) => WithSubtitles(child: _renderControls(context, state)),
     );
   }
 
   Widget _renderControls(BuildContext context, VideoState state) {
-    return AndroidTVControls(
-      player: player,
-      playerController: playerController,
-    );
+    return AndroidTVControls(player: player);
   }
 }
 
 const seekTransitionDuration = Duration(milliseconds: 500);
 
 class AndroidTVControls extends StatefulWidget {
-  const AndroidTVControls({
-    super.key,
-    required this.player,
-    required this.playerController,
-  });
+  const AndroidTVControls({super.key, required this.player});
 
   final Player player;
-  final PlayerController playerController;
 
   @override
   State<AndroidTVControls> createState() => _AndroidTVControlsState();
@@ -192,16 +180,11 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
                             child: Column(
                               children: [
                                 // top bar
-                                _AndroidTVTopBar(
-                                  playerController: widget.playerController,
-                                ),
+                                const _AndroidTVTopBar(),
                                 const Spacer(),
                                 // bottom bar
                                 const _AndroidTVSeekBar(),
                                 _AndroidTVBottomBar(
-                                  contentDetails:
-                                      widget.playerController.contentDetails,
-                                  playerController: widget.playerController,
                                   playPauseFocusNode: playPauseFocusNode,
                                 ),
                               ],
@@ -262,9 +245,7 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
 }
 
 class _AndroidTVTopBar extends StatelessWidget {
-  const _AndroidTVTopBar({required this.playerController});
-
-  final PlayerController playerController;
+  const _AndroidTVTopBar();
 
   @override
   Widget build(BuildContext context) {
@@ -281,17 +262,10 @@ class _AndroidTVTopBar extends StatelessWidget {
       child: Row(
         children: [
           const SizedBox(width: 8),
-          MediaTitle(
-            contentDetails: playerController.contentDetails,
-            playlistSize: playerController.mediaItems.length,
-          ),
+          const MediaTitle(),
           const Spacer(),
-          PlayerErrorPopup(),
-          if (playerController.mediaItems.length > 1)
-            PlayerPlaylistButton(
-              playerController: playerController,
-              contentDetails: playerController.contentDetails,
-            ),
+          const PlayerErrorPopup(),
+          const PlayerPlaylistButton(),
         ],
       ),
     );
@@ -347,23 +321,19 @@ class _AndroidTVVideoBufferingIndicatorState
 }
 
 class _AndroidTVBottomBar extends ConsumerWidget {
-  const _AndroidTVBottomBar({
-    required this.contentDetails,
-    required this.playerController,
-    required this.playPauseFocusNode,
-  });
-
-  final ContentDetails contentDetails;
-  final PlayerController playerController;
   final FocusNode playPauseFocusNode;
+  const _AndroidTVBottomBar({required this.playPauseFocusNode});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final videoContext = VideoContext.of(context);
+    final contentDetails = videoContext.contentDetails;
+    final mediaItems = videoContext.mediaItems;
+
     final currentProgress = ref.watch(collectionItemProvider(contentDetails));
 
     final isLastItem =
-        currentProgress.valueOrNull?.currentItem !=
-        playerController.mediaItems.length - 1;
+        currentProgress.valueOrNull?.currentItem != mediaItems.length - 1;
 
     return Container(
       decoration: const BoxDecoration(
@@ -379,17 +349,12 @@ class _AndroidTVBottomBar extends ConsumerWidget {
         children: [
           const MaterialDesktopPositionIndicator(),
           const Spacer(),
-          SkipPrevButton(playerController: playerController),
+          const SkipPrevButton(),
           PlayOrPauseButton(focusNode: !isLastItem ? playPauseFocusNode : null),
-          SkipNextButton(
-            playerController: playerController,
-            focusNode: isLastItem ? playPauseFocusNode : null,
-          ),
+          SkipNextButton(focusNode: isLastItem ? playPauseFocusNode : null),
           const Spacer(),
-          SourceSelector(
-            mediaItems: playerController.mediaItems,
-            contentDetails: contentDetails,
-          ),
+          const TrackSelector(),
+          const SourceSelector(),
           const PlayerSettingsButton(),
         ],
       ),

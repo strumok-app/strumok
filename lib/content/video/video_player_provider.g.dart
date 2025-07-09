@@ -173,7 +173,7 @@ class _SourceSelectorProviderElement
 }
 
 String _$currentSubtitleControllerHash() =>
-    r'dfd48327a7152c3214e1fd28a55af477cafab8ae';
+    r'008f1addac17540c90b447bd1d6ab1a52d6c09ed';
 
 /// See also [CurrentSubtitleController].
 @ProviderFor(CurrentSubtitleController)

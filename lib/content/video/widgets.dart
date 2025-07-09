@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
+import 'package:strumok/content/video/video_context.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/offline/media_item_download.dart';
 import 'package:strumok/widgets/dropdown.dart';
@@ -11,17 +12,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Title
 class MediaTitle extends ConsumerWidget {
-  final int playlistSize;
-  final ContentDetails contentDetails;
-
-  const MediaTitle({
-    super.key,
-    required this.playlistSize,
-    required this.contentDetails,
-  });
+  const MediaTitle({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final videoContex = VideoContext.of(context);
+    final contentDetails = videoContex.contentDetails;
+    final playlistSize = videoContex.mediaItems.length;
+
     final currentItem =
         ref
             .watch(collectionItemCurrentItemProvider(contentDetails))

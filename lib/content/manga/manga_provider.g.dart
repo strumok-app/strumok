@@ -179,7 +179,7 @@ class _MangaMediaItemSourcesProviderElement
 }
 
 String _$currentMangaMediaItemSourceHash() =>
-    r'4a6dd37398e33f5c0b2d5367ab8e520ded1d0292';
+    r'ea29156d35c736ee0d4d2b2ace1bf80a139b1dff';
 
 /// See also [currentMangaMediaItemSource].
 @ProviderFor(currentMangaMediaItemSource)
@@ -329,7 +329,7 @@ class _CurrentMangaMediaItemSourceProviderElement
       (origin as CurrentMangaMediaItemSourceProvider).mediaItems;
 }
 
-String _$currentMangaPagesHash() => r'05a44a76b332ff99ec004ed200b7f8481ac5cfb1';
+String _$currentMangaPagesHash() => r'de0f22e866d23055587de21f38a3c8ea87902859';
 
 /// See also [currentMangaPages].
 @ProviderFor(currentMangaPages)

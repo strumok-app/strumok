@@ -1,4 +1,6 @@
+import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_context.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
@@ -14,13 +16,11 @@ import 'package:window_manager/window_manager.dart';
 class VideoContentDesktopView extends StatefulWidget {
   final Player player;
   final VideoController videoController;
-  final PlayerController playerController;
 
   const VideoContentDesktopView({
     super.key,
     required this.player,
     required this.videoController,
-    required this.playerController,
   });
 
   @override
@@ -40,13 +40,13 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
     const SingleActivator(LogicalKeyboardKey.mediaPlayPause):
         () => widget.player.playOrPause(),
     const SingleActivator(LogicalKeyboardKey.mediaTrackNext):
-        widget.playerController.nextItem,
+        VideoContext.of(context).next,
     const SingleActivator(LogicalKeyboardKey.bracketLeft):
-        widget.playerController.prevItem,
+        VideoContext.of(context).next,
     const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious):
-        widget.playerController.nextItem,
+        VideoContext.of(context).prev,
     const SingleActivator(LogicalKeyboardKey.bracketRight):
-        widget.playerController.nextItem,
+        VideoContext.of(context).next,
     const SingleActivator(LogicalKeyboardKey.space):
         () => widget.player.playOrPause(),
     const SingleActivator(LogicalKeyboardKey.keyJ): () {
@@ -97,7 +97,6 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
         controller: widget.videoController,
         controls:
             (state) => WithSubtitles(
-              playerController: widget.playerController,
               child:
                   pipMode
                       ? PipVideoControls(state, onPipExit: _switchToPipMode)
@@ -111,7 +110,6 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
     ThemeData theme,
     bool fullscreen,
   ) {
-    final playerController = widget.playerController;
     final colorScheme = theme.colorScheme;
 
     return MaterialDesktopVideoControlsThemeData(
@@ -119,25 +117,18 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       topButtonBarMargin: const EdgeInsets.all(8),
       bottomButtonBarMargin: const EdgeInsets.all(8),
       topButtonBar: [
-        ExitButton(contentDetails: playerController.contentDetails),
+        const ExitButton(),
         const SizedBox(width: 8),
-        MediaTitle(
-          playlistSize: playerController.mediaItems.length,
-          contentDetails: playerController.contentDetails,
-        ),
-        PlayerErrorPopup(),
-        if (playerController.mediaItems.length > 1)
-          PlayerPlaylistButton(
-            playerController: playerController,
-            contentDetails: playerController.contentDetails,
-          ),
+        const MediaTitle(),
+        const PlayerErrorPopup(),
+        const PlayerPlaylistButton(),
       ],
       seekBarThumbColor: colorScheme.primary,
       seekBarPositionColor: colorScheme.primary,
       bottomButtonBar: [
-        SkipPrevButton(playerController: playerController),
+        const SkipPrevButton(),
         const PlayOrPauseButton(),
-        SkipNextButton(playerController: playerController),
+        const SkipNextButton(),
         const MaterialDesktopVolumeButton(),
         const MaterialDesktopPositionIndicator(),
         const Spacer(),
@@ -146,10 +137,8 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
             onPressed: _switchToPipMode,
             icon: const Icon(Symbols.pip),
           ),
-        SourceSelector(
-          mediaItems: playerController.mediaItems,
-          contentDetails: playerController.contentDetails,
-        ),
+        const TrackSelector(),
+        const SourceSelector(),
         const PlayerSettingsButton(),
         const MaterialDesktopFullscreenButton(),
       ],

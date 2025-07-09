@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
@@ -24,11 +25,12 @@ class CurrentSubtitleController extends _$CurrentSubtitleController {
     List<ContentMediaItemSource> currentSources,
     ContentProgress progress,
   ) async {
+    state = null;
+
     final itemIdx = progress.currentItem;
     final currentSubtitle = progress.currentSubtitleName;
 
     if (currentSubtitle == null) {
-      state = null;
       return;
     }
 
@@ -39,7 +41,6 @@ class CurrentSubtitleController extends _$CurrentSubtitleController {
             as MediaFileItemSource?;
 
     if (subtitle == null) {
-      state = null;
       return;
     }
 

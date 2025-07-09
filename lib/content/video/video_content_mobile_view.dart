@@ -1,4 +1,4 @@
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
@@ -11,13 +11,11 @@ import 'package:media_kit_video/media_kit_video.dart';
 class VideoContentMobileView extends StatefulWidget {
   final Player player;
   final VideoController videoController;
-  final PlayerController playerController;
 
   const VideoContentMobileView({
     super.key,
     required this.player,
     required this.videoController,
-    required this.playerController,
   });
 
   @override
@@ -45,11 +43,7 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
         key: videoStateKey,
         pauseUponEnteringBackgroundMode: false,
         controller: widget.videoController,
-        controls:
-            (state) => WithSubtitles(
-              playerController: widget.playerController,
-              child: MaterialVideoControls(state),
-            ),
+        controls: (state) => WithSubtitles(child: MaterialVideoControls(state)),
       ),
     );
   }
@@ -68,40 +62,25 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
       seekBarPositionColor: colorScheme.primary,
       buttonBarButtonColor: Colors.white,
       topButtonBar: [
-        MediaTitle(
-          playlistSize: widget.playerController.mediaItems.length,
-          contentDetails: widget.playerController.contentDetails,
-        ),
+        const MediaTitle(),
         const Spacer(),
-        PlayerErrorPopup(),
-        if (widget.playerController.mediaItems.length > 1)
-          PlayerPlaylistButton(
-            playerController: widget.playerController,
-            contentDetails: widget.playerController.contentDetails,
-          ),
+        const PlayerErrorPopup(),
+        const PlayerPlaylistButton(),
       ],
       primaryButtonBar: [
         const Spacer(flex: 2),
-        SkipPrevButton(
-          playerController: widget.playerController,
-          iconSize: 36.0,
-        ),
+        const SkipPrevButton(iconSize: 36.0),
         const Spacer(),
         const MaterialPlayOrPauseButton(iconSize: 48.0),
         const Spacer(),
-        SkipNextButton(
-          playerController: widget.playerController,
-          iconSize: 36.0,
-        ),
+        const SkipNextButton(iconSize: 36.0),
         const Spacer(flex: 2),
       ],
       bottomButtonBar: [
         const MaterialPositionIndicator(),
         const Spacer(),
-        SourceSelector(
-          mediaItems: widget.playerController.mediaItems,
-          contentDetails: widget.playerController.contentDetails,
-        ),
+        const TrackSelector(),
+        const SourceSelector(),
         const PlayerSettingsButton(),
         const MaterialFullscreenButton(),
       ],
