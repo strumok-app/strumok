@@ -12,6 +12,7 @@ import 'package:strumok/content/video/video_content_mobile_view.dart';
 import 'package:strumok/content/video/video_content_tv_view.dart';
 import 'package:strumok/content/video/video_context.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
+import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/trace.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/logger.dart';
@@ -63,8 +64,12 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
     super.initState();
 
     if (_player.platform is NativePlayer) {
-      var platform = _player.platform as NativePlayer;
+      final platform = _player.platform as NativePlayer;
       platform.setProperty("force-seekable", "yes");
+
+      final userLang = ref.read(userLanguageSettingProvider);
+      platform.setProperty("alang", userLang);
+      platform.setProperty("vlang", userLang);
     }
 
     _videoController =
