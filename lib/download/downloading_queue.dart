@@ -67,19 +67,33 @@ class DownloadsTasksList extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          context.router.popAndPush(const OfflineItemsRoute());
-                        },
-                        child: Text(downloadTaskDescription(task)),
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: () {
+                            context.router.popAndPush(
+                              const OfflineItemsRoute(),
+                            );
+                          },
+                          child: Text(downloadTaskDescription(task)),
+                        ),
                       ),
                     ),
-                    IconButton(
-                      focusNode: idx == 0 ? focusNode : null,
-                      onPressed: () {
-                        DownloadManager().cancel(task.request.id);
+                    ValueListenableBuilder(
+                      valueListenable: task.status,
+                      builder: (context, value, child) {
+                        if (value == DownloadStatus.canceled) {
+                          return SizedBox.shrink();
+                        }
+
+                        return IconButton(
+                          focusNode: idx == 0 ? focusNode : null,
+                          onPressed: () {
+                            DownloadManager().cancel(task.request.id);
+                          },
+                          icon: Icon(Icons.cancel_outlined),
+                        );
                       },
-                      icon: Icon(Icons.cancel_outlined),
                     ),
                   ],
                 ),

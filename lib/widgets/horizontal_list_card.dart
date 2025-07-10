@@ -40,13 +40,15 @@ class HorizontalListCard extends HookWidget {
           onTap: onTap,
           onLongPress: onLongPress,
           onHover: onHover,
-          child: Stack(
-            children: [
-              if (background != null) Positioned.fill(child: background!),
-              _buildContent(mobile),
-              if (badge != null) _buildBadge(),
-              if (corner != null) _buildCorner(),
-            ],
+          child: ExcludeFocus(
+            child: Stack(
+              children: [
+                if (background != null) Positioned.fill(child: background!),
+                _buildContent(mobile),
+                if (badge != null) _buildBadge(),
+                if (corner != null) _buildCorner(),
+              ],
+            ),
           ),
         ),
       ),

@@ -25,7 +25,7 @@ class ContentInfoCard extends StatefulWidget {
     this.onLongPress,
     FocusNode? focusNode,
     this.showSupplier = true,
-  }) : focusNode = focusNode ?? FocusNode();
+  }) : focusNode = focusNode ?? FocusNode(debugLabel: "ContentInfoCard");
 
   @override
   State<ContentInfoCard> createState() => _ContentInfoCardState();
@@ -58,10 +58,9 @@ class _ContentInfoCardState extends State<ContentInfoCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final textStyle =
-        _focused
-            ? const TextStyle(color: Colors.black)
-            : const TextStyle(color: Colors.white);
+    final textStyle = _focused
+        ? const TextStyle(color: Colors.black)
+        : const TextStyle(color: Colors.white);
 
     return HorizontalListCard(
       key: Key("${widget.contentInfo.supplier}/${widget.contentInfo.id}"),
@@ -78,15 +77,14 @@ class _ContentInfoCardState extends State<ContentInfoCard> {
         errorWidget: (context, url, error) => Center(child: NothingToShow()),
       ),
       corner: widget.corner,
-      badge:
-          widget.showSupplier
-              ? Badge(
-                label: Text(widget.contentInfo.supplier),
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                backgroundColor: theme.colorScheme.primary,
-                textColor: theme.colorScheme.onPrimary,
-              )
-              : null,
+      badge: widget.showSupplier
+          ? Badge(
+              label: Text(widget.contentInfo.supplier),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              backgroundColor: theme.colorScheme.primary,
+              textColor: theme.colorScheme.onPrimary,
+            )
+          : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -94,15 +92,14 @@ class _ContentInfoCardState extends State<ContentInfoCard> {
           Container(
             constraints: BoxConstraints(maxWidth: 100),
             decoration: BoxDecoration(
-              gradient:
-                  _focused
-                      ? null
-                      : LinearGradient(
-                        colors: [Colors.black54, Colors.transparent],
-                        stops: [.5, 1.0],
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                      ),
+              gradient: _focused
+                  ? null
+                  : LinearGradient(
+                      colors: [Colors.black54, Colors.transparent],
+                      stops: [.5, 1.0],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
               color: _focused ? Colors.white : null,
             ),
             padding: EdgeInsets.all(8),

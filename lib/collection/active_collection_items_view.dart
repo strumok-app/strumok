@@ -33,12 +33,11 @@ class ActiveCollectionItemsView extends ConsumerWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
-      itemBuilder:
-          (context, index) => HorizontalListCard(
-            key: Key("loading"),
-            onTap: () {},
-            child: const Center(child: CircularProgressIndicator()),
-          ),
+      itemBuilder: (context, index) => HorizontalListCard(
+        key: Key("loading"),
+        onTap: () {},
+        child: const Center(child: CircularProgressIndicator()),
+      ),
       itemCount: 1,
     );
   }
@@ -80,14 +79,13 @@ class _ActiveCollectionItems extends ConsumerWidget {
         AppLocalizations.of(context)!.collectionBegin,
         style: Theme.of(context).textTheme.titleMedium,
       ),
-      itemBuilder:
-          (context, index) => HorizontalListCard(
-            key: Key("empty"),
-            onTap: () {
-              context.router.replace(const SearchRoute());
-            },
-            child: const UseSearchHint(),
-          ),
+      itemBuilder: (context, index) => HorizontalListCard(
+        key: Key("empty"),
+        onTap: () {
+          context.router.replace(const SearchRoute());
+        },
+        child: const UseSearchHint(),
+      ),
       itemCount: 1,
     );
   }

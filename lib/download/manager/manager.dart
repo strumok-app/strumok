@@ -42,10 +42,9 @@ class DownloadManager {
 
   void cancel(String id) {
     _requests.removeWhere((it) => it.id == id);
-    final task = _downloads.remove(id);
+    final task = _downloads[id];
     if (task != null) {
       task.status.value = DownloadStatus.canceled;
-      _downloadsUpdate.add(task);
     }
   }
 

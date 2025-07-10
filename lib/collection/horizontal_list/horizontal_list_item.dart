@@ -36,19 +36,18 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
         cornerVisible.value = !cornerVisible.value;
         itemActionsfocusNode.requestFocus();
       },
-      corner:
-          cornerVisible.value
-              ? BackButtonListener(
-                onBackButtonPressed: () async {
-                  itemActionsfocusNode.previousFocus();
-                  return true;
-                },
-                child: _CollectionListItemCorner(
-                  item: item,
-                  focusNode: itemActionsfocusNode,
-                ),
-              )
-              : null,
+      corner: cornerVisible.value
+          ? BackButtonListener(
+              onBackButtonPressed: () async {
+                itemActionsfocusNode.previousFocus();
+                return true;
+              },
+              child: _CollectionListItemCorner(
+                item: item,
+                focusNode: itemActionsfocusNode,
+              ),
+            )
+          : null,
     );
   }
 
@@ -61,12 +60,10 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
       onHover: (value) {
         cornerVisible.value = value;
       },
-      corner: ExcludeFocus(
-        child: AnimatedOpacity(
-          opacity: cornerVisible.value ? 1 : 0,
-          duration: const Duration(milliseconds: 200),
-          child: _CollectionListItemCorner(item: item),
-        ),
+      corner: AnimatedOpacity(
+        opacity: cornerVisible.value ? 1 : 0,
+        duration: const Duration(milliseconds: 200),
+        child: _CollectionListItemCorner(item: item),
       ),
     );
   }

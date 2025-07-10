@@ -68,21 +68,21 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
       platform.setProperty("force-seekable", "yes");
 
       final userLang = ref.read(userLanguageSettingProvider);
-      platform.setProperty("alang", userLang);
-      platform.setProperty("vlang", userLang);
+      final alang = "$userLang,en";
+      platform.setProperty("alang", alang);
+      platform.setProperty("vlang", alang);
     }
 
-    _videoController =
-        TVDetector.isTV
-            ? VideoController(
-              _player,
-              configuration: const VideoControllerConfiguration(
-                vo: "gpu",
-                hwdec: "mediacodec",
-                enableHardwareAcceleration: true,
-              ),
-            )
-            : VideoController(_player);
+    _videoController = TVDetector.isTV
+        ? VideoController(
+            _player,
+            configuration: const VideoControllerConfiguration(
+              vo: "gpu",
+              hwdec: "mediacodec",
+              enableHardwareAcceleration: true,
+            ),
+          )
+        : VideoController(_player);
 
     final provider = collectionItemProvider(widget.contentDetails);
     final notifier = ref.read(provider.notifier);
@@ -162,11 +162,10 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
 
       final videos = sources.where((s) => s.kind == FileKind.video).toList();
 
-      var video =
-          sourceName == null
-              ? videos.firstOrNull as MediaFileItemSource?
-              : videos.firstWhereOrNull((s) => s.description == sourceName)
-                  as MediaFileItemSource?;
+      var video = sourceName == null
+          ? videos.firstOrNull as MediaFileItemSource?
+          : videos.firstWhereOrNull((s) => s.description == sourceName)
+                as MediaFileItemSource?;
 
       if (video == null && sourceName != null) {
         ref
@@ -275,8 +274,9 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
       return;
     }
 
-    final value =
-        ref.read(collectionItemProvider(widget.contentDetails)).value!;
+    final value = ref
+        .read(collectionItemProvider(widget.contentDetails))
+        .value!;
 
     // asyncValue.whenData((value) {
     _onSelectItem(value.currentItem + 1);
@@ -284,8 +284,9 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
   }
 
   void _onPrevItem() {
-    final value =
-        ref.read(collectionItemProvider(widget.contentDetails)).value!;
+    final value = ref
+        .read(collectionItemProvider(widget.contentDetails))
+        .value!;
 
     // asyncValue.whenData((value) {
     _onSelectItem(value.currentItem - 1);
@@ -335,15 +336,6 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget view;
-    if (TVDetector.isTV) {
-      view = _renderTvView();
-    } else if (Platform.isAndroid || Platform.isIOS) {
-      view = _renderMobileView();
-    } else {
-      view = _renderDesktopView();
-    }
-
     final size = MediaQuery.sizeOf(context);
 
     return Container(
@@ -358,15 +350,15 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
             next: _onNextItem,
             prev: _onPrevItem,
             selectItem: _onSelectItem,
-            child: view,
+            child: _buildView(),
           ),
           ValueListenableBuilder(
             valueListenable: _isLoading,
             builder: (context, value, child) {
               return value
                   ? const Center(
-                    child: CircularProgressIndicator(color: Colors.white),
-                  )
+                      child: CircularProgressIndicator(color: Colors.white),
+                    )
                   : const SizedBox.shrink();
             },
           ),
@@ -375,21 +367,31 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
     );
   }
 
-  Widget _renderTvView() {
+  Widget _buildView() {
+    if (TVDetector.isTV) {
+      return _buildTvView();
+    } else if (Platform.isAndroid || Platform.isIOS) {
+      return _buildMobileView();
+    }
+
+    return _buildDesktopView();
+  }
+
+  Widget _buildTvView() {
     return VideoContentTVView(
       player: _player,
       videoController: _videoController,
     );
   }
 
-  Widget _renderMobileView() {
+  Widget _buildMobileView() {
     return VideoContentMobileView(
       player: _player,
       videoController: _videoController,
     );
   }
 
-  Widget _renderDesktopView() {
+  Widget _buildDesktopView() {
     return VideoContentDesktopView(
       player: _player,
       videoController: _videoController,

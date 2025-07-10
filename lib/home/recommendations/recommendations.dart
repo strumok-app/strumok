@@ -26,23 +26,22 @@ class Recommendations extends ConsumerWidget {
       return SizedBox.shrink();
     }
 
-    final recommendations =
-        enabledSuppliers
-            .map((s) => (s, settings.getConfig(s)))
-            .where((e) => e.$2.channels.isNotEmpty)
-            .mapIndexed(
-              (groupIdx, e) => [
-                ...e.$2.channels.mapIndexed(
-                  (channelIdx, channel) => _RecommendationChannel(
-                    channelIdx: channelIdx,
-                    supplierName: e.$1,
-                    channel: channel,
-                  ),
-                ),
-              ],
-            )
-            .expand((e) => e)
-            .toList();
+    final recommendations = enabledSuppliers
+        .map((s) => (s, settings.getConfig(s)))
+        .where((e) => e.$2.channels.isNotEmpty)
+        .mapIndexed(
+          (groupIdx, e) => [
+            ...e.$2.channels.mapIndexed(
+              (channelIdx, channel) => _RecommendationChannel(
+                channelIdx: channelIdx,
+                supplierName: e.$1,
+                channel: channel,
+              ),
+            ),
+          ],
+        )
+        .expand((e) => e)
+        .toList();
 
     if (recommendations.isEmpty) {
       return _renderEmptyRecommendations(context);
@@ -57,14 +56,13 @@ class Recommendations extends ConsumerWidget {
   Widget _renderEmptyRecommendations(BuildContext context) {
     return HorizontalList(
       title: const SizedBox.shrink(),
-      itemBuilder:
-          (context, index) => HorizontalListCard(
-            key: Key("empty"),
-            onTap: () {
-              context.navigateTo(const SuppliersSettingsRoute());
-            },
-            child: const SetRecommendationsHint(),
-          ),
+      itemBuilder: (context, index) => HorizontalListCard(
+        key: Key("empty"),
+        onTap: () {
+          context.navigateTo(const SuppliersSettingsRoute());
+        },
+        child: const SetRecommendationsHint(),
+      ),
       itemCount: 1,
     );
   }
@@ -88,46 +86,40 @@ class _RecommendationChannel extends HookConsumerWidget {
 
     final res = asyncState.when(
       skipLoadingOnRefresh: false,
-      data:
-          (state) => HorizontalList(
-            title: _renderChannelTitle(false, provider, context, ref),
-            itemBuilder: (context, index) {
-              final item = state.recommendations[index];
+      data: (state) => HorizontalList(
+        title: _renderChannelTitle(false, provider, context, ref),
+        itemBuilder: (context, index) {
+          final item = state.recommendations[index];
 
-              return ContentInfoCard(contentInfo: item, showSupplier: false);
-            },
-            itemCount: state.recommendations.length,
-            trailing:
-                state.hasMore
-                    ? LoadMoreItems(
-                      label: AppLocalizations.of(context)!.loadMore,
-                      onTap: () => ref.read(provider.notifier).loadNext(),
-                      loading: state.isLoading,
-                    )
-                    : null,
-          ),
-      loading:
-          () => HorizontalList(
-            title: _renderChannelTitle(true, provider, context, ref),
-            itemBuilder:
-                (context, index) => HorizontalListCard(
-                  key: Key("loading"),
-                  onTap: () {},
-                  child: const Center(child: CircularProgressIndicator()),
-                ),
-            itemCount: 1,
-          ),
-      error:
-          (e, s) => HorizontalList(
-            title: _renderChannelTitle(false, provider, context, ref),
-            itemBuilder:
-                (context, index) => HorizontalListCard(
-                  key: Key("error"),
-                  onTap: () {},
-                  child: const Center(child: NothingToShow()),
-                ),
-            itemCount: 1,
-          ),
+          return ContentInfoCard(contentInfo: item, showSupplier: false);
+        },
+        itemCount: state.recommendations.length,
+        trailing: state.hasMore
+            ? LoadMoreItems(
+                label: AppLocalizations.of(context)!.loadMore,
+                onTap: () => ref.read(provider.notifier).loadNext(),
+                loading: state.isLoading,
+              )
+            : null,
+      ),
+      loading: () => HorizontalList(
+        title: _renderChannelTitle(true, provider, context, ref),
+        itemBuilder: (context, index) => HorizontalListCard(
+          key: Key("loading"),
+          onTap: () {},
+          child: const Center(child: CircularProgressIndicator()),
+        ),
+        itemCount: 1,
+      ),
+      error: (e, s) => HorizontalList(
+        title: _renderChannelTitle(false, provider, context, ref),
+        itemBuilder: (context, index) => HorizontalListCard(
+          key: Key("error"),
+          onTap: () {},
+          child: const Center(child: NothingToShow()),
+        ),
+        itemCount: 1,
+      ),
     );
 
     if (channelIdx == 0) {
@@ -167,11 +159,13 @@ class _RecommendationChannel extends HookConsumerWidget {
         ),
         Spacer(),
         if (!loading)
-          IconButton(
-            // padding: EdgeInsets.zero,
-            constraints: BoxConstraints(),
-            onPressed: () => ref.refresh(provider.future),
-            icon: Icon(Icons.refresh),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              constraints: BoxConstraints(),
+              onPressed: () => ref.refresh(provider.future),
+              icon: Icon(Icons.refresh),
+            ),
           ),
       ],
     );
