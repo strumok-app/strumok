@@ -140,22 +140,21 @@ class OfflineItem extends ConsumerWidget {
         onPressed: () {
           showDialog(
             context: context,
-            builder:
-                (context) => ConfirmDialog(
-                  content: Text(
-                    AppLocalizations.of(
-                      context,
-                    )!.downloadsDeleteConfimation(info.title),
-                  ),
-                  confimAction: () async {
-                    if (hasAnyDownloadingAitems(info.supplier, info.id)) {
-                      return;
-                    }
+            builder: (context) => ConfirmDialog(
+              content: Text(
+                AppLocalizations.of(
+                  context,
+                )!.downloadsDeleteConfimation(info.title),
+              ),
+              confimAction: () async {
+                if (hasAnyDownloadingItems(info.supplier, info.id)) {
+                  return;
+                }
 
-                    await OfflineStorage().deleteAll(info.supplier, info.id);
-                    ref.invalidate(offlineContentProvider);
-                  },
-                ),
+                await OfflineStorage().deleteAll(info.supplier, info.id);
+                ref.invalidate(offlineContentProvider);
+              },
+            ),
           );
         },
         icon: Icon(Icons.delete),

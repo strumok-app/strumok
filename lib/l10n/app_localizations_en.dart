@@ -218,7 +218,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoPlayerVideoTracks => 'Video tracks';
 
   @override
-  String get settingsUnableDownloadNewVersion => 'Failed to download new version';
+  String get settingsUnableDownloadNewVersion =>
+      'Failed to download new version';
 
   @override
   String get settingsCheckForUpdate => 'Check for update';
@@ -229,7 +230,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get settingsSuppliersAndRecommendations => 'Suppliers and  Recommendations';
+  String get settingsSuppliersAndRecommendations =>
+      'Suppliers and  Recommendations';
 
   @override
   String get mangaUnableToLoadPage => 'Unable to view page';
@@ -295,7 +297,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ffiLibInstalled => 'Content suppliers installed';
 
   @override
-  String get ffiLibInstallationFailed => 'Content suppliers module installation failed';
+  String get ffiLibInstallationFailed =>
+      'Content suppliers module installation failed';
 
   @override
   String get appUpdateFailed => 'Application update failed';

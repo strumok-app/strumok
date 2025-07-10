@@ -139,32 +139,28 @@ class _RustContentSupplier implements ContentSupplier {
 
   @override
   Set<ContentLanguage> get supportedLanguages {
-    _supportedLanguage ??=
-        _api
-            .crateApiGetSupportedLanguages(supplier: name)
-            .map(
-              (lang) => ContentLanguage.values.firstWhereOrNull(
-                (v) => v.name == lang,
-              ),
-            )
-            .nonNulls
-            .toSet();
+    _supportedLanguage ??= _api
+        .crateApiGetSupportedLanguages(supplier: name)
+        .map(
+          (lang) =>
+              ContentLanguage.values.firstWhereOrNull((v) => v.name == lang),
+        )
+        .nonNulls
+        .toSet();
 
     return _supportedLanguage!;
   }
 
   @override
   Set<ContentType> get supportedTypes {
-    return _supportedTypes ??=
-        _api
-            .crateApiGetSupportedTypes(supplier: name)
-            .map(
-              (type) => ContentType.values.firstWhereOrNull(
-                (v) => v.name == type.name,
-              ),
-            )
-            .nonNulls
-            .toSet();
+    return _supportedTypes ??= _api
+        .crateApiGetSupportedTypes(supplier: name)
+        .map(
+          (type) =>
+              ContentType.values.firstWhereOrNull((v) => v.name == type.name),
+        )
+        .nonNulls
+        .toSet();
   }
 }
 
@@ -230,10 +226,9 @@ class _RustContentDetails extends AbstractContentDetails {
       image: result.image,
       description: result.description,
       additionalInfo: result.additionalInfo,
-      similar:
-          result.similar
-              .map((info) => ContentSearchResultExt.fromRust(supplier, info))
-              .toList(),
+      similar: result.similar
+          .map((info) => ContentSearchResultExt.fromRust(supplier, info))
+          .toList(),
       mediaItems: result.mediaItems?.mapIndexed(
         (idx, item) =>
             _RustMediaItem.fromRust(id, supplier, idx, langs, item, api),
@@ -246,15 +241,16 @@ class _RustContentDetails extends AbstractContentDetails {
   @override
   FutureOr<Iterable<ContentMediaItem>> get mediaItems async {
     try {
-      return _mediaItems ??= (await _api.crateApiLoadMediaItems(
-        supplier: supplier,
-        id: id,
-        langs: langs,
-        params: _params,
-      )).mapIndexed(
-        (idx, item) =>
-            _RustMediaItem.fromRust(id, supplier, idx, langs, item, _api),
-      );
+      return _mediaItems ??=
+          (await _api.crateApiLoadMediaItems(
+            supplier: supplier,
+            id: id,
+            langs: langs,
+            params: _params,
+          )).mapIndexed(
+            (idx, item) =>
+                _RustMediaItem.fromRust(id, supplier, idx, langs, item, _api),
+          );
     } catch (e) {
       throw ContentSuppliersException(
         "FFI LoadMediaItems Failed [supplier=$supplier id=$id params: $_params] error: $e",
@@ -311,10 +307,9 @@ class _RustMediaItem implements ContentMediaItem {
       title: item.title,
       section: item.section,
       image: item.image,
-      sources:
-          item.sources
-              ?.map((item) => mapMediaItemSource(id, supplier, item, api))
-              .toList(),
+      sources: item.sources
+          ?.map((item) => mapMediaItemSource(id, supplier, item, api))
+          .toList(),
       params: item.params,
       api: api,
     );
@@ -323,15 +318,12 @@ class _RustMediaItem implements ContentMediaItem {
   @override
   FutureOr<List<ContentMediaItemSource>> get sources async {
     try {
-      return _sources ??=
-          (await _api.crateApiLoadMediaItemSources(
-                supplier: supplier,
-                id: id,
-                langs: langs,
-                params: _params,
-              ))
-              .map((item) => mapMediaItemSource(id, supplier, item, _api))
-              .toList();
+      return _sources ??= (await _api.crateApiLoadMediaItemSources(
+        supplier: supplier,
+        id: id,
+        langs: langs,
+        params: _params,
+      )).map((item) => mapMediaItemSource(id, supplier, item, _api)).toList();
     } catch (e) {
       throw ContentSuppliersException(
         "FFI LoadMediaItemSources Failed [supplier=$supplier id=$id params: $_params] error: $e",
@@ -422,10 +414,9 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
 
   @override
   Future<List<ImageProvider<Object>>> get images async {
-    return _images ??=
-        (await pages)
-            .map((link) => CachedNetworkImageProvider(link, headers: _headers))
-            .toList();
+    return _images ??= (await pages)
+        .map((link) => CachedNetworkImageProvider(link, headers: _headers))
+        .toList();
   }
 }
 
@@ -472,7 +463,7 @@ class _CustomRustLib
   @override
   int get rustContentHash => RustLib.instance.rustContentHash;
 
-  unload() {
+  void unload() {
     externalLibrary?.ffiDynamicLibrary.close();
   }
 }

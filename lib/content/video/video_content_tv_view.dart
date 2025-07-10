@@ -31,8 +31,8 @@ class VideoContentTVView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Video(
       controller: videoController,
-      controls:
-          (state) => WithSubtitles(child: _renderControls(context, state)),
+      controls: (state) =>
+          WithSubtitles(child: _renderControls(context, state)),
     );
   }
 
@@ -92,8 +92,9 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
 
   void seek(int sec) {
     var playerState = widget.player.state;
-    int targetPosition =
-        seekVisible ? seekPosition : playerState.position.inSeconds;
+    int targetPosition = seekVisible
+        ? seekPosition
+        : playerState.position.inSeconds;
     targetPosition += sec;
 
     if (targetPosition < 0) {
@@ -174,23 +175,22 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
                       });
                     }
                   },
-                  child:
-                      uiShown
-                          ? FocusScope(
-                            child: Column(
-                              children: [
-                                // top bar
-                                const _AndroidTVTopBar(),
-                                const Spacer(),
-                                // bottom bar
-                                const _AndroidTVSeekBar(),
-                                _AndroidTVBottomBar(
-                                  playPauseFocusNode: playPauseFocusNode,
-                                ),
-                              ],
-                            ),
-                          )
-                          : const SizedBox.shrink(),
+                  child: uiShown
+                      ? FocusScope(
+                          child: Column(
+                            children: [
+                              // top bar
+                              const _AndroidTVTopBar(),
+                              const Spacer(),
+                              // bottom bar
+                              const _AndroidTVSeekBar(),
+                              _AndroidTVBottomBar(
+                                playPauseFocusNode: playPauseFocusNode,
+                              ),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                 ),
                 Positioned.fill(child: _AndroidTVVideoBufferingIndicator()),
                 Positioned.fill(child: _renderSeekPosition()),
@@ -202,7 +202,7 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
     );
   }
 
-  _renderSeekPosition() {
+  Widget _renderSeekPosition() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 96),
       child: Row(
@@ -372,12 +372,15 @@ class _AndroidTVSeekBar extends StatefulWidget {
 class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
   static const _seekUnit = 10;
 
-  late double position =
-      controller(context).player.state.position.inSeconds.toDouble();
-  late double duration =
-      controller(context).player.state.duration.inSeconds.toDouble();
-  late double buffer =
-      controller(context).player.state.buffer.inSeconds.toDouble();
+  late double position = controller(
+    context,
+  ).player.state.position.inSeconds.toDouble();
+  late double duration = controller(
+    context,
+  ).player.state.duration.inSeconds.toDouble();
+  late double buffer = controller(
+    context,
+  ).player.state.buffer.inSeconds.toDouble();
   late int? divisions = _calcDivisions();
 
   double? slidePosition;

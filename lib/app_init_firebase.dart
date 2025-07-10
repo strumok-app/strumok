@@ -20,7 +20,10 @@ class AppInitFirebase {
     return FirebaseOptions.fromMap(firebaseOptionsJson);
   }
 
-  Future<FirebaseApp> init({isolated = true, FirebaseOptions? options}) async {
+  Future<FirebaseApp> init({
+    bool isolated = true,
+    FirebaseOptions? options,
+  }) async {
     final directory =
         "${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}firebase";
 

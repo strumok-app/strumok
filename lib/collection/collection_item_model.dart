@@ -7,7 +7,7 @@ part 'collection_item_model.g.dart';
 
 enum MediaCollectionItemStatus { none, latter, inProgress, complete, onHold }
 
-DateTime? _dateTimeFormMilli(value) {
+DateTime? _dateTimeFormMilli(dynamic value) {
   if (value is int) {
     return DateTime.fromMillisecondsSinceEpoch(value);
   }
@@ -99,18 +99,15 @@ class MediaCollectionItem extends Equatable
       image: image ?? this.image,
       mediaType: mediaType,
       currentItem: currentItem ?? this.currentItem,
-      currentSourceName:
-          currentSourceName != null
-              ? currentSourceName()
-              : this.currentSourceName,
-      currentSubtitleName:
-          currentSubtitleName != null
-              ? currentSubtitleName()
-              : this.currentSubtitleName,
-      positions:
-          positions != null
-              ? {...this.positions, ...positions}
-              : this.positions,
+      currentSourceName: currentSourceName != null
+          ? currentSourceName()
+          : this.currentSourceName,
+      currentSubtitleName: currentSubtitleName != null
+          ? currentSubtitleName()
+          : this.currentSubtitleName,
+      positions: positions != null
+          ? {...this.positions, ...positions}
+          : this.positions,
       status: status ?? this.status,
       priority: priority ?? this.priority,
       lastSeen: lastSeen,

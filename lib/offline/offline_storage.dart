@@ -336,7 +336,7 @@ class OfflineStorage {
   }
 }
 
-bool hasAnyDownloadingAitems(String supplier, String id) {
+bool hasAnyDownloadingItems(String supplier, String id) {
   final prefix = getContentDownloadIdPrefix(supplier, id);
 
   return DownloadManager()

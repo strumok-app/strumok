@@ -57,11 +57,8 @@ class MediaItemDownloadButton extends ConsumerWidget {
   void _showDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => MediaItemDownloadDailog(
-            contentDetails: contentDetails,
-            item: item,
-          ),
+      builder: (context) =>
+          MediaItemDownloadDailog(contentDetails: contentDetails, item: item),
     );
   }
 }
@@ -88,8 +85,9 @@ class _MediaItemDownloadIndicator extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: CircularProgressIndicator(
                   value: value,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.onInverseSurface,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.onInverseSurface,
                 ),
               );
             },
@@ -205,22 +203,21 @@ class _SourceList extends ConsumerWidget {
     );
   }
 
-  ListTile _buildListItem(source) {
+  ListTile _buildListItem(ContentMediaItemSource source) {
     final avalaibleOffline = _isOffline(source);
     return ListTile(
       contentPadding: EdgeInsets.only(left: 16, right: 8),
       visualDensity: VisualDensity.compact,
       leading: Icon(_getIconData(source)),
-      trailing:
-          avalaibleOffline
-              ? IconButton(
-                onPressed: () => onDelete(source),
-                icon: const Icon(Icons.delete_outline),
-              )
-              : IconButton(
-                onPressed: () => onDownload(source),
-                icon: const Icon(Icons.download),
-              ),
+      trailing: avalaibleOffline
+          ? IconButton(
+              onPressed: () => onDelete(source),
+              icon: const Icon(Icons.delete_outline),
+            )
+          : IconButton(
+              onPressed: () => onDownload(source),
+              icon: const Icon(Icons.download),
+            ),
       title: Text(
         source.description,
         overflow: TextOverflow.ellipsis,
@@ -237,5 +234,6 @@ class _SourceList extends ConsumerWidget {
     };
   }
 
-  bool _isOffline(source) => source is OfflineContenItemSource;
+  bool _isOffline(ContentMediaItemSource source) =>
+      source is OfflineContenItemSource;
 }

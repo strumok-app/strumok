@@ -6,9 +6,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart';
 import 'package:strumok/app_init_firebase.dart';
+import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/trace.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+const scopes = [
+  "https://www.googleapis.com/auth/userinfo.profile",
+  "https://www.googleapis.com/auth/userinfo.email",
+];
 
 class User {
   final String id;
@@ -32,24 +38,31 @@ class User {
   }
 }
 
-const scopes = [
-  "https://www.googleapis.com/auth/userinfo.profile",
-  "https://www.googleapis.com/auth/userinfo.email",
-];
-
 class Auth {
-  final StreamController<User?> _userStreamController = StreamController();
-  late Stream<User?> _userStream;
-
-  static ClientId? desktopClientId;
   User? _currentUser;
+  late final Stream<User?> _userStream;
+  final StreamController<User?> _userStreamController = StreamController();
+
+  late final PlatformSignIn platformSignIn;
 
   static final Auth _instance = Auth._();
-
   factory Auth() => _instance;
+
+  User? get currentUser => _currentUser;
+  Stream<User?> get userUpdate => _userStream;
 
   Auth._() {
     _userStream = _userStreamController.stream.asBroadcastStream();
+
+    if (isDesktopDevice()) {
+      platformSignIn = DesktopPlatformSignIn();
+    } else {
+      platformSignIn = AndroidPlatformSignIn();
+    }
+
+    platformSignIn.authCredential.listen((event) {
+      FirebaseAuth.instance.signInWithCredential(event);
+    });
 
     FirebaseAuth.instance.userChanges().listen((event) {
       if (event != null) {
@@ -63,32 +76,15 @@ class Auth {
       }
       _userStreamController.add(_currentUser);
     });
-
-    restore();
   }
 
-  User? get currentUser => _currentUser;
-  Stream<User?> get userUpdate => _userStream;
-
   Future<void> signIn() async {
-    final clientId = await _loadDesktopClientId();
+    platformSignIn.signIn();
+  }
 
-    if (isDesktopDevice()) {
-      final credentials = await obtainAccessCredentialsViaUserConsent(
-        clientId,
-        scopes,
-        Client(),
-        (uri) {
-          launchUrl(Uri.parse(uri));
-        },
-      );
-
-      _setAccessCredentials(credentials);
-    } else {
-      final googleSign = await GoogleSignIn(scopes: scopes).signIn();
-
-      _setGoogleSignInAccount(googleSign);
-    }
+  Future<void> singOut() async {
+    await FirebaseAuth.instance.signOut();
+    platformSignIn.signOut();
   }
 
   Future<void> signInWithPairCode(String code) async {
@@ -105,13 +101,6 @@ class Auth {
     String token = jsonDecode(res.body)["token"];
 
     await FirebaseAuth.instance.signInWithCustomToken(token);
-  }
-
-  Future<void> singOut() async {
-    await FirebaseAuth.instance.signOut();
-    if (!isDesktopDevice()) {
-      await GoogleSignIn(scopes: scopes).signOut();
-    }
   }
 
   Future<String?> getPairCode() async {
@@ -136,6 +125,107 @@ class Auth {
 
     return jsonDecode(res.body)["code"];
   }
+}
+
+abstract class PlatformSignIn {
+  Stream<AuthCredential> get authCredential;
+  void signIn();
+  void signOut();
+}
+
+class AndroidPlatformSignIn extends PlatformSignIn {
+  final StreamController<AuthCredential> _authCredentialStreamController =
+      StreamController();
+
+  @override
+  Stream<AuthCredential> get authCredential =>
+      _authCredentialStreamController.stream;
+
+  AndroidPlatformSignIn() {
+    final GoogleSignIn signIn = GoogleSignIn.instance;
+    unawaited(
+      signIn.initialize().then((_) {
+        signIn.authenticationEvents
+            .listen(_handleAuthenticationEvent)
+            .onError(_handleAuthenticationError);
+
+        signIn.attemptLightweightAuthentication();
+      }),
+    );
+  }
+
+  @override
+  void signIn() async {
+    await GoogleSignIn.instance.authenticate();
+  }
+
+  @override
+  void signOut() async {
+    await GoogleSignIn.instance.disconnect();
+  }
+
+  void _handleAuthenticationError(Error error) {
+    logger.e("Google suck dick again: $error");
+    traceError(error: error);
+  }
+
+  void _handleAuthenticationEvent(GoogleSignInAuthenticationEvent event) async {
+    final user = switch (event) {
+      GoogleSignInAuthenticationEventSignIn() => event.user,
+      GoogleSignInAuthenticationEventSignOut() => null,
+    };
+
+    if (user == null) {
+      return;
+    }
+
+    final authorization = await user.authorizationClient.authorizeScopes(
+      scopes,
+    );
+
+    _authCredentialStreamController.sink.add(
+      GoogleAuthProvider.credential(
+        accessToken: authorization.accessToken,
+        idToken: user.authentication.idToken,
+      ),
+    );
+  }
+}
+
+class DesktopPlatformSignIn extends PlatformSignIn {
+  static ClientId? desktopClientId;
+
+  final StreamController<AuthCredential> _authCredentialStreamController =
+      StreamController();
+
+  @override
+  Stream<AuthCredential> get authCredential =>
+      _authCredentialStreamController.stream;
+
+  @override
+  void signIn() async {
+    final clientId = await _loadDesktopClientId();
+    final credentials = await obtainAccessCredentialsViaUserConsent(
+      clientId,
+      scopes,
+      Client(),
+      (uri) {
+        launchUrl(Uri.parse(uri));
+      },
+    );
+
+    _authCredentialStreamController.sink.add(
+      GoogleAuthProvider.credential(
+        accessToken: credentials.accessToken.data,
+        idToken: credentials.idToken,
+      ),
+    );
+  }
+
+  @override
+  void signOut() {
+    // noop
+  }
 
   static Future<ClientId> _loadDesktopClientId() async {
     const clientSecret = String.fromEnvironment("GOOGLE_AUTH");
@@ -145,31 +235,5 @@ class Auth {
     }
 
     return desktopClientId!;
-  }
-
-  Future<void> restore() async {
-    if (!isDesktopDevice()) {
-      final googleSign = await GoogleSignIn(scopes: scopes).signInSilently();
-      _setGoogleSignInAccount(googleSign);
-    }
-  }
-
-  void _setGoogleSignInAccount(GoogleSignInAccount? account) async {
-    if (account != null) {
-      final auth = await account.authentication;
-      if (auth.accessToken != null) {
-        _setCredentials(auth.accessToken!, auth.idToken);
-      }
-    }
-  }
-
-  void _setAccessCredentials(AccessCredentials credentials) {
-    _setCredentials(credentials.accessToken.data, credentials.idToken);
-  }
-
-  void _setCredentials(String accessToken, String? idToken) {
-    FirebaseAuth.instance.signInWithCredential(
-      GoogleAuthProvider.credential(accessToken: accessToken, idToken: idToken),
-    );
   }
 }

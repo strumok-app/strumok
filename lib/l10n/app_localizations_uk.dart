@@ -218,7 +218,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get videoPlayerVideoTracks => 'Відео потоки';
 
   @override
-  String get settingsUnableDownloadNewVersion => 'Не вдається завантажити нову версію';
+  String get settingsUnableDownloadNewVersion =>
+      'Не вдається завантажити нову версію';
 
   @override
   String get settingsCheckForUpdate => 'Перевірити оновлення';
@@ -229,7 +230,8 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get settingsSuppliersAndRecommendations => 'Постачальники та Рекомендації';
+  String get settingsSuppliersAndRecommendations =>
+      'Постачальники та Рекомендації';
 
   @override
   String get mangaUnableToLoadPage => 'Неможливо відобразити сторінку';
@@ -295,7 +297,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get ffiLibInstalled => 'Модуль постачальників встановлений';
 
   @override
-  String get ffiLibInstallationFailed => 'Неможливо встановити модуль постачальників';
+  String get ffiLibInstallationFailed =>
+      'Неможливо встановити модуль постачальників';
 
   @override
   String get appUpdateFailed => 'Неможливо встановити нову версію';
