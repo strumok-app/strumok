@@ -35,7 +35,7 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
 
   int nextId = 1;
   bool permissionsGranted = false;
-  bool permissionsRequested = true;
+  bool permissionsRequested = false;
   final Map<String, int> notificationsIds = {};
   final Map<String, VoidCallback> listeners = {};
 
