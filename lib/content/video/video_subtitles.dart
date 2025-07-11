@@ -8,23 +8,9 @@ import 'package:rounded_background_text/rounded_background_text.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:subtitle/subtitle.dart';
 
-class WithSubtitles extends ConsumerWidget {
-  final Widget child;
+class PlayerSubtitles extends ConsumerWidget {
+  const PlayerSubtitles({super.key});
 
-  const WithSubtitles({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Stack(
-      children: [
-        Positioned.fill(child: _PlayerSubtitles()),
-        Positioned.fill(child: child),
-      ],
-    );
-  }
-}
-
-class _PlayerSubtitles extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final subtitleController = ref.watch(currentSubtitleControllerProvider);

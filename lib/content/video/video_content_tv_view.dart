@@ -30,9 +30,8 @@ class VideoContentTVView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Video(
       controller: videoController,
-      controls: (state) => VideoServersLoaderIndicator(
-        child: WithSubtitles(child: _renderControls(context, state)),
-      ),
+      controls: (state) =>
+          VideoPlayerControlsWrapper(child: _renderControls(context, state)),
     );
   }
 

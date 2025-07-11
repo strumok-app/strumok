@@ -94,12 +94,10 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       child: Video(
         key: videoStateKey,
         controller: widget.videoController,
-        controls: (state) => VideoServersLoaderIndicator(
-          child: WithSubtitles(
-            child: pipMode
-                ? PipVideoControls(state, onPipExit: _switchToPipMode)
-                : MaterialDesktopVideoControls(state),
-          ),
+        controls: (state) => VideoPlayerControlsWrapper(
+          child: pipMode
+              ? PipVideoControls(state, onPipExit: _switchToPipMode)
+              : MaterialDesktopVideoControls(state),
         ),
       ),
     );
