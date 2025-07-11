@@ -160,13 +160,13 @@ class _TrackChangeDialogState extends State<TrackChangeDialog> {
       return track.id;
     }
 
-    if (width >= 3840) return '4K (${width}p)';
-    if (width >= 2560) return '1440p (${width}p)';
-    if (width >= 1920) return '1080p (${width}p)';
-    if (width >= 1280) return '720p (${width}p)';
-    if (width >= 854) return '480p (${width}p)';
-    if (width >= 640) return '360p (${width}p)';
-    if (width >= 426) return '240p (${width}p)';
+    if (width >= 3840) return '4K';
+    if (width >= 2560) return '1440p';
+    if (width >= 1920) return '1080p';
+    if (width >= 1280) return '720p';
+    if (width >= 854) return '480p';
+    if (width >= 640) return '360p';
+    if (width >= 426) return '240p';
 
     return '${width}p';
   }
@@ -197,8 +197,8 @@ class TrackSelector extends ConsumerWidget {
 
   bool _hasAnyTracks(Tracks tracks) {
     final hasAudioLanguage =
-        tracks.audio.where((track) => track.language != null).isNotEmpty;
-    final hasMultipleVideoTracks = tracks.video.length > 2;
+        tracks.audio.where((track) => track.language != null).length > 3;
+    final hasMultipleVideoTracks = tracks.video.length > 3;
     return hasAudioLanguage || hasMultipleVideoTracks;
   }
 
