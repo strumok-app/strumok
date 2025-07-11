@@ -164,7 +164,7 @@ class AndroidPlatformSignIn extends PlatformSignIn {
     await GoogleSignIn.instance.disconnect();
   }
 
-  void _handleAuthenticationError(Error error) {
+  void _handleAuthenticationError(dynamic error) {
     logger.e("Google suck dick again: $error");
     traceError(error: error);
   }

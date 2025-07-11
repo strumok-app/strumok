@@ -34,7 +34,8 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
   final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   int nextId = 1;
-  bool notificationsGranted = false;
+  bool permissionsGranted = false;
+  bool permissionsRequested = true;
   final Map<String, int> notificationsIds = {};
   final Map<String, VoidCallback> listeners = {};
 
@@ -56,19 +57,27 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
 
   Future<void> _requestPermissions() async {
     if (Platform.isAndroid) {
-      final androidImplementation =
-          localNotificationsPlugin
-              .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin
-              >();
+      if (permissionsRequested) {
+        return;
+      }
 
-      notificationsGranted =
-          await androidImplementation?.areNotificationsEnabled() ?? false;
+      final androidImplementation = localNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
 
-      if (!notificationsGranted) {
-        notificationsGranted =
-            await androidImplementation?.requestNotificationsPermission() ??
-            false;
+      permissionsRequested = true;
+      try {
+        permissionsGranted =
+            await androidImplementation?.areNotificationsEnabled() ?? false;
+
+        if (!permissionsGranted) {
+          permissionsGranted =
+              await androidImplementation?.requestNotificationsPermission() ??
+              false;
+        }
+      } finally {
+        permissionsRequested = false;
       }
     }
   }
@@ -117,7 +126,7 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
 
     if (request is ContentDownloadRequest) {
       // request notification permission on download start
-      if (!notificationsGranted) {
+      if (!permissionsGranted) {
         if (downloadTask.status.value == DownloadStatus.started) {
           await _requestPermissions();
         } else {
@@ -181,12 +190,11 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
   }
 
   void _showDownloadingNotificationsGroup() async {
-    final activeNotifications =
-        await localNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin
-            >()!
-            .getActiveNotifications();
+    final activeNotifications = await localNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()!
+        .getActiveNotifications();
 
     if (activeNotifications.where((n) => n.id == 0).isNotEmpty) {
       return;
