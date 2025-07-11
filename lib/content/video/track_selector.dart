@@ -197,8 +197,8 @@ class TrackSelector extends ConsumerWidget {
 
   bool _hasAnyTracks(Tracks tracks) {
     final hasAudioLanguage =
-        tracks.audio.where((track) => track.language != null).length > 2;
-    final hasMultipleVideoTracks = tracks.video.length > 3;
+        tracks.audio.where((track) => track.language != null).isNotEmpty;
+    final hasMultipleVideoTracks = tracks.video.length > 2;
     return hasAudioLanguage || hasMultipleVideoTracks;
   }
 
