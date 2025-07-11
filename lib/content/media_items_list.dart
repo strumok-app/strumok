@@ -194,17 +194,16 @@ class _MediaItemsList extends HookWidget {
           ),
           Expanded(
             child: TabBarView(
-              children:
-                  groups.values
-                      .map(
-                        (e) => _MediaItemsListSection(
-                          list: e,
-                          contentProgress: contentProgress,
-                          onSelect: onSelect,
-                          itemBuilder: itemBuilder,
-                        ),
-                      )
-                      .toList(),
+              children: groups.values
+                  .map(
+                    (e) => _MediaItemsListSection(
+                      list: e,
+                      contentProgress: contentProgress,
+                      onSelect: onSelect,
+                      itemBuilder: itemBuilder,
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ],
@@ -281,12 +280,12 @@ class MediaItemsListItem extends HookWidget {
     final image = item.image;
     final colorScheme = theme.colorScheme;
     final accentColor = colorScheme.surfaceTint.withValues(alpha: 0.5);
-    final focusColor =
-        focused.value ? colorScheme.onSurfaceVariant : accentColor;
-    final backgroundColor =
-        focused.value
-            ? colorScheme.onSurface.withValues(alpha: 0.15)
-            : Colors.transparent;
+    final focusColor = focused.value
+        ? colorScheme.onSurfaceVariant
+        : accentColor;
+    final backgroundColor = focused.value
+        ? colorScheme.onSurface.withValues(alpha: 0.15)
+        : Colors.transparent;
     final isTv = TVDetector.isTV;
 
     return Card.filled(
@@ -314,16 +313,15 @@ class MediaItemsListItem extends HookWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    child:
-                        selected
-                            ? Center(
-                              child: Icon(
-                                selectIcon,
-                                color: Colors.white,
-                                size: 48,
-                              ),
-                            )
-                            : const SizedBox.shrink(),
+                    child: selected
+                        ? Center(
+                            child: Icon(
+                              selectIcon,
+                              color: Colors.white,
+                              size: 48,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
                 ),
               Expanded(
@@ -357,7 +355,10 @@ class MediaItemsListItem extends HookWidget {
                 ),
               ),
               if (isTv && trailing != null)
-                Container(color: accentColor, child: Center(child: trailing!)),
+                Container(
+                  color: accentColor,
+                  child: Center(child: trailing!),
+                ),
             ],
           ),
         ),

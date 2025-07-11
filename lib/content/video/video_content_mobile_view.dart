@@ -43,7 +43,9 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
         key: videoStateKey,
         pauseUponEnteringBackgroundMode: false,
         controller: widget.videoController,
-        controls: (state) => WithSubtitles(child: MaterialVideoControls(state)),
+        controls: (state) => VideoServersLoaderIndicator(
+          child: WithSubtitles(child: MaterialVideoControls(state)),
+        ),
       ),
     );
   }

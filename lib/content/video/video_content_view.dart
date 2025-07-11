@@ -58,7 +58,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
   late ProviderSubscription _subscription;
   late List<StreamSubscription> _streamSubscriptions;
 
-  final ValueNotifier<bool> _isLoading = ValueNotifier(false);
+  final ValueNotifier<bool> isLoading = ValueNotifier(false);
   final List<int> _shuffledPositions = [];
 
   List<ContentMediaItemSource> _currentSources = const [];
@@ -152,7 +152,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
       final itemIdx = progress.currentItem;
       final sourceName = progress.currentSourceName;
 
-      _isLoading.value = true;
+      isLoading.value = true;
       await _player.stop();
 
       final item = widget.mediaItems[itemIdx];
@@ -214,7 +214,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
       );
 
       logger.i("Starting video: $media");
-      _isLoading.value = false;
+      isLoading.value = false;
       _currentSources = sources;
 
       await _player.open(media);
@@ -339,31 +339,6 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-
-    return Container(
-      height: size.height,
-      width: size.width,
-      color: Colors.black,
-      child: Stack(
-        children: [
-          _buildView(),
-          ValueListenableBuilder(
-            valueListenable: _isLoading,
-            builder: (context, value, child) {
-              return value
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    )
-                  : const SizedBox.shrink();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildView() {
     if (TVDetector.isTV) {
       return _buildTvView();
     } else if (Platform.isAndroid || Platform.isIOS) {

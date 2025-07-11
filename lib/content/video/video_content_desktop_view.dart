@@ -39,13 +39,13 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
     const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () =>
         widget.player.playOrPause(),
     const SingleActivator(LogicalKeyboardKey.mediaTrackNext):
-        VideoContentView.currentState!.nextItem,
+        VideoContentView.currentState.nextItem,
     const SingleActivator(LogicalKeyboardKey.bracketLeft):
-        VideoContentView.currentState!.nextItem,
+        VideoContentView.currentState.nextItem,
     const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious):
-        VideoContentView.currentState!.prevItem,
+        VideoContentView.currentState.prevItem,
     const SingleActivator(LogicalKeyboardKey.bracketRight):
-        VideoContentView.currentState!.prevItem,
+        VideoContentView.currentState.prevItem,
     const SingleActivator(LogicalKeyboardKey.space): () =>
         widget.player.playOrPause(),
     const SingleActivator(LogicalKeyboardKey.keyJ): () {
@@ -94,10 +94,12 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       child: Video(
         key: videoStateKey,
         controller: widget.videoController,
-        controls: (state) => WithSubtitles(
-          child: pipMode
-              ? PipVideoControls(state, onPipExit: _switchToPipMode)
-              : MaterialDesktopVideoControls(state),
+        controls: (state) => VideoServersLoaderIndicator(
+          child: WithSubtitles(
+            child: pipMode
+                ? PipVideoControls(state, onPipExit: _switchToPipMode)
+                : MaterialDesktopVideoControls(state),
+          ),
         ),
       ),
     );

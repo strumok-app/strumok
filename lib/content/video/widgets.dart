@@ -101,3 +101,35 @@ class PlayerErrorPopup extends ConsumerWidget {
     );
   }
 }
+
+class VideoServersLoaderIndicator extends StatelessWidget {
+  final Widget child;
+
+  const VideoServersLoaderIndicator({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+
+    return Container(
+      height: size.height,
+      width: size.width,
+      color: Colors.black,
+      child: Stack(
+        children: [
+          child,
+          ValueListenableBuilder(
+            valueListenable: VideoContentView.currentState.isLoading,
+            builder: (context, value, child) {
+              return value
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    )
+                  : const SizedBox.shrink();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
