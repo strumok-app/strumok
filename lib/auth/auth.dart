@@ -148,8 +148,6 @@ class AndroidPlatformSignIn extends PlatformSignIn {
         signIn.authenticationEvents
             .listen(_handleAuthenticationEvent)
             .onError(_handleAuthenticationError);
-
-        // signIn.attemptLightweightAuthentication();
       }),
     );
   }
