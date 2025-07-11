@@ -57,7 +57,7 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
 
   Future<void> _requestPermissions() async {
     if (Platform.isAndroid) {
-      if (permissionsRequested) {
+      if (!permissionsRequested) {
         return;
       }
 
@@ -126,8 +126,9 @@ class _GlobalNotificationsState extends ConsumerState<GlobalNotifications> {
 
     if (request is ContentDownloadRequest) {
       // request notification permission on download start
-      if (!permissionsGranted) {
-        if (downloadTask.status.value == DownloadStatus.started) {
+
+      if (downloadTask.status.value == DownloadStatus.started) {
+        if (!permissionsGranted) {
           await _requestPermissions();
         } else {
           return;

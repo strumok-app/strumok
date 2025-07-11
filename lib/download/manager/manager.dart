@@ -33,7 +33,7 @@ class DownloadManager {
     final task = DownloadTask(req);
     _requests.add(req);
     _downloads[req.id] = task;
-    _downloadsUpdate.add(task);
+    _downloadsUpdate.sink.add(task);
 
     _startExecution();
 
@@ -42,9 +42,10 @@ class DownloadManager {
 
   void cancel(String id) {
     _requests.removeWhere((it) => it.id == id);
-    final task = _downloads[id];
+    final task = _downloads.remove(id);
     if (task != null) {
       task.status.value = DownloadStatus.canceled;
+      _downloadsUpdate.sink.add(task);
     }
   }
 
@@ -72,7 +73,7 @@ class DownloadManager {
     _runningTasks--;
     final task = _downloads.remove(request.id);
     if (task != null) {
-      _downloadsUpdate.add(task);
+      _downloadsUpdate.sink.add(task);
     }
     _startExecution();
   }
