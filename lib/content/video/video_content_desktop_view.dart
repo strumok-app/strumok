@@ -1,6 +1,5 @@
 import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_content_view.dart';
-import 'package:strumok/content/video/video_context.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
@@ -33,22 +32,22 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
   late final GlobalKey<VideoState> videoStateKey = GlobalKey<VideoState>();
 
   late final _keyboardShortcuts = {
-    const SingleActivator(LogicalKeyboardKey.mediaPlay):
-        () => widget.player.play(),
-    const SingleActivator(LogicalKeyboardKey.mediaPause):
-        () => widget.player.pause(),
-    const SingleActivator(LogicalKeyboardKey.mediaPlayPause):
-        () => widget.player.playOrPause(),
+    const SingleActivator(LogicalKeyboardKey.mediaPlay): () =>
+        widget.player.play(),
+    const SingleActivator(LogicalKeyboardKey.mediaPause): () =>
+        widget.player.pause(),
+    const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () =>
+        widget.player.playOrPause(),
     const SingleActivator(LogicalKeyboardKey.mediaTrackNext):
-        VideoContext.of(context).next,
+        VideoContentView.currentState!.nextItem,
     const SingleActivator(LogicalKeyboardKey.bracketLeft):
-        VideoContext.of(context).next,
+        VideoContentView.currentState!.nextItem,
     const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious):
-        VideoContext.of(context).prev,
+        VideoContentView.currentState!.prevItem,
     const SingleActivator(LogicalKeyboardKey.bracketRight):
-        VideoContext.of(context).next,
-    const SingleActivator(LogicalKeyboardKey.space):
-        () => widget.player.playOrPause(),
+        VideoContentView.currentState!.prevItem,
+    const SingleActivator(LogicalKeyboardKey.space): () =>
+        widget.player.playOrPause(),
     const SingleActivator(LogicalKeyboardKey.keyJ): () {
       widget.player.safeSeek(
         widget.player.state.position - const Duration(seconds: 60),
@@ -78,12 +77,12 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       widget.player.setVolume(volume.clamp(0.0, 100.0));
     },
     // dirty hack with video state...
-    const SingleActivator(LogicalKeyboardKey.keyF):
-        () => videoStateKey.currentState?.toggleFullscreen(),
-    const SingleActivator(LogicalKeyboardKey.enter):
-        () => videoStateKey.currentState?.toggleFullscreen(),
-    const SingleActivator(LogicalKeyboardKey.escape):
-        () => videoStateKey.currentState?.exitFullscreen(),
+    const SingleActivator(LogicalKeyboardKey.keyF): () =>
+        videoStateKey.currentState?.toggleFullscreen(),
+    const SingleActivator(LogicalKeyboardKey.enter): () =>
+        videoStateKey.currentState?.toggleFullscreen(),
+    const SingleActivator(LogicalKeyboardKey.escape): () =>
+        videoStateKey.currentState?.exitFullscreen(),
   };
 
   @override
@@ -95,13 +94,11 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       child: Video(
         key: videoStateKey,
         controller: widget.videoController,
-        controls:
-            (state) => WithSubtitles(
-              child:
-                  pipMode
-                      ? PipVideoControls(state, onPipExit: _switchToPipMode)
-                      : MaterialDesktopVideoControls(state),
-            ),
+        controls: (state) => WithSubtitles(
+          child: pipMode
+              ? PipVideoControls(state, onPipExit: _switchToPipMode)
+              : MaterialDesktopVideoControls(state),
+        ),
       ),
     );
   }

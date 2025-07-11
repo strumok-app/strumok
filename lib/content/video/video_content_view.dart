@@ -10,7 +10,6 @@ import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_content_desktop_view.dart';
 import 'package:strumok/content/video/video_content_mobile_view.dart';
 import 'package:strumok/content/video/video_content_tv_view.dart';
-import 'package:strumok/content/video/video_context.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/trace.dart';
@@ -36,20 +35,24 @@ extension PlayerExt on Player {
 }
 
 class VideoContentView extends ConsumerStatefulWidget {
+  static final _key = GlobalKey<VideoContentViewState>();
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
 
-  const VideoContentView({
-    super.key,
-    required this.contentDetails,
-    required this.mediaItems,
-  });
+  VideoContentView({required this.contentDetails, required this.mediaItems})
+    : super(key: _key);
+
+  static VideoContentViewState get currentState => _key.currentState!;
+  static ContentDetails get currentContentDetails =>
+      (_key.currentWidget as VideoContentView).contentDetails;
+  static List<ContentMediaItem> get currentMediaItems =>
+      (_key.currentWidget as VideoContentView).mediaItems;
 
   @override
-  ConsumerState<VideoContentView> createState() => _VideoContentViewState();
+  ConsumerState<VideoContentView> createState() => VideoContentViewState();
 }
 
-class _VideoContentViewState extends ConsumerState<VideoContentView> {
+class VideoContentViewState extends ConsumerState<VideoContentView> {
   final _player = Player();
   late final VideoController _videoController;
   late ProviderSubscription _subscription;
@@ -267,10 +270,10 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
     super.dispose();
   }
 
-  void _onNextItem() {
+  void nextItem() {
     if (AppPreferences.videoPlayerSettingShuffleMode) {
       final shuffledPosition = _getShuffledPosition();
-      _onSelectItem(shuffledPosition);
+      selectItem(shuffledPosition);
       return;
     }
 
@@ -279,24 +282,24 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
         .value!;
 
     // asyncValue.whenData((value) {
-    _onSelectItem(value.currentItem + 1);
+    selectItem(value.currentItem + 1);
     // });
   }
 
-  void _onPrevItem() {
+  void prevItem() {
     final value = ref
         .read(collectionItemProvider(widget.contentDetails))
         .value!;
 
     // asyncValue.whenData((value) {
-    _onSelectItem(value.currentItem - 1);
+    selectItem(value.currentItem - 1);
     // });
   }
 
   void _onVideoEnds() async {
     switch (AppPreferences.videoPlayerSettingEndsAction) {
       case OnVideoEndsAction.playNext:
-        _onNextItem();
+        nextItem();
       case OnVideoEndsAction.playAgain:
         await _player.seek(Duration.zero);
         await _player.play();
@@ -304,7 +307,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
     }
   }
 
-  void _onSelectItem(int itemIdx) {
+  void selectItem(int itemIdx) {
     if (!_isValidItemIdx(itemIdx)) {
       return;
     }
@@ -344,14 +347,7 @@ class _VideoContentViewState extends ConsumerState<VideoContentView> {
       color: Colors.black,
       child: Stack(
         children: [
-          VideoContext(
-            contentDetails: widget.contentDetails,
-            mediaItems: widget.mediaItems,
-            next: _onNextItem,
-            prev: _onPrevItem,
-            selectItem: _onSelectItem,
-            child: _buildView(),
-          ),
+          _buildView(),
           ValueListenableBuilder(
             valueListenable: _isLoading,
             builder: (context, value, child) {

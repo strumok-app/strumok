@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_content_view.dart';
-import 'package:strumok/content/video/video_context.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
@@ -326,9 +325,8 @@ class _AndroidTVBottomBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final videoContext = VideoContext.of(context);
-    final contentDetails = videoContext.contentDetails;
-    final mediaItems = videoContext.mediaItems;
+    final contentDetails = VideoContentView.currentContentDetails;
+    final mediaItems = VideoContentView.currentMediaItems;
 
     final currentProgress = ref.watch(collectionItemProvider(contentDetails));
 

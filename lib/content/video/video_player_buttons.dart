@@ -7,7 +7,7 @@ import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/vi
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
-import 'package:strumok/content/video/video_context.dart';
+import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/widgets.dart';
 
@@ -38,12 +38,12 @@ class PlayerPlaylistButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final videoContext = VideoContext.of(context);
-    final contentDetails = videoContext.contentDetails;
-    final mediaItems = videoContext.mediaItems;
+    final contentDetails = VideoContentView.currentContentDetails;
+    final mediaItems = VideoContentView.currentMediaItems;
 
-    final collectionItem =
-        ref.watch(collectionItemProvider(contentDetails)).valueOrNull;
+    final collectionItem = ref
+        .watch(collectionItemProvider(contentDetails))
+        .valueOrNull;
 
     if (collectionItem == null || mediaItems.length < 2) {
       return const SizedBox.shrink();
@@ -56,7 +56,8 @@ class PlayerPlaylistButton extends ConsumerWidget {
             title: AppLocalizations.of(context)!.episodesList,
             mediaItems: mediaItems,
             contentProgress: collectionItem,
-            onSelect: (item) => videoContext.selectItem(item.number),
+            onSelect: (item) =>
+                VideoContentView.currentState.selectItem(item.number),
             itemBuilder: playlistItemBuilder(contentDetails),
           ),
         );
@@ -77,13 +78,11 @@ class SkipPrevButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final videoContext = VideoContext.of(context);
-    final contentDetails = videoContext.contentDetails;
+    final contentDetails = VideoContentView.currentContentDetails;
 
-    final currentItem =
-        ref
-            .watch(collectionItemCurrentItemProvider(contentDetails))
-            .valueOrNull;
+    final currentItem = ref
+        .watch(collectionItemCurrentItemProvider(contentDetails))
+        .valueOrNull;
 
     final shuffleMode = ref.watch(shuffleModeSettingsProvider);
 
@@ -95,7 +94,9 @@ class SkipPrevButton extends ConsumerWidget {
 
     return IconButton(
       focusNode: enabled ? null : FocusNode(canRequestFocus: false),
-      onPressed: enabled ? () => videoContext.prev() : null,
+      onPressed: enabled
+          ? () => VideoContentView.currentState.prevItem()
+          : null,
       icon: const Icon(Icons.skip_previous),
       iconSize: iconSize,
       color: Colors.white,
@@ -112,14 +113,12 @@ class SkipNextButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final videoContext = VideoContext.of(context);
-    final contentDetails = videoContext.contentDetails;
-    final mediaItems = videoContext.mediaItems;
+    final contentDetails = VideoContentView.currentContentDetails;
+    final mediaItems = VideoContentView.currentMediaItems;
 
-    final currentItem =
-        ref
-            .watch(collectionItemCurrentItemProvider(contentDetails))
-            .valueOrNull;
+    final currentItem = ref
+        .watch(collectionItemCurrentItemProvider(contentDetails))
+        .valueOrNull;
 
     final shuffleMode = ref.watch(shuffleModeSettingsProvider);
 
@@ -130,7 +129,9 @@ class SkipNextButton extends ConsumerWidget {
     final enabled = currentItem < mediaItems.length - 1 || shuffleMode;
 
     return IconButton(
-      onPressed: enabled ? () => videoContext.next() : null,
+      onPressed: enabled
+          ? () => VideoContentView.currentState.nextItem()
+          : null,
       padding: EdgeInsets.zero,
       icon: const Icon(Icons.skip_next),
       iconSize: iconSize,

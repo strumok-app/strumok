@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
-import 'package:strumok/content/video/video_context.dart';
+import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/offline/media_item_download.dart';
 import 'package:strumok/widgets/dropdown.dart';
@@ -16,14 +16,12 @@ class MediaTitle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final videoContex = VideoContext.of(context);
-    final contentDetails = videoContex.contentDetails;
-    final playlistSize = videoContex.mediaItems.length;
+    final contentDetails = VideoContentView.currentContentDetails;
+    final playlistSize = VideoContentView.currentMediaItems.length;
 
-    final currentItem =
-        ref
-            .watch(collectionItemCurrentItemProvider(contentDetails))
-            .valueOrNull;
+    final currentItem = ref
+        .watch(collectionItemCurrentItemProvider(contentDetails))
+        .valueOrNull;
 
     if (currentItem == null) {
       return const SizedBox.shrink();
@@ -84,24 +82,22 @@ class PlayerErrorPopup extends ConsumerWidget {
     }
 
     return Dropdown(
-      anchorBuilder:
-          (context, onPressed, child) => IconButton(
-            onPressed: onPressed,
-            icon: const Icon(Icons.warning_rounded),
-            color: Colors.white,
-            disabledColor: Colors.white.withValues(alpha: 0.7),
-          ),
-      menuChildrenBuilder:
-          (focusNode) => [
-            ...errors.reversed
-                .take(10)
-                .mapIndexed(
-                  (idx, error) => MenuItemButton(
-                    focusNode: idx == 0 ? focusNode : null,
-                    child: Text(error),
-                  ),
-                ),
-          ],
+      anchorBuilder: (context, onPressed, child) => IconButton(
+        onPressed: onPressed,
+        icon: const Icon(Icons.warning_rounded),
+        color: Colors.white,
+        disabledColor: Colors.white.withValues(alpha: 0.7),
+      ),
+      menuChildrenBuilder: (focusNode) => [
+        ...errors.reversed
+            .take(10)
+            .mapIndexed(
+              (idx, error) => MenuItemButton(
+                focusNode: idx == 0 ? focusNode : null,
+                child: Text(error),
+              ),
+            ),
+      ],
     );
   }
 }

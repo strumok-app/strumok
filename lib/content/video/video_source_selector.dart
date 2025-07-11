@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/model.dart';
-import 'package:strumok/content/video/video_context.dart';
+import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/utils/visual.dart';
 
@@ -14,19 +14,17 @@ class SourceSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final videoContext = VideoContext.of(context);
-    final contentDetails = videoContext.contentDetails;
-    final mediaItems = videoContext.mediaItems;
+    final contentDetails = VideoContentView.currentContentDetails;
+    final mediaItems = VideoContentView.currentMediaItems;
 
     return IconButton(
       onPressed: () {
         showDialog(
           context: context,
-          builder:
-              (context) => _SourceSelectDialog(
-                mediaItems: mediaItems,
-                contentDetails: contentDetails,
-              ),
+          builder: (context) => _SourceSelectDialog(
+            mediaItems: mediaItems,
+            contentDetails: contentDetails,
+          ),
         );
       },
       tooltip: AppLocalizations.of(context)!.videoPlayerBtnHintServers,
@@ -60,15 +58,13 @@ class _SourceSelectDialog extends ConsumerWidget {
             model: model,
           );
         },
-        loading:
-            () => const SizedBox(
-              width: 60,
-              height: 60,
-              child: Center(child: CircularProgressIndicator()),
-            ),
-        error:
-            (error, stackTrace) =>
-                Text(AppLocalizations.of(context)!.videoNoSources),
+        loading: () => const SizedBox(
+          width: 60,
+          height: 60,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+        error: (error, stackTrace) =>
+            Text(AppLocalizations.of(context)!.videoNoSources),
       ),
     );
   }
@@ -248,10 +244,9 @@ class _SourcesList extends ConsumerWidget {
             (idx, source) => ListTile(
               visualDensity: VisualDensity.compact,
               leading: sourceIcon,
-              trailing:
-                  currentSourceName == source.description
-                      ? const Icon(Icons.check)
-                      : null,
+              trailing: currentSourceName == source.description
+                  ? const Icon(Icons.check)
+                  : null,
               onTap: () => onSelect(source),
               title: Text(
                 source.description,
