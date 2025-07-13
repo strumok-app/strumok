@@ -118,9 +118,9 @@ Future<Set<String>> collectionItemsSuppliers(Ref ref) async {
 Future<List<MediaCollectionItem>> collectionActiveItems(Ref ref) async {
   ref.watch(collectionChangesProvider);
 
-  final repository = ref.watch(collectionServiceProvider);
+  final service = ref.watch(collectionServiceProvider);
 
-  final collectionItems = await repository.search(
+  final collectionItems = await service.search(
     status: {
       MediaCollectionItemStatus.inProgress,
       MediaCollectionItemStatus.latter,
@@ -193,8 +193,9 @@ class CollectionFilter extends _$CollectionFilter {
   }
 
   void toggleAllSuppliers(bool select) {
-    final newSupplierNames =
-        select ? ContentSuppliers().suppliersName : <String>{};
+    final newSupplierNames = select
+        ? ContentSuppliers().suppliersName
+        : <String>{};
     state = state.copyWith(suppliersNames: newSupplierNames);
   }
 }

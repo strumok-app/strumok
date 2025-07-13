@@ -16,16 +16,15 @@ class AppPreferences {
     instance = await SharedPreferences.getInstance();
   }
 
-  static Set<ContentLanguage>? get selectedContentLanguage =>
-      instance
-          .getStringList("selected_content_language")
-          ?.map(
-            (value) => ContentLanguage.values.firstWhereOrNull(
-              (lang) => lang.name == value,
-            ),
-          )
-          .nonNulls
-          .toSet();
+  static Set<ContentLanguage>? get selectedContentLanguage => instance
+      .getStringList("selected_content_language")
+      ?.map(
+        (value) => ContentLanguage.values.firstWhereOrNull(
+          (lang) => lang.name == value,
+        ),
+      )
+      .nonNulls
+      .toSet();
 
   static set selectedContentLanguage(Set<ContentLanguage>? value) =>
       instance.setStringList(
@@ -33,16 +32,14 @@ class AppPreferences {
         value?.map((lang) => lang.name).toList() ?? List.empty(),
       );
 
-  static Set<ContentType>? get searchContentType =>
-      instance
-          .getStringList("selected_content_type")
-          ?.map(
-            (value) => ContentType.values.firstWhereOrNull(
-              (type) => type.name == value,
-            ),
-          )
-          .nonNulls
-          .toSet();
+  static Set<ContentType>? get searchContentType => instance
+      .getStringList("selected_content_type")
+      ?.map(
+        (value) =>
+            ContentType.values.firstWhereOrNull((type) => type.name == value),
+      )
+      .nonNulls
+      .toSet();
 
   static set searchContentType(Set<ContentType>? value) =>
       instance.setStringList(
@@ -59,22 +56,19 @@ class AppPreferences {
         value?.toList() ?? List.empty(),
       );
 
-  static set userLanguage(String? lang) =>
-      lang != null
-          ? instance.setString("user_language", lang)
-          : instance.remove("user_language");
+  static set userLanguage(String? lang) => lang != null
+      ? instance.setString("user_language", lang)
+      : instance.remove("user_language");
 
   static String? get userLanguage => instance.getString("user_language");
 
-  static set themeBrightness(Brightness? brightness) =>
-      brightness != null
-          ? instance.setString("theme_brightness", brightness.name)
-          : instance.remove("theme_brightness");
+  static set themeBrightness(Brightness? brightness) => brightness != null
+      ? instance.setString("theme_brightness", brightness.name)
+      : instance.remove("theme_brightness");
 
-  static Brightness? get themeBrightness =>
-      Brightness.values
-          .where((type) => type.name == instance.getString("theme_brightness"))
-          .firstOrNull;
+  static Brightness? get themeBrightness => Brightness.values
+      .where((type) => type.name == instance.getString("theme_brightness"))
+      .firstOrNull;
 
   static set themeColor(Color color) =>
       instance.setInt("theme_color", color.toARGB32());
@@ -162,7 +156,7 @@ class AppPreferences {
           .where(
             (startFrom) =>
                 startFrom.name ==
-                instance.getString("video_player_setting_star_from"),
+                instance.getString("video_player_setting_start_from"),
           )
           .firstOrNull ??
       StarVideoPosition.fromRemembered;
