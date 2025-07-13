@@ -1,9 +1,9 @@
-## [1.19.2](https://github.com/strumok-app/strumok/compare/v1.19.1...v1.19.2) (2025-07-11)
+## [1.19.3](https://github.com/strumok-app/strumok/compare/v1.19.2...v1.19.3) (2025-07-13)
 
 
 ### Bug Fixes
 
-* tracks naming ([e7fef09](https://github.com/strumok-app/strumok/commit/e7fef0926538dac7c9e1dd6c67e2502502a0cb37))
+* start position switcher ([f78b765](https://github.com/strumok-app/strumok/commit/f78b765364b194923dc0c95f3b78bddfdf57a9c9))
 
 
 
