@@ -83,10 +83,9 @@ class SourceSelectorProvider
         ),
         from: sourceSelectorProvider,
         name: r'sourceSelectorProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$sourceSelectorHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$sourceSelectorHash,
         dependencies: SourceSelectorFamily._dependencies,
         allTransitiveDependencies:
             SourceSelectorFamily._allTransitiveDependencies,
@@ -173,25 +172,26 @@ class _SourceSelectorProviderElement
 }
 
 String _$currentSubtitleControllerHash() =>
-    r'008f1addac17540c90b447bd1d6ab1a52d6c09ed';
+    r'07944374580991b08ac60e8943345a25452d080e';
 
 /// See also [CurrentSubtitleController].
 @ProviderFor(CurrentSubtitleController)
-final currentSubtitleControllerProvider = AutoDisposeNotifierProvider<
-  CurrentSubtitleController,
-  SubtitleController?
->.internal(
-  CurrentSubtitleController.new,
-  name: r'currentSubtitleControllerProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
+final currentSubtitleControllerProvider =
+    AutoDisposeAsyncNotifierProvider<
+      CurrentSubtitleController,
+      SubtitleController?
+    >.internal(
+      CurrentSubtitleController.new,
+      name: r'currentSubtitleControllerProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$currentSubtitleControllerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
-typedef _$CurrentSubtitleController = AutoDisposeNotifier<SubtitleController?>;
+typedef _$CurrentSubtitleController =
+    AutoDisposeAsyncNotifier<SubtitleController?>;
 String _$playerErrorsHash() => r'0060fd05af065b9e9b4740b8953e92b9cf6e6ebb';
 
 /// See also [PlayerErrors].
@@ -200,10 +200,9 @@ final playerErrorsProvider =
     AutoDisposeNotifierProvider<PlayerErrors, List<String>>.internal(
       PlayerErrors.new,
       name: r'playerErrorsProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$playerErrorsHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$playerErrorsHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -217,10 +216,9 @@ final subtitlesOffsetProvider =
     AutoDisposeNotifierProvider<SubtitlesOffset, Duration>.internal(
       SubtitlesOffset.new,
       name: r'subtitlesOffsetProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$subtitlesOffsetHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$subtitlesOffsetHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -235,10 +233,9 @@ final shuffleModeSettingsProvider =
     AutoDisposeNotifierProvider<ShuffleModeSettings, bool>.internal(
       ShuffleModeSettings.new,
       name: r'shuffleModeSettingsProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$shuffleModeSettingsHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$shuffleModeSettingsHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -249,19 +246,19 @@ String _$onVideoEndsActionSettingsHash() =>
 
 /// See also [OnVideoEndsActionSettings].
 @ProviderFor(OnVideoEndsActionSettings)
-final onVideoEndsActionSettingsProvider = AutoDisposeNotifierProvider<
-  OnVideoEndsActionSettings,
-  OnVideoEndsAction
->.internal(
-  OnVideoEndsActionSettings.new,
-  name: r'onVideoEndsActionSettingsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
+final onVideoEndsActionSettingsProvider =
+    AutoDisposeNotifierProvider<
+      OnVideoEndsActionSettings,
+      OnVideoEndsAction
+    >.internal(
+      OnVideoEndsActionSettings.new,
+      name: r'onVideoEndsActionSettingsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$onVideoEndsActionSettingsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$OnVideoEndsActionSettings = AutoDisposeNotifier<OnVideoEndsAction>;
 String _$starVideoPositionSettingsHash() =>
@@ -269,19 +266,19 @@ String _$starVideoPositionSettingsHash() =>
 
 /// See also [StarVideoPositionSettings].
 @ProviderFor(StarVideoPositionSettings)
-final starVideoPositionSettingsProvider = AutoDisposeNotifierProvider<
-  StarVideoPositionSettings,
-  StarVideoPosition
->.internal(
-  StarVideoPositionSettings.new,
-  name: r'starVideoPositionSettingsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
+final starVideoPositionSettingsProvider =
+    AutoDisposeNotifierProvider<
+      StarVideoPositionSettings,
+      StarVideoPosition
+    >.internal(
+      StarVideoPositionSettings.new,
+      name: r'starVideoPositionSettingsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$starVideoPositionSettingsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$StarVideoPositionSettings = AutoDisposeNotifier<StarVideoPosition>;
 String _$fixedPositionSettingsHash() =>
@@ -293,10 +290,9 @@ final fixedPositionSettingsProvider =
     AutoDisposeNotifierProvider<FixedPositionSettings, int>.internal(
       FixedPositionSettings.new,
       name: r'fixedPositionSettingsProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$fixedPositionSettingsHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$fixedPositionSettingsHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );

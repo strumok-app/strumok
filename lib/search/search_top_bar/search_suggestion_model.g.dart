@@ -10,8 +10,9 @@ SearchSuggestion _$SearchSuggestionFromJson(Map<String, dynamic> json) =>
     SearchSuggestion(
       text: json['text'] as String,
       lastSeen: DateTime.parse(json['lastSeen'] as String),
-      tokens:
-          (json['tokens'] as List<dynamic>).map((e) => e as String).toList(),
+      tokens: (json['tokens'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$SearchSuggestionToJson(SearchSuggestion instance) =>

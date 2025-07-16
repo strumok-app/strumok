@@ -89,17 +89,15 @@ class MediaItemDownloadProvider
   /// See also [MediaItemDownload].
   MediaItemDownloadProvider(String supplier, String id, int number)
     : this._internal(
-        () =>
-            MediaItemDownload()
-              ..supplier = supplier
-              ..id = id
-              ..number = number,
+        () => MediaItemDownload()
+          ..supplier = supplier
+          ..id = id
+          ..number = number,
         from: mediaItemDownloadProvider,
         name: r'mediaItemDownloadProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$mediaItemDownloadHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$mediaItemDownloadHash,
         dependencies: MediaItemDownloadFamily._dependencies,
         allTransitiveDependencies:
             MediaItemDownloadFamily._allTransitiveDependencies,
@@ -136,11 +134,10 @@ class MediaItemDownloadProvider
     return ProviderOverride(
       origin: this,
       override: MediaItemDownloadProvider._internal(
-        () =>
-            create()
-              ..supplier = supplier
-              ..id = id
-              ..number = number,
+        () => create()
+          ..supplier = supplier
+          ..id = id
+          ..number = number,
         from: from,
         name: null,
         dependencies: null,

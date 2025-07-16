@@ -68,6 +68,8 @@
     "videoPlayerBtnHintTracks": "Videos and audio tracks",
     "videoPlayerAudioTracks": "Audio tracks",
     "videoPlayerVideoTracks": "Video tracks",
+    "videoSubtitlesLoading": "Loading subtitles...",
+    "videoSubtitlesLoadingError": "Unable to load subtitles",
     "settingsUnableDownloadNewVersion": "Failed to download new version",
     "settingsCheckForUpdate": "Check for update",
     "settingsDownloadUpdate": "Download ver. {update}",

@@ -218,6 +218,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoPlayerVideoTracks => 'Video tracks';
 
   @override
+  String get videoSubtitlesLoading => 'Loading subtitles...';
+
+  @override
+  String get videoSubtitlesLoadingError => 'Unable to load subtitles';
+
+  @override
   String get settingsUnableDownloadNewVersion =>
       'Failed to download new version';
 

@@ -13,8 +13,9 @@ String _$authHash() => r'bdbda8b2b536217917227b604f9fd99bc2bb3527';
 final authProvider = Provider<Auth>.internal(
   auth,
   name: r'authProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$authHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$authHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -29,8 +30,9 @@ String _$userHash() => r'a47fd82d15ea15bad0639df1c9d0764e5f285d6d';
 final userProvider = StreamProvider<User?>.internal(
   user,
   name: r'userProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$userHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$userHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

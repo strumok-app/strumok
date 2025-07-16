@@ -71,10 +71,9 @@ class DetailsProvider extends AutoDisposeFutureProvider<ContentDetails> {
         (ref) => details(ref as DetailsRef, supplier, id),
         from: detailsProvider,
         name: r'detailsProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$detailsHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$detailsHash,
         dependencies: DetailsFamily._dependencies,
         allTransitiveDependencies: DetailsFamily._allTransitiveDependencies,
         supplier: supplier,
@@ -204,10 +203,9 @@ class DetailsAndMediaProvider
         (ref) => detailsAndMedia(ref as DetailsAndMediaRef, supplier, id),
         from: detailsAndMediaProvider,
         name: r'detailsAndMediaProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$detailsAndMediaHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$detailsAndMediaHash,
         dependencies: DetailsAndMediaFamily._dependencies,
         allTransitiveDependencies:
             DetailsAndMediaFamily._allTransitiveDependencies,

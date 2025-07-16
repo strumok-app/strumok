@@ -73,10 +73,9 @@ class HasCollectionItemProvider extends AutoDisposeFutureProvider<bool> {
         (ref) => hasCollectionItem(ref as HasCollectionItemRef, supplier, id),
         from: hasCollectionItemProvider,
         name: r'hasCollectionItemProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$hasCollectionItemHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$hasCollectionItemHash,
         dependencies: HasCollectionItemFamily._dependencies,
         allTransitiveDependencies:
             HasCollectionItemFamily._allTransitiveDependencies,
@@ -210,10 +209,9 @@ class CollectionItemCurrentItemProvider extends AutoDisposeFutureProvider<int> {
         ),
         from: collectionItemCurrentItemProvider,
         name: r'collectionItemCurrentItemProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$collectionItemCurrentItemHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$collectionItemCurrentItemHash,
         dependencies: CollectionItemCurrentItemFamily._dependencies,
         allTransitiveDependencies:
             CollectionItemCurrentItemFamily._allTransitiveDependencies,
@@ -340,10 +338,9 @@ class CollectionItemCurrentSourceNameProvider
         ),
         from: collectionItemCurrentSourceNameProvider,
         name: r'collectionItemCurrentSourceNameProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$collectionItemCurrentSourceNameHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$collectionItemCurrentSourceNameHash,
         dependencies: CollectionItemCurrentSourceNameFamily._dependencies,
         allTransitiveDependencies:
             CollectionItemCurrentSourceNameFamily._allTransitiveDependencies,
@@ -474,10 +471,9 @@ class CollectionItemCurrentSubtitleNameProvider
         ),
         from: collectionItemCurrentSubtitleNameProvider,
         name: r'collectionItemCurrentSubtitleNameProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$collectionItemCurrentSubtitleNameHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$collectionItemCurrentSubtitleNameHash,
         dependencies: CollectionItemCurrentSubtitleNameFamily._dependencies,
         allTransitiveDependencies:
             CollectionItemCurrentSubtitleNameFamily._allTransitiveDependencies,
@@ -605,10 +601,9 @@ class CollectionItemCurrentPositionProvider
         ),
         from: collectionItemCurrentPositionProvider,
         name: r'collectionItemCurrentPositionProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$collectionItemCurrentPositionHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$collectionItemCurrentPositionHash,
         dependencies: CollectionItemCurrentPositionFamily._dependencies,
         allTransitiveDependencies:
             CollectionItemCurrentPositionFamily._allTransitiveDependencies,
@@ -737,15 +732,13 @@ class CollectionItemCurrentMediaItemPositionProvider
         ),
         from: collectionItemCurrentMediaItemPositionProvider,
         name: r'collectionItemCurrentMediaItemPositionProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$collectionItemCurrentMediaItemPositionHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$collectionItemCurrentMediaItemPositionHash,
         dependencies:
             CollectionItemCurrentMediaItemPositionFamily._dependencies,
-        allTransitiveDependencies:
-            CollectionItemCurrentMediaItemPositionFamily
-                ._allTransitiveDependencies,
+        allTransitiveDependencies: CollectionItemCurrentMediaItemPositionFamily
+            ._allTransitiveDependencies,
         contentDetails: contentDetails,
       );
 
@@ -878,10 +871,9 @@ class CollectionItemProvider
         () => CollectionItem()..details = details,
         from: collectionItemProvider,
         name: r'collectionItemProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$collectionItemHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$collectionItemHash,
         dependencies: CollectionItemFamily._dependencies,
         allTransitiveDependencies:
             CollectionItemFamily._allTransitiveDependencies,

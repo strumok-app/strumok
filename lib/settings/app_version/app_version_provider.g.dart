@@ -17,12 +17,9 @@ LatestAppVersionInfo _$LatestAppVersionInfoFromJson(
   Map<String, dynamic> json,
 ) => LatestAppVersionInfo(
   name: json['name'] as String,
-  assets:
-      (json['assets'] as List<dynamic>)
-          .map(
-            (e) => AppVersionDownloadAssets.fromJson(e as Map<String, dynamic>),
-          )
-          .toList(),
+  assets: (json['assets'] as List<dynamic>)
+      .map((e) => AppVersionDownloadAssets.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 // **************************************************************************
@@ -36,10 +33,9 @@ String _$currentAppVersionHash() => r'1b8be778347ea0923da209174409af1bdd9b6add';
 final currentAppVersionProvider = FutureProvider<SemVer>.internal(
   currentAppVersion,
   name: r'currentAppVersionProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$currentAppVersionHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentAppVersionHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -56,10 +52,9 @@ final latestAppVersionInfoProvider =
     AutoDisposeFutureProvider<LatestAppVersionInfo?>.internal(
       latestAppVersionInfo,
       name: r'latestAppVersionInfoProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$latestAppVersionInfoHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$latestAppVersionInfoHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -76,10 +71,9 @@ final appDownloadProvider =
     NotifierProvider<AppDownload, DownloadState>.internal(
       AppDownload.new,
       name: r'appDownloadProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$appDownloadHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$appDownloadHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );

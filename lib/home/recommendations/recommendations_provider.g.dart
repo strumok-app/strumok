@@ -88,16 +88,14 @@ class RecommendationChannelProvider
   /// See also [RecommendationChannel].
   RecommendationChannelProvider(String supplierName, String channel)
     : this._internal(
-        () =>
-            RecommendationChannel()
-              ..supplierName = supplierName
-              ..channel = channel,
+        () => RecommendationChannel()
+          ..supplierName = supplierName
+          ..channel = channel,
         from: recommendationChannelProvider,
         name: r'recommendationChannelProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$recommendationChannelHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$recommendationChannelHash,
         dependencies: RecommendationChannelFamily._dependencies,
         allTransitiveDependencies:
             RecommendationChannelFamily._allTransitiveDependencies,
@@ -131,10 +129,9 @@ class RecommendationChannelProvider
     return ProviderOverride(
       origin: this,
       override: RecommendationChannelProvider._internal(
-        () =>
-            create()
-              ..supplierName = supplierName
-              ..channel = channel,
+        () => create()
+          ..supplierName = supplierName
+          ..channel = channel,
         from: from,
         name: null,
         dependencies: null,

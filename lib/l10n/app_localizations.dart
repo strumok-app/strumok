@@ -512,6 +512,18 @@ abstract class AppLocalizations {
   /// **'Video tracks'**
   String get videoPlayerVideoTracks;
 
+  /// No description provided for @videoSubtitlesLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading subtitles...'**
+  String get videoSubtitlesLoading;
+
+  /// No description provided for @videoSubtitlesLoadingError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load subtitles'**
+  String get videoSubtitlesLoadingError;
+
   /// No description provided for @settingsUnableDownloadNewVersion.
   ///
   /// In en, this message translates to:

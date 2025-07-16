@@ -15,10 +15,9 @@ final downloadsUpdateStreamProvider =
     AutoDisposeStreamProvider<DownloadTask>.internal(
       downloadsUpdateStream,
       name: r'downloadsUpdateStreamProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$downloadsUpdateStreamHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$downloadsUpdateStreamHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -33,10 +32,9 @@ String _$downloadTasksHash() => r'88e6eee94e0796c957855d319f37b00e9f8ae489';
 final downloadTasksProvider = AutoDisposeProvider<List<DownloadTask>>.internal(
   downloadTasks,
   name: r'downloadTasksProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$downloadTasksHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$downloadTasksHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

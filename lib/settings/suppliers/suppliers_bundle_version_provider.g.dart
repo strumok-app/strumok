@@ -15,10 +15,9 @@ final installedSupplierBundleInfoProvider =
     AutoDisposeFutureProvider<FFISupplierBundleInfo?>.internal(
       installedSupplierBundleInfo,
       name: r'installedSupplierBundleInfoProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$installedSupplierBundleInfoHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$installedSupplierBundleInfoHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -36,10 +35,9 @@ final latestSupplierBundleInfoProvider =
     AutoDisposeFutureProvider<FFISupplierBundleInfo?>.internal(
       latestSupplierBundleInfo,
       name: r'latestSupplierBundleInfoProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$latestSupplierBundleInfoHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$latestSupplierBundleInfoHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -57,10 +55,9 @@ final suppliersBundleDownloadProvider =
     NotifierProvider<SuppliersBundleDownload, DownloadState>.internal(
       SuppliersBundleDownload.new,
       name: r'suppliersBundleDownloadProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$suppliersBundleDownloadHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$suppliersBundleDownloadHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );

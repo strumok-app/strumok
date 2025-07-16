@@ -15,10 +15,9 @@ final enabledSearchSuppliersNamesProvider =
     AutoDisposeProvider<Set<String>>.internal(
       enabledSearchSuppliersNames,
       name: r'enabledSearchSuppliersNamesProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$enabledSearchSuppliersNamesHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$enabledSearchSuppliersNamesHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -33,8 +32,9 @@ String _$searchHash() => r'41470ba87684667f9dd8198e4f0b27f2ba57364f';
 final searchProvider = NotifierProvider<Search, SearchState>.internal(
   Search.new,
   name: r'searchProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$searchHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$searchHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -115,10 +115,9 @@ class SupplierSearchProvider
         () => SupplierSearch()..suppliersName = suppliersName,
         from: supplierSearchProvider,
         name: r'supplierSearchProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$supplierSearchHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$supplierSearchHash,
         dependencies: SupplierSearchFamily._dependencies,
         allTransitiveDependencies:
             SupplierSearchFamily._allTransitiveDependencies,
@@ -203,10 +202,9 @@ final searchSettingsProvider =
     AutoDisposeNotifierProvider<SearchSettings, SearchSettingsModel>.internal(
       SearchSettings.new,
       name: r'searchSettingsProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$searchSettingsHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$searchSettingsHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );

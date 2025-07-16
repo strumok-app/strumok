@@ -2,21 +2,37 @@ import 'dart:isolate';
 
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
+import 'package:equatable/equatable.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/model.dart';
+import 'package:strumok/utils/cache.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:subtitle/subtitle.dart';
 
 part 'video_player_provider.g.dart';
 
+class SubCacheKey extends Equatable {
+  final int itemIdx;
+  final String name;
+
+  const SubCacheKey(this.itemIdx, this.name);
+
+  @override
+  List<Object?> get props => [itemIdx, name];
+}
+
 @riverpod
 class CurrentSubtitleController extends _$CurrentSubtitleController {
+  static SimpleCache<SubCacheKey, SubtitleController> subsCache = SimpleCache(
+    10,
+  );
+
   @override
-  SubtitleController? build() {
+  FutureOr<SubtitleController?> build() {
     return null;
   }
 
@@ -24,41 +40,56 @@ class CurrentSubtitleController extends _$CurrentSubtitleController {
     List<ContentMediaItemSource> currentSources,
     ContentProgress progress,
   ) async {
-    state = null;
+    state = AsyncValue.loading();
 
     final itemIdx = progress.currentItem;
     final currentSubtitle = progress.currentSubtitleName;
 
     if (currentSubtitle == null) {
+      state = AsyncValue.data(null);
       return;
     }
 
-    final subtitles =
-        currentSources.where((s) => s.kind == FileKind.subtitle).toList();
+    final cachedSub = subsCache.get(SubCacheKey(itemIdx, currentSubtitle));
+    if (cachedSub != null) {
+      state = AsyncValue.data(cachedSub);
+      return;
+    }
+
+    final subtitles = currentSources
+        .where((s) => s.kind == FileKind.subtitle)
+        .toList();
+
     final subtitle =
         subtitles.firstWhereOrNull((s) => s.description == currentSubtitle)
             as MediaFileItemSource?;
 
     if (subtitle == null) {
+      state = AsyncValue.data(null);
       return;
     }
 
-    final controller = await Isolate.run(() async {
-      final link = await subtitle.link;
-      final controller = SubtitleController(
-        provider: NetworkSubtitle(link, headers: subtitle.headers),
-      );
-      await controller.initial();
+    state = await AsyncValue.guard(() async {
+      final controller = await Isolate.run(() async {
+        final link = await subtitle.link;
+        final controller = SubtitleController(
+          provider: NetworkSubtitle(link, headers: subtitle.headers),
+        );
+        await controller.initial();
 
-      return controller;
-    }, debugName: "subtitles");
+        return controller;
+      }, debugName: "subtitles");
 
-    if (progress.currentItem == itemIdx &&
-        currentSubtitle == progress.currentSubtitleName) {
-      logger.i("Subtitle: $subtitle");
+      if (progress.currentItem == itemIdx &&
+          currentSubtitle == progress.currentSubtitleName) {
+        logger.i("Subtitle: $subtitle");
 
-      state = controller;
-    }
+        subsCache.put(SubCacheKey(itemIdx, currentSubtitle), controller);
+        return controller;
+      }
+
+      return null;
+    });
   }
 }
 
@@ -150,11 +181,8 @@ Future<SourceSelectorModel> sourceSelector(
 ) async {
   final (currentItem, currentSource, currentSubtitle) = await ref.watch(
     collectionItemProvider(contentDetails).selectAsync(
-      (item) => (
-        item.currentItem,
-        item.currentSourceName,
-        item.currentSubtitleName,
-      ),
+      (item) =>
+          (item.currentItem, item.currentSourceName, item.currentSubtitleName),
     ),
   );
 

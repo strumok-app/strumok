@@ -85,10 +85,9 @@ class MangaMediaItemSourcesProvider
         ),
         from: mangaMediaItemSourcesProvider,
         name: r'mangaMediaItemSourcesProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$mangaMediaItemSourcesHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$mangaMediaItemSourcesHash,
         dependencies: MangaMediaItemSourcesFamily._dependencies,
         allTransitiveDependencies:
             MangaMediaItemSourcesFamily._allTransitiveDependencies,
@@ -236,10 +235,9 @@ class CurrentMangaMediaItemSourceProvider
         ),
         from: currentMangaMediaItemSourceProvider,
         name: r'currentMangaMediaItemSourceProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$currentMangaMediaItemSourceHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$currentMangaMediaItemSourceHash,
         dependencies: CurrentMangaMediaItemSourceFamily._dependencies,
         allTransitiveDependencies:
             CurrentMangaMediaItemSourceFamily._allTransitiveDependencies,
@@ -385,10 +383,9 @@ class CurrentMangaPagesProvider
         ),
         from: currentMangaPagesProvider,
         name: r'currentMangaPagesProvider',
-        debugGetCreateSourceHash:
-            const bool.fromEnvironment('dart.vm.product')
-                ? null
-                : _$currentMangaPagesHash,
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$currentMangaPagesHash,
         dependencies: CurrentMangaPagesFamily._dependencies,
         allTransitiveDependencies:
             CurrentMangaPagesFamily._allTransitiveDependencies,

@@ -218,6 +218,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get videoPlayerVideoTracks => 'Відео потоки';
 
   @override
+  String get videoSubtitlesLoading => 'Завантаження субтитрів...';
+
+  @override
+  String get videoSubtitlesLoadingError => 'Помилка завантаження субтитрів';
+
+  @override
   String get settingsUnableDownloadNewVersion =>
       'Не вдається завантажити нову версію';
 

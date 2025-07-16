@@ -69,6 +69,8 @@
     "videoPlayerBtnHintTracks": "Відео та аудіо потоки",
     "videoPlayerAudioTracks": "Аудіо потоки",
     "videoPlayerVideoTracks": "Відео потоки",
+    "videoSubtitlesLoading": "Завантаження субтитрів...",
+    "videoSubtitlesLoadingError": "Помилка завантаження субтитрів",
     "settingsUnableDownloadNewVersion": "Не вдається завантажити нову версію",
     "settingsCheckForUpdate": "Перевірити оновлення",
     "settingsDownloadUpdate": "Завантажити вер. {update}",

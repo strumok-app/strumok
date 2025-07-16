@@ -10,17 +10,19 @@ String _$suggestionsHash() => r'e589e2e6f47ff0d24fd2f7d7b0628d36e4197d0f';
 
 /// See also [Suggestions].
 @ProviderFor(Suggestions)
-final suggestionsProvider = AutoDisposeAsyncNotifierProvider<
-  Suggestions,
-  List<SearchSuggestion>
->.internal(
-  Suggestions.new,
-  name: r'suggestionsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$suggestionsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final suggestionsProvider =
+    AutoDisposeAsyncNotifierProvider<
+      Suggestions,
+      List<SearchSuggestion>
+    >.internal(
+      Suggestions.new,
+      name: r'suggestionsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$suggestionsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$Suggestions = AutoDisposeAsyncNotifier<List<SearchSuggestion>>;
 // ignore_for_file: type=lint

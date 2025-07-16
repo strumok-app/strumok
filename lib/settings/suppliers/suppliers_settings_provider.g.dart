@@ -13,10 +13,9 @@ String _$enabledSuppliersHash() => r'00803c2a340060d8ed40af06f0ca991945656505';
 final enabledSuppliersProvider = Provider<Set<String>>.internal(
   enabledSuppliers,
   name: r'enabledSuppliersProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$enabledSuppliersHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$enabledSuppliersHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -32,10 +31,9 @@ final suppliersSettingsProvider =
     NotifierProvider<SuppliersSettings, SuppliersSettingsModel>.internal(
       SuppliersSettings.new,
       name: r'suppliersSettingsProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$suppliersSettingsHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$suppliersSettingsHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );

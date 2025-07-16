@@ -14,10 +14,9 @@ final offlineContentProvider =
     AutoDisposeFutureProvider<List<OfflineContentInfo>>.internal(
       offlineContent,
       name: r'offlineContentProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$offlineContentHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$offlineContentHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );

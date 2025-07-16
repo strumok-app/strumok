@@ -13,10 +13,9 @@ String _$collectionServiceHash() => r'49687ae478e54466a3021b3ab6e80c7a7e8b19f8';
 final collectionServiceProvider = Provider<CollectionService>.internal(
   collectionService,
   name: r'collectionServiceProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$collectionServiceHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$collectionServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -32,10 +31,9 @@ final collectionItemsProvider =
     AutoDisposeFutureProvider<List<MediaCollectionItem>>.internal(
       collectionItems,
       name: r'collectionItemsProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$collectionItemsHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$collectionItemsHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -49,18 +47,18 @@ String _$collectionItemsByStatusHash() =>
 
 /// See also [collectionItemsByStatus].
 @ProviderFor(collectionItemsByStatus)
-final collectionItemsByStatusProvider = AutoDisposeFutureProvider<
-  Map<MediaCollectionItemStatus, List<MediaCollectionItem>>
->.internal(
-  collectionItemsByStatus,
-  name: r'collectionItemsByStatusProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
+final collectionItemsByStatusProvider =
+    AutoDisposeFutureProvider<
+      Map<MediaCollectionItemStatus, List<MediaCollectionItem>>
+    >.internal(
+      collectionItemsByStatus,
+      name: r'collectionItemsByStatusProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$collectionItemsByStatusHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
@@ -77,10 +75,9 @@ final collectionItemsSuppliersProvider =
     AutoDisposeFutureProvider<Set<String>>.internal(
       collectionItemsSuppliers,
       name: r'collectionItemsSuppliersProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$collectionItemsSuppliersHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$collectionItemsSuppliersHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -89,7 +86,7 @@ final collectionItemsSuppliersProvider =
 // ignore: unused_element
 typedef CollectionItemsSuppliersRef = AutoDisposeFutureProviderRef<Set<String>>;
 String _$collectionActiveItemsHash() =>
-    r'ed9a16fec50ee42f0dae5bff75d84ca655516ef9';
+    r'2ec5e9a6b349760f852d5f61f05a102591b58baa';
 
 /// See also [collectionActiveItems].
 @ProviderFor(collectionActiveItems)
@@ -97,10 +94,9 @@ final collectionActiveItemsProvider =
     AutoDisposeFutureProvider<List<MediaCollectionItem>>.internal(
       collectionActiveItems,
       name: r'collectionActiveItemsProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$collectionActiveItemsHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$collectionActiveItemsHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -117,10 +113,9 @@ final collectionChangesProvider =
     StreamNotifierProvider<CollectionChanges, void>.internal(
       CollectionChanges.new,
       name: r'collectionChangesProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$collectionChangesHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$collectionChangesHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -130,19 +125,19 @@ String _$collectionFilterHash() => r'7f607bbc281e55623e6f0dca4b02a846e5549532';
 
 /// See also [CollectionFilter].
 @ProviderFor(CollectionFilter)
-final collectionFilterProvider = AutoDisposeNotifierProvider<
-  CollectionFilter,
-  CollectionFilterModel
->.internal(
-  CollectionFilter.new,
-  name: r'collectionFilterProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
+final collectionFilterProvider =
+    AutoDisposeNotifierProvider<
+      CollectionFilter,
+      CollectionFilterModel
+    >.internal(
+      CollectionFilter.new,
+      name: r'collectionFilterProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$collectionFilterHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$CollectionFilter = AutoDisposeNotifier<CollectionFilterModel>;
 // ignore_for_file: type=lint

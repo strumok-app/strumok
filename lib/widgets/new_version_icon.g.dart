@@ -13,10 +13,9 @@ String _$hasNewVersionHash() => r'c59064f914a68646e5d36ae4aa8f2145646929bc';
 final hasNewVersionProvider = AutoDisposeProvider<bool>.internal(
   hasNewVersion,
   name: r'hasNewVersionProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$hasNewVersionHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$hasNewVersionHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

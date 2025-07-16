@@ -6,6 +6,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
+import 'package:strumok/l10n/app_localizations.dart';
 import 'package:subtitle/subtitle.dart';
 
 class PlayerSubtitles extends ConsumerWidget {
@@ -13,17 +14,29 @@ class PlayerSubtitles extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final subtitleController = ref.watch(currentSubtitleControllerProvider);
+    final asyncSubtitleController = ref.watch(
+      currentSubtitleControllerProvider,
+    );
     final subtitlesOffset = ref.watch(subtitlesOffsetProvider);
 
-    if (subtitleController == null) {
-      return SizedBox.expand();
-    }
+    return asyncSubtitleController.when(
+      data: (subtitleController) {
+        if (subtitleController == null) {
+          return SizedBox.shrink();
+        }
 
-    return _SubtitleView(
-      player: controller(context).player,
-      subtitleController: subtitleController,
-      subtitlesOffset: subtitlesOffset,
+        return _SubtitleView(
+          player: controller(context).player,
+          subtitleController: subtitleController,
+          subtitlesOffset: subtitlesOffset,
+        );
+      },
+      error: (_, _) => _SubtitleText(
+        text: AppLocalizations.of(context)!.videoSubtitlesLoadingError,
+      ),
+      loading: () => _SubtitleText(
+        text: AppLocalizations.of(context)!.videoSubtitlesLoading,
+      ),
     );
   }
 }
@@ -52,18 +65,9 @@ class _SubtitleViewState extends State<_SubtitleView> {
   void initState() {
     super.initState();
 
-    _subscription = widget.player.stream.position.listen((position) {
-      final time = position + widget.subtitlesOffset;
+    _subscription = widget.player.stream.position.listen(_updateSubtitles);
 
-      if (_subtitles.firstOrNull?.inRange(time) == true) {
-        return;
-      }
-
-      final subs = widget.subtitleController.multiDurationSearch(time);
-      setState(() {
-        _subtitles = subs;
-      });
-    });
+    _updateSubtitles(widget.player.state.position);
   }
 
   @override
@@ -75,12 +79,22 @@ class _SubtitleViewState extends State<_SubtitleView> {
 
   @override
   void didUpdateWidget(covariant _SubtitleView oldWidget) {
-    final time = widget.player.state.position + widget.subtitlesOffset;
-    final subs = widget.subtitleController.multiDurationSearch(time);
-
-    _subtitles = subs;
+    _updateSubtitles(widget.player.state.position);
 
     super.didUpdateWidget(oldWidget);
+  }
+
+  void _updateSubtitles(Duration position) {
+    final time = position + widget.subtitlesOffset;
+
+    if (_subtitles.firstOrNull?.inRange(time) == true) {
+      return;
+    }
+
+    final subs = widget.subtitleController.multiDurationSearch(time);
+    setState(() {
+      _subtitles = subs;
+    });
   }
 
   @override
@@ -102,6 +116,17 @@ class _SubtitleViewState extends State<_SubtitleView> {
           };
         });
 
+    return _SubtitleText(text: text);
+  }
+}
+
+class _SubtitleText extends StatelessWidget {
+  const _SubtitleText({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 16),
       alignment: Alignment.bottomCenter,

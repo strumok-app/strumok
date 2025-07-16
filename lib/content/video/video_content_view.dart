@@ -312,11 +312,11 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
       return;
     }
 
-    final notifier = ref.read(
-      collectionItemProvider(widget.contentDetails).notifier,
-    );
+    ref
+        .read(collectionItemProvider(widget.contentDetails).notifier)
+        .setCurrentItem(itemIdx);
 
-    notifier.setCurrentItem(itemIdx);
+    ref.read(subtitlesOffsetProvider.notifier).setOffset(0);
   }
 
   bool _isValidItemIdx(int itemIdx) {
