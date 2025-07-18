@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:strumok/content/video/video_subtitles.dart';
 
 class CustomVideo extends Video {
   const CustomVideo({
@@ -17,11 +16,13 @@ class CustomVideo extends Video {
 }
 
 class CustomVideoState extends VideoState {
+  final subtitlePadding = ValueNotifier(EdgeInsets.zero);
+
   @override
   void setSubtitleViewPadding(
     EdgeInsets padding, {
     Duration duration = const Duration(milliseconds: 100),
   }) {
-    PlayerSubtitleView.paddings = padding;
+    subtitlePadding.value = padding;
   }
 }
