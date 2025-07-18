@@ -25,7 +25,7 @@ class PlayerSubtitles extends ConsumerWidget {
           return SizedBox.shrink();
         }
 
-        return _SubtitleView(
+        return PlayerSubtitleView(
           player: controller(context).player,
           subtitleController: subtitleController,
           subtitlesOffset: subtitlesOffset,
@@ -41,23 +41,31 @@ class PlayerSubtitles extends ConsumerWidget {
   }
 }
 
-class _SubtitleView extends StatefulWidget {
+class PlayerSubtitleView extends StatefulWidget {
+  static final _key = GlobalKey<PlayerSubtitleViewState>();
+
   final Player player;
   final SubtitleController subtitleController;
   final Duration subtitlesOffset;
 
-  const _SubtitleView({
+  static set paddings(EdgeInsets padding) {
+    _key.currentState?.setPaddings(padding);
+  }
+
+  PlayerSubtitleView({
     required this.player,
     required this.subtitleController,
     required this.subtitlesOffset,
-  });
+  }) : super(key: _key);
 
   @override
-  State<_SubtitleView> createState() => _SubtitleViewState();
+  State<PlayerSubtitleView> createState() => PlayerSubtitleViewState();
 }
 
-class _SubtitleViewState extends State<_SubtitleView> {
+class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
   static final _htmlCharsEntries = RegExp(r'&([^;]+);');
+
+  EdgeInsets _paddings = EdgeInsets.zero;
   StreamSubscription? _subscription;
   List<Subtitle> _subtitles = List.empty();
 
@@ -78,7 +86,7 @@ class _SubtitleViewState extends State<_SubtitleView> {
   }
 
   @override
-  void didUpdateWidget(covariant _SubtitleView oldWidget) {
+  void didUpdateWidget(covariant PlayerSubtitleView oldWidget) {
     _updateSubtitles(widget.player.state.position);
 
     super.didUpdateWidget(oldWidget);
@@ -94,6 +102,12 @@ class _SubtitleViewState extends State<_SubtitleView> {
     final subs = widget.subtitleController.multiDurationSearch(time);
     setState(() {
       _subtitles = subs;
+    });
+  }
+
+  void setPaddings(EdgeInsets padding) {
+    setState(() {
+      _paddings = padding;
     });
   }
 
@@ -116,7 +130,10 @@ class _SubtitleViewState extends State<_SubtitleView> {
           };
         });
 
-    return _SubtitleText(text: text);
+    return Padding(
+      padding: _paddings,
+      child: _SubtitleText(text: text),
+    );
   }
 }
 

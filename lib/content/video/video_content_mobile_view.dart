@@ -2,6 +2,7 @@ import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
+import 'package:strumok/content/video/video_state.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
@@ -38,7 +39,7 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
     return MaterialVideoControlsTheme(
       normal: themeData,
       fullscreen: themeData,
-      child: Video(
+      child: CustomVideo(
         key: videoStateKey,
         pauseUponEnteringBackgroundMode: false,
         controller: widget.videoController,
