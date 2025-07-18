@@ -1,9 +1,9 @@
-## [1.19.5](https://github.com/strumok-app/strumok/compare/v1.19.4...v1.19.5) (2025-07-18)
+## [1.19.6](https://github.com/strumok-app/strumok/compare/v1.19.5...v1.19.6) (2025-07-18)
 
 
 ### Bug Fixes
 
-* shift subtitle ([da3b3a4](https://github.com/strumok-app/strumok/commit/da3b3a4932bae257be482d19d4dc728719587ca5))
+* shift subtitle ([74b842f](https://github.com/strumok-app/strumok/commit/74b842fb58dd4119359d05c767380746af5dffb9))
 
 
 
