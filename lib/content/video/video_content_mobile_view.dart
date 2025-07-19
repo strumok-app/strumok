@@ -2,11 +2,13 @@ import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
-import 'package:strumok/content/video/video_state.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+
+import 'package:strumok/content/video/media_kit_custom/material.dart'
+    as media_kit_custom;
 
 class VideoContentMobileView extends StatefulWidget {
   final Player player;
@@ -36,10 +38,10 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
   @override
   Widget build(BuildContext context) {
     final themeData = _createThemeData(Theme.of(context));
-    return MaterialVideoControlsTheme(
+    return media_kit_custom.MaterialVideoControlsTheme(
       normal: themeData,
       fullscreen: themeData,
-      child: CustomVideo(
+      child: Video(
         key: videoStateKey,
         pauseUponEnteringBackgroundMode: false,
         controller: widget.videoController,
@@ -49,9 +51,11 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
     );
   }
 
-  MaterialVideoControlsThemeData _createThemeData(ThemeData theme) {
+  media_kit_custom.MaterialVideoControlsThemeData _createThemeData(
+    ThemeData theme,
+  ) {
     final colorScheme = theme.colorScheme;
-    return MaterialVideoControlsThemeData(
+    return media_kit_custom.MaterialVideoControlsThemeData(
       topButtonBarMargin: const EdgeInsets.only(
         left: 20,
         right: 8,
@@ -72,18 +76,18 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
         const Spacer(flex: 2),
         const SkipPrevButton(iconSize: 36.0),
         const Spacer(),
-        const MaterialPlayOrPauseButton(iconSize: 48.0),
+        const media_kit_custom.MaterialPlayOrPauseButton(iconSize: 48.0),
         const Spacer(),
         const SkipNextButton(iconSize: 36.0),
         const Spacer(flex: 2),
       ],
       bottomButtonBar: [
-        const MaterialPositionIndicator(),
+        const media_kit_custom.MaterialPositionIndicator(),
         const Spacer(),
         const TrackSelector(),
         const SourceSelector(),
         const PlayerSettingsButton(),
-        const MaterialFullscreenButton(),
+        const media_kit_custom.MaterialFullscreenButton(),
       ],
       seekGesture: true,
       seekOnDoubleTap: true,

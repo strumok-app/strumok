@@ -61,6 +61,7 @@ dependencies:
 
   content_suppliers_rust:
     path: content_suppliers_rust
+  synchronized: ^3.4.0
 
 dev_dependencies:
   analyzer: ^7.4.5

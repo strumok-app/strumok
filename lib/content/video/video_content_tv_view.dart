@@ -6,7 +6,6 @@ import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
-import 'package:strumok/content/video/video_state.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +27,7 @@ class VideoContentTVView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomVideo(
+    return Video(
       controller: videoController,
       controls: (state) =>
           VideoPlayerControlsWrapper(child: _renderControls(context, state)),

@@ -59,6 +59,9 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
   late List<StreamSubscription> _streamSubscriptions;
 
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
+  final ValueNotifier<EdgeInsets> subtitlePaddings = ValueNotifier(
+    EdgeInsets.zero,
+  );
   final List<int> _shuffledPositions = [];
 
   List<ContentMediaItemSource> _currentSources = const [];

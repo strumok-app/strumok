@@ -3,7 +3,6 @@ import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
-import 'package:strumok/content/video/video_state.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +10,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:window_manager/window_manager.dart';
+
+import 'package:strumok/content/video/media_kit_custom/material_desktop.dart'
+    as media_kit_custom;
 
 class VideoContentDesktopView extends StatefulWidget {
   final Player player;
@@ -80,7 +82,7 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
     const SingleActivator(LogicalKeyboardKey.keyF): () =>
         videoStateKey.currentState?.toggleFullscreen(),
     const SingleActivator(LogicalKeyboardKey.enter): () =>
-        videoStateKey.currentState?.toggleFullscreen(),
+        videoStateKey.currentState?.enterFullscreen(),
     const SingleActivator(LogicalKeyboardKey.escape): () =>
         videoStateKey.currentState?.exitFullscreen(),
   };
@@ -88,10 +90,10 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return MaterialDesktopVideoControlsTheme(
+    return media_kit_custom.MaterialDesktopVideoControlsTheme(
       normal: _createThemeData(theme, false),
       fullscreen: _createThemeData(theme, true),
-      child: CustomVideo(
+      child: Video(
         key: videoStateKey,
         controller: widget.videoController,
         controls: (state) => VideoPlayerControlsWrapper(
@@ -103,13 +105,13 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
     );
   }
 
-  MaterialDesktopVideoControlsThemeData _createThemeData(
+  media_kit_custom.MaterialDesktopVideoControlsThemeData _createThemeData(
     ThemeData theme,
     bool fullscreen,
   ) {
     final colorScheme = theme.colorScheme;
 
-    return MaterialDesktopVideoControlsThemeData(
+    return media_kit_custom.MaterialDesktopVideoControlsThemeData(
       buttonBarButtonColor: Colors.white,
       topButtonBarMargin: const EdgeInsets.all(8),
       bottomButtonBarMargin: const EdgeInsets.all(8),
@@ -126,18 +128,18 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
         const SkipPrevButton(),
         const PlayOrPauseButton(),
         const SkipNextButton(),
-        const MaterialDesktopVolumeButton(),
-        const MaterialDesktopPositionIndicator(),
+        const media_kit_custom.MaterialDesktopVolumeButton(),
+        const media_kit_custom.MaterialDesktopPositionIndicator(),
         const Spacer(),
         if (!fullscreen)
-          MaterialCustomButton(
+          media_kit_custom.MaterialDesktopCustomButton(
             onPressed: _switchToPipMode,
             icon: const Icon(Symbols.pip),
           ),
         const TrackSelector(),
         const SourceSelector(),
         const PlayerSettingsButton(),
-        const MaterialDesktopFullscreenButton(),
+        const media_kit_custom.MaterialDesktopFullscreenButton(),
       ],
       keyboardShortcuts: _keyboardShortcuts,
     );

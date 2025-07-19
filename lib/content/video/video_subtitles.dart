@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
+import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
-import 'package:strumok/content/video/video_state.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:subtitle/subtitle.dart';
 
@@ -131,7 +131,7 @@ class _SubtitleText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: (state(context) as CustomVideoState).subtitlePadding,
+      valueListenable: VideoContentView.currentState.subtitlePaddings,
       builder: (context, value, child) {
         return Container(
           padding: const EdgeInsets.only(bottom: 16) + value,
