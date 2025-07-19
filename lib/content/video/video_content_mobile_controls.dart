@@ -26,7 +26,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
   static final controlsHoverDuration = const Duration(seconds: 3);
   static final controlsTransitionDuration = const Duration(milliseconds: 300);
 
-  static const subtitleVerticalShiftOffset = 96.0;
+  static const subtitleVerticalShiftOffset = 48.0;
 
   static const verticalGestureSensitivity = 100;
   static const horizontalGestureSensitivity = 1000;
@@ -46,8 +46,8 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
   static const buttonBarHeight = 56.0;
   static final bottomButtonBarMargin = const EdgeInsets.all(8);
 
-  late bool mount = true;
-  late bool visible = true;
+  late bool mount = false;
+  late bool visible = false;
   Timer? _timer;
 
   double _brightnessValue = 0.0;
@@ -397,9 +397,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
             elevation: 0.0,
             borderOnForeground: false,
             animationDuration: Duration.zero,
-            color: Colors.black,
-            shadowColor: Colors.black,
-            surfaceTintColor: Colors.black,
+            color: Colors.transparent,
+            shadowColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
             child: Stack(
               clipBehavior: Clip.none,
               alignment: Alignment.center,
@@ -441,15 +441,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                                 return;
                               }
                               if (_isInRightSegment(_tapPosition!.dx)) {
-                                if (!mount) {
-                                  onDoubleTapSeekForward();
-                                }
-                              } else {
-                                if (_isInLeftSegment(_tapPosition!.dx)) {
-                                  if (!mount) {
-                                    onDoubleTapSeekBackward();
-                                  }
-                                }
+                                onDoubleTapSeekForward();
+                              } else if (_isInLeftSegment(_tapPosition!.dx)) {
+                                onDoubleTapSeekBackward();
                               }
                             },
                             onHorizontalDragUpdate: onHorizontalDragUpdate,
@@ -509,28 +503,40 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                               ),
                               // Only display [primaryButtonBar] if [buffering] is false.
                               Expanded(
-                                child: AnimatedOpacity(
-                                  curve: Curves.easeInOut,
-                                  opacity: buffering ? 0.0 : 1.0,
-                                  duration: controlsTransitionDuration,
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const Spacer(flex: 2),
-                                        const SkipPrevButton(iconSize: 36.0),
-                                        const Spacer(),
-                                        const PlayOrPauseButton(iconSize: 48.0),
-                                        const Spacer(),
-                                        const SkipNextButton(iconSize: 36.0),
-                                        const Spacer(flex: 2),
-                                      ],
-                                    ),
-                                  ),
+                                child: ValueListenableBuilder(
+                                  valueListenable:
+                                      VideoContentView.currentState.isLoading,
+                                  builder: (context, loading, child) {
+                                    return AnimatedOpacity(
+                                      curve: Curves.easeInOut,
+                                      opacity: loading || buffering ? 0.0 : 1.0,
+                                      duration: controlsTransitionDuration,
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Spacer(flex: 2),
+                                            const SkipPrevButton(
+                                              iconSize: 36.0,
+                                            ),
+                                            const Spacer(),
+                                            const PlayOrPauseButton(
+                                              iconSize: 48.0,
+                                            ),
+                                            const Spacer(),
+                                            const SkipNextButton(
+                                              iconSize: 36.0,
+                                            ),
+                                            const Spacer(flex: 2),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                               Stack(
@@ -1121,7 +1127,7 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
     final colorSchema = Theme.of(context).colorScheme;
     return Container(
       clipBehavior: Clip.none,
-      margin: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 42.0),
+      margin: EdgeInsets.zero,
       child: LayoutBuilder(
         builder: (context, constraints) => MouseRegion(
           cursor: SystemMouseCursors.click,
@@ -1147,7 +1153,7 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
                       width: constraints.maxWidth,
                       height: seekBarHeight,
                       alignment: Alignment.bottomLeft,
-                      color: colorSchema.primary,
+                      color: barColor,
                       child: Stack(
                         clipBehavior: Clip.none,
                         alignment: Alignment.bottomLeft,
@@ -1160,7 +1166,7 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
                             width: tapped
                                 ? constraints.maxWidth * slider
                                 : constraints.maxWidth * positionPercent,
-                            color: barColor,
+                            color: colorSchema.primary,
                           ),
                         ],
                       ),

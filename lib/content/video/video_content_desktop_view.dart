@@ -1,4 +1,5 @@
 import 'package:strumok/content/video/video_content_desktop_controls.dart';
+import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       controls: (state) => VideoPlayerControlsWrapper(
         child: pipMode
             ? PipVideoControls(state, onPipExit: _switchToPipMode)
-            : DesktopVideoControls(),
+            : DesktopVideoControls(onPipEnter: _switchToPipMode),
       ),
     );
   }
@@ -58,6 +59,8 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       await windowManager.setAlwaysOnTop(true);
       await Future.delayed(const Duration(milliseconds: 100));
       await windowManager.setAlignment(Alignment.bottomRight);
+
+      VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.zero;
     }
   }
 }

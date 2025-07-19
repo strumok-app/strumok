@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/extensions/duration.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
@@ -14,7 +15,8 @@ import 'package:strumok/content/video/widgets.dart';
 
 /// {@macro material_desktop_video_controls}
 class DesktopVideoControls extends StatefulWidget {
-  const DesktopVideoControls({super.key});
+  final VoidCallback onPipEnter;
+  const DesktopVideoControls({super.key, required this.onPipEnter});
 
   @override
   State<DesktopVideoControls> createState() => _DesktopVideoControlsState();
@@ -379,6 +381,10 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                           const TrackSelector(),
                                           const SourceSelector(),
                                           const PlayerSettingsButton(),
+                                          if (!isFullscreen(context))
+                                            _PIPButton(
+                                              onPipEnter: widget.onPipEnter,
+                                            ),
                                           const PlayerFullscreenButton(),
                                         ],
                                       ),
@@ -916,5 +922,20 @@ class _CustomTrackShape extends RoundedRectSliderTrackShape {
     final top = offset.dy + (parentBox.size.height - height!) / 2;
     final width = parentBox.size.width;
     return Rect.fromLTWH(left, top, width, height);
+  }
+}
+
+class _PIPButton extends StatelessWidget {
+  final VoidCallback onPipEnter;
+
+  const _PIPButton({required this.onPipEnter});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: onPipEnter,
+      icon: const Icon(Symbols.pip),
+      color: Colors.white,
+    );
   }
 }
