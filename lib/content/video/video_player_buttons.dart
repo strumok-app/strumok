@@ -209,3 +209,21 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
     );
   }
 }
+
+class PlayerFullscreenButton extends StatelessWidget {
+  final double? iconSize;
+
+  const PlayerFullscreenButton({super.key, this.iconSize});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () => toggleFullscreen(context),
+      icon: (isFullscreen(context)
+          ? const Icon(Icons.fullscreen_exit)
+          : const Icon(Icons.fullscreen)),
+      iconSize: iconSize,
+      color: Colors.white,
+    );
+  }
+}

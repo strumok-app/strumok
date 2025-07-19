@@ -29,6 +29,9 @@ dependencies:
   media_kit_video: 1.3.0
   media_kit_libs_video: 1.0.6
   subtitle: ^0.1.4
+  screen_brightness_platform_interface: ^2.1.0
+  volume_controller: ^3.4.0
+
   # Utility widgets
   scrollable_positioned_list: ^0.3.8
   readmore: ^3.0.0
@@ -61,7 +64,6 @@ dependencies:
 
   content_suppliers_rust:
     path: content_suppliers_rust
-  synchronized: ^3.4.0
 
 dev_dependencies:
   analyzer: ^7.4.5

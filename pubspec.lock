@@ -1106,7 +1106,7 @@ packages:
     source: hosted
     version: "2.1.2"
   screen_brightness_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: screen_brightness_platform_interface
       sha256: "737bd47b57746bc4291cab1b8a5843ee881af499514881b0247ec77447ee769c"
@@ -1423,7 +1423,7 @@ packages:
     source: hosted
     version: "0.1.4"
   synchronized:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: synchronized
       sha256: c254ade258ec8282947a0acbbc90b9575b4f19673533ee46f2f6e9b3aeefd7c0
@@ -1599,7 +1599,7 @@ packages:
     source: hosted
     version: "15.0.2"
   volume_controller:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: volume_controller
       sha256: d75039e69c0d90e7810bfd47e3eedf29ff8543ea7a10392792e81f9bded7edf5

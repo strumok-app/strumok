@@ -1,18 +1,11 @@
-import 'package:strumok/content/video/track_selector.dart';
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_content_desktop_controls.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
-import 'package:strumok/content/video/video_player_settings.dart';
-import 'package:strumok/content/video/video_source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:window_manager/window_manager.dart';
-
-import 'package:strumok/content/video/media_kit_custom/material_desktop.dart'
-    as media_kit_custom;
 
 class VideoContentDesktopView extends StatefulWidget {
   final Player player;
@@ -31,117 +24,16 @@ class VideoContentDesktopView extends StatefulWidget {
 
 class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
   bool pipMode = false;
-  late final GlobalKey<VideoState> videoStateKey = GlobalKey<VideoState>();
-
-  late final _keyboardShortcuts = {
-    const SingleActivator(LogicalKeyboardKey.mediaPlay): () =>
-        widget.player.play(),
-    const SingleActivator(LogicalKeyboardKey.mediaPause): () =>
-        widget.player.pause(),
-    const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () =>
-        widget.player.playOrPause(),
-    const SingleActivator(LogicalKeyboardKey.mediaTrackNext):
-        VideoContentView.currentState.nextItem,
-    const SingleActivator(LogicalKeyboardKey.bracketLeft):
-        VideoContentView.currentState.nextItem,
-    const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious):
-        VideoContentView.currentState.prevItem,
-    const SingleActivator(LogicalKeyboardKey.bracketRight):
-        VideoContentView.currentState.prevItem,
-    const SingleActivator(LogicalKeyboardKey.space): () =>
-        widget.player.playOrPause(),
-    const SingleActivator(LogicalKeyboardKey.keyJ): () {
-      widget.player.safeSeek(
-        widget.player.state.position - const Duration(seconds: 60),
-      );
-    },
-    const SingleActivator(LogicalKeyboardKey.keyI): () {
-      widget.player.safeSeek(
-        widget.player.state.position + const Duration(seconds: 60),
-      );
-    },
-    const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
-      widget.player.safeSeek(
-        widget.player.state.position - const Duration(seconds: 10),
-      );
-    },
-    const SingleActivator(LogicalKeyboardKey.arrowRight): () {
-      widget.player.safeSeek(
-        widget.player.state.position + const Duration(seconds: 10),
-      );
-    },
-    const SingleActivator(LogicalKeyboardKey.arrowUp): () {
-      final volume = widget.player.state.volume + 5.0;
-      widget.player.setVolume(volume.clamp(0.0, 100.0));
-    },
-    const SingleActivator(LogicalKeyboardKey.arrowDown): () {
-      final volume = widget.player.state.volume - 5.0;
-      widget.player.setVolume(volume.clamp(0.0, 100.0));
-    },
-    // dirty hack with video state...
-    const SingleActivator(LogicalKeyboardKey.keyF): () =>
-        videoStateKey.currentState?.toggleFullscreen(),
-    const SingleActivator(LogicalKeyboardKey.enter): () =>
-        videoStateKey.currentState?.enterFullscreen(),
-    const SingleActivator(LogicalKeyboardKey.escape): () =>
-        videoStateKey.currentState?.exitFullscreen(),
-  };
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return media_kit_custom.MaterialDesktopVideoControlsTheme(
-      normal: _createThemeData(theme, false),
-      fullscreen: _createThemeData(theme, true),
-      child: Video(
-        key: videoStateKey,
-        controller: widget.videoController,
-        controls: (state) => VideoPlayerControlsWrapper(
-          child: pipMode
-              ? PipVideoControls(state, onPipExit: _switchToPipMode)
-              : MaterialDesktopVideoControls(state),
-        ),
+    return Video(
+      controller: widget.videoController,
+      controls: (state) => VideoPlayerControlsWrapper(
+        child: pipMode
+            ? PipVideoControls(state, onPipExit: _switchToPipMode)
+            : DesktopVideoControls(),
       ),
-    );
-  }
-
-  media_kit_custom.MaterialDesktopVideoControlsThemeData _createThemeData(
-    ThemeData theme,
-    bool fullscreen,
-  ) {
-    final colorScheme = theme.colorScheme;
-
-    return media_kit_custom.MaterialDesktopVideoControlsThemeData(
-      buttonBarButtonColor: Colors.white,
-      topButtonBarMargin: const EdgeInsets.all(8),
-      bottomButtonBarMargin: const EdgeInsets.all(8),
-      topButtonBar: [
-        const ExitButton(),
-        const SizedBox(width: 8),
-        const MediaTitle(),
-        const PlayerErrorPopup(),
-        const PlayerPlaylistButton(),
-      ],
-      seekBarThumbColor: colorScheme.primary,
-      seekBarPositionColor: colorScheme.primary,
-      bottomButtonBar: [
-        const SkipPrevButton(),
-        const PlayOrPauseButton(),
-        const SkipNextButton(),
-        const media_kit_custom.MaterialDesktopVolumeButton(),
-        const media_kit_custom.MaterialDesktopPositionIndicator(),
-        const Spacer(),
-        if (!fullscreen)
-          media_kit_custom.MaterialDesktopCustomButton(
-            onPressed: _switchToPipMode,
-            icon: const Icon(Symbols.pip),
-          ),
-        const TrackSelector(),
-        const SourceSelector(),
-        const PlayerSettingsButton(),
-        const media_kit_custom.MaterialDesktopFullscreenButton(),
-      ],
-      keyboardShortcuts: _keyboardShortcuts,
     );
   }
 
