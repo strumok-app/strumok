@@ -56,14 +56,16 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
       visible = true;
     });
     playPauseFocusNode.requestFocus();
-    state(context).setSubtitleViewPadding(EdgeInsets.only(bottom: 96));
+    VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.only(
+      bottom: 96,
+    );
   }
 
   void onExit() {
     setState(() {
       visible = false;
     });
-    state(context).setSubtitleViewPadding(EdgeInsets.zero);
+    VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.zero;
   }
 
   void seek(int sec) {
