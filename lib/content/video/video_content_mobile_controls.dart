@@ -572,7 +572,6 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                                         const TrackSelector(),
                                         const SourceSelector(),
                                         const PlayerSettingsButton(),
-                                        const PlayerFullscreenButton(),
                                       ],
                                     ),
                                   ),

@@ -11,7 +11,9 @@
             "program": "${workspaceFolder}/lib/main.dart",
             "toolArgs": [
                 "--dart-define-from-file",
-                "secrets.json"
+                "secrets.json",
+                "--dart-define", 
+                "FORCE_TV_MODE=false",
             ],
             "env": {
                 "RUST_LOG": "info"

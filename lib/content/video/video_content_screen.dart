@@ -20,28 +20,20 @@ class VideoContentScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final result = ref.watch(detailsAndMediaProvider(supplier, id));
 
-    return SafeArea(
-      child: Scaffold(
-        body: result.when(
-          skipLoadingOnRefresh: false,
-          data:
-              (data) => VideoContentView(
-                contentDetails: data.contentDetails,
-                mediaItems: data.mediaItems,
-              ),
-          error:
-              (error, stackTrace) => DisplayError(
-                error: error,
-                onRefresh:
-                    () => ref.refresh(detailsProvider(supplier, id).future),
-              ),
-          loading:
-              () => const Material(
-                color: Colors.black,
-                child: Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                ),
-              ),
+    return Scaffold(
+      body: result.when(
+        skipLoadingOnRefresh: false,
+        data: (data) => VideoContentView(
+          contentDetails: data.contentDetails,
+          mediaItems: data.mediaItems,
+        ),
+        error: (error, stackTrace) => DisplayError(
+          error: error,
+          onRefresh: () => ref.refresh(detailsProvider(supplier, id).future),
+        ),
+        loading: () => const Material(
+          color: Colors.black,
+          child: Center(child: CircularProgressIndicator(color: Colors.white)),
         ),
       ),
     );

@@ -1,6 +1,8 @@
+import 'package:flutter/services.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:strumok/utils/visual.dart';
 
 class AppTheme extends ConsumerWidget {
   final Widget child;
@@ -9,11 +11,13 @@ class AppTheme extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final brightness = ref.watch(brightnessSettingProvider);
+    final brightness =
+        ref.watch(brightnessSettingProvider) ??
+        MediaQuery.platformBrightnessOf(context);
     final color = ref.watch(colorSettingsProvider);
 
     final colorScheme = ColorScheme.fromSeed(
-      brightness: brightness ?? MediaQuery.platformBrightnessOf(context),
+      brightness: brightness,
       seedColor: color,
     );
 
@@ -22,6 +26,14 @@ class AppTheme extends ConsumerWidget {
       borderRadius: BorderRadius.circular(20),
       side: focusBorder,
     );
+
+    if (isMobileDevice()) {
+      SystemChrome.setSystemUIOverlayStyle(
+        brightness == Brightness.light
+            ? SystemUiOverlayStyle.dark
+            : SystemUiOverlayStyle.light,
+      );
+    }
 
     return Theme(
       data: ThemeData(
@@ -47,9 +59,9 @@ class AppTheme extends ConsumerWidget {
             shape: WidgetStateProperty.resolveWith((states) {
               return states.contains(WidgetState.focused)
                   ? RoundedRectangleBorder(
-                    side: focusBorder,
-                    borderRadius: BorderRadius.circular(16),
-                  )
+                      side: focusBorder,
+                      borderRadius: BorderRadius.circular(16),
+                    )
                   : null;
             }),
             padding: WidgetStatePropertyAll(EdgeInsets.all(8)),
@@ -70,10 +82,9 @@ class AppTheme extends ConsumerWidget {
           shape: WidgetStateProperty.resolveWith((states) {
             return RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side:
-                  states.contains(WidgetState.focused)
-                      ? focusBorder
-                      : BorderSide.none,
+              side: states.contains(WidgetState.focused)
+                  ? focusBorder
+                  : BorderSide.none,
             );
           }),
         ),

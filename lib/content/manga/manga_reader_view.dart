@@ -50,11 +50,10 @@ class MangaReaderView extends ConsumerWidget {
         .watch(_pagesProvider)
         .when(
           data: (pages) => _renderReader(context, ref, pages),
-          error:
-              (error, stackTrace) => DisplayError(
-                error: error,
-                onRefresh: () => ref.invalidate(_pagesProvider),
-              ),
+          error: (error, stackTrace) => DisplayError(
+            error: error,
+            onRefresh: () => ref.invalidate(_pagesProvider),
+          ),
           loading: () => const Center(child: CircularProgressIndicator()),
         );
   }
@@ -126,7 +125,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
     pageListenable = ValueNotifier(widget.initialPage);
 
     if (isMobileDevice()) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
       WakelockPlus.enable();
     }
 
@@ -171,10 +170,12 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
       shortcuts: {
         SingleActivator(LogicalKeyboardKey.arrowLeft): PrevPageIntent(),
         SingleActivator(LogicalKeyboardKey.arrowRight): NextPageIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowUp):
-            (readerMode.scroll ? ScrollUpPageIntent() : PrevPageIntent()),
-        SingleActivator(LogicalKeyboardKey.arrowDown):
-            (readerMode.scroll ? ScrollDownPageIntent() : NextPageIntent()),
+        SingleActivator(LogicalKeyboardKey.arrowUp): (readerMode.scroll
+            ? ScrollUpPageIntent()
+            : PrevPageIntent()),
+        SingleActivator(LogicalKeyboardKey.arrowDown): (readerMode.scroll
+            ? ScrollDownPageIntent()
+            : NextPageIntent()),
         SingleActivator(LogicalKeyboardKey.select): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.space): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.enter): ShowUIIntent(),
@@ -187,14 +188,13 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
           onInvoke: (_) => _movePage(readerMode, true),
         ),
         ShowUIIntent: CallbackAction<ShowUIIntent>(
-          onInvoke:
-              (_) => Navigator.of(context).push(
-                MangaReaderControlsRoute(
-                  contentDetails: widget.contentDetails,
-                  mediaItems: widget.mediaItems,
-                  pagesController: pageListenable,
-                ),
-              ),
+          onInvoke: (_) => Navigator.of(context).push(
+            MangaReaderControlsRoute(
+              contentDetails: widget.contentDetails,
+              mediaItems: widget.mediaItems,
+              pagesController: pageListenable,
+            ),
+          ),
         ),
         ScrollUpPageIntent: CallbackAction<ScrollUpPageIntent>(
           onInvoke: (_) => _scrollTo(readerMode, false),
@@ -209,16 +209,16 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
           const MangaBackground(),
           readerMode.scroll
               ? MangaScrolledViewer(
-                pages: widget.pages,
-                direction: readerMode.direction,
-                scrollController: scrollController,
-                pageListenable: pageListenable,
-              )
+                  pages: widget.pages,
+                  direction: readerMode.direction,
+                  scrollController: scrollController,
+                  pageListenable: pageListenable,
+                )
               : MangaPagedViewer(
-                pages: widget.pages,
-                direction: readerMode.direction,
-                pageListenable: pageListenable,
-              ),
+                  pages: widget.pages,
+                  direction: readerMode.direction,
+                  pageListenable: pageListenable,
+                ),
         ],
       ),
     );

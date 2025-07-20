@@ -186,6 +186,10 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
 
       final link = await video.link;
 
+      if (mounted) {
+        return;
+      }
+
       if (progress.currentItem != itemIdx ||
           progress.currentSourceName != sourceName) {
         return;

@@ -23,17 +23,14 @@ class MangaContentScreen extends ConsumerWidget {
       child: Scaffold(
         body: result.when(
           skipLoadingOnRefresh: false,
-          data:
-              (data) => MangaReader(
-                contentDetails: data.contentDetails,
-                mediaItems: data.mediaItems,
-              ),
-          error:
-              (error, stackTrace) => DisplayError(
-                error: error,
-                onRefresh:
-                    () => ref.refresh(detailsProvider(supplier, id).future),
-              ),
+          data: (data) => MangaReader(
+            contentDetails: data.contentDetails,
+            mediaItems: data.mediaItems,
+          ),
+          error: (error, stackTrace) => DisplayError(
+            error: error,
+            onRefresh: () => ref.refresh(detailsProvider(supplier, id).future),
+          ),
           loading: () => const Center(child: CircularProgressIndicator()),
         ),
       ),
