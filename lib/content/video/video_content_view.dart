@@ -106,7 +106,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
 
         if (previousValue?.currentItem != nextValue.currentItem ||
             previousValue?.currentSourceName != nextValue.currentSourceName) {
-          await _playMediaItems(nextValue);
+          await _playMediaItem(nextValue);
         } else if (previousValue?.currentSubtitleName !=
             nextValue.currentSubtitleName) {
           ref
@@ -150,7 +150,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
     }
   }
 
-  Future<void> _playMediaItems(MediaCollectionItem progress) async {
+  Future<void> _playMediaItem(MediaCollectionItem progress) async {
     try {
       final itemIdx = progress.currentItem;
       final sourceName = progress.currentSourceName;
@@ -186,7 +186,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
 
       final link = await video.link;
 
-      if (mounted) {
+      if (!mounted) {
         return;
       }
 
