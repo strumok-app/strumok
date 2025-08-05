@@ -264,7 +264,9 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                     }
                   },
                   child: MouseRegion(
-                    cursor: SystemMouseCursors.basic,
+                    cursor: visible
+                        ? SystemMouseCursors.basic
+                        : SystemMouseCursors.none,
                     onHover: (_) => onHover(),
                     onEnter: (_) => onEnter(),
                     onExit: (_) => onExit(),
