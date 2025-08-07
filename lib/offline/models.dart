@@ -291,4 +291,7 @@ class OfflineMangaMediaItemSource
 
   @override
   final FileKind kind = FileKind.manga;
+
+  @override
+  Map<String, String>? get headers => null;
 }

@@ -58,11 +58,11 @@ enum FileKind { video, manga, subtitle }
 abstract interface class ContentMediaItemSource {
   FileKind get kind;
   String get description;
+  Map<String, String>? get headers;
 }
 
 abstract interface class MediaFileItemSource extends ContentMediaItemSource {
   FutureOr<Uri> get link;
-  Map<String, String>? get headers;
 }
 
 abstract interface class MangaMediaItemSource extends ContentMediaItemSource {

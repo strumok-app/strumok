@@ -363,10 +363,10 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
   final String supplier;
   @override
   final String description;
+  final Map<String, String>? headers;
 
   List<String>? _pages;
   List<ImageProvider<Object>>? _images;
-  Map<String, String>? _headers;
   final RustLibApi _api;
   final List<String> _params;
 
@@ -377,11 +377,10 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
     required List<String>? pages,
     required RustLibApi api,
     required List<String> params,
-    Map<String, String>? headers,
+    this.headers,
   }) : _pages = pages,
        _api = api,
-       _params = params,
-       _headers = headers;
+       _params = params;
 
   factory _RustMangaMediaItemSource.fromRust(
     String id,
@@ -415,7 +414,7 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
   @override
   Future<List<ImageProvider<Object>>> get images async {
     return _images ??= (await pages)
-        .map((link) => CachedNetworkImageProvider(link, headers: _headers))
+        .map((link) => CachedNetworkImageProvider(link, headers: headers))
         .toList();
   }
 }

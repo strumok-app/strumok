@@ -3,8 +3,13 @@ import 'dart:ui';
 
 import 'package:http/http.dart';
 import 'package:strumok/download/manager/models.dart';
+import 'package:strumok/utils/logger.dart';
 
-void downloadManga(MangaDownloadRequest request, DownloadTask task, VoidCallback onDone) async {
+void downloadManga(
+  MangaDownloadRequest request,
+  DownloadTask task,
+  VoidCallback onDone,
+) async {
   try {
     await Directory(request.folder).create(recursive: true);
 
@@ -32,8 +37,7 @@ void downloadManga(MangaDownloadRequest request, DownloadTask task, VoidCallback
       final httpRes = await Client().send(httpReq).timeout(httpTimeout);
 
       if (httpRes.statusCode != HttpStatus.ok) {
-        task.status.value = DownloadStatus.failed;
-        return;
+        throw Exception("httpStatus: ${httpRes.statusCode}");
       }
 
       await file.create(recursive: true);
@@ -47,6 +51,7 @@ void downloadManga(MangaDownloadRequest request, DownloadTask task, VoidCallback
 
     task.status.value = DownloadStatus.completed;
   } catch (e) {
+    logger.w("download failed for request: $request error: $e");
     task.status.value = DownloadStatus.failed;
   } finally {
     onDone();

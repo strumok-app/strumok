@@ -329,6 +329,7 @@ class OfflineStorage {
         pages: pages,
         folder: sourcePath,
         info: info,
+        headers: mediaSource.headers,
       );
     }
 
