@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:http/http.dart';
 import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/utils.dart';
 
 void downloadManga(
   MangaDownloadRequest request,
@@ -34,7 +35,11 @@ void downloadManga(
         httpReq.headers.addAll(request.headers!);
       }
 
-      final httpRes = await Client().send(httpReq).timeout(httpTimeout);
+      final httpRes = await retry(
+        () => Client().send(httpReq).timeout(httpTimeout),
+        3,
+        const Duration(seconds: 10),
+      );
 
       if (httpRes.statusCode != HttpStatus.ok) {
         throw Exception("httpStatus: ${httpRes.statusCode}");
