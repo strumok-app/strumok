@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:strumok/app_localizations.dart';
-import 'package:strumok/download/downloading_queue.dart';
-import 'package:strumok/download/downloading_provider.dart';
+import 'package:strumok/download/download_queue.dart';
+import 'package:strumok/download/download_queue_provider.dart';
 import 'package:strumok/layouts/general_layout.dart';
-import 'package:strumok/offline/models.dart';
-import 'package:strumok/offline/offline_items_screen_provider.dart';
-import 'package:strumok/offline/offline_storage.dart';
+import 'package:strumok/download/models.dart';
+import 'package:strumok/download/offline_items_screen_provider.dart';
+import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/utils/nav.dart';
 import 'package:strumok/utils/text.dart';
 import 'package:strumok/utils/visual.dart';
@@ -32,8 +32,17 @@ class OfflineItemsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _OfflineItemsTitle(),
-              if (isMobile(context)) _InprogressDownloads(),
-              Expanded(child: _OfflineItemsView()),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isMobile(context)) _InprogressDownloads(),
+                      _OfflineItemsView(),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -91,11 +100,9 @@ class _OfflineItemsView extends ConsumerWidget {
       return Center(child: NothingToShow());
     }
 
-    return SingleChildScrollView(
-      child: Wrap(
-        runSpacing: 4,
-        children: data.map((info) => OfflineItem(info: info)).toList(),
-      ),
+    return Wrap(
+      runSpacing: 4,
+      children: data.map((info) => OfflineItem(info: info)).toList(),
     );
   }
 }

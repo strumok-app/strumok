@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
-import 'package:strumok/download/downloading_queue.dart';
+import 'package:strumok/download/download_queue.dart';
 import 'package:strumok/layouts/navigation_bar_data.dart';
 import 'package:strumok/layouts/account/account.dart';
 import 'package:strumok/layouts/widgets.dart';

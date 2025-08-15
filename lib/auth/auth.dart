@@ -135,7 +135,7 @@ abstract class PlatformSignIn {
 
 class AndroidPlatformSignIn extends PlatformSignIn {
   final StreamController<AuthCredential> _authCredentialStreamController =
-      StreamController();
+      StreamController.broadcast();
 
   @override
   Stream<AuthCredential> get authCredential =>
@@ -163,7 +163,7 @@ class AndroidPlatformSignIn extends PlatformSignIn {
   }
 
   void _handleAuthenticationError(dynamic error) {
-    logger.e("Google suck dick again: $error");
+    logger.e("Authentication error: $error");
     traceError(error: error);
   }
 

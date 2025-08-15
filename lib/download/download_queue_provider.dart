@@ -1,9 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/download/manager/manager.dart';
-import 'package:strumok/download/manager/models.dart';
 
-part 'downloading_provider.g.dart';
+part 'download_queue_provider.g.dart';
 
 @riverpod
 Stream<DownloadTask> downloadsUpdateStream(Ref ref) {

@@ -7,7 +7,7 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/content/video/widgets.dart';
-import 'package:strumok/offline/media_item_download.dart';
+import 'package:strumok/download/media_item_download.dart';
 import 'package:strumok/utils/nav.dart';
 
 class ContentDetailsVideoActions extends ContentDetailsActions {
@@ -26,13 +26,13 @@ class ContentDetailsVideoActions extends ContentDetailsActions {
         const SizedBox(width: 8),
         showList
             ? _ContentPlaylistButton(
-              contentDetails: contentDetails,
-              mediaItems: mediaItems,
-            )
+                contentDetails: contentDetails,
+                mediaItems: mediaItems,
+              )
             : MediaItemDownloadButton(
-              contentDetails: contentDetails,
-              item: mediaItems.first,
-            ),
+                contentDetails: contentDetails,
+                item: mediaItems.first,
+              ),
       ],
     );
   }

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'downloading_provider.dart';
+part of 'download_queue_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator

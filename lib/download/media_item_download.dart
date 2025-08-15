@@ -4,10 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/download/manager/manager.dart';
-import 'package:strumok/offline/media_item_download_provider.dart';
-import 'package:strumok/offline/models.dart';
-import 'package:strumok/offline/offline_items_screen_provider.dart';
-import 'package:strumok/offline/offline_storage.dart';
+import 'package:strumok/download/media_item_download_provider.dart';
+import 'package:strumok/download/models.dart';
+import 'package:strumok/download/offline_items_screen_provider.dart';
+import 'package:strumok/download/offline_storage.dart';
 
 class MediaItemDownloadButton extends ConsumerWidget {
   final ContentDetails contentDetails;

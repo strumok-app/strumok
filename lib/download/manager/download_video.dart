@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
@@ -41,14 +40,12 @@ class HLSManifest {
 
 void downloadVideo(
   VideoDownloadRequest request,
-  DownloadTask task,
-  VoidCallback onDone,
+  DownloadProgressCallback updateProgress,
+  DownloadDoneCallback onDone,
+  CancelToken cancelToken,
 ) async {
-  task.status.value = DownloadStatus.started;
-
   if (await File(request.fileSrc).exists()) {
-    task.status.value = DownloadStatus.completed;
-    onDone();
+    onDone(DownloadStatus.completed);
     return;
   }
 
@@ -82,7 +79,12 @@ void downloadVideo(
         for (int i = 0; i < sortedStreams.length; i++) {
           final selectedStream = sortedStreams[i];
           try {
-            await _downloadHLSStream(request, task, selectedStream, onDone);
+            await _downloadHLSStream(
+              request,
+              updateProgress,
+              cancelToken,
+              selectedStream,
+            );
             break;
           } catch (e) {
             logger.w(
@@ -94,11 +96,15 @@ void downloadVideo(
           }
         }
       } else {
-        await _downloadStreamSegments(request, task, master, onDone);
+        await _downloadStreamSegments(
+          request,
+          updateProgress,
+          cancelToken,
+          master,
+        );
       }
 
-      task.status.value = DownloadStatus.completed;
-      onDone();
+      onDone(DownloadStatus.completed);
     } else {
       donwloadFile(
         FileDownloadRequest(
@@ -107,22 +113,22 @@ void downloadVideo(
           request.fileSrc,
           headers: request.headers,
         ),
-        task,
+        updateProgress,
         onDone,
+        cancelToken,
       );
     }
   } catch (e) {
     logger.w("download video failed for request: $request error: $e");
-    task.status.value = DownloadStatus.failed;
-    onDone();
+    onDone(DownloadStatus.failed);
   }
 }
 
 Future<void> _downloadHLSStream(
   VideoDownloadRequest request,
-  DownloadTask task,
+  DownloadProgressCallback updateProgress,
+  CancelToken cancelToken,
   HLSStream stream,
-  VoidCallback onDone,
 ) async {
   final req = Request('GET', stream.uri);
 
@@ -139,17 +145,23 @@ Future<void> _downloadHLSStream(
   final hls = await res.stream.bytesToString();
   final streamHls = await _parseHLSManifest(stream.uri, hls);
 
-  await _downloadStreamSegments(request, task, streamHls, onDone);
+  await _downloadStreamSegments(
+    request,
+    updateProgress,
+    cancelToken,
+    streamHls,
+  );
 }
 
 Future<void> _downloadStreamSegments(
   VideoDownloadRequest request,
-  DownloadTask task,
-  HLSManifest manifet,
-  VoidCallback onDone,
+  DownloadProgressCallback updateProgress,
+  CancelToken cancelToken,
+  HLSManifest manifest,
 ) async {
-  final decrypter =
-      manifet.encryptionKey != null ? _Decryptor(manifet.encryptionKey!) : null;
+  final decrypter = manifest.encryptionKey != null
+      ? _Decryptor(manifest.encryptionKey!)
+      : null;
 
   final client = Client();
 
@@ -160,14 +172,16 @@ Future<void> _downloadStreamSegments(
 
   final sink = partialFile.openWrite(mode: FileMode.write);
 
-  for (var i = 0; i < manifet.segments.length; i++) {
-    if (task.status.value == DownloadStatus.canceled) {
+  final startTs = DateTime.now();
+  var bytesDownloaded = 0;
+  for (var i = 0; i < manifest.segments.length; i++) {
+    if (cancelToken.isCanceled) {
       await sink.close();
       await partialFile.delete();
       return;
     }
 
-    final segment = manifet.segments[i];
+    final segment = manifest.segments[i];
     final segmentReq = Request('GET', segment);
 
     if (request.headers != null) {
@@ -191,14 +205,20 @@ Future<void> _downloadStreamSegments(
 
       sink.add(bytes);
 
-      task.progress.value = i / manifet.segments.length;
-      task.bytesDownloaded += bytes.length;
+      bytesDownloaded += bytes.length;
+      updateProgress(
+        i / manifest.segments.length,
+        downloadSpeed(startTs, bytesDownloaded),
+      );
     } else {
       await for (var chunk in res.stream) {
         sink.add(chunk);
 
-        task.progress.value = i / manifet.segments.length;
-        task.bytesDownloaded += chunk.length;
+        bytesDownloaded += chunk.length;
+        updateProgress(
+          i / manifest.segments.length,
+          downloadSpeed(startTs, bytesDownloaded),
+        );
       }
     }
   }
@@ -313,13 +333,14 @@ class _Decryptor {
   final BlockCipher cipher;
 
   _Decryptor(Uint8List key)
-    : cipher = PaddedBlockCipher("AES/CBC/PKCS7")..init(
-        false,
-        PaddedBlockCipherParameters(
-          ParametersWithIV(KeyParameter(key), Uint8List(16)),
-          null,
-        ),
-      );
+    : cipher = PaddedBlockCipher("AES/CBC/PKCS7")
+        ..init(
+          false,
+          PaddedBlockCipherParameters(
+            ParametersWithIV(KeyParameter(key), Uint8List(16)),
+            null,
+          ),
+        );
 
   Uint8List decrypt(Uint8List data) {
     return cipher.process(data);

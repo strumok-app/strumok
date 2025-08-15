@@ -17,8 +17,7 @@ import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/utils/trace.dart';
 
-import '../../download/manager/manager.dart';
-import '../../download/manager/models.dart';
+import 'package:strumok/download/manager/manager.dart';
 
 part 'suppliers_bundle_version_provider.g.dart';
 

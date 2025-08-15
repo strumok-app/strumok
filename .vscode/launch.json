@@ -16,7 +16,7 @@
                 "FORCE_TV_MODE=false",
             ],
             "env": {
-                "RUST_LOG": "info"
+                "RUST_LOG": "error"
             }
         },
         {
@@ -35,7 +35,7 @@
                 "secrets.json"
             ],
             "env": {
-                "RUST_LOG": "info"
+                "RUST_LOG": "error"
             }
         },
     ]

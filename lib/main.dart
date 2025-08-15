@@ -9,9 +9,8 @@ import 'package:strumok/app_router.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/layouts/app_theme.dart';
-import 'package:strumok/layouts/global_notifications.dart';
 import 'package:strumok/layouts/version_guard.dart';
-import 'package:strumok/offline/offline_storage.dart';
+import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/error_observer.dart';
@@ -89,12 +88,8 @@ class MainApp extends ConsumerWidget {
         routerConfig: _appRouter.config(
           navigatorObservers: () => [SentryNavigatorObserver()],
         ),
-        builder:
-            (context, child) => AppTheme(
-              child: VersionGuard(
-                child: GlobalNotifications(router: _appRouter, child: child!),
-              ),
-            ),
+        builder: (context, child) =>
+            AppTheme(child: VersionGuard(child: child!)),
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
-import 'package:strumok/download/downloading_icon.dart';
+import 'package:strumok/download/download_queue_icon_button.dart';
 import 'package:strumok/layouts/account/oflline_mode_item.dart';
 import 'package:strumok/layouts/account/user_menu_item.dart';
 import 'package:strumok/widgets/new_version_icon.dart';
@@ -50,7 +50,9 @@ class AccountMenu extends StatelessWidget {
               const UserMenuItem(),
               const OfllineModeItem(),
               ListTile(
-                leading: const DownloadingIcon(Icons.download_for_offline),
+                leading: const DownloadQueueIconButton(
+                  Icons.download_for_offline,
+                ),
                 title: Text(AppLocalizations.of(context)!.downloads),
                 onTap: () {
                   context.router.popAndPush(const OfflineItemsRoute());

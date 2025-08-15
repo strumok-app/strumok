@@ -3,7 +3,7 @@ import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/media_items_list.dart';
-import 'package:strumok/offline/media_item_download.dart';
+import 'package:strumok/download/media_item_download.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
@@ -126,12 +126,9 @@ class MangaChapterProgressIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pos =
-        ref
-            .watch(
-              collectionItemCurrentMediaItemPositionProvider(contentDetails),
-            )
-            .valueOrNull;
+    final pos = ref
+        .watch(collectionItemCurrentMediaItemPositionProvider(contentDetails))
+        .valueOrNull;
 
     if (pos == null || pos.length == 0) {
       return const SizedBox.shrink();
@@ -239,14 +236,12 @@ class ManagPageAspectContainer extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Container(
       constraints: BoxConstraints(
-        minWidth:
-            direction == Axis.vertical
-                ? size.width
-                : size.height / mangaPageAspectRatio,
-        minHeight:
-            direction == Axis.horizontal
-                ? size.height
-                : size.width * mangaPageAspectRatio,
+        minWidth: direction == Axis.vertical
+            ? size.width
+            : size.height / mangaPageAspectRatio,
+        minHeight: direction == Axis.horizontal
+            ? size.height
+            : size.width * mangaPageAspectRatio,
       ),
       color: color,
       child: child,

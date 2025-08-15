@@ -1,15 +1,21 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:http/http.dart';
 import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/utils.dart';
 
 import 'models.dart';
 
 const partialExtension = ".part";
 const tempExtension = ".temp";
 
-void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback onDone) async {
+void donwloadFile(
+  FileDownloadRequest request,
+  DownloadProgressCallback updateProgress,
+  DownloadDoneCallback onDone,
+  CancelToken cancelToken,
+) async {
   try {
+    final startTs = DateTime.now();
     final file = File(request.fileSrc);
 
     final partialFilePath = request.fileSrc + partialExtension;
@@ -18,8 +24,7 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
     final fileExist = await file.exists();
 
     if (fileExist) {
-      task.status.value = DownloadStatus.completed;
-      onDone();
+      onDone(DownloadStatus.completed);
       return;
     }
 
@@ -44,7 +49,8 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
 
     final res = await Client().send(httpReq).timeout(httpTimeout);
 
-    if (res.statusCode != HttpStatus.partialContent && res.statusCode != HttpStatus.ok) {
+    if (res.statusCode != HttpStatus.partialContent &&
+        res.statusCode != HttpStatus.ok) {
       throw Exception("httpStatus: ${res.statusCode}");
     }
 
@@ -52,7 +58,7 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
     final sink = partialFile.openWrite(mode: FileMode.writeOnlyAppend);
 
     await for (var chunk in res.stream) {
-      if (task.status.value == DownloadStatus.canceled) {
+      if (cancelToken.isCanceled) {
         await sink.close();
         await partialFile.delete();
         return;
@@ -61,19 +67,20 @@ void donwloadFile(FileDownloadRequest request, DownloadTask task, VoidCallback o
       sink.add(chunk);
 
       bytesDownloaded += chunk.length;
-      task.progress.value = bytesDownloaded / res.contentLength!.toDouble();
-      task.bytesDownloaded = bytesDownloaded;
+
+      updateProgress(
+        bytesDownloaded / res.contentLength!,
+        downloadSpeed(startTs, bytesDownloaded),
+      );
     }
 
     await sink.close();
 
     await partialFile.rename(request.fileSrc);
-    task.status.value = DownloadStatus.completed;
-    onDone();
+    onDone(DownloadStatus.completed);
   } catch (e) {
     logger.w("download failed for request: $request error: $e");
-    task.status.value = DownloadStatus.failed;
   } finally {
-    onDone();
+    onDone(DownloadStatus.failed);
   }
 }

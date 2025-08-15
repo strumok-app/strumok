@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_router.gr.dart';
-import 'package:strumok/download/downloading_provider.dart';
+import 'package:strumok/download/download_queue_provider.dart';
 import 'package:strumok/download/manager/manager.dart';
-import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/utils/text.dart';
 
 class DownloadingQueue extends HookConsumerWidget {

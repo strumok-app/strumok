@@ -9,7 +9,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:http/http.dart';
 import 'package:strumok/download/manager/manager.dart';
-import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/settings/models.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/sem_ver.dart';
@@ -36,7 +35,8 @@ class AppVersionDownloadAssets {
     required this.name,
   });
 
-  factory AppVersionDownloadAssets.fromJson(Map<String, dynamic> json) => _$AppVersionDownloadAssetsFromJson(json);
+  factory AppVersionDownloadAssets.fromJson(Map<String, dynamic> json) =>
+      _$AppVersionDownloadAssetsFromJson(json);
 }
 
 @JsonSerializable(createToJson: false)
@@ -46,12 +46,11 @@ class LatestAppVersionInfo {
   @JsonKey(includeFromJson: true)
   final SemVer version;
 
-  LatestAppVersionInfo({
-    required this.name,
-    required this.assets,
-  }) : version = SemVer.fromString(name);
+  LatestAppVersionInfo({required this.name, required this.assets})
+    : version = SemVer.fromString(name);
 
-  factory LatestAppVersionInfo.fromJson(Map<String, dynamic> json) => _$LatestAppVersionInfoFromJson(json);
+  factory LatestAppVersionInfo.fromJson(Map<String, dynamic> json) =>
+      _$LatestAppVersionInfoFromJson(json);
 }
 
 @riverpod
@@ -81,11 +80,17 @@ class AppDownload extends _$AppDownload {
       final deviceInfo = await DeviceInfoPlugin().androidInfo;
 
       if (deviceInfo.supportedAbis.contains("arm64-v8a")) {
-        asset = info.assets.where((a) => a.name.contains("app-arm64-v8a-release.apk")).firstOrNull;
+        asset = info.assets
+            .where((a) => a.name.contains("app-arm64-v8a-release.apk"))
+            .firstOrNull;
       } else if (deviceInfo.supportedAbis.contains("armeabi-v7a")) {
-        asset = info.assets.where((a) => a.name.contains("app-armeabi-v7a-release.apk")).firstOrNull;
+        asset = info.assets
+            .where((a) => a.name.contains("app-armeabi-v7a-release.apk"))
+            .firstOrNull;
       } else {
-        asset = info.assets.where((a) => a.name.contains("app-release.apk")).firstOrNull;
+        asset = info.assets
+            .where((a) => a.name.contains("app-release.apk"))
+            .firstOrNull;
       }
 
       if (asset != null) {
@@ -116,7 +121,8 @@ class AppDownload extends _$AppDownload {
 
     final tmpDir = await getApplicationCacheDirectory();
 
-    final installDirPath = "${tmpDir.path}${Platform.pathSeparator}install${Platform.pathSeparator}";
+    final installDirPath =
+        "${tmpDir.path}${Platform.pathSeparator}install${Platform.pathSeparator}";
     final installDir = await Directory(installDirPath).create(recursive: true);
 
     final fileName = "${info.version}.apk";
@@ -133,11 +139,9 @@ class AppDownload extends _$AppDownload {
 
     logger.i("App download path: $filePath");
 
-    final task = DownloadManager().download(FileDownloadRequest(
-      "app_download",
-      asset.browserDownloadUrl,
-      filePath,
-    ));
+    final task = DownloadManager().download(
+      FileDownloadRequest("app_download", asset.browserDownloadUrl, filePath),
+    );
 
     task.progress.addListener(() {
       state = state.updateProgress(task.progress.value);

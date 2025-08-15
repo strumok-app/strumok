@@ -363,6 +363,7 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
   final String supplier;
   @override
   final String description;
+  @override
   final Map<String, String>? headers;
 
   List<String>? _pages;

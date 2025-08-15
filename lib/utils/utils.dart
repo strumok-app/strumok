@@ -16,3 +16,13 @@ Future<T> retry<T>(
     }
   }
 }
+
+double downloadSpeed(DateTime start, int bytes) {
+  final seconds = DateTime.now().difference(start).inSeconds;
+
+  if (seconds > 0) {
+    return bytes / seconds.toDouble();
+  }
+
+  return 0;
+}

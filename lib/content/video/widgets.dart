@@ -5,7 +5,7 @@ import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_subtitles.dart';
-import 'package:strumok/offline/media_item_download.dart';
+import 'package:strumok/download/media_item_download.dart';
 import 'package:strumok/widgets/dropdown.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:strumok/utils/text.dart';
+
+part 'models.g.dart';
 
 const httpTimeout = Duration(seconds: 30);
 
@@ -17,24 +20,42 @@ enum DownloadStatus {
   const DownloadStatus(this.isCompleted);
 }
 
+@JsonEnum()
 enum DownloadType { video, manga, file }
 
 abstract interface class DownloadRequest {
   String get id;
   DownloadType get type;
+  Map<String, dynamic> toJson();
+
+  static DownloadRequest fromJson(Map<String, dynamic> json) {
+    return switch (json["type"]) {
+      "video" => VideoDownloadRequest.fromJson(json),
+      "manga" => MangaDownloadRequest.fromJson(json),
+      "file" => FileDownloadRequest.fromJson(json),
+      _ => throw Exception("Unknown DownloadRequest type"),
+    };
+  }
 }
 
 abstract interface class ContentDownloadRequest extends DownloadRequest {
   DownloadInfo get info;
 }
 
+@JsonSerializable()
 class DownloadInfo {
   final String title;
   final String image;
 
   DownloadInfo({required this.title, required this.image});
+
+  factory DownloadInfo.fromJson(Map<String, dynamic> json) =>
+      _$DownloadInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DownloadInfoToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class VideoDownloadRequest implements DownloadRequest, ContentDownloadRequest {
   @override
   final String id;
@@ -42,9 +63,11 @@ class VideoDownloadRequest implements DownloadRequest, ContentDownloadRequest {
   final String url;
   final String fileSrc;
   final Map<String, String>? headers;
+
   @override
   final DownloadInfo info;
 
+  @JsonKey(includeToJson: true)
   @override
   final DownloadType type = DownloadType.video;
 
@@ -57,9 +80,17 @@ class VideoDownloadRequest implements DownloadRequest, ContentDownloadRequest {
   });
 
   @override
-  String toString() => "VideoDownloadRequest[id: $id, url: $url, fileSrc: $fileSrc]";
+  String toString() =>
+      "VideoDownloadRequest[id: $id, url: $url, fileSrc: $fileSrc]";
+
+  factory VideoDownloadRequest.fromJson(Map<String, dynamic> json) =>
+      _$VideoDownloadRequestFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$VideoDownloadRequestToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class MangaDownloadRequest implements DownloadRequest, ContentDownloadRequest {
   @override
   final String id;
@@ -70,6 +101,7 @@ class MangaDownloadRequest implements DownloadRequest, ContentDownloadRequest {
   @override
   final DownloadInfo info;
 
+  @JsonKey(includeToJson: true)
   @override
   final DownloadType type = DownloadType.manga;
 
@@ -83,13 +115,21 @@ class MangaDownloadRequest implements DownloadRequest, ContentDownloadRequest {
 
   @override
   String toString() => "MangaDownloadRequest[id: $id, folder: $folder]";
+
+  factory MangaDownloadRequest.fromJson(Map<String, dynamic> json) =>
+      _$MangaDownloadRequestFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$MangaDownloadRequestToJson(this);
 }
 
+@JsonSerializable()
 class FileDownloadRequest implements DownloadRequest {
   final String url;
   final String fileSrc;
   final Map<String, String>? headers;
 
+  @JsonKey(includeToJson: true)
   @override
   final DownloadType type = DownloadType.file;
 
@@ -99,28 +139,47 @@ class FileDownloadRequest implements DownloadRequest {
   FileDownloadRequest(this.id, this.url, this.fileSrc, {this.headers});
 
   @override
-  String toString() => "FileDownloadRequest[id: $id, url: $url, fileSrc: $fileSrc]";
+  String toString() =>
+      "FileDownloadRequest[id: $id, url: $url, fileSrc: $fileSrc]";
+
+  factory FileDownloadRequest.fromJson(Map<String, dynamic> json) =>
+      _$FileDownloadRequestFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$FileDownloadRequestToJson(this);
 }
 
-class DownloadTask {
-  final DownloadRequest request;
+abstract interface class CancelToken {
+  bool get isCanceled;
+  void cancel();
+}
 
-  DateTime? startedTS;
-  int bytesDownloaded = 0;
+class DownloadTask implements CancelToken {
+  final DownloadRequest request;
 
   ValueNotifier<DownloadStatus> status = ValueNotifier(DownloadStatus.queued);
   ValueNotifier<double> progress = ValueNotifier(0);
 
+  double? _speed;
+
   DownloadTask(this.request);
 
-  Future<DownloadStatus> whenDownloadComplete({Duration timeout = const Duration(hours: 2)}) async {
+  void updateProgress(double progress, double speed) {
+    this.progress.value = progress;
+
+    _speed = speed;
+  }
+
+  Future<DownloadStatus> whenDownloadComplete({
+    Duration timeout = const Duration(hours: 2),
+  }) async {
     var completer = Completer<DownloadStatus>();
 
     if (status.value.isCompleted) {
       completer.complete(status.value);
     }
 
-    listener() {
+    void listener() {
       if (status.value.isCompleted) {
         completer.complete(status.value);
         status.removeListener(listener);
@@ -132,20 +191,26 @@ class DownloadTask {
     return completer.future.timeout(timeout);
   }
 
+  void start() {
+    status.value = DownloadStatus.started;
+  }
+
+  @override
+  bool get isCanceled => status.value == DownloadStatus.canceled;
+
+  @override
   void cancel() {
     status.value = DownloadStatus.canceled;
   }
 
   String? speed() {
-    if (startedTS != null) {
-      final seconds = DateTime.now().difference(startedTS!).inSeconds;
-      if (seconds > 0) {
-        final bytesInSec = bytesDownloaded / seconds;
-
-        return formatBytes(bytesInSec.floor());
-      }
+    if (_speed != null) {
+      return formatBytes(_speed!.floor());
     }
 
     return null;
   }
 }
+
+typedef DownloadProgressCallback = void Function(double progress, double bytes);
+typedef DownloadDoneCallback = void Function(DownloadStatus state);

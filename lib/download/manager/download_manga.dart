@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:http/http.dart';
 import 'package:strumok/download/manager/models.dart';
@@ -8,14 +7,17 @@ import 'package:strumok/utils/utils.dart';
 
 void downloadManga(
   MangaDownloadRequest request,
-  DownloadTask task,
-  VoidCallback onDone,
+  DownloadProgressCallback updateProgress,
+  DownloadDoneCallback onDone,
+  CancelToken cancelToken,
 ) async {
   try {
     await Directory(request.folder).create(recursive: true);
 
+    final startTs = DateTime.now();
+    var bytesDownloaded = 0;
     for (var i = 0; i < request.pages.length; i++) {
-      if (task.status.value == DownloadStatus.canceled) {
+      if (cancelToken.isCanceled) {
         await Directory(request.folder).delete(recursive: true);
         return;
       }
@@ -50,15 +52,16 @@ void downloadManga(
       final responseBytes = await httpRes.stream.toBytes();
       await file.writeAsBytes(responseBytes);
 
-      task.progress.value = (i + 1) / request.pages.length;
-      task.bytesDownloaded += responseBytes.length;
+      bytesDownloaded += responseBytes.length;
+      updateProgress(
+        (i + 1) / request.pages.length,
+        downloadSpeed(startTs, bytesDownloaded),
+      );
     }
 
-    task.status.value = DownloadStatus.completed;
+    onDone(DownloadStatus.completed);
   } catch (e) {
     logger.w("download failed for request: $request error: $e");
-    task.status.value = DownloadStatus.failed;
-  } finally {
-    onDone();
+    onDone(DownloadStatus.failed);
   }
 }

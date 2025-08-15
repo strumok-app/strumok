@@ -4,8 +4,7 @@ import 'dart:io';
 import 'package:content_suppliers_api/model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:strumok/download/manager/manager.dart';
-import 'package:strumok/download/manager/models.dart';
-import 'package:strumok/offline/models.dart';
+import 'package:strumok/download/models.dart';
 import 'package:strumok/utils/logger.dart';
 
 class OfflineStorage {

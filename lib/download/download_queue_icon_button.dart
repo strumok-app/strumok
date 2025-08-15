@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:strumok/download/downloading_provider.dart';
+import 'package:strumok/download/download_queue_provider.dart';
 
-class DownloadingIcon extends ConsumerWidget {
+class DownloadQueueIconButton extends ConsumerWidget {
   final IconData icon;
 
-  const DownloadingIcon(this.icon, {super.key});
+  const DownloadQueueIconButton(this.icon, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -13,9 +13,6 @@ class DownloadingIcon extends ConsumerWidget {
 
     return tasks.isEmpty
         ? Icon(icon)
-        : Badge.count(
-            count: tasks.length,
-            child: Icon(icon),
-          );
+        : Badge.count(count: tasks.length, child: Icon(icon));
   }
 }
