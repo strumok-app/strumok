@@ -38,14 +38,15 @@ void appRunner() async {
 
   if (isDesktopDevice()) {
     await windowManager.ensureInitialized();
+
+    // fvp.registerWith(
+    //   options: {
+    //     'platforms': ['windows', 'linux'],
+    //   },
+    // );
   }
 
-  // init media kit
-  fvp.registerWith(
-    options: {
-      'platforms': ['windows', 'macos', 'linux'],
-    },
-  );
+  fvp.registerWith();
 
   await AppDatabase().init();
   await AppPreferences.init();

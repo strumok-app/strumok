@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:subtitle/subtitle.dart';
+import 'package:video_player/video_player.dart';
 
 class PlayerSubtitles extends ConsumerWidget {
   const PlayerSubtitles({super.key});
@@ -27,7 +26,6 @@ class PlayerSubtitles extends ConsumerWidget {
         }
 
         return PlayerSubtitleView(
-          player: controller(context).player,
           subtitleController: subtitleController,
           subtitlesOffset: subtitlesOffset,
         );
@@ -43,13 +41,11 @@ class PlayerSubtitles extends ConsumerWidget {
 }
 
 class PlayerSubtitleView extends StatefulWidget {
-  final Player player;
   final SubtitleController subtitleController;
   final Duration subtitlesOffset;
 
   const PlayerSubtitleView({
     super.key,
-    required this.player,
     required this.subtitleController,
     required this.subtitlesOffset,
   });
@@ -68,9 +64,11 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
   void initState() {
     super.initState();
 
-    _subscription = widget.player.stream.position.listen(_updateSubtitles);
+    _subscription = VideoContentView.currentState.playerStream.listen(
+      _updateSubtitles,
+    );
 
-    _updateSubtitles(widget.player.state.position);
+    _updateSubtitles(VideoContentView.currentState.playerState);
   }
 
   @override
@@ -82,13 +80,13 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
 
   @override
   void didUpdateWidget(covariant PlayerSubtitleView oldWidget) {
-    _updateSubtitles(widget.player.state.position);
+    _updateSubtitles(VideoContentView.currentState.playerState);
 
     super.didUpdateWidget(oldWidget);
   }
 
-  void _updateSubtitles(Duration position) {
-    final time = position + widget.subtitlesOffset;
+  void _updateSubtitles(VideoPlayerValue value) {
+    final time = value.position + widget.subtitlesOffset;
 
     if (_subtitles.firstOrNull?.inRange(time) == true) {
       return;

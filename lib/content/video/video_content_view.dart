@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:strumok/app_localizations.dart';
@@ -7,10 +8,13 @@ import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_content_desktop_view.dart';
+import 'package:strumok/content/video/video_content_mobile_view.dart';
+import 'package:strumok/content/video/video_content_tv_controls.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_subtitles.dart';
 import 'package:strumok/utils/trace.dart';
 import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -21,6 +25,8 @@ import 'package:video_player/video_player.dart';
 
 extension VideoPlayerValueExt on VideoPlayerValue {
   Duration get lastBuffer => buffered.lastOrNull?.end ?? Duration.zero;
+  bool get isEnded =>
+      duration > Duration.zero && position >= duration && !isPlaying;
 }
 
 class VideoContentView extends ConsumerStatefulWidget {
@@ -193,20 +199,30 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
       final videoController = VideoPlayerController.networkUrl(
         link,
         httpHeaders: video.headers ?? {},
-        videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: true),
+        videoPlayerOptions: VideoPlayerOptions(
+          allowBackgroundPlayback: true,
+          mixWithOthers: true,
+        ),
       );
 
       videoController.addListener(() {
-        _playerStateSteamController.add(videoController.value);
+        final value = videoController.value;
+        _playerStateSteamController.add(value);
+
+        if (value.isEnded) {
+          _onVideoEnds();
+        }
       });
 
-      await videoController.initialize().then((value) {
-        setState(() {
-          _videoController = videoController;
-        });
+      await videoController.initialize();
+
+      setState(() {
+        _videoController = videoController;
       });
 
+      await videoController.seekTo(Duration(seconds: start));
       await videoController.play();
+
       videoController.setVolume(AppPreferences.volume);
 
       ref
@@ -227,14 +243,15 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
 
       // show error snackbar
       if (mounted) {
-        final error = AppLocalizations.of(context)!.videoSourceFailed;
-
-        ref.read(playerErrorsProvider.notifier).addError(error);
+        ref.read(playerErrorsProvider.notifier).addError(error.toString());
 
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
           ..showSnackBar(
-            SnackBar(content: Text(error), behavior: SnackBarBehavior.floating),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.videoSourceFailed),
+              behavior: SnackBarBehavior.floating,
+            ),
           );
       }
     }
@@ -279,6 +296,10 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
         (controller.value.volume - .05).clamp(0.0, 1.0),
       );
     }
+  }
+
+  void setRate(double speedUpFactor) async {
+    _videoController?.setPlaybackSpeed(speedUpFactor);
   }
 
   Future<void> setVolume(double volume) async {
@@ -363,30 +384,25 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
 
   @override
   Widget build(BuildContext context) {
-    // if (TVDetector.isTV) {
-    //   return _buildTvView();
-    // } else if (Platform.isAndroid || Platform.isIOS) {
-    //   return _buildMobileView();
-    // }
-
-    // return _buildDesktopView();
-
-    print("_videoController ${_videoController == null}");
+    ref.watch(playerErrorsProvider);
 
     final size = MediaQuery.sizeOf(context);
 
-    return SizedBox(
+    return Container(
       height: size.height,
       width: size.width,
+      color: Colors.black,
       child: Stack(
         children: [
           if (_videoController != null)
-            AspectRatio(
-              aspectRatio: _videoController!.value.aspectRatio,
-              child: VideoPlayer(_videoController!),
+            Center(
+              child: AspectRatio(
+                aspectRatio: _videoController!.value.aspectRatio,
+                child: VideoPlayer(_videoController!),
+              ),
             ),
           PlayerSubtitles(),
-          Positioned.fill(child: VideoContentDesktopView()),
+          Positioned.fill(child: _buildControlsView()),
           ValueListenableBuilder(
             valueListenable: isLoading,
             builder: (context, value, child) {
@@ -402,17 +418,13 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
     );
   }
 
-  // Widget _buildTvView() {
-  //   return VideoContentTVView(
-  //     player: _player,
-  //     videoController: _videoController,
-  //   );
-  // }
+  Widget _buildControlsView() {
+    if (TVDetector.isTV) {
+      return AndroidTVControls();
+    } else if (Platform.isAndroid || Platform.isIOS) {
+      return VideoContentMobileView();
+    }
 
-  // Widget _buildMobileView() {
-  //   return VideoContentMobileView(
-  //     player: _player,
-  //     videoController: _videoController,
-  //   );
-  // }
+    return VideoContentDesktopView();
+  }
 }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
@@ -26,16 +25,16 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
   static const subtitleVerticalShiftOffset = 96.0;
   static const buttonBarHeight = 56.0;
 
-  late bool mount = true;
-  late bool visible = true;
+  late bool _mount = true;
+  late bool _visible = true;
 
   Timer? _timer;
 
-  late bool buffering = VideoContentView.currentState.playerState.isBuffering;
+  late bool _buffering = VideoContentView.currentState.playerState.isBuffering;
 
-  DateTime last = DateTime.now();
+  DateTime _last = DateTime.now();
 
-  final List<StreamSubscription> subscriptions = [];
+  StreamSubscription? _subscription;
 
   @override
   void setState(VoidCallback fn) {
@@ -47,33 +46,27 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
   @override
   void initState() {
     super.initState();
-    if (subscriptions.isEmpty) {
-      subscriptions.addAll([
-        VideoContentView.currentState.playerStream.listen((event) {
-          if (buffering != event.isBuffering) {
-            setState(() {
-              buffering = event.isBuffering;
-            });
-          }
-        }),
-      ]);
+    _subscription = VideoContentView.currentState.playerStream.listen((event) {
+      if (_buffering != event.isBuffering) {
+        setState(() {
+          _buffering = event.isBuffering;
+        });
+      }
+    });
 
-      _timer = Timer(controlsHoverDuration, () {
-        if (mounted) {
-          setState(() {
-            visible = false;
-          });
-          unshiftSubtitle();
-        }
-      });
-    }
+    _timer = Timer(controlsHoverDuration, () {
+      if (mounted) {
+        setState(() {
+          _visible = false;
+        });
+        unshiftSubtitle();
+      }
+    });
   }
 
   @override
   void dispose() {
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -92,15 +85,15 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
 
   void onHover() {
     setState(() {
-      mount = true;
-      visible = true;
+      _mount = true;
+      _visible = true;
     });
     shiftSubtitle();
     _timer?.cancel();
     _timer = Timer(controlsHoverDuration, () {
       if (mounted) {
         setState(() {
-          visible = false;
+          _visible = false;
         });
         unshiftSubtitle();
       }
@@ -109,15 +102,15 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
 
   void onEnter() {
     setState(() {
-      mount = true;
-      visible = true;
+      _mount = true;
+      _visible = true;
     });
     shiftSubtitle();
     _timer?.cancel();
     _timer = Timer(controlsHoverDuration, () {
       if (mounted) {
         setState(() {
-          visible = false;
+          _visible = false;
         });
         unshiftSubtitle();
       }
@@ -126,7 +119,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
 
   void onExit() {
     setState(() {
-      visible = false;
+      _visible = false;
     });
     unshiftSubtitle();
     _timer?.cancel();
@@ -226,8 +219,8 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                 child: GestureDetector(
                   onTapUp: (e) {
                     final now = DateTime.now();
-                    final difference = now.difference(last);
-                    last = now;
+                    final difference = now.difference(_last);
+                    _last = now;
                     if (difference < const Duration(milliseconds: 400)) {
                       // toggleFullscreen(context);
                     } else {
@@ -242,7 +235,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                     }
                   },
                   child: MouseRegion(
-                    cursor: visible
+                    cursor: _visible
                         ? SystemMouseCursors.basic
                         : SystemMouseCursors.none,
                     onHover: (_) => onHover(),
@@ -252,12 +245,12 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                       children: [
                         AnimatedOpacity(
                           curve: Curves.easeInOut,
-                          opacity: visible ? 1.0 : 0.0,
+                          opacity: _visible ? 1.0 : 0.0,
                           duration: const Duration(milliseconds: 150),
                           onEnd: () {
-                            if (!visible) {
+                            if (!_visible) {
                               setState(() {
-                                mount = false;
+                                _mount = false;
                               });
                             }
                           },
@@ -293,7 +286,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                   ),
                                 ),
                               ),
-                              if (mount)
+                              if (_mount)
                                 // top bar
                                 Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -332,7 +325,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                             () {
                                               if (mounted) {
                                                 setState(() {
-                                                  visible = false;
+                                                  _visible = false;
                                                 });
                                                 unshiftSubtitle();
                                               }
@@ -356,7 +349,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                           const PlayOrPauseButton(),
                                           const SkipNextButton(),
                                           const _DesktopVideoControlsVolumeButton(),
-                                          const _DesktopVideoControlsPositionIndicator(),
+                                          const DesktopVideoControlsPositionIndicator(),
                                           const Spacer(),
                                           // const TrackSelector(),
                                           const SourceSelector(),
@@ -388,7 +381,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                     child: TweenAnimationBuilder<double>(
                                       tween: Tween<double>(
                                         begin: 0.0,
-                                        end: buffering ? 1.0 : 0.0,
+                                        end: _buffering ? 1.0 : 0.0,
                                       ),
                                       duration: const Duration(
                                         milliseconds: 150,
@@ -744,7 +737,7 @@ class _DesktopVideoControlsVolumeButtonState
                         Icons.volume_off,
                         key: ValueKey(Icons.volume_off),
                       )
-                    : volume < 50.0
+                    : volume < 0.5
                     ? const Icon(
                         Icons.volume_down,
                         key: ValueKey(Icons.volume_down),
@@ -783,9 +776,7 @@ class _DesktopVideoControlsVolumeButtonState
                             overlayColor: const Color(0x00000000),
                           ),
                           child: Slider(
-                            value: volume.clamp(0.0, 100.0),
-                            min: 0.0,
-                            max: 100.0,
+                            value: volume.clamp(0.0, 1.0),
                             onChanged: (value) async {
                               await VideoContentView.currentState.setVolume(
                                 value,
@@ -812,16 +803,16 @@ class _DesktopVideoControlsVolumeButtonState
 // POSITION INDICATOR
 
 /// MaterialDesktop design position indicator.
-class _DesktopVideoControlsPositionIndicator extends StatefulWidget {
-  const _DesktopVideoControlsPositionIndicator();
+class DesktopVideoControlsPositionIndicator extends StatefulWidget {
+  const DesktopVideoControlsPositionIndicator({super.key});
 
   @override
-  _DesktopVideoControlsPositionIndicatorState createState() =>
-      _DesktopVideoControlsPositionIndicatorState();
+  DesktopVideoControlsPositionIndicatorState createState() =>
+      DesktopVideoControlsPositionIndicatorState();
 }
 
-class _DesktopVideoControlsPositionIndicatorState
-    extends State<_DesktopVideoControlsPositionIndicator> {
+class DesktopVideoControlsPositionIndicatorState
+    extends State<DesktopVideoControlsPositionIndicator> {
   late Duration position = VideoContentView.currentState.playerState.position;
   late Duration duration = VideoContentView.currentState.playerState.duration;
 

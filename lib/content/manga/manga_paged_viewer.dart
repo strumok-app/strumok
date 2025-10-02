@@ -129,8 +129,9 @@ class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
   bool _isInZone(int testZone, int zonesNum, Offset point) {
     final viewport = MediaQuery.sizeOf(context);
     final position = widget.direction == Axis.horizontal ? point.dx : point.dy;
-    final range =
-        widget.direction == Axis.horizontal ? viewport.width : viewport.height;
+    final range = widget.direction == Axis.horizontal
+        ? viewport.width
+        : viewport.height;
 
     final zoneSize = range / zonesNum.toDouble();
     final lowerBoundry = (testZone - 1) * zoneSize;
@@ -173,10 +174,9 @@ class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
       transfomationController.value = Matrix4.identity();
     } else {
       // For a 3x zoom
-      transfomationController.value =
-          Matrix4.identity()
-            ..translate(-position.dx, -position.dy)
-            ..scale(2.0);
+      transfomationController.value = Matrix4.identity()
+        ..translate(-position.dx, -position.dy)
+        ..scale(2.0);
     }
   }
 }
