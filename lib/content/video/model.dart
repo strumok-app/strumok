@@ -1,16 +1,8 @@
 import 'package:content_suppliers_api/model.dart';
 
-enum OnVideoEndsAction {
-  playNext,
-  playAgain,
-  doNothing,
-}
+enum OnVideoEndsAction { playNext, playAgain, doNothing }
 
-enum StarVideoPosition {
-  fromBeginning,
-  fromRemembered,
-  fromFixedPosition,
-}
+enum StarVideoPosition { fromBeginning, fromRemembered, fromFixedPosition }
 
 class SourceSelectorModel {
   final List<ContentMediaItemSource> sources;

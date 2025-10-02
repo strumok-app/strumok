@@ -1,4 +1,4 @@
-package app.cloud_hook
+package app.strumok
 
 import android.content.Intent
 import android.net.Uri
@@ -11,10 +11,9 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
 
+const val INSTALL_APK_CHANNEL = "install_apk"
 
 class MainActivity : FlutterActivity() {
-    private val INSTALL_APK_CHANNEL = "install_apk"
-    private var mActivity: android.app.Activity? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

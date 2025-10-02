@@ -91,7 +91,7 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
       setState(() {
         seekVisible = false;
       });
-      widget.player.safeSeek(Duration(seconds: seekPosition));
+      widget.player.seek(Duration(seconds: seekPosition));
     });
   }
 

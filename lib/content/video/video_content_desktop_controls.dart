@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:media_kit_video/media_kit_video.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/extensions/duration.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
+import 'package:strumok/utils/text.dart';
 
 /// {@macro material_desktop_video_controls}
 class DesktopVideoControls extends StatefulWidget {
@@ -33,8 +31,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
 
   Timer? _timer;
 
-  late /* private */ var playlist = controller(context).player.state.playlist;
-  late bool buffering = controller(context).player.state.buffering;
+  late bool buffering = VideoContentView.currentState.playerState.isBuffering;
 
   DateTime last = DateTime.now();
 
@@ -48,19 +45,16 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     if (subscriptions.isEmpty) {
       subscriptions.addAll([
-        controller(context).player.stream.playlist.listen((event) {
-          setState(() {
-            playlist = event;
-          });
-        }),
-        controller(context).player.stream.buffering.listen((event) {
-          setState(() {
-            buffering = event;
-          });
+        VideoContentView.currentState.playerStream.listen((event) {
+          if (buffering != event.isBuffering) {
+            setState(() {
+              buffering = event.isBuffering;
+            });
+          }
         }),
       ]);
 
@@ -150,11 +144,11 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
       child: CallbackShortcuts(
         bindings: {
           const SingleActivator(LogicalKeyboardKey.mediaPlay): () =>
-              controller(context).player.play(),
+              VideoContentView.currentState.play(),
           const SingleActivator(LogicalKeyboardKey.mediaPause): () =>
-              controller(context).player.pause(),
+              VideoContentView.currentState.pause(),
           const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () =>
-              controller(context).player.playOrPause(),
+              VideoContentView.currentState.playOrPause(),
           const SingleActivator(LogicalKeyboardKey.mediaTrackNext):
               VideoContentView.currentState.nextItem,
           const SingleActivator(LogicalKeyboardKey.bracketLeft):
@@ -164,53 +158,53 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
           const SingleActivator(LogicalKeyboardKey.bracketRight):
               VideoContentView.currentState.prevItem,
           const SingleActivator(LogicalKeyboardKey.space): () =>
-              controller(context).player.playOrPause(),
+              VideoContentView.currentState.playOrPause(),
           const SingleActivator(LogicalKeyboardKey.keyJ): () {
-            controller(context).player.safeSeek(
-              controller(context).player.state.position -
+            VideoContentView.currentState.seek(
+              VideoContentView.currentState.playerState.position -
                   const Duration(seconds: 60),
             );
           },
           const SingleActivator(LogicalKeyboardKey.keyI): () {
-            controller(context).player.safeSeek(
-              controller(context).player.state.position +
+            VideoContentView.currentState.seek(
+              VideoContentView.currentState.playerState.position +
                   const Duration(seconds: 60),
             );
           },
           const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
-            controller(context).player.safeSeek(
-              controller(context).player.state.position -
+            VideoContentView.currentState.seek(
+              VideoContentView.currentState.playerState.position -
                   const Duration(seconds: 10),
             );
           },
           const SingleActivator(LogicalKeyboardKey.arrowRight): () {
-            controller(context).player.safeSeek(
-              controller(context).player.state.position +
+            VideoContentView.currentState.seek(
+              VideoContentView.currentState.playerState.position +
                   const Duration(seconds: 10),
             );
           },
           const SingleActivator(LogicalKeyboardKey.arrowUp): () {
-            final volume = controller(context).player.state.volume + 5.0;
-            controller(context).player.setVolume(volume.clamp(0.0, 100.0));
+            final volume =
+                VideoContentView.currentState.playerState.volume + .05;
+            VideoContentView.currentState.setVolume(volume.clamp(0.0, 1.0));
           },
           const SingleActivator(LogicalKeyboardKey.arrowDown): () {
-            final volume = controller(context).player.state.volume - 5.0;
-            controller(context).player.setVolume(volume.clamp(0.0, 100.0));
+            final volume =
+                VideoContentView.currentState.playerState.volume - .05;
+            VideoContentView.currentState.setVolume(volume.clamp(0.0, 1.0));
           },
-          // dirty hack with video state...
-          const SingleActivator(LogicalKeyboardKey.keyF): () =>
-              toggleFullscreen(context),
-          const SingleActivator(LogicalKeyboardKey.enter): () =>
-              enterFullscreen(context),
-          const SingleActivator(LogicalKeyboardKey.escape): () =>
-              exitFullscreen(context),
+          // const SingleActivator(LogicalKeyboardKey.keyF): () =>
+          //     toggleFullscreen(context),
+          // const SingleActivator(LogicalKeyboardKey.enter): () =>
+          //     enterFullscreen(context),
+          // const SingleActivator(LogicalKeyboardKey.escape): () =>
+          //     exitFullscreen(context),
         },
 
         /// Add [Directionality] to ltr to avoid wrong animation of sides.
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: Focus(
-            focusNode: videoViewParametersNotifier(context).value.focusNode,
             autofocus: true,
             child: Material(
               elevation: 0.0,
@@ -223,18 +217,9 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                 onPointerSignal: (e) {
                   if (e is PointerScrollEvent) {
                     if (e.delta.dy > 0) {
-                      final volume =
-                          controller(context).player.state.volume - 5.0;
-                      controller(
-                        context,
-                      ).player.setVolume(volume.clamp(0.0, 100.0));
-                    }
-                    if (e.delta.dy < 0) {
-                      final volume =
-                          controller(context).player.state.volume + 5.0;
-                      controller(
-                        context,
-                      ).player.setVolume(volume.clamp(0.0, 100.0));
+                      VideoContentView.currentState.volumeDown();
+                    } else if (e.delta.dy < 0) {
+                      VideoContentView.currentState.volumeUp();
                     }
                   }
                 },
@@ -244,23 +229,16 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                     final difference = now.difference(last);
                     last = now;
                     if (difference < const Duration(milliseconds: 400)) {
-                      toggleFullscreen(context);
+                      // toggleFullscreen(context);
+                    } else {
+                      VideoContentView.currentState.playOrPause();
                     }
                   },
                   onPanUpdate: (e) {
                     if (e.delta.dy > 0) {
-                      final volume =
-                          controller(context).player.state.volume - 5.0;
-                      controller(
-                        context,
-                      ).player.setVolume(volume.clamp(0.0, 100.0));
-                    }
-                    if (e.delta.dy < 0) {
-                      final volume =
-                          controller(context).player.state.volume + 5.0;
-                      controller(
-                        context,
-                      ).player.setVolume(volume.clamp(0.0, 100.0));
+                      VideoContentView.currentState.volumeDown();
+                    } else if (e.delta.dy < 0) {
+                      VideoContentView.currentState.volumeUp();
                     }
                   },
                   child: MouseRegion(
@@ -380,14 +358,14 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                           const _DesktopVideoControlsVolumeButton(),
                                           const _DesktopVideoControlsPositionIndicator(),
                                           const Spacer(),
-                                          const TrackSelector(),
+                                          // const TrackSelector(),
                                           const SourceSelector(),
                                           const PlayerSettingsButton(),
-                                          if (!isFullscreen(context))
-                                            _PIPButton(
-                                              onPipEnter: widget.onPipEnter,
-                                            ),
-                                          const PlayerFullscreenButton(),
+                                          // if (!isFullscreen(context))
+                                          //   _PIPButton(
+                                          //     onPipEnter: widget.onPipEnter,
+                                          //   ),
+                                          // const PlayerFullscreenButton(),
                                         ],
                                       ),
                                     ),
@@ -476,12 +454,12 @@ class _DesktopVideoControlsSeekBarState
   bool click = false;
   double slider = 0.0;
 
-  late bool playing = controller(context).player.state.playing;
-  late Duration position = controller(context).player.state.position;
-  late Duration duration = controller(context).player.state.duration;
-  late Duration buffer = controller(context).player.state.buffer;
+  bool playing = VideoContentView.currentState.playerState.isPlaying;
+  Duration position = VideoContentView.currentState.playerState.position;
+  Duration duration = VideoContentView.currentState.playerState.duration;
+  Duration buffer = VideoContentView.currentState.playerState.lastBuffer;
 
-  final List<StreamSubscription> subscriptions = [];
+  StreamSubscription? _subscription;
 
   @override
   void setState(VoidCallback fn) {
@@ -491,44 +469,26 @@ class _DesktopVideoControlsSeekBarState
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (subscriptions.isEmpty) {
-      subscriptions.addAll([
-        controller(context).player.stream.playing.listen((event) {
-          setState(() {
-            playing = event;
-          });
-        }),
-        controller(context).player.stream.completed.listen((event) {
-          setState(() {
-            position = Duration.zero;
-          });
-        }),
-        controller(context).player.stream.position.listen((event) {
-          setState(() {
-            if (!click) position = event;
-          });
-        }),
-        controller(context).player.stream.duration.listen((event) {
-          setState(() {
-            duration = event;
-          });
-        }),
-        controller(context).player.stream.buffer.listen((event) {
-          setState(() {
-            buffer = event;
-          });
-        }),
-      ]);
-    }
+  void initState() {
+    super.initState();
+    _subscription = VideoContentView.currentState.playerStream.listen((event) {
+      if (playing != event.isPlaying ||
+          position != event.position ||
+          duration != event.duration ||
+          buffer != event.lastBuffer) {
+        setState(() {
+          playing = event.isPlaying;
+          position = event.position;
+          duration = event.duration;
+          buffer = event.lastBuffer;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -538,7 +498,7 @@ class _DesktopVideoControlsSeekBarState
       hover = true;
       slider = percent.clamp(0.0, 1.0);
     });
-    controller(context).player.seek(duration * slider);
+    VideoContentView.currentState.seek(duration * slider);
   }
 
   void onPointerDown() {
@@ -555,7 +515,7 @@ class _DesktopVideoControlsSeekBarState
       click = false;
       position = duration * slider;
     });
-    controller(context).player.seek(duration * slider);
+    VideoContentView.currentState.seek(duration * slider);
   }
 
   void onHover(PointerHoverEvent e, BoxConstraints constraints) {
@@ -696,9 +656,9 @@ class _DesktopVideoControlsVolumeButtonState
     with SingleTickerProviderStateMixin {
   static final volumeBarTransitionDuration = const Duration(milliseconds: 150);
 
-  late double volume = controller(context).player.state.volume;
+  late double volume = VideoContentView.currentState.playerState.volume;
 
-  StreamSubscription<double>? subscription;
+  StreamSubscription? _subscription;
 
   bool hover = false;
 
@@ -713,18 +673,20 @@ class _DesktopVideoControlsVolumeButtonState
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    subscription ??= controller(context).player.stream.volume.listen((event) {
-      setState(() {
-        volume = event;
-      });
+  void initState() {
+    super.initState();
+    _subscription = VideoContentView.currentState.playerStream.listen((event) {
+      if (volume != event.volume) {
+        setState(() {
+          volume = event.volume;
+        });
+      }
     });
   }
 
   @override
   void dispose() {
-    subscription?.cancel();
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -745,14 +707,10 @@ class _DesktopVideoControlsVolumeButtonState
         onPointerSignal: (event) {
           if (event is PointerScrollEvent) {
             if (event.scrollDelta.dy < 0) {
-              controller(
-                context,
-              ).player.setVolume((volume + 5.0).clamp(0.0, 100.0));
+              VideoContentView.currentState.volumeUp();
             }
             if (event.scrollDelta.dy > 0) {
-              controller(
-                context,
-              ).player.setVolume((volume - 5.0).clamp(0.0, 100.0));
+              VideoContentView.currentState.volumeDown();
             }
           }
         },
@@ -762,17 +720,17 @@ class _DesktopVideoControlsVolumeButtonState
             IconButton(
               onPressed: () async {
                 if (mute) {
-                  await controller(context).player.setVolume(_volume);
+                  await VideoContentView.currentState.setVolume(_volume);
                   mute = !mute;
                 }
                 // https://github.com/media-kit/media-kit/pull/250#issuecomment-1605588306
                 else if (volume == 0.0) {
-                  _volume = 100.0;
-                  await controller(context).player.setVolume(100.0);
+                  _volume = 1.0;
+                  await VideoContentView.currentState.setVolume(1.0);
                   mute = false;
                 } else {
                   _volume = volume;
-                  await controller(context).player.setVolume(0.0);
+                  await VideoContentView.currentState.setVolume(0.0);
                   mute = !mute;
                 }
 
@@ -829,7 +787,9 @@ class _DesktopVideoControlsVolumeButtonState
                             min: 0.0,
                             max: 100.0,
                             onChanged: (value) async {
-                              await controller(context).player.setVolume(value);
+                              await VideoContentView.currentState.setVolume(
+                                value,
+                              );
                               mute = false;
                               setState(() {});
                             },
@@ -862,10 +822,10 @@ class _DesktopVideoControlsPositionIndicator extends StatefulWidget {
 
 class _DesktopVideoControlsPositionIndicatorState
     extends State<_DesktopVideoControlsPositionIndicator> {
-  late Duration position = controller(context).player.state.position;
-  late Duration duration = controller(context).player.state.duration;
+  late Duration position = VideoContentView.currentState.playerState.position;
+  late Duration duration = VideoContentView.currentState.playerState.duration;
 
-  final List<StreamSubscription> subscriptions = [];
+  StreamSubscription? _subscription;
 
   @override
   void setState(VoidCallback fn) {
@@ -875,36 +835,28 @@ class _DesktopVideoControlsPositionIndicatorState
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (subscriptions.isEmpty) {
-      subscriptions.addAll([
-        controller(context).player.stream.position.listen((event) {
-          setState(() {
-            position = event;
-          });
-        }),
-        controller(context).player.stream.duration.listen((event) {
-          setState(() {
-            duration = event;
-          });
-        }),
-      ]);
-    }
+  void initState() {
+    super.initState();
+    _subscription = VideoContentView.currentState.playerStream.listen((event) {
+      if (position != event.position || duration != event.duration) {
+        setState(() {
+          position = event.position;
+          duration = event.duration;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
+    _subscription?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      '${position.label(reference: duration)} / ${duration.label(reference: duration)}',
+      '${formatDuration(position)} / ${formatDuration(duration)}',
       style: TextStyle(height: 1.0, fontSize: 12.0, color: Colors.white),
     );
   }

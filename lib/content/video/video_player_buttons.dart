@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/fullscreen.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
@@ -19,9 +17,9 @@ class ExitButton extends StatelessWidget {
     return BackButton(
       color: Colors.white,
       onPressed: () async {
-        if (isFullscreen(context)) {
-          await exitFullscreen(context);
-        }
+        // if (isFullscreen(context)) {
+        //   await exitFullscreen(context);
+        // }
 
         if (context.mounted) {
           Navigator.of(context).pop();
@@ -162,11 +160,11 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
     with SingleTickerProviderStateMixin {
   late final animation = AnimationController(
     vsync: this,
-    value: controller(context).player.state.playing ? 1 : 0,
+    value: VideoContentView.currentState.playerState.isPlaying ? 1 : 0,
     duration: const Duration(milliseconds: 200),
   );
 
-  StreamSubscription<bool>? subscription;
+  StreamSubscription? subscription;
 
   @override
   void setState(VoidCallback fn) {
@@ -176,10 +174,10 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    subscription ??= controller(context).player.stream.playing.listen((event) {
-      if (event) {
+  void initState() {
+    super.initState();
+    subscription = VideoContentView.currentState.playerStream.listen((event) {
+      if (event.isPlaying) {
         animation.forward();
       } else {
         animation.reverse();
@@ -199,7 +197,7 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
     return IconButton(
       focusNode: widget.focusNode,
       color: Colors.white,
-      onPressed: controller(context).player.playOrPause,
+      onPressed: VideoContentView.currentState.playOrPause,
       icon: AnimatedIcon(
         progress: animation,
         color: Colors.white,
@@ -218,10 +216,12 @@ class PlayerFullscreenButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () => toggleFullscreen(context),
-      icon: (isFullscreen(context)
-          ? const Icon(Icons.fullscreen_exit)
-          : const Icon(Icons.fullscreen)),
+      // onPressed: () => toggleFullscreen(context),
+      // icon: (isFullscreen(context)
+      //     ? const Icon(Icons.fullscreen_exit)
+      //     : const Icon(Icons.fullscreen)),
+      onPressed: () {},
+      icon: const Icon(Icons.fullscreen),
       iconSize: iconSize,
       color: Colors.white,
     );

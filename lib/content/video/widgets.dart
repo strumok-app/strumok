@@ -4,7 +4,6 @@ import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
-import 'package:strumok/content/video/video_subtitles.dart';
 import 'package:strumok/download/media_item_download.dart';
 import 'package:strumok/widgets/dropdown.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -99,38 +98,6 @@ class PlayerErrorPopup extends ConsumerWidget {
               ),
             ),
       ],
-    );
-  }
-}
-
-class VideoPlayerControlsWrapper extends StatelessWidget {
-  final Widget child;
-
-  const VideoPlayerControlsWrapper({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-
-    return SizedBox(
-      height: size.height,
-      width: size.width,
-      child: Stack(
-        children: [
-          PlayerSubtitles(),
-          Positioned.fill(child: child),
-          ValueListenableBuilder(
-            valueListenable: VideoContentView.currentState.isLoading,
-            builder: (context, value, child) {
-              return value
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    )
-                  : const SizedBox.shrink();
-            },
-          ),
-        ],
-      ),
     );
   }
 }

@@ -18,7 +18,7 @@ import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:media_kit/media_kit.dart';
+import 'package:fvp/fvp.dart' as fvp;
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -41,7 +41,11 @@ void appRunner() async {
   }
 
   // init media kit
-  MediaKit.ensureInitialized();
+  fvp.registerWith(
+    options: {
+      'platforms': ['windows', 'macos', 'linux'],
+    },
+  );
 
   await AppDatabase().init();
   await AppPreferences.init();

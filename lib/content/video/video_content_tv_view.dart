@@ -1,5 +1,4 @@
 import 'package:strumok/content/video/video_content_tv_controls.dart';
-import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -16,11 +15,7 @@ class VideoContentTVView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Video(
-      controller: videoController,
-      controls: (state) =>
-          VideoPlayerControlsWrapper(child: _renderControls(context, state)),
-    );
+    return SizedBox.shrink();
   }
 
   Widget _renderControls(BuildContext context, VideoState state) {
