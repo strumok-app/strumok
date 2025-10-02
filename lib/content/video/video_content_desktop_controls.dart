@@ -210,7 +210,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: Focus(
-            focusNode: videoViewParametersNotifier(context).value.focusNode,
+            // focusNode: videoViewParametersNotifier(context).value.focusNode,
             autofocus: true,
             child: Material(
               elevation: 0.0,
