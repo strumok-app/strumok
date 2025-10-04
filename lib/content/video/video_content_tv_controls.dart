@@ -385,8 +385,11 @@ class _TVSeekBarState extends State<_TVSeekBar> {
           duration != event.duration ||
           buffer != event.lastBuffer) {
         setState(() {
+          if (duration != event.duration) {
+            duration = event.duration;
+            divisions = _calcDivisions();
+          }
           position = event.position;
-          duration = event.duration;
           buffer = event.lastBuffer;
         });
       }

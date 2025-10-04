@@ -30,7 +30,7 @@
                 "--dart-define", 
                 "FFI_SUPPLIER_LIB_NAME=strumok_suppliers",
                 "--dart-define", 
-                "FORCE_TV_MODE=false",
+                "FORCE_TV_MODE=true",
                 "--dart-define-from-file",
                 "secrets.json"
             ],
