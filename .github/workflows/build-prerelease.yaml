@@ -43,7 +43,7 @@ jobs:
 
   upload-to-gcp:
     needs: [build-android, build-windows, build-linux]
-    if: ${{ inputs.android == true || inputs.windows == true || inputs.linux == true }}
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate to GCP using Service Account Key

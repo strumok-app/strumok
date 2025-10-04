@@ -32,9 +32,7 @@ jobs:
             ninja-build \
             libstdc++-12-dev \
             liblzma-dev \
-            mpv \
             unzip \
-            libmpv-dev \
             libcurl4-openssl-dev \
             libasound2-dev
       - name: Set up Flutter
