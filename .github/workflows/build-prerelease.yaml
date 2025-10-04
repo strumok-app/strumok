@@ -24,6 +24,7 @@ jobs:
     if: ${{ inputs.android == true }}
     uses: ./.github/workflows/build-android.yaml
     permissions: write-all
+    secrets: inherit
     with:
       ref: ${{ github.ref_name }}
 
@@ -31,6 +32,7 @@ jobs:
     if: ${{ inputs.windows == true }}
     uses: ./.github/workflows/build-windows.yaml
     permissions: write-all
+    secrets: inherit
     with:
       ref: ${{ github.ref_name }}
 
@@ -38,6 +40,7 @@ jobs:
     if: ${{ inputs.linux == true }}
     uses: ./.github/workflows/build-linux.yaml
     permissions: write-all
+    secrets: inherit
     with:
       ref: ${{ github.ref_name }}
 
