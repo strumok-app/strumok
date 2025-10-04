@@ -3,42 +3,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:media_kit_video/media_kit_video.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/extensions/duration.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
-import 'package:strumok/content/video/track_selector.dart';
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
+import 'package:strumok/utils/text.dart';
+import 'package:window_manager/window_manager.dart';
 
 /// {@macro material_desktop_video_controls}
-class DesktopVideoControls extends StatefulWidget {
+class VideoContentDesktopControls extends StatefulWidget {
   final VoidCallback onPipEnter;
-  const DesktopVideoControls({super.key, required this.onPipEnter});
+  const VideoContentDesktopControls({super.key, required this.onPipEnter});
 
   @override
-  State<DesktopVideoControls> createState() => _DesktopVideoControlsState();
+  State<VideoContentDesktopControls> createState() =>
+      _VideoContentDesktopControlsState();
 }
 
 /// {@macro material_desktop_video_controls}
-class _DesktopVideoControlsState extends State<DesktopVideoControls> {
+class _VideoContentDesktopControlsState
+    extends State<VideoContentDesktopControls> {
   static final controlsHoverDuration = const Duration(seconds: 3);
   static const subtitleVerticalShiftOffset = 96.0;
   static const buttonBarHeight = 56.0;
 
-  late bool mount = true;
-  late bool visible = true;
+  late bool _mount = true;
+  late bool _visible = true;
 
   Timer? _timer;
 
-  late /* private */ var playlist = controller(context).player.state.playlist;
-  late bool buffering = controller(context).player.state.buffering;
+  late bool _buffering = videoContentController(
+    context,
+  ).playerState.isBuffering;
 
-  DateTime last = DateTime.now();
+  DateTime _last = DateTime.now();
 
-  final List<StreamSubscription> subscriptions = [];
+  StreamSubscription? _subscription;
 
   @override
   void setState(VoidCallback fn) {
@@ -50,63 +51,52 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (subscriptions.isEmpty) {
-      subscriptions.addAll([
-        controller(context).player.stream.playlist.listen((event) {
-          setState(() {
-            playlist = event;
-          });
-        }),
-        controller(context).player.stream.buffering.listen((event) {
-          setState(() {
-            buffering = event;
-          });
-        }),
-      ]);
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
+      if (_buffering != event.isBuffering) {
+        setState(() {
+          _buffering = event.isBuffering;
+        });
+      }
+    });
 
-      _timer = Timer(controlsHoverDuration, () {
-        if (mounted) {
-          setState(() {
-            visible = false;
-          });
-          unshiftSubtitle();
-        }
-      });
-    }
+    _timer = Timer(controlsHoverDuration, () {
+      if (mounted) {
+        setState(() {
+          _visible = false;
+        });
+        unshiftSubtitle();
+      }
+    });
   }
 
   @override
   void dispose() {
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
+    _subscription?.cancel();
     super.dispose();
   }
 
   void shiftSubtitle() {
-    VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.fromLTRB(
-      0.0,
-      0.0,
-      0.0,
-      subtitleVerticalShiftOffset,
-    );
+    videoContentController(context).subtitlePaddings.value =
+        EdgeInsets.fromLTRB(0.0, 0.0, 0.0, subtitleVerticalShiftOffset);
   }
 
   void unshiftSubtitle() {
-    VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.zero;
+    videoContentController(context).subtitlePaddings.value = EdgeInsets.zero;
   }
 
   void onHover() {
     setState(() {
-      mount = true;
-      visible = true;
+      _mount = true;
+      _visible = true;
     });
     shiftSubtitle();
     _timer?.cancel();
     _timer = Timer(controlsHoverDuration, () {
       if (mounted) {
         setState(() {
-          visible = false;
+          _visible = false;
         });
         unshiftSubtitle();
       }
@@ -115,15 +105,15 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
 
   void onEnter() {
     setState(() {
-      mount = true;
-      visible = true;
+      _mount = true;
+      _visible = true;
     });
     shiftSubtitle();
     _timer?.cancel();
     _timer = Timer(controlsHoverDuration, () {
       if (mounted) {
         setState(() {
-          visible = false;
+          _visible = false;
         });
         unshiftSubtitle();
       }
@@ -132,7 +122,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
 
   void onExit() {
     setState(() {
-      visible = false;
+      _visible = false;
     });
     unshiftSubtitle();
     _timer?.cancel();
@@ -150,67 +140,56 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
       child: CallbackShortcuts(
         bindings: {
           const SingleActivator(LogicalKeyboardKey.mediaPlay): () =>
-              controller(context).player.play(),
+              videoContentController(context).play(),
           const SingleActivator(LogicalKeyboardKey.mediaPause): () =>
-              controller(context).player.pause(),
+              videoContentController(context).pause(),
           const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () =>
-              controller(context).player.playOrPause(),
+              videoContentController(context).playOrPause(),
           const SingleActivator(LogicalKeyboardKey.mediaTrackNext):
-              VideoContentView.currentState.nextItem,
+              videoContentController(context).nextItem,
           const SingleActivator(LogicalKeyboardKey.bracketLeft):
-              VideoContentView.currentState.nextItem,
+              videoContentController(context).nextItem,
           const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious):
-              VideoContentView.currentState.prevItem,
+              videoContentController(context).prevItem,
           const SingleActivator(LogicalKeyboardKey.bracketRight):
-              VideoContentView.currentState.prevItem,
+              videoContentController(context).prevItem,
           const SingleActivator(LogicalKeyboardKey.space): () =>
-              controller(context).player.playOrPause(),
+              videoContentController(context).playOrPause(),
           const SingleActivator(LogicalKeyboardKey.keyJ): () {
-            controller(context).player.safeSeek(
-              controller(context).player.state.position -
-                  const Duration(seconds: 60),
-            );
+            videoContentController(
+              context,
+            ).seekBackward(const Duration(seconds: 60));
           },
           const SingleActivator(LogicalKeyboardKey.keyI): () {
-            controller(context).player.safeSeek(
-              controller(context).player.state.position +
-                  const Duration(seconds: 60),
-            );
+            videoContentController(
+              context,
+            ).seekForward(const Duration(seconds: 60));
           },
           const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
-            controller(context).player.safeSeek(
-              controller(context).player.state.position -
-                  const Duration(seconds: 10),
-            );
+            videoContentController(
+              context,
+            ).seekBackward(const Duration(seconds: 10));
           },
           const SingleActivator(LogicalKeyboardKey.arrowRight): () {
-            controller(context).player.safeSeek(
-              controller(context).player.state.position +
-                  const Duration(seconds: 10),
-            );
-          },
-          const SingleActivator(LogicalKeyboardKey.arrowUp): () {
-            final volume = controller(context).player.state.volume + 5.0;
-            controller(context).player.setVolume(volume.clamp(0.0, 100.0));
+            videoContentController(
+              context,
+            ).seekForward(const Duration(seconds: 10));
           },
           const SingleActivator(LogicalKeyboardKey.arrowDown): () {
-            final volume = controller(context).player.state.volume - 5.0;
-            controller(context).player.setVolume(volume.clamp(0.0, 100.0));
+            videoContentController(context).volumeDown();
           },
-          // dirty hack with video state...
           const SingleActivator(LogicalKeyboardKey.keyF): () =>
-              toggleFullscreen(context),
+              toggleFullscreen(),
           const SingleActivator(LogicalKeyboardKey.enter): () =>
-              enterFullscreen(context),
+              enterFullscreen(),
           const SingleActivator(LogicalKeyboardKey.escape): () =>
-              exitFullscreen(context),
+              exitFullscreen(),
         },
 
         /// Add [Directionality] to ltr to avoid wrong animation of sides.
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: Focus(
-            // focusNode: videoViewParametersNotifier(context).value.focusNode,
             autofocus: true,
             child: Material(
               elevation: 0.0,
@@ -223,48 +202,32 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                 onPointerSignal: (e) {
                   if (e is PointerScrollEvent) {
                     if (e.delta.dy > 0) {
-                      final volume =
-                          controller(context).player.state.volume - 5.0;
-                      controller(
-                        context,
-                      ).player.setVolume(volume.clamp(0.0, 100.0));
-                    }
-                    if (e.delta.dy < 0) {
-                      final volume =
-                          controller(context).player.state.volume + 5.0;
-                      controller(
-                        context,
-                      ).player.setVolume(volume.clamp(0.0, 100.0));
+                      videoContentController(context).volumeDown();
+                    } else if (e.delta.dy < 0) {
+                      videoContentController(context).volumeUp();
                     }
                   }
                 },
                 child: GestureDetector(
                   onTapUp: (e) {
                     final now = DateTime.now();
-                    final difference = now.difference(last);
-                    last = now;
+                    final difference = now.difference(_last);
+                    _last = now;
                     if (difference < const Duration(milliseconds: 400)) {
-                      toggleFullscreen(context);
+                      toggleFullscreen();
+                    } else {
+                      videoContentController(context).playOrPause();
                     }
                   },
                   onPanUpdate: (e) {
                     if (e.delta.dy > 0) {
-                      final volume =
-                          controller(context).player.state.volume - 5.0;
-                      controller(
-                        context,
-                      ).player.setVolume(volume.clamp(0.0, 100.0));
-                    }
-                    if (e.delta.dy < 0) {
-                      final volume =
-                          controller(context).player.state.volume + 5.0;
-                      controller(
-                        context,
-                      ).player.setVolume(volume.clamp(0.0, 100.0));
+                      videoContentController(context).volumeDown();
+                    } else if (e.delta.dy < 0) {
+                      videoContentController(context).volumeUp();
                     }
                   },
                   child: MouseRegion(
-                    cursor: visible
+                    cursor: _visible
                         ? SystemMouseCursors.basic
                         : SystemMouseCursors.none,
                     onHover: (_) => onHover(),
@@ -274,12 +237,12 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                       children: [
                         AnimatedOpacity(
                           curve: Curves.easeInOut,
-                          opacity: visible ? 1.0 : 0.0,
+                          opacity: _visible ? 1.0 : 0.0,
                           duration: const Duration(milliseconds: 150),
                           onEnd: () {
-                            if (!visible) {
+                            if (!_visible) {
                               setState(() {
-                                mount = false;
+                                _mount = false;
                               });
                             }
                           },
@@ -315,7 +278,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                   ),
                                 ),
                               ),
-                              if (mount)
+                              if (_mount)
                                 // top bar
                                 Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -335,7 +298,6 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                           const ExitButton(),
                                           const SizedBox(width: 8),
                                           const MediaTitle(),
-                                          const PlayerErrorPopup(),
                                           const PlayerPlaylistButton(),
                                         ],
                                       ),
@@ -354,7 +316,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                             () {
                                               if (mounted) {
                                                 setState(() {
-                                                  visible = false;
+                                                  _visible = false;
                                                 });
                                                 unshiftSubtitle();
                                               }
@@ -378,16 +340,15 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                           const PlayOrPauseButton(),
                                           const SkipNextButton(),
                                           const _DesktopVideoControlsVolumeButton(),
-                                          const _DesktopVideoControlsPositionIndicator(),
+                                          const DesktopVideoControlsPositionIndicator(),
                                           const Spacer(),
-                                          const TrackSelector(),
+                                          // const TrackSelector(),
                                           const SourceSelector(),
                                           const PlayerSettingsButton(),
-                                          if (!isFullscreen(context))
-                                            _PIPButton(
-                                              onPipEnter: widget.onPipEnter,
-                                            ),
-                                          const PlayerFullscreenButton(),
+                                          _PIPButton(
+                                            onPipEnter: widget.onPipEnter,
+                                          ),
+                                          const _DesktopPlayerFullscreenButton(),
                                         ],
                                       ),
                                     ),
@@ -410,7 +371,7 @@ class _DesktopVideoControlsState extends State<DesktopVideoControls> {
                                     child: TweenAnimationBuilder<double>(
                                       tween: Tween<double>(
                                         begin: 0.0,
-                                        end: buffering ? 1.0 : 0.0,
+                                        end: _buffering ? 1.0 : 0.0,
                                       ),
                                       duration: const Duration(
                                         milliseconds: 150,
@@ -476,12 +437,12 @@ class _DesktopVideoControlsSeekBarState
   bool click = false;
   double slider = 0.0;
 
-  late bool playing = controller(context).player.state.playing;
-  late Duration position = controller(context).player.state.position;
-  late Duration duration = controller(context).player.state.duration;
-  late Duration buffer = controller(context).player.state.buffer;
+  late bool playing = videoContentController(context).playerState.isPlaying;
+  late Duration position = videoContentController(context).playerState.position;
+  late Duration duration = videoContentController(context).playerState.duration;
+  late Duration buffer = videoContentController(context).playerState.lastBuffer;
 
-  final List<StreamSubscription> subscriptions = [];
+  StreamSubscription? _subscription;
 
   @override
   void setState(VoidCallback fn) {
@@ -493,42 +454,26 @@ class _DesktopVideoControlsSeekBarState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (subscriptions.isEmpty) {
-      subscriptions.addAll([
-        controller(context).player.stream.playing.listen((event) {
-          setState(() {
-            playing = event;
-          });
-        }),
-        controller(context).player.stream.completed.listen((event) {
-          setState(() {
-            position = Duration.zero;
-          });
-        }),
-        controller(context).player.stream.position.listen((event) {
-          setState(() {
-            if (!click) position = event;
-          });
-        }),
-        controller(context).player.stream.duration.listen((event) {
-          setState(() {
-            duration = event;
-          });
-        }),
-        controller(context).player.stream.buffer.listen((event) {
-          setState(() {
-            buffer = event;
-          });
-        }),
-      ]);
-    }
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
+      if (playing != event.isPlaying ||
+          position != event.position ||
+          duration != event.duration ||
+          buffer != event.lastBuffer) {
+        setState(() {
+          playing = event.isPlaying;
+          position = event.position;
+          duration = event.duration;
+          buffer = event.lastBuffer;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -538,7 +483,7 @@ class _DesktopVideoControlsSeekBarState
       hover = true;
       slider = percent.clamp(0.0, 1.0);
     });
-    controller(context).player.seek(duration * slider);
+    videoContentController(context).seekTo(duration * slider);
   }
 
   void onPointerDown() {
@@ -555,7 +500,9 @@ class _DesktopVideoControlsSeekBarState
       click = false;
       position = duration * slider;
     });
-    controller(context).player.seek(duration * slider);
+    if (mounted) {
+      videoContentController(context).seekTo(duration * slider);
+    }
   }
 
   void onHover(PointerHoverEvent e, BoxConstraints constraints) {
@@ -696,9 +643,9 @@ class _DesktopVideoControlsVolumeButtonState
     with SingleTickerProviderStateMixin {
   static final volumeBarTransitionDuration = const Duration(milliseconds: 150);
 
-  late double volume = controller(context).player.state.volume;
+  late double volume = videoContentController(context).playerState.volume;
 
-  StreamSubscription<double>? subscription;
+  StreamSubscription? _subscription;
 
   bool hover = false;
 
@@ -715,16 +662,20 @@ class _DesktopVideoControlsVolumeButtonState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    subscription ??= controller(context).player.stream.volume.listen((event) {
-      setState(() {
-        volume = event;
-      });
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
+      if (volume != event.volume) {
+        setState(() {
+          volume = event.volume;
+        });
+      }
     });
   }
 
   @override
   void dispose() {
-    subscription?.cancel();
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -745,14 +696,10 @@ class _DesktopVideoControlsVolumeButtonState
         onPointerSignal: (event) {
           if (event is PointerScrollEvent) {
             if (event.scrollDelta.dy < 0) {
-              controller(
-                context,
-              ).player.setVolume((volume + 5.0).clamp(0.0, 100.0));
+              videoContentController(context).volumeUp();
             }
             if (event.scrollDelta.dy > 0) {
-              controller(
-                context,
-              ).player.setVolume((volume - 5.0).clamp(0.0, 100.0));
+              videoContentController(context).volumeDown();
             }
           }
         },
@@ -762,17 +709,17 @@ class _DesktopVideoControlsVolumeButtonState
             IconButton(
               onPressed: () async {
                 if (mute) {
-                  await controller(context).player.setVolume(_volume);
+                  await videoContentController(context).setVolume(_volume);
                   mute = !mute;
                 }
                 // https://github.com/media-kit/media-kit/pull/250#issuecomment-1605588306
                 else if (volume == 0.0) {
-                  _volume = 100.0;
-                  await controller(context).player.setVolume(100.0);
+                  _volume = 1.0;
+                  await videoContentController(context).setVolume(1.0);
                   mute = false;
                 } else {
                   _volume = volume;
-                  await controller(context).player.setVolume(0.0);
+                  await videoContentController(context).setVolume(0.0);
                   mute = !mute;
                 }
 
@@ -786,7 +733,7 @@ class _DesktopVideoControlsVolumeButtonState
                         Icons.volume_off,
                         key: ValueKey(Icons.volume_off),
                       )
-                    : volume < 50.0
+                    : volume < 0.5
                     ? const Icon(
                         Icons.volume_down,
                         key: ValueKey(Icons.volume_down),
@@ -825,11 +772,11 @@ class _DesktopVideoControlsVolumeButtonState
                             overlayColor: const Color(0x00000000),
                           ),
                           child: Slider(
-                            value: volume.clamp(0.0, 100.0),
-                            min: 0.0,
-                            max: 100.0,
+                            value: volume.clamp(0.0, 1.0),
                             onChanged: (value) async {
-                              await controller(context).player.setVolume(value);
+                              await videoContentController(
+                                context,
+                              ).setVolume(value);
                               mute = false;
                               setState(() {});
                             },
@@ -852,20 +799,20 @@ class _DesktopVideoControlsVolumeButtonState
 // POSITION INDICATOR
 
 /// MaterialDesktop design position indicator.
-class _DesktopVideoControlsPositionIndicator extends StatefulWidget {
-  const _DesktopVideoControlsPositionIndicator();
+class DesktopVideoControlsPositionIndicator extends StatefulWidget {
+  const DesktopVideoControlsPositionIndicator({super.key});
 
   @override
-  _DesktopVideoControlsPositionIndicatorState createState() =>
-      _DesktopVideoControlsPositionIndicatorState();
+  DesktopVideoControlsPositionIndicatorState createState() =>
+      DesktopVideoControlsPositionIndicatorState();
 }
 
-class _DesktopVideoControlsPositionIndicatorState
-    extends State<_DesktopVideoControlsPositionIndicator> {
-  late Duration position = controller(context).player.state.position;
-  late Duration duration = controller(context).player.state.duration;
+class DesktopVideoControlsPositionIndicatorState
+    extends State<DesktopVideoControlsPositionIndicator> {
+  late Duration position = videoContentController(context).playerState.position;
+  late Duration duration = videoContentController(context).playerState.duration;
 
-  final List<StreamSubscription> subscriptions = [];
+  StreamSubscription? _subscription;
 
   @override
   void setState(VoidCallback fn) {
@@ -877,34 +824,28 @@ class _DesktopVideoControlsPositionIndicatorState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (subscriptions.isEmpty) {
-      subscriptions.addAll([
-        controller(context).player.stream.position.listen((event) {
-          setState(() {
-            position = event;
-          });
-        }),
-        controller(context).player.stream.duration.listen((event) {
-          setState(() {
-            duration = event;
-          });
-        }),
-      ]);
-    }
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
+      if (position != event.position || duration != event.duration) {
+        setState(() {
+          position = event.position;
+          duration = event.duration;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
+    _subscription?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      '${position.label(reference: duration)} / ${duration.label(reference: duration)}',
+      '${formatDuration(position)} / ${formatDuration(duration)}',
       style: TextStyle(height: 1.0, fontSize: 12.0, color: Colors.white),
     );
   }
@@ -940,4 +881,30 @@ class _PIPButton extends StatelessWidget {
       color: Colors.white,
     );
   }
+}
+
+class _DesktopPlayerFullscreenButton extends StatelessWidget {
+  const _DesktopPlayerFullscreenButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: toggleFullscreen,
+      icon: const Icon(Icons.fullscreen),
+      color: Colors.white,
+    );
+  }
+}
+
+void toggleFullscreen() async {
+  final fullscrean = await windowManager.isFullScreen();
+  await windowManager.setFullScreen(!fullscrean);
+}
+
+void enterFullscreen() {
+  windowManager.setFullScreen(true);
+}
+
+void exitFullscreen() {
+  windowManager.setFullScreen(false);
 }

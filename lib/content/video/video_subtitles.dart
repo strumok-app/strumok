@@ -2,54 +2,52 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:subtitle/subtitle.dart';
+import 'package:video_player/video_player.dart';
 
-class PlayerSubtitles extends ConsumerWidget {
-  const PlayerSubtitles({super.key});
+class VideoSubtitles extends ConsumerWidget {
+  const VideoSubtitles({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncSubtitleController = ref.watch(
-      currentSubtitleControllerProvider,
-    );
     final subtitlesOffset = ref.watch(subtitlesOffsetProvider);
 
-    return asyncSubtitleController.when(
-      data: (subtitleController) {
-        if (subtitleController == null) {
-          return SizedBox.shrink();
-        }
+    return ValueListenableBuilder(
+      valueListenable: videoContentController(context).subtitleController,
+      builder: (context, asyncSubtitleController, _) {
+        return asyncSubtitleController.when(
+          data: (subtitleController) {
+            if (subtitleController == null) {
+              return SizedBox.shrink();
+            }
 
-        return PlayerSubtitleView(
-          player: controller(context).player,
-          subtitleController: subtitleController,
-          subtitlesOffset: subtitlesOffset,
+            return PlayerSubtitleView(
+              subtitleController: subtitleController,
+              subtitlesOffset: subtitlesOffset,
+            );
+          },
+          error: (e, _) => _SubtitleText(
+            text: AppLocalizations.of(context)!.videoSubtitlesLoadingError,
+          ),
+          loading: () => _SubtitleText(
+            text: AppLocalizations.of(context)!.videoSubtitlesLoading,
+          ),
         );
       },
-      error: (_, _) => _SubtitleText(
-        text: AppLocalizations.of(context)!.videoSubtitlesLoadingError,
-      ),
-      loading: () => _SubtitleText(
-        text: AppLocalizations.of(context)!.videoSubtitlesLoading,
-      ),
     );
   }
 }
 
 class PlayerSubtitleView extends StatefulWidget {
-  final Player player;
   final SubtitleController subtitleController;
   final Duration subtitlesOffset;
 
   const PlayerSubtitleView({
     super.key,
-    required this.player,
     required this.subtitleController,
     required this.subtitlesOffset,
   });
@@ -65,12 +63,15 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
   List<Subtitle> _subtitles = List.empty();
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    _subscription = widget.player.stream.position.listen(_updateSubtitles);
+    if (_subscription == null) {
+      final controller = videoContentController(context);
+      _subscription = controller.playerStream.listen(_updateSubtitles);
 
-    _updateSubtitles(widget.player.state.position);
+      _updateSubtitles(controller.playerState);
+    }
   }
 
   @override
@@ -80,15 +81,8 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
     super.dispose();
   }
 
-  @override
-  void didUpdateWidget(covariant PlayerSubtitleView oldWidget) {
-    _updateSubtitles(widget.player.state.position);
-
-    super.didUpdateWidget(oldWidget);
-  }
-
-  void _updateSubtitles(Duration position) {
-    final time = position + widget.subtitlesOffset;
+  void _updateSubtitles(VideoPlayerValue value) {
+    final time = value.position + widget.subtitlesOffset;
 
     if (_subtitles.firstOrNull?.inRange(time) == true) {
       return;
@@ -131,7 +125,7 @@ class _SubtitleText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: VideoContentView.currentState.subtitlePaddings,
+      valueListenable: videoContentController(context).subtitlePaddings,
       builder: (context, value, child) {
         return Container(
           padding: const EdgeInsets.only(bottom: 16) + value,

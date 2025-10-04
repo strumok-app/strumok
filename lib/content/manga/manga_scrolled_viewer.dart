@@ -56,10 +56,9 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
         scaleEnabled: _scaling,
         panEnabled: _scaling,
         child: CustomScrollView(
-          physics:
-              _scaling
-                  ? NeverScrollableScrollPhysics()
-                  : AlwaysScrollableScrollPhysics(),
+          physics: _scaling
+              ? NeverScrollableScrollPhysics()
+              : AlwaysScrollableScrollPhysics(),
           center: _centerKey,
           controller: widget.scrollController,
           scrollDirection: widget.direction,
@@ -85,10 +84,12 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
             ),
             SliverPadding(
               padding: EdgeInsets.only(
-                right:
-                    widget.direction == Axis.horizontal ? size.width * 0.7 : 0,
-                bottom:
-                    widget.direction == Axis.vertical ? size.height * 0.7 : 0,
+                right: widget.direction == Axis.horizontal
+                    ? size.width * 0.7
+                    : 0,
+                bottom: widget.direction == Axis.vertical
+                    ? size.height * 0.7
+                    : 0,
               ),
             ),
           ],
@@ -313,11 +314,9 @@ class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
     if (!transfomationController.value.isIdentity()) {
       transfomationController.value = Matrix4.identity();
     } else {
-      // For a 3x zoom
-      transfomationController.value =
-          Matrix4.identity()
-            ..translate(-position.dx, -position.dy)
-            ..scale(2.0);
+      transfomationController.value = Matrix4.identity()
+        ..translateByDouble(-position.dx, -position.dy, 0, 1)
+        ..scaleByDouble(2.0, 2.0, 2.0, 1.0);
     }
   }
 }

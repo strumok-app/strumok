@@ -1,22 +1,12 @@
+import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_content_desktop_controls.dart';
-import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
-import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
 import 'package:window_manager/window_manager.dart';
 
 class VideoContentDesktopView extends StatefulWidget {
-  final Player player;
-  final VideoController videoController;
-
-  const VideoContentDesktopView({
-    super.key,
-    required this.player,
-    required this.videoController,
-  });
+  const VideoContentDesktopView({super.key});
 
   @override
   State<VideoContentDesktopView> createState() =>
@@ -28,14 +18,15 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
 
   @override
   Widget build(BuildContext context) {
-    return Video(
-      controller: widget.videoController,
-      controls: (state) => VideoPlayerControlsWrapper(
-        child: pipMode
-            ? PipVideoControls(state, onPipExit: _switchToPipMode)
-            : DesktopVideoControls(onPipEnter: _switchToPipMode),
-      ),
-    );
+    return pipMode
+        ? PipVideoControls(onPipExit: _switchToPipMode)
+        : VideoContentDesktopControls(onPipEnter: _switchToPipMode);
+  }
+
+  @override
+  void dispose() {
+    windowManager.setFullScreen(false);
+    super.dispose();
   }
 
   void _switchToPipMode() async {
@@ -60,15 +51,17 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       await Future.delayed(const Duration(milliseconds: 100));
       await windowManager.setAlignment(Alignment.bottomRight);
 
-      VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.zero;
+      if (mounted) {
+        videoContentController(context).subtitlePaddings.value =
+            EdgeInsets.zero;
+      }
     }
   }
 }
 
 class PipVideoControls extends StatefulWidget {
-  final VideoState state;
   final VoidCallback onPipExit;
-  const PipVideoControls(this.state, {super.key, required this.onPipExit});
+  const PipVideoControls({super.key, required this.onPipExit});
 
   @override
   State<PipVideoControls> createState() => _PipVideoControlsState();
@@ -103,7 +96,8 @@ class _PipVideoControlsState extends State<PipVideoControls> {
                   alignment: Alignment.topLeft,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: MaterialDesktopCustomButton(
+                    child: IconButton(
+                      color: Colors.white,
                       onPressed: widget.onPipExit,
                       icon: const Icon(Symbols.pip_exit),
                     ),

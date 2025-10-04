@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:strumok/collection/collection_item_provider.dart';
-import 'package:strumok/content/video/track_selector.dart';
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_content_controller.dart';
+import 'package:strumok/content/video/video_content_desktop_controls.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
@@ -10,30 +10,25 @@ import 'package:strumok/content/video/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/extensions/duration.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
+import 'package:strumok/utils/text.dart';
 
 const seekTransitionDuration = Duration(milliseconds: 500);
 
-class AndroidTVControls extends StatefulWidget {
-  const AndroidTVControls({super.key, required this.player});
-
-  final Player player;
+class VideoContentTVControls extends StatefulWidget {
+  const VideoContentTVControls({super.key});
 
   @override
-  State<AndroidTVControls> createState() => _AndroidTVControlsState();
+  State<VideoContentTVControls> createState() => _VideoContentTVControlsState();
 }
 
-class _AndroidTVControlsState extends State<AndroidTVControls> {
-  late bool uiShown = false;
-  late bool visible = false;
+class _VideoContentTVControlsState extends State<VideoContentTVControls> {
+  late bool _uiShown = false;
+  late bool _visible = false;
 
-  FocusNode playPauseFocusNode = FocusNode();
+  final FocusNode _playPauseFocusNode = FocusNode();
 
-  bool seekVisible = false;
-  int seekPosition = 0;
+  bool _seekVisible = false;
+  int _seekPosition = 0;
   Timer? _seekTimer;
 
   @override
@@ -46,32 +41,32 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
   @override
   void dispose() {
     _seekTimer?.cancel();
-    playPauseFocusNode.dispose();
+    _playPauseFocusNode.dispose();
     super.dispose();
   }
 
   void onEnter() {
     setState(() {
-      uiShown = true;
-      visible = true;
+      _uiShown = true;
+      _visible = true;
     });
-    playPauseFocusNode.requestFocus();
-    VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.only(
+    _playPauseFocusNode.requestFocus();
+    videoContentController(context).subtitlePaddings.value = EdgeInsets.only(
       bottom: 96,
     );
   }
 
   void onExit() {
     setState(() {
-      visible = false;
+      _visible = false;
     });
-    VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.zero;
+    videoContentController(context).subtitlePaddings.value = EdgeInsets.zero;
   }
 
   void seek(int sec) {
-    var playerState = widget.player.state;
-    int targetPosition = seekVisible
-        ? seekPosition
+    var playerState = videoContentController(context).playerState;
+    int targetPosition = _seekVisible
+        ? _seekPosition
         : playerState.position.inSeconds;
     targetPosition += sec;
 
@@ -82,34 +77,34 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
     }
 
     setState(() {
-      seekVisible = true;
-      seekPosition = targetPosition;
+      _seekVisible = true;
+      _seekPosition = targetPosition;
     });
 
     _seekTimer?.cancel();
     _seekTimer = Timer(seekTransitionDuration, () {
       setState(() {
-        seekVisible = false;
+        _seekVisible = false;
       });
-      widget.player.safeSeek(Duration(seconds: seekPosition));
+      videoContentController(context).seekTo(Duration(seconds: _seekPosition));
     });
   }
 
   void onBack() {
-    if (uiShown) {
+    if (_uiShown) {
       onExit();
     }
   }
 
   void onPlayPause() {
-    widget.player.playOrPause();
+    videoContentController(context).playOrPause();
   }
 
   @override
   Widget build(BuildContext context) {
     return CallbackShortcuts(
       bindings: {
-        if (!uiShown) ...{
+        if (!_uiShown) ...{
           const SingleActivator(LogicalKeyboardKey.arrowDown): onEnter,
           const SingleActivator(LogicalKeyboardKey.arrowUp): onEnter,
           const SingleActivator(LogicalKeyboardKey.arrowLeft): () => seek(-10),
@@ -127,7 +122,7 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
             return;
           }
 
-          if (uiShown) {
+          if (_uiShown) {
             onExit();
             return;
           }
@@ -144,16 +139,16 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
               children: [
                 AnimatedOpacity(
                   curve: Curves.easeInOut,
-                  opacity: visible ? 1.0 : 0.0,
+                  opacity: _visible ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 150),
                   onEnd: () {
-                    if (!visible) {
+                    if (!_visible) {
                       setState(() {
-                        uiShown = false;
+                        _uiShown = false;
                       });
                     }
                   },
-                  child: uiShown
+                  child: _uiShown
                       ? FocusScope(
                           child: Column(
                             children: [
@@ -161,16 +156,16 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
                               const _AndroidTVTopBar(),
                               const Spacer(),
                               // bottom bar
-                              const _AndroidTVSeekBar(),
+                              const _TVSeekBar(),
                               _AndroidTVBottomBar(
-                                playPauseFocusNode: playPauseFocusNode,
+                                playPauseFocusNode: _playPauseFocusNode,
                               ),
                             ],
                           ),
                         )
                       : const SizedBox.shrink(),
                 ),
-                Positioned.fill(child: _AndroidTVVideoBufferingIndicator()),
+                Positioned.fill(child: _TVVideoBufferingIndicator()),
                 Positioned.fill(child: _renderSeekPosition()),
               ],
             ),
@@ -188,13 +183,15 @@ class _AndroidTVControlsState extends State<AndroidTVControls> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           AnimatedOpacity(
-            opacity: seekVisible ? 1.0 : 0,
+            opacity: _seekVisible ? 1.0 : 0,
             duration: const Duration(milliseconds: 200),
-            child: _renderSeekText(Duration(seconds: seekPosition).label()),
+            child: _renderSeekText(
+              formatDuration(Duration(seconds: _seekPosition)),
+            ),
             onEnd: () {
-              if (!seekVisible) {
+              if (!_seekVisible) {
                 setState(() {
-                  seekPosition = 0;
+                  _seekPosition = 0;
                 });
               }
             },
@@ -242,7 +239,6 @@ class _AndroidTVTopBar extends StatelessWidget {
           const SizedBox(width: 8),
           const MediaTitle(),
           const Spacer(),
-          const PlayerErrorPopup(),
           const PlayerPlaylistButton(),
         ],
       ),
@@ -250,25 +246,31 @@ class _AndroidTVTopBar extends StatelessWidget {
   }
 }
 
-class _AndroidTVVideoBufferingIndicator extends StatefulWidget {
+class _TVVideoBufferingIndicator extends StatefulWidget {
   @override
-  State<_AndroidTVVideoBufferingIndicator> createState() =>
-      _AndroidTVVideoBufferingIndicatorState();
+  State<_TVVideoBufferingIndicator> createState() =>
+      _TVVideoBufferingIndicatorState();
 }
 
-class _AndroidTVVideoBufferingIndicatorState
-    extends State<_AndroidTVVideoBufferingIndicator> {
-  late bool buffering = controller(context).player.state.buffering;
+class _TVVideoBufferingIndicatorState
+    extends State<_TVVideoBufferingIndicator> {
+  late bool _buffering = videoContentController(
+    context,
+  ).playerState.isBuffering;
 
   StreamSubscription? _subscription;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _subscription = controller(context).player.stream.buffering.listen((event) {
-      setState(() {
-        buffering = event;
-      });
+    _subscription = videoContentController(context).playerStream.listen((
+      event,
+    ) {
+      if (_buffering != event.isBuffering) {
+        setState(() {
+          _buffering = event.isBuffering;
+        });
+      }
     });
   }
 
@@ -282,7 +284,7 @@ class _AndroidTVVideoBufferingIndicatorState
   Widget build(BuildContext context) {
     return Center(
       child: TweenAnimationBuilder<double>(
-        tween: Tween<double>(begin: 0.0, end: buffering ? 1.0 : 0.0),
+        tween: Tween<double>(begin: 0.0, end: _buffering ? 1.0 : 0.0),
         duration: const Duration(milliseconds: 150),
         builder: (context, value, child) {
           // Only mount the buffering indicator if the opacity is greater than 0.0.
@@ -304,8 +306,9 @@ class _AndroidTVBottomBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final contentDetails = VideoContentView.currentContentDetails;
-    final mediaItems = VideoContentView.currentMediaItems;
+    final controller = videoContentController(context);
+    final contentDetails = controller.contentDetails;
+    final mediaItems = controller.mediaItems;
 
     final currentProgress = ref.watch(collectionItemProvider(contentDetails));
 
@@ -324,13 +327,13 @@ class _AndroidTVBottomBar extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
       child: Row(
         children: [
-          const MaterialDesktopPositionIndicator(),
+          const DesktopVideoControlsPositionIndicator(),
           const Spacer(),
           const SkipPrevButton(),
           PlayOrPauseButton(focusNode: !isLastItem ? playPauseFocusNode : null),
           SkipNextButton(focusNode: isLastItem ? playPauseFocusNode : null),
           const Spacer(),
-          const TrackSelector(),
+          // const TrackSelector(),
           const SourceSelector(),
           const PlayerSettingsButton(),
         ],
@@ -339,31 +342,25 @@ class _AndroidTVBottomBar extends ConsumerWidget {
   }
 }
 
-class _AndroidTVSeekBar extends StatefulWidget {
-  const _AndroidTVSeekBar();
+class _TVSeekBar extends StatefulWidget {
+  const _TVSeekBar();
 
   @override
-  _AndroidTVSeekBarState createState() => _AndroidTVSeekBarState();
+  _TVSeekBarState createState() => _TVSeekBarState();
 }
 
-class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
+class _TVSeekBarState extends State<_TVSeekBar> {
   static const _seekUnit = 10;
 
-  late double position = controller(
-    context,
-  ).player.state.position.inSeconds.toDouble();
-  late double duration = controller(
-    context,
-  ).player.state.duration.inSeconds.toDouble();
-  late double buffer = controller(
-    context,
-  ).player.state.buffer.inSeconds.toDouble();
+  late Duration position = videoContentController(context).playerState.position;
+  late Duration duration = videoContentController(context).playerState.duration;
+  late Duration buffer = videoContentController(context).playerState.lastBuffer;
   late int? divisions = _calcDivisions();
 
   double? slidePosition;
   Timer? timer;
 
-  final List<StreamSubscription> subscriptions = [];
+  StreamSubscription? _subscription;
 
   @override
   void setState(VoidCallback fn) {
@@ -374,44 +371,40 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
 
   void listener() {
     setState(() {
-      position = controller(context).player.state.position.inSeconds.toDouble();
+      position = videoContentController(context).playerState.position;
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (subscriptions.isEmpty) {
-      subscriptions.addAll([
-        controller(context).player.stream.position.listen((event) {
-          setState(() {
-            position = event.inSeconds.toDouble();
-          });
-        }),
-        controller(context).player.stream.duration.listen((event) {
-          setState(() {
-            duration = event.inSeconds.toDouble();
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
+      if (position != event.position ||
+          duration != event.duration ||
+          buffer != event.lastBuffer) {
+        setState(() {
+          if (duration != event.duration) {
+            duration = event.duration;
             divisions = _calcDivisions();
-          });
-        }),
-        controller(context).player.stream.buffer.listen((event) {
-          setState(() {
-            buffer = event.inSeconds.toDouble();
-          });
-        }),
-      ]);
-    }
+          }
+          position = event.position;
+          buffer = event.lastBuffer;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
+    _subscription?.cancel();
     super.dispose();
   }
 
-  int? _calcDivisions() => duration == 0 ? null : (duration / _seekUnit).ceil();
+  int? _calcDivisions() => duration == Duration.zero
+      ? null
+      : (duration.inSeconds / _seekUnit).ceil();
 
   @override
   Widget build(BuildContext context) {
@@ -419,9 +412,9 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
       data: SliderThemeData(tickMarkShape: SliderTickMarkShape.noTickMark),
       child: Slider(
         allowedInteraction: SliderInteraction.slideOnly,
-        secondaryTrackValue: buffer,
-        value: slidePosition ?? position,
-        max: duration,
+        secondaryTrackValue: buffer.inSeconds.toDouble(),
+        value: slidePosition ?? position.inSeconds.toDouble(),
+        max: duration.inSeconds.toDouble(),
         divisions: divisions,
         onChanged: (value) {
           timer?.cancel();
@@ -436,9 +429,9 @@ class _AndroidTVSeekBarState extends State<_AndroidTVSeekBar> {
             timer?.cancel();
             timer = null;
 
-            await controller(
+            videoContentController(
               context,
-            ).player.seek(Duration(seconds: value.ceil()));
+            ).seekTo(Duration(seconds: value.ceil()));
 
             setState(() {
               slidePosition = null;

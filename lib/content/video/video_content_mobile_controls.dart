@@ -1,28 +1,27 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:media_kit_video/media_kit_video.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/extensions/duration.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
-import 'package:strumok/content/video/track_selector.dart';
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
+import 'package:strumok/utils/text.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 /// {@macro material_video_controls}
-class MobileVideoControls extends StatefulWidget {
-  const MobileVideoControls({super.key});
+class VideoContentMobileControls extends StatefulWidget {
+  const VideoContentMobileControls({super.key});
 
   @override
-  State<MobileVideoControls> createState() => _MobileVideoControlsState();
+  State<VideoContentMobileControls> createState() =>
+      _VideoContentMobileControlsState();
 }
 
 /// {@macro material_video_controls}
-class _MobileVideoControlsState extends State<MobileVideoControls> {
+class _VideoContentMobileControlsState
+    extends State<VideoContentMobileControls> {
   static final controlsHoverDuration = const Duration(seconds: 3);
   static final controlsTransitionDuration = const Duration(milliseconds: 300);
 
@@ -46,8 +45,8 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
   static const buttonBarHeight = 56.0;
   static final bottomButtonBarMargin = const EdgeInsets.all(8);
 
-  late bool mount = false;
-  late bool visible = false;
+  late bool _mount = false;
+  late bool _visible = false;
   Timer? _timer;
 
   double _brightnessValue = 0.0;
@@ -66,8 +65,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
   bool showSwipeDuration = false; // Whether to show the seek duration overlay
 
   bool _speedUpIndicator = false;
-  late /* private */ var playlist = controller(context).player.state.playlist;
-  late bool buffering = controller(context).player.state.buffering;
+  late bool _buffering = videoContentController(
+    context,
+  ).playerState.isBuffering;
   final VolumeController _volumeController = VolumeController.instance;
 
   bool _mountSeekBackwardButton = false;
@@ -80,7 +80,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
   final ValueNotifier<Duration> _seekBarDeltaValueNotifier =
       ValueNotifier<Duration>(Duration.zero);
 
-  final List<StreamSubscription> subscriptions = [];
+  StreamSubscription? _subscription;
 
   Offset? _tapPosition;
 
@@ -94,15 +94,16 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
     setState(() {
       _speedUpIndicator = true;
     });
-    _currentRate = controller(context).player.state.rate;
-    controller(context).player.setRate(speedUpFactor);
+    final controller = videoContentController(context);
+    _currentRate = controller.playerState.playbackSpeed;
+    controller.setRate(_currentRate * speedUpFactor);
   }
 
   void _handleLongPressEnd(LongPressEndDetails details) {
     setState(() {
       _speedUpIndicator = false;
     });
-    controller(context).player.setRate(_currentRate);
+    videoContentController(context).setRate(_currentRate);
   }
 
   @override
@@ -115,36 +116,62 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (subscriptions.isEmpty) {
-      subscriptions.addAll([
-        controller(context).player.stream.playlist.listen((event) {
-          setState(() {
-            playlist = event;
-          });
-        }),
-        controller(context).player.stream.buffering.listen((event) {
-          setState(() {
-            buffering = event;
-          });
-        }),
-      ]);
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
+      if (_buffering != event.isBuffering) {
+        setState(() {
+          _buffering = event.isBuffering;
+        });
+      }
+    });
 
-      _timer = Timer(controlsHoverDuration, () {
-        if (mounted) {
-          setState(() {
-            visible = false;
-          });
-          unshiftSubtitle();
-        }
-      });
-    }
+    _timer = Timer(controlsHoverDuration, () {
+      if (mounted) {
+        setState(() {
+          _visible = false;
+        });
+        unshiftSubtitle();
+      }
+    });
+
+    // --------------------------------------------------
+    // package:volume_controller
+    Future.microtask(() async {
+      try {
+        _volumeController.showSystemUI = false;
+        _volumeValue = await _volumeController.getVolume();
+        _volumeController.addListener((value) {
+          if (mounted && !_volumeInterceptEventStream) {
+            setState(() {
+              _volumeValue = value;
+            });
+          }
+        });
+      } catch (_) {}
+    });
+    // --------------------------------------------------
+    // --------------------------------------------------
+    // package:screen_brightness
+    Future.microtask(() async {
+      try {
+        _brightnessValue = await ScreenBrightnessPlatform.instance.application;
+        ScreenBrightnessPlatform.instance.onApplicationScreenBrightnessChanged
+            .listen((value) {
+              if (mounted) {
+                setState(() {
+                  _brightnessValue = value;
+                });
+              }
+            });
+      } catch (_) {}
+    });
+    // --------------------------------------------------
   }
 
   @override
   void dispose() {
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
+    _subscription?.cancel();
     // --------------------------------------------------
     // package:screen_brightness
     Future.microtask(() async {
@@ -160,37 +187,33 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
   }
 
   void shiftSubtitle() {
-    VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.fromLTRB(
-      0.0,
-      0.0,
-      0.0,
-      subtitleVerticalShiftOffset,
-    );
+    videoContentController(context).subtitlePaddings.value =
+        EdgeInsets.fromLTRB(0.0, 0.0, 0.0, subtitleVerticalShiftOffset);
   }
 
   void unshiftSubtitle() {
-    VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.zero;
+    videoContentController(context).subtitlePaddings.value = EdgeInsets.zero;
   }
 
   void onTap() {
-    if (!visible) {
+    if (!_visible) {
       setState(() {
-        mount = true;
-        visible = true;
+        _mount = true;
+        _visible = true;
       });
       shiftSubtitle();
       _timer?.cancel();
       _timer = Timer(controlsHoverDuration, () {
         if (mounted) {
           setState(() {
-            visible = false;
+            _visible = false;
           });
           unshiftSubtitle();
         }
       });
     } else {
       setState(() {
-        visible = false;
+        _visible = false;
       });
       unshiftSubtitle();
       _timer?.cancel();
@@ -216,8 +239,12 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
     }
 
     final diff = _dragInitialDelta.dx - details.localPosition.dx;
-    final duration = controller(context).player.state.duration.inSeconds;
-    final position = controller(context).player.state.position.inSeconds;
+    final duration = videoContentController(
+      context,
+    ).playerState.duration.inSeconds;
+    final position = videoContentController(
+      context,
+    ).playerState.position.inSeconds;
 
     final seconds = -(diff * duration / horizontalGestureSensitivity).round();
     final relativePosition = position + seconds;
@@ -233,14 +260,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
 
   void onHorizontalDragEnd() {
     if (swipeDuration != 0) {
-      Duration newPosition =
-          controller(context).player.state.position +
-          Duration(seconds: swipeDuration);
-      newPosition = newPosition.clamp(
-        Duration.zero,
-        controller(context).player.state.duration,
-      );
-      controller(context).player.seek(newPosition);
+      videoContentController(
+        context,
+      ).seekForward(Duration(seconds: swipeDuration));
     }
 
     setState(() {
@@ -285,43 +307,6 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
 
   void _handlePointerDown(PointerDownEvent event) {
     onTap();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // --------------------------------------------------
-    // package:volume_controller
-    Future.microtask(() async {
-      try {
-        _volumeController.showSystemUI = false;
-        _volumeValue = await _volumeController.getVolume();
-        _volumeController.addListener((value) {
-          if (mounted && !_volumeInterceptEventStream) {
-            setState(() {
-              _volumeValue = value;
-            });
-          }
-        });
-      } catch (_) {}
-    });
-    // --------------------------------------------------
-    // --------------------------------------------------
-    // package:screen_brightness
-    Future.microtask(() async {
-      try {
-        _brightnessValue = await ScreenBrightnessPlatform.instance.application;
-        ScreenBrightnessPlatform.instance.onApplicationScreenBrightnessChanged
-            .listen((value) {
-              if (mounted) {
-                setState(() {
-                  _brightnessValue = value;
-                });
-              }
-            });
-      } catch (_) {}
-    });
-    // --------------------------------------------------
   }
 
   Future<void> setVolume(double value) async {
@@ -391,7 +376,6 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
       child: Directionality(
         textDirection: TextDirection.ltr,
         child: Focus(
-          // focusNode: videoViewParametersNotifier(context).value.focusNode,
           autofocus: true,
           child: Material(
             elevation: 0.0,
@@ -407,12 +391,12 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                 // Controls:
                 AnimatedOpacity(
                   curve: Curves.easeInOut,
-                  opacity: visible ? 1.0 : 0.0,
+                  opacity: _visible ? 1.0 : 0.0,
                   duration: controlsTransitionDuration,
                   onEnd: () {
                     setState(() {
-                      if (!visible) {
-                        mount = false;
+                      if (!_visible) {
+                        _mount = false;
                       }
                     });
                   },
@@ -474,13 +458,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                           ),
                         ),
                       ),
-                      if (mount)
+                      if (_mount)
                         Padding(
-                          padding:
-                              // Add padding in fullscreen!
-                              isFullscreen(context)
-                              ? MediaQuery.of(context).padding
-                              : EdgeInsets.zero,
+                          padding: MediaQuery.of(context).padding,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -496,47 +476,34 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                                   children: [
                                     const MediaTitle(),
                                     const Spacer(),
-                                    const PlayerErrorPopup(),
                                     const PlayerPlaylistButton(),
                                   ],
                                 ),
                               ),
                               // Only display [primaryButtonBar] if [buffering] is false.
                               Expanded(
-                                child: ValueListenableBuilder(
-                                  valueListenable:
-                                      VideoContentView.currentState.isLoading,
-                                  builder: (context, loading, child) {
-                                    return AnimatedOpacity(
-                                      curve: Curves.easeInOut,
-                                      opacity: loading || buffering ? 0.0 : 1.0,
-                                      duration: controlsTransitionDuration,
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            const Spacer(flex: 2),
-                                            const SkipPrevButton(
-                                              iconSize: 36.0,
-                                            ),
-                                            const Spacer(),
-                                            const PlayOrPauseButton(
-                                              iconSize: 48.0,
-                                            ),
-                                            const Spacer(),
-                                            const SkipNextButton(
-                                              iconSize: 36.0,
-                                            ),
-                                            const Spacer(flex: 2),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                child: AnimatedOpacity(
+                                  curve: Curves.easeInOut,
+                                  opacity: _buffering ? 0.0 : 1.0,
+                                  duration: controlsTransitionDuration,
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Spacer(flex: 2),
+                                        const SkipPrevButton(iconSize: 36.0),
+                                        const Spacer(),
+                                        const PlayOrPauseButton(iconSize: 48.0),
+                                        const Spacer(),
+                                        const SkipNextButton(iconSize: 36.0),
+                                        const Spacer(flex: 2),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                               Stack(
@@ -550,7 +517,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                                       _timer = Timer(controlsHoverDuration, () {
                                         if (mounted) {
                                           setState(() {
-                                            visible = false;
+                                            _visible = false;
                                           });
                                           unshiftSubtitle();
                                         }
@@ -569,7 +536,6 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                                       children: [
                                         const _MobileControlsPositionIndicator(),
                                         const Spacer(),
-                                        const TrackSelector(),
                                         const SourceSelector(),
                                         const PlayerSettingsButton(),
                                       ],
@@ -584,7 +550,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                   ),
                 ),
                 // Double-Tap Seek Seek-Bar:
-                if (!mount)
+                if (!_mount)
                   if (_mountSeekBackwardButton ||
                       _mountSeekForwardButton ||
                       showSwipeDuration)
@@ -608,11 +574,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                 // Buffering Indicator.
                 IgnorePointer(
                   child: Padding(
-                    padding:
-                        // Add padding in fullscreen!
-                        isFullscreen(context)
-                        ? MediaQuery.of(context).padding
-                        : EdgeInsets.zero,
+                    padding: MediaQuery.of(context).padding,
                     child: Column(
                       children: [
                         Container(
@@ -624,7 +586,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                             child: TweenAnimationBuilder<double>(
                               tween: Tween<double>(
                                 begin: 0.0,
-                                end: buffering ? 1.0 : 0.0,
+                                end: _buffering ? 1.0 : 0.0,
                               ),
                               duration: controlsTransitionDuration,
                               builder: (context, value, child) {
@@ -752,11 +714,7 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                 // Speedup Indicator.
                 IgnorePointer(
                   child: Padding(
-                    padding:
-                        // Add padding in fullscreen!
-                        isFullscreen(context)
-                        ? MediaQuery.of(context).padding
-                        : EdgeInsets.zero,
+                    padding: MediaQuery.of(context).padding,
                     child: Column(
                       children: [
                         Container(
@@ -834,8 +792,8 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                       width: 108.0,
                       child: Text(
                         swipeDuration > 0
-                            ? "+ ${Duration(seconds: swipeDuration).label()}"
-                            : "- ${Duration(seconds: swipeDuration).label()}",
+                            ? "+ ${formatDuration(Duration(seconds: swipeDuration.abs()))}"
+                            : "- ${formatDuration(Duration(seconds: swipeDuration.abs()))}",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 14.0,
@@ -877,18 +835,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                                       setState(() {
                                         _hideSeekBackwardButton = true;
                                       });
-                                      var result =
-                                          controller(
-                                            context,
-                                          ).player.state.position -
-                                          value;
-                                      result = result.clamp(
-                                        Duration.zero,
-                                        controller(
-                                          context,
-                                        ).player.state.duration,
-                                      );
-                                      controller(context).player.seek(result);
+                                      videoContentController(
+                                        context,
+                                      ).seekBackward(value);
                                     },
                                   ),
                                 )
@@ -925,18 +874,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                                         _hideSeekForwardButton = true;
                                       });
 
-                                      var result =
-                                          controller(
-                                            context,
-                                          ).player.state.position +
-                                          value;
-                                      result = result.clamp(
-                                        Duration.zero,
-                                        controller(
-                                          context,
-                                        ).player.state.duration,
-                                      );
-                                      controller(context).player.seek(result);
+                                      videoContentController(
+                                        context,
+                                      ).seekBackward(value);
                                     },
                                   ),
                                 )
@@ -979,12 +919,12 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
   bool tapped = false;
   double slider = 0.0;
 
-  late bool playing = controller(context).player.state.playing;
-  late Duration position = controller(context).player.state.position;
-  late Duration duration = controller(context).player.state.duration;
-  late Duration buffer = controller(context).player.state.buffer;
+  late bool playing = videoContentController(context).playerState.isPlaying;
+  late Duration position = videoContentController(context).playerState.position;
+  late Duration duration = videoContentController(context).playerState.duration;
+  late Duration buffer = videoContentController(context).playerState.lastBuffer;
 
-  final List<StreamSubscription> subscriptions = [];
+  StreamSubscription? _subscription;
 
   @override
   void setState(VoidCallback fn) {
@@ -996,58 +936,35 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
   void listener() {
     setState(() {
       final delta = widget.delta?.value ?? Duration.zero;
-      position = controller(context).player.state.position + delta;
+      position = videoContentController(context).playerState.position + delta;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    widget.delta?.addListener(listener);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (subscriptions.isEmpty && widget.delta == null) {
-      subscriptions.addAll([
-        controller(context).player.stream.playing.listen((event) {
-          setState(() {
-            playing = event;
-          });
-        }),
-        controller(context).player.stream.completed.listen((event) {
-          setState(() {
-            position = Duration.zero;
-          });
-        }),
-        controller(context).player.stream.position.listen((event) {
-          setState(() {
-            if (!tapped) {
-              position = event;
-            }
-          });
-        }),
-        controller(context).player.stream.duration.listen((event) {
-          setState(() {
-            duration = event;
-          });
-        }),
-        controller(context).player.stream.buffer.listen((event) {
-          setState(() {
-            buffer = event;
-          });
-        }),
-      ]);
-    }
+    widget.delta?.addListener(listener);
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
+      if (playing != event.isPlaying ||
+          position != event.position ||
+          duration != event.duration ||
+          buffer != event.lastBuffer) {
+        setState(() {
+          playing = event.isPlaying;
+          position = event.position;
+          duration = event.duration;
+          buffer = event.lastBuffer;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
     widget.delta?.removeListener(listener);
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -1057,7 +974,9 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
       tapped = true;
       slider = percent.clamp(0.0, 1.0);
     });
-    controller(context).player.seek(duration * slider);
+    if (mounted) {
+      videoContentController(context).seekTo(duration * slider);
+    }
   }
 
   void onPointerDown() {
@@ -1074,7 +993,9 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
       tapped = false;
       position = duration * slider;
     });
-    controller(context).player.seek(duration * slider);
+    if (mounted) {
+      videoContentController(context).seekTo(duration * slider);
+    }
   }
 
   void onPanStart(DragStartDetails e, BoxConstraints constraints) {
@@ -1213,10 +1134,10 @@ class _MobileControlsPositionIndicator extends StatefulWidget {
 
 class _MobileControlsPositionIndicatorState
     extends State<_MobileControlsPositionIndicator> {
-  late Duration position = controller(context).player.state.position;
-  late Duration duration = controller(context).player.state.duration;
+  late Duration position = videoContentController(context).playerState.position;
+  late Duration duration = videoContentController(context).playerState.duration;
 
-  final List<StreamSubscription> subscriptions = [];
+  StreamSubscription? _subscription;
 
   @override
   void setState(VoidCallback fn) {
@@ -1228,34 +1149,29 @@ class _MobileControlsPositionIndicatorState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (subscriptions.isEmpty) {
-      subscriptions.addAll([
-        controller(context).player.stream.position.listen((event) {
-          setState(() {
-            position = event;
-          });
-        }),
-        controller(context).player.stream.duration.listen((event) {
-          setState(() {
-            duration = event;
-          });
-        }),
-      ]);
-    }
+
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
+      if (position != event.position || duration != event.duration) {
+        setState(() {
+          position = event.position;
+          duration = event.duration;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
-    for (final subscription in subscriptions) {
-      subscription.cancel();
-    }
+    _subscription?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      '${position.label(reference: duration)} / ${duration.label(reference: duration)}',
+      '${formatDuration(position)} / ${formatDuration(duration)}',
       style: TextStyle(height: 1.0, fontSize: 12.0, color: Colors.white),
     );
   }
@@ -1288,9 +1204,9 @@ class _BackwardSeekIndicatorState extends State<_BackwardSeekIndicator> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    timer = Timer(const Duration(milliseconds: 400), () {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    timer ??= Timer(const Duration(milliseconds: 400), () {
       widget.onSubmitted.call(value);
     });
   }
@@ -1373,9 +1289,9 @@ class _ForwardSeekIndicatorState extends State<_ForwardSeekIndicator> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    timer = Timer(const Duration(milliseconds: 400), () {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    timer ??= Timer(const Duration(milliseconds: 400), () {
       widget.onSubmitted.call(value);
     });
   }

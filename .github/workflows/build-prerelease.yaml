@@ -1,0 +1,89 @@
+name: Build Prerelease
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Select platform to build'
+        required: true
+        type: choice
+        options:
+          - android
+          - windows
+          - linux
+
+jobs:
+  build-android:
+    if: ${{ inputs.platform == 'android' }}
+    uses: ./.github/workflows/build-android.yaml
+    with:
+      ref: ${{ github.ref_name }}
+
+  build-windows:
+    if: ${{ inputs.platform == 'windows' }}
+    uses: ./.github/workflows/build-windows.yaml
+    with:
+      ref: ${{ github.ref_name }}
+
+  build-linux:
+    if: ${{ inputs.platform == 'linux' }}
+    uses: ./.github/workflows/build-linux.yaml
+    with:
+      ref: ${{ github.ref_name }}
+
+  upload-to-gcp:
+    needs: [build-android, build-windows, build-linux]
+    if: ${{ inputs.platform == 'android' || inputs.platform == 'windows' || inputs.platform == 'linux' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Authenticate to GCP using Service Account Key
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Upload Android artifacts
+        if: ${{ inputs.platform == 'android' }}
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          bucket: ${{ secrets.GCS_BUCKET_NAME }}
+          path: artifacts/android-outputs/
+          destination: artifacts/prerelease/android/
+          predefinedAcl: publicRead
+
+      - name: Android upload confirmation
+        if: ${{ inputs.platform == 'android' }}
+        run: |
+          echo "Successfully uploaded Android artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/android/"
+
+      - name: Upload Windows artifacts
+        if: ${{ inputs.platform == 'windows' }}
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          bucket: ${{ secrets.GCS_BUCKET_NAME }}
+          path: artifacts/windows-outputs/
+          destination: artifacts/prerelease/windows/
+          predefinedAcl: publicRead
+
+      - name: Windows upload confirmation
+        if: ${{ inputs.platform == 'windows' }}
+        run: |
+          echo "Successfully uploaded Windows artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/windows/"
+
+      - name: Upload Linux artifacts
+        if: ${{ inputs.platform == 'linux' }}
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          bucket: ${{ secrets.GCS_BUCKET_NAME }}
+          path: artifacts/linux-outputs/
+          destination: artifacts/prerelease/linux/
+          predefinedAcl: publicRead
+
+      - name: Linux upload confirmation
+        if: ${{ inputs.platform == 'linux' }}
+        run: |
+          echo "Successfully uploaded Linux artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/linux/"

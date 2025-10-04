@@ -6,7 +6,6 @@ import 'package:strumok/content/media_items_list.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/download/media_item_download.dart';
 import 'package:strumok/utils/nav.dart';
 
@@ -94,4 +93,26 @@ class _ContentPlaylistButton extends ConsumerWidget {
       tooltip: AppLocalizations.of(context)!.episodesList,
     );
   }
+}
+
+MediaItemsListBuilder playlistItemBuilder(ContentDetails contentDetails) {
+  return (
+    ContentMediaItem item,
+    ContentProgress? contentProgress,
+    SelectCallback onSelect,
+  ) {
+    final progress = contentProgress?.positions[item.number]?.progress ?? 0;
+
+    return MediaItemsListItem(
+      item: item,
+      selected: item.number == contentProgress?.currentItem,
+      selectIcon: Icons.play_arrow_rounded,
+      progress: progress,
+      onTap: () => onSelect(item),
+      trailing: MediaItemDownloadButton(
+        contentDetails: contentDetails,
+        item: item,
+      ),
+    );
+  };
 }

@@ -89,23 +89,19 @@ class _OnVideoEndsActionSettingsSection extends ConsumerWidget {
       ),
       section: Dropdown.button(
         label: videoPlayerSettingEndsAction(context, action),
-        menuChildrenBulder:
-            (focusNode) =>
-                OnVideoEndsAction.values
-                    .mapIndexed(
-                      (index, value) => MenuItemButton(
-                        focusNode: index == 0 ? focusNode : null,
-                        onPressed: () {
-                          ref
-                              .read(onVideoEndsActionSettingsProvider.notifier)
-                              .select(value);
-                        },
-                        child: Text(
-                          videoPlayerSettingEndsAction(context, value),
-                        ),
-                      ),
-                    )
-                    .toList(),
+        menuChildrenBulder: (focusNode) => OnVideoEndsAction.values
+            .mapIndexed(
+              (index, value) => MenuItemButton(
+                focusNode: index == 0 ? focusNode : null,
+                onPressed: () {
+                  ref
+                      .read(onVideoEndsActionSettingsProvider.notifier)
+                      .select(value);
+                },
+                child: Text(videoPlayerSettingEndsAction(context, value)),
+              ),
+            )
+            .toList(),
       ),
     );
   }
@@ -128,25 +124,19 @@ class _StarVideoPositionSettingsSection extends ConsumerWidget {
         children: [
           Dropdown.button(
             label: videoPlayerSettingStarFrom(context, starVideoPosition),
-            menuChildrenBulder:
-                (focusNode) =>
-                    StarVideoPosition.values
-                        .mapIndexed(
-                          (index, value) => MenuItemButton(
-                            focusNode: index == 0 ? focusNode : null,
-                            onPressed: () {
-                              ref
-                                  .read(
-                                    starVideoPositionSettingsProvider.notifier,
-                                  )
-                                  .select(value);
-                            },
-                            child: Text(
-                              videoPlayerSettingStarFrom(context, value),
-                            ),
-                          ),
-                        )
-                        .toList(),
+            menuChildrenBulder: (focusNode) => StarVideoPosition.values
+                .mapIndexed(
+                  (index, value) => MenuItemButton(
+                    focusNode: index == 0 ? focusNode : null,
+                    onPressed: () {
+                      ref
+                          .read(starVideoPositionSettingsProvider.notifier)
+                          .select(value);
+                    },
+                    child: Text(videoPlayerSettingStarFrom(context, value)),
+                  ),
+                )
+                .toList(),
           ),
           if (starVideoPosition == StarVideoPosition.fromFixedPosition) ...[
             const SizedBox(width: 8),
