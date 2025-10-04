@@ -68,11 +68,6 @@ jobs:
           predefinedAcl: publicRead
           parent: false
 
-      - name: Android upload confirmation
-        if: ${{ needs.build-android.result == 'success' }}
-        run: |
-          echo "Successfully uploaded Android artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/android/"
-
       - name: Upload Windows artifacts
         if: ${{ needs.build-windows.result == 'success' }}
         uses: google-github-actions/upload-cloud-storage@v2
@@ -81,11 +76,6 @@ jobs:
           destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/
           predefinedAcl: publicRead
           parent: false
-
-      - name: Windows upload confirmation
-        if: ${{ needs.build-windows.result == 'success' }}
-        run: |
-          echo "Successfully uploaded Windows artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/windows.zip"
 
       - name: Create Linux tar.gz archive
         if: ${{ needs.build-linux.result == 'success' }}
@@ -102,8 +92,3 @@ jobs:
           destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/
           predefinedAcl: publicRead
           parent: false
-
-      - name: Linux upload confirmation
-        if: ${{ needs.build-linux.result == 'success' }}
-        run: |
-          echo "Successfully uploaded Linux artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/linux.tar.gz"
