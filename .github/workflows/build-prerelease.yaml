@@ -66,6 +66,7 @@ jobs:
           path: artifacts/android-outputs/
           destination:  ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/android/
           predefinedAcl: publicRead
+          parent: false
 
       - name: Android upload confirmation
         if: ${{ needs.build-android.result == 'success' }}
@@ -86,6 +87,7 @@ jobs:
           path: windows-artifacts.zip
           destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/windows.zip
           predefinedAcl: publicRead
+          parent: false
 
       - name: Windows upload confirmation
         if: ${{ needs.build-windows.result == 'success' }}
@@ -106,6 +108,7 @@ jobs:
           path: linux-artifacts.tar.gz
           destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/linux.tar.gz
           predefinedAcl: publicRead
+          parent: false
 
       - name: Linux upload confirmation
         if: ${{ needs.build-linux.result == 'success' }}
