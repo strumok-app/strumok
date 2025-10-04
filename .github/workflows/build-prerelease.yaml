@@ -73,18 +73,11 @@ jobs:
         run: |
           echo "Successfully uploaded Android artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/android/"
 
-      - name: Create Windows zip archive
-        if: ${{ needs.build-windows.result == 'success' }}
-        run: |
-          cd artifacts/windows-outputs/
-          zip -r ../../windows.zip .
-          cd ../..
-
       - name: Upload Windows artifacts
         if: ${{ needs.build-windows.result == 'success' }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: windows.zip
+          path: artifacts/windows-outputs/
           destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/
           predefinedAcl: publicRead
           parent: false
