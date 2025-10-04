@@ -69,28 +69,42 @@ jobs:
         run: |
           echo "Successfully uploaded Android artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/android/"
 
+      - name: Create Windows zip archive
+        if: ${{ inputs.windows == true }}
+        run: |
+          cd artifacts/windows-outputs/
+          zip -r ../../windows-artifacts.zip .
+          cd ../..
+
       - name: Upload Windows artifacts
         if: ${{ inputs.windows == true }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/windows-outputs/
-          destination: artifacts/prerelease/windows/
+          path: windows-artifacts.zip
+          destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/windows.zip
           predefinedAcl: publicRead
 
       - name: Windows upload confirmation
         if: ${{ inputs.windows == true }}
         run: |
-          echo "Successfully uploaded Windows artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/windows/"
+          echo "Successfully uploaded Windows artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/windows.zip"
+
+      - name: Create Linux tar.gz archive
+        if: ${{ inputs.linux == true }}
+        run: |
+          cd artifacts/linux-outputs/
+          tar -czf ../../linux-artifacts.tar.gz .
+          cd ../..
 
       - name: Upload Linux artifacts
         if: ${{ inputs.linux == true }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: artifacts/linux-outputs/
-          destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/linux/
+          path: linux-artifacts.tar.gz
+          destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/linux.tar.gz
           predefinedAcl: publicRead
 
       - name: Linux upload confirmation
         if: ${{ inputs.linux == true }}
         run: |
-          echo "Successfully uploaded Linux artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/linux/"
+          echo "Successfully uploaded Linux artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/linux.tar.gz"
