@@ -1,5 +1,5 @@
+import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_content_desktop_controls.dart';
-import 'package:strumok/content/video/video_content_view.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -20,7 +20,13 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
   Widget build(BuildContext context) {
     return pipMode
         ? PipVideoControls(onPipExit: _switchToPipMode)
-        : DesktopVideoControls(onPipEnter: _switchToPipMode);
+        : VideoContentDesktopControls(onPipEnter: _switchToPipMode);
+  }
+
+  @override
+  void dispose() {
+    windowManager.setFullScreen(false);
+    super.dispose();
   }
 
   void _switchToPipMode() async {
@@ -45,7 +51,10 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       await Future.delayed(const Duration(milliseconds: 100));
       await windowManager.setAlignment(Alignment.bottomRight);
 
-      VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.zero;
+      if (mounted) {
+        videoContentController(context).subtitlePaddings.value =
+            EdgeInsets.zero;
+      }
     }
   }
 }

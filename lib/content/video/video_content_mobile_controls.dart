@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
@@ -11,15 +11,17 @@ import 'package:strumok/utils/text.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 /// {@macro material_video_controls}
-class MobileVideoControls extends StatefulWidget {
-  const MobileVideoControls({super.key});
+class VideoContentMobileControls extends StatefulWidget {
+  const VideoContentMobileControls({super.key});
 
   @override
-  State<MobileVideoControls> createState() => _MobileVideoControlsState();
+  State<VideoContentMobileControls> createState() =>
+      _VideoContentMobileControlsState();
 }
 
 /// {@macro material_video_controls}
-class _MobileVideoControlsState extends State<MobileVideoControls> {
+class _VideoContentMobileControlsState
+    extends State<VideoContentMobileControls> {
   static final controlsHoverDuration = const Duration(seconds: 3);
   static final controlsTransitionDuration = const Duration(milliseconds: 300);
 
@@ -63,7 +65,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
   bool showSwipeDuration = false; // Whether to show the seek duration overlay
 
   bool _speedUpIndicator = false;
-  late bool _buffering = VideoContentView.currentState.playerState.isBuffering;
+  late bool _buffering = videoContentController(
+    context,
+  ).playerState.isBuffering;
   final VolumeController _volumeController = VolumeController.instance;
 
   bool _mountSeekBackwardButton = false;
@@ -90,15 +94,16 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
     setState(() {
       _speedUpIndicator = true;
     });
-    _currentRate = VideoContentView.currentState.playerState.playbackSpeed;
-    VideoContentView.currentState.setRate(speedUpFactor);
+    final controller = videoContentController(context);
+    _currentRate = controller.playerState.playbackSpeed;
+    controller.setRate(_currentRate * speedUpFactor);
   }
 
   void _handleLongPressEnd(LongPressEndDetails details) {
     setState(() {
       _speedUpIndicator = false;
     });
-    VideoContentView.currentState.setRate(_currentRate);
+    videoContentController(context).setRate(_currentRate);
   }
 
   @override
@@ -109,9 +114,11 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _subscription = VideoContentView.currentState.playerStream.listen((event) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
       if (_buffering != event.isBuffering) {
         setState(() {
           _buffering = event.isBuffering;
@@ -180,16 +187,12 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
   }
 
   void shiftSubtitle() {
-    VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.fromLTRB(
-      0.0,
-      0.0,
-      0.0,
-      subtitleVerticalShiftOffset,
-    );
+    videoContentController(context).subtitlePaddings.value =
+        EdgeInsets.fromLTRB(0.0, 0.0, 0.0, subtitleVerticalShiftOffset);
   }
 
   void unshiftSubtitle() {
-    VideoContentView.currentState.subtitlePaddings.value = EdgeInsets.zero;
+    videoContentController(context).subtitlePaddings.value = EdgeInsets.zero;
   }
 
   void onTap() {
@@ -236,10 +239,12 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
     }
 
     final diff = _dragInitialDelta.dx - details.localPosition.dx;
-    final duration =
-        VideoContentView.currentState.playerState.duration.inSeconds;
-    final position =
-        VideoContentView.currentState.playerState.position.inSeconds;
+    final duration = videoContentController(
+      context,
+    ).playerState.duration.inSeconds;
+    final position = videoContentController(
+      context,
+    ).playerState.position.inSeconds;
 
     final seconds = -(diff * duration / horizontalGestureSensitivity).round();
     final relativePosition = position + seconds;
@@ -255,10 +260,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
 
   void onHorizontalDragEnd() {
     if (swipeDuration != 0) {
-      Duration newPosition =
-          VideoContentView.currentState.playerState.position +
-          Duration(seconds: swipeDuration);
-      VideoContentView.currentState.seek(newPosition);
+      videoContentController(
+        context,
+      ).seekForward(Duration(seconds: swipeDuration));
     }
 
     setState(() {
@@ -472,49 +476,34 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                                   children: [
                                     const MediaTitle(),
                                     const Spacer(),
-                                    const PlayerErrorPopup(),
                                     const PlayerPlaylistButton(),
                                   ],
                                 ),
                               ),
                               // Only display [primaryButtonBar] if [buffering] is false.
                               Expanded(
-                                child: ValueListenableBuilder(
-                                  valueListenable:
-                                      VideoContentView.currentState.isLoading,
-                                  builder: (context, loading, child) {
-                                    return AnimatedOpacity(
-                                      curve: Curves.easeInOut,
-                                      opacity: loading || _buffering
-                                          ? 0.0
-                                          : 1.0,
-                                      duration: controlsTransitionDuration,
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            const Spacer(flex: 2),
-                                            const SkipPrevButton(
-                                              iconSize: 36.0,
-                                            ),
-                                            const Spacer(),
-                                            const PlayOrPauseButton(
-                                              iconSize: 48.0,
-                                            ),
-                                            const Spacer(),
-                                            const SkipNextButton(
-                                              iconSize: 36.0,
-                                            ),
-                                            const Spacer(flex: 2),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                child: AnimatedOpacity(
+                                  curve: Curves.easeInOut,
+                                  opacity: _buffering ? 0.0 : 1.0,
+                                  duration: controlsTransitionDuration,
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Spacer(flex: 2),
+                                        const SkipPrevButton(iconSize: 36.0),
+                                        const Spacer(),
+                                        const PlayOrPauseButton(iconSize: 48.0),
+                                        const Spacer(),
+                                        const SkipNextButton(iconSize: 36.0),
+                                        const Spacer(flex: 2),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                               Stack(
@@ -803,8 +792,8 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                       width: 108.0,
                       child: Text(
                         swipeDuration > 0
-                            ? "+ ${formatDuration(Duration(seconds: swipeDuration))}"
-                            : "- ${formatDuration(Duration(seconds: swipeDuration))}",
+                            ? "+ ${formatDuration(Duration(seconds: swipeDuration.abs()))}"
+                            : "- ${formatDuration(Duration(seconds: swipeDuration.abs()))}",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 14.0,
@@ -846,15 +835,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                                       setState(() {
                                         _hideSeekBackwardButton = true;
                                       });
-                                      var result =
-                                          VideoContentView
-                                              .currentState
-                                              .playerState
-                                              .position -
-                                          value;
-                                      VideoContentView.currentState.seek(
-                                        result,
-                                      );
+                                      videoContentController(
+                                        context,
+                                      ).seekBackward(value);
                                     },
                                   ),
                                 )
@@ -891,15 +874,9 @@ class _MobileVideoControlsState extends State<MobileVideoControls> {
                                         _hideSeekForwardButton = true;
                                       });
 
-                                      var result =
-                                          VideoContentView
-                                              .currentState
-                                              .playerState
-                                              .position +
-                                          value;
-                                      VideoContentView.currentState.seek(
-                                        result,
-                                      );
+                                      videoContentController(
+                                        context,
+                                      ).seekBackward(value);
                                     },
                                   ),
                                 )
@@ -942,10 +919,10 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
   bool tapped = false;
   double slider = 0.0;
 
-  late bool playing = VideoContentView.currentState.playerState.isPlaying;
-  late Duration position = VideoContentView.currentState.playerState.position;
-  late Duration duration = VideoContentView.currentState.playerState.duration;
-  late Duration buffer = VideoContentView.currentState.playerState.lastBuffer;
+  late bool playing = videoContentController(context).playerState.isPlaying;
+  late Duration position = videoContentController(context).playerState.position;
+  late Duration duration = videoContentController(context).playerState.duration;
+  late Duration buffer = videoContentController(context).playerState.lastBuffer;
 
   StreamSubscription? _subscription;
 
@@ -959,15 +936,17 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
   void listener() {
     setState(() {
       final delta = widget.delta?.value ?? Duration.zero;
-      position = VideoContentView.currentState.playerState.position + delta;
+      position = videoContentController(context).playerState.position + delta;
     });
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     widget.delta?.addListener(listener);
-    _subscription = VideoContentView.currentState.playerStream.listen((event) {
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
       if (playing != event.isPlaying ||
           position != event.position ||
           duration != event.duration ||
@@ -995,7 +974,9 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
       tapped = true;
       slider = percent.clamp(0.0, 1.0);
     });
-    VideoContentView.currentState.seek(duration * slider);
+    if (mounted) {
+      videoContentController(context).seekTo(duration * slider);
+    }
   }
 
   void onPointerDown() {
@@ -1012,7 +993,9 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
       tapped = false;
       position = duration * slider;
     });
-    VideoContentView.currentState.seek(duration * slider);
+    if (mounted) {
+      videoContentController(context).seekTo(duration * slider);
+    }
   }
 
   void onPanStart(DragStartDetails e, BoxConstraints constraints) {
@@ -1151,8 +1134,8 @@ class _MobileControlsPositionIndicator extends StatefulWidget {
 
 class _MobileControlsPositionIndicatorState
     extends State<_MobileControlsPositionIndicator> {
-  late Duration position = VideoContentView.currentState.playerState.position;
-  late Duration duration = VideoContentView.currentState.playerState.duration;
+  late Duration position = videoContentController(context).playerState.position;
+  late Duration duration = videoContentController(context).playerState.duration;
 
   StreamSubscription? _subscription;
 
@@ -1164,10 +1147,12 @@ class _MobileControlsPositionIndicatorState
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    _subscription = VideoContentView.currentState.playerStream.listen((event) {
+    _subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
       if (position != event.position || duration != event.duration) {
         setState(() {
           position = event.position;
@@ -1186,7 +1171,7 @@ class _MobileControlsPositionIndicatorState
   @override
   Widget build(BuildContext context) {
     return Text(
-      '${formatDuration(duration)} / ${formatDuration(duration)}',
+      '${formatDuration(position)} / ${formatDuration(duration)}',
       style: TextStyle(height: 1.0, fontSize: 12.0, color: Colors.white),
     );
   }
@@ -1219,9 +1204,9 @@ class _BackwardSeekIndicatorState extends State<_BackwardSeekIndicator> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    timer = Timer(const Duration(milliseconds: 400), () {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    timer ??= Timer(const Duration(milliseconds: 400), () {
       widget.onSubmitted.call(value);
     });
   }
@@ -1304,9 +1289,9 @@ class _ForwardSeekIndicatorState extends State<_ForwardSeekIndicator> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    timer = Timer(const Duration(milliseconds: 400), () {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    timer ??= Timer(const Duration(milliseconds: 400), () {
       widget.onSubmitted.call(value);
     });
   }

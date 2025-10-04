@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/model.dart';
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/utils/visual.dart';
 
@@ -14,8 +14,9 @@ class SourceSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final contentDetails = VideoContentView.currentContentDetails;
-    final mediaItems = VideoContentView.currentMediaItems;
+    final vcc = videoContentController(context);
+    final contentDetails = vcc.contentDetails;
+    final mediaItems = vcc.mediaItems;
 
     return IconButton(
       onPressed: () {

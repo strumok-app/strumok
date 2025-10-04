@@ -173,10 +173,9 @@ class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
     if (!transfomationController.value.isIdentity()) {
       transfomationController.value = Matrix4.identity();
     } else {
-      // For a 3x zoom
       transfomationController.value = Matrix4.identity()
-        ..translate(-position.dx, -position.dy)
-        ..scale(2.0);
+        ..translateByDouble(-position.dx, -position.dy, 0, 1)
+        ..scaleByDouble(2.0, 2.0, 2.0, 1.0);
     }
   }
 }

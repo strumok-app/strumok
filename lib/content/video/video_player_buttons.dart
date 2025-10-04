@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/content_details_video_actions.dart';
+import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
-import 'package:strumok/content/video/widgets.dart';
 
 class ExitButton extends StatelessWidget {
   const ExitButton({super.key});
@@ -17,10 +17,6 @@ class ExitButton extends StatelessWidget {
     return BackButton(
       color: Colors.white,
       onPressed: () async {
-        // if (isFullscreen(context)) {
-        //   await exitFullscreen(context);
-        // }
-
         if (context.mounted) {
           Navigator.of(context).pop();
         }
@@ -36,8 +32,9 @@ class PlayerPlaylistButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final contentDetails = VideoContentView.currentContentDetails;
-    final mediaItems = VideoContentView.currentMediaItems;
+    final controller = videoContentController(context);
+    final contentDetails = controller.contentDetails;
+    final mediaItems = controller.mediaItems;
 
     final collectionItem = ref
         .watch(collectionItemProvider(contentDetails))
@@ -55,7 +52,7 @@ class PlayerPlaylistButton extends ConsumerWidget {
             mediaItems: mediaItems,
             contentProgress: collectionItem,
             onSelect: (item) =>
-                VideoContentView.currentState.selectItem(item.number),
+                controller.changeCollectionCurentItem(item.number),
             itemBuilder: playlistItemBuilder(contentDetails),
           ),
         );
@@ -76,7 +73,8 @@ class SkipPrevButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final contentDetails = VideoContentView.currentContentDetails;
+    final controller = videoContentController(context);
+    final contentDetails = controller.contentDetails;
 
     final currentItem = ref
         .watch(collectionItemCurrentItemProvider(contentDetails))
@@ -92,9 +90,7 @@ class SkipPrevButton extends ConsumerWidget {
 
     return IconButton(
       focusNode: enabled ? null : FocusNode(canRequestFocus: false),
-      onPressed: enabled
-          ? () => VideoContentView.currentState.prevItem()
-          : null,
+      onPressed: enabled ? controller.prevItem : null,
       icon: const Icon(Icons.skip_previous),
       iconSize: iconSize,
       color: Colors.white,
@@ -111,8 +107,9 @@ class SkipNextButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final contentDetails = VideoContentView.currentContentDetails;
-    final mediaItems = VideoContentView.currentMediaItems;
+    final controller = videoContentController(context);
+    final contentDetails = controller.contentDetails;
+    final mediaItems = controller.mediaItems;
 
     final currentItem = ref
         .watch(collectionItemCurrentItemProvider(contentDetails))
@@ -127,9 +124,7 @@ class SkipNextButton extends ConsumerWidget {
     final enabled = currentItem < mediaItems.length - 1 || shuffleMode;
 
     return IconButton(
-      onPressed: enabled
-          ? () => VideoContentView.currentState.nextItem()
-          : null,
+      onPressed: enabled ? controller.nextItem : null,
       padding: EdgeInsets.zero,
       icon: const Icon(Icons.skip_next),
       iconSize: iconSize,
@@ -160,7 +155,7 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
     with SingleTickerProviderStateMixin {
   late final animation = AnimationController(
     vsync: this,
-    value: VideoContentView.currentState.playerState.isPlaying ? 1 : 0,
+    value: videoContentController(context).playerState.isPlaying ? 1 : 0,
     duration: const Duration(milliseconds: 200),
   );
 
@@ -174,9 +169,11 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
   }
 
   @override
-  void initState() {
-    super.initState();
-    subscription = VideoContentView.currentState.playerStream.listen((event) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    subscription ??= videoContentController(context).playerStream.listen((
+      event,
+    ) {
       if (event.isPlaying) {
         animation.forward();
       } else {
@@ -197,33 +194,13 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
     return IconButton(
       focusNode: widget.focusNode,
       color: Colors.white,
-      onPressed: VideoContentView.currentState.playOrPause,
+      onPressed: videoContentController(context).playOrPause,
       icon: AnimatedIcon(
         progress: animation,
         color: Colors.white,
         icon: AnimatedIcons.play_pause,
         size: widget.iconSize,
       ),
-    );
-  }
-}
-
-class PlayerFullscreenButton extends StatelessWidget {
-  final double? iconSize;
-
-  const PlayerFullscreenButton({super.key, this.iconSize});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      // onPressed: () => toggleFullscreen(context),
-      // icon: (isFullscreen(context)
-      //     ? const Icon(Icons.fullscreen_exit)
-      //     : const Icon(Icons.fullscreen)),
-      onPressed: () {},
-      icon: const Icon(Icons.fullscreen),
-      iconSize: iconSize,
-      color: Colors.white,
     );
   }
 }

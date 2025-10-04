@@ -3,39 +3,41 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:subtitle/subtitle.dart';
 import 'package:video_player/video_player.dart';
 
-class PlayerSubtitles extends ConsumerWidget {
-  const PlayerSubtitles({super.key});
+class VideoSubtitles extends ConsumerWidget {
+  const VideoSubtitles({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncSubtitleController = ref.watch(
-      currentSubtitleControllerProvider,
-    );
     final subtitlesOffset = ref.watch(subtitlesOffsetProvider);
 
-    return asyncSubtitleController.when(
-      data: (subtitleController) {
-        if (subtitleController == null) {
-          return SizedBox.shrink();
-        }
+    return ValueListenableBuilder(
+      valueListenable: videoContentController(context).subtitleController,
+      builder: (context, asyncSubtitleController, _) {
+        return asyncSubtitleController.when(
+          data: (subtitleController) {
+            if (subtitleController == null) {
+              return SizedBox.shrink();
+            }
 
-        return PlayerSubtitleView(
-          subtitleController: subtitleController,
-          subtitlesOffset: subtitlesOffset,
+            return PlayerSubtitleView(
+              subtitleController: subtitleController,
+              subtitlesOffset: subtitlesOffset,
+            );
+          },
+          error: (e, _) => _SubtitleText(
+            text: AppLocalizations.of(context)!.videoSubtitlesLoadingError,
+          ),
+          loading: () => _SubtitleText(
+            text: AppLocalizations.of(context)!.videoSubtitlesLoading,
+          ),
         );
       },
-      error: (_, _) => _SubtitleText(
-        text: AppLocalizations.of(context)!.videoSubtitlesLoadingError,
-      ),
-      loading: () => _SubtitleText(
-        text: AppLocalizations.of(context)!.videoSubtitlesLoading,
-      ),
     );
   }
 }
@@ -61,14 +63,15 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
   List<Subtitle> _subtitles = List.empty();
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    _subscription = VideoContentView.currentState.playerStream.listen(
-      _updateSubtitles,
-    );
+    if (_subscription == null) {
+      final controller = videoContentController(context);
+      _subscription = controller.playerStream.listen(_updateSubtitles);
 
-    _updateSubtitles(VideoContentView.currentState.playerState);
+      _updateSubtitles(controller.playerState);
+    }
   }
 
   @override
@@ -76,13 +79,6 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
     _subscription?.cancel();
 
     super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant PlayerSubtitleView oldWidget) {
-    _updateSubtitles(VideoContentView.currentState.playerState);
-
-    super.didUpdateWidget(oldWidget);
   }
 
   void _updateSubtitles(VideoPlayerValue value) {
@@ -129,7 +125,7 @@ class _SubtitleText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: VideoContentView.currentState.subtitlePaddings,
+      valueListenable: videoContentController(context).subtitlePaddings,
       builder: (context, value, child) {
         return Container(
           padding: const EdgeInsets.only(bottom: 16) + value,

@@ -171,43 +171,6 @@ class _SourceSelectorProviderElement
       (origin as SourceSelectorProvider).mediaItems;
 }
 
-String _$currentSubtitleControllerHash() =>
-    r'f17ef8c198c96e58709b1361c2f3739277e1a1fa';
-
-/// See also [CurrentSubtitleController].
-@ProviderFor(CurrentSubtitleController)
-final currentSubtitleControllerProvider =
-    AutoDisposeAsyncNotifierProvider<
-      CurrentSubtitleController,
-      SubtitleController?
-    >.internal(
-      CurrentSubtitleController.new,
-      name: r'currentSubtitleControllerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$currentSubtitleControllerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$CurrentSubtitleController =
-    AutoDisposeAsyncNotifier<SubtitleController?>;
-String _$playerErrorsHash() => r'0060fd05af065b9e9b4740b8953e92b9cf6e6ebb';
-
-/// See also [PlayerErrors].
-@ProviderFor(PlayerErrors)
-final playerErrorsProvider =
-    AutoDisposeNotifierProvider<PlayerErrors, List<String>>.internal(
-      PlayerErrors.new,
-      name: r'playerErrorsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$playerErrorsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$PlayerErrors = AutoDisposeNotifier<List<String>>;
 String _$subtitlesOffsetHash() => r'ca269576b78821079311fdc31ae931b964c9e830';
 
 /// See also [SubtitlesOffset].

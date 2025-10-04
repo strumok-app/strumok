@@ -18,6 +18,7 @@ import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:video_player_media_kit/video_player_media_kit.dart';
 import 'package:fvp/fvp.dart' as fvp;
 import 'package:window_manager/window_manager.dart';
 
@@ -38,12 +39,6 @@ void appRunner() async {
 
   if (isDesktopDevice()) {
     await windowManager.ensureInitialized();
-
-    // fvp.registerWith(
-    //   options: {
-    //     'platforms': ['windows', 'linux'],
-    //   },
-    // );
   }
 
   fvp.registerWith();
