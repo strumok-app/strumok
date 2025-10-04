@@ -64,7 +64,7 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: artifacts/android-outputs/
-          destination:  ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/
+          destination:  ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/android/
           predefinedAcl: publicRead
           parent: false
 
@@ -98,7 +98,7 @@ jobs:
         if: ${{ needs.build-linux.result == 'success' }}
         run: |
           cd artifacts/linux-outputs/
-          tar -czf ../../linux-artifacts.tar.gz .
+          tar -czf ../../linux.tar.gz .
           cd ../..
 
       - name: Upload Linux artifacts
