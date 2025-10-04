@@ -25,6 +25,10 @@ jobs:
         env:
           SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
       - run: choco install yq
+      - name: Install Inno Setup
+        run: |
+          choco install innosetup
+          echo "C:\Program Files (x86)\Inno Setup 6" >> $GITHUB_PATH
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:

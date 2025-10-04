@@ -57,7 +57,7 @@ jobs:
           path: artifacts
 
       - name: Upload Android artifacts
-        if: ${{ inputs.android == true }}
+        if: ${{ needs.build-android.result == 'success' }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: artifacts/android-outputs/
@@ -65,19 +65,19 @@ jobs:
           predefinedAcl: publicRead
 
       - name: Android upload confirmation
-        if: ${{ inputs.android == true }}
+        if: ${{ needs.build-android.result == 'success' }}
         run: |
           echo "Successfully uploaded Android artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/android/"
 
       - name: Create Windows zip archive
-        if: ${{ inputs.windows == true }}
+        if: ${{ needs.build-windows.result == 'success' }}
         run: |
           cd artifacts/windows-outputs/
           zip -r ../../windows-artifacts.zip .
           cd ../..
 
       - name: Upload Windows artifacts
-        if: ${{ inputs.windows == true }}
+        if: ${{ needs.build-windows.result == 'success' }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: windows-artifacts.zip
@@ -85,19 +85,19 @@ jobs:
           predefinedAcl: publicRead
 
       - name: Windows upload confirmation
-        if: ${{ inputs.windows == true }}
+        if: ${{ needs.build-windows.result == 'success' }}
         run: |
           echo "Successfully uploaded Windows artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/windows.zip"
 
       - name: Create Linux tar.gz archive
-        if: ${{ inputs.linux == true }}
+        if: ${{ needs.build-linux.result == 'success' }}
         run: |
           cd artifacts/linux-outputs/
           tar -czf ../../linux-artifacts.tar.gz .
           cd ../..
 
       - name: Upload Linux artifacts
-        if: ${{ inputs.linux == true }}
+        if: ${{ needs.build-linux.result == 'success' }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: linux-artifacts.tar.gz
@@ -105,6 +105,6 @@ jobs:
           predefinedAcl: publicRead
 
       - name: Linux upload confirmation
-        if: ${{ inputs.linux == true }}
+        if: ${{ needs.build-linux.result == 'success' }}
         run: |
           echo "Successfully uploaded Linux artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/linux.tar.gz"
