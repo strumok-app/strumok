@@ -3,37 +3,47 @@ name: Build Prerelease
 on:
   workflow_dispatch:
     inputs:
-      platform:
-        description: 'Select platform to build'
-        required: true
-        type: choice
-        options:
-          - android
-          - windows
-          - linux
+      android:
+        description: 'Build Android'
+        required: false
+        type: boolean
+        default: true
+      windows:
+        description: 'Build Windows'
+        required: false
+        type: boolean
+        default: true
+      linux:
+        description: 'Build Linux'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   build-android:
-    if: ${{ inputs.platform == 'android' }}
+    if: ${{ inputs.android == true }}
     uses: ./.github/workflows/build-android.yaml
+    permissions: write-all
     with:
       ref: ${{ github.ref_name }}
 
   build-windows:
-    if: ${{ inputs.platform == 'windows' }}
+    if: ${{ inputs.windows == true }}
     uses: ./.github/workflows/build-windows.yaml
+    permissions: write-all
     with:
       ref: ${{ github.ref_name }}
 
   build-linux:
-    if: ${{ inputs.platform == 'linux' }}
+    if: ${{ inputs.linux == true }}
     uses: ./.github/workflows/build-linux.yaml
+    permissions: write-all
     with:
       ref: ${{ github.ref_name }}
 
   upload-to-gcp:
     needs: [build-android, build-windows, build-linux]
-    if: ${{ inputs.platform == 'android' || inputs.platform == 'windows' || inputs.platform == 'linux' }}
+    if: ${{ inputs.android == true || inputs.windows == true || inputs.linux == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate to GCP using Service Account Key
@@ -47,7 +57,7 @@ jobs:
           path: artifacts
 
       - name: Upload Android artifacts
-        if: ${{ inputs.platform == 'android' }}
+        if: ${{ inputs.android == true }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           bucket: ${{ secrets.GCS_BUCKET_NAME }}
@@ -56,12 +66,12 @@ jobs:
           predefinedAcl: publicRead
 
       - name: Android upload confirmation
-        if: ${{ inputs.platform == 'android' }}
+        if: ${{ inputs.android == true }}
         run: |
           echo "Successfully uploaded Android artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/android/"
 
       - name: Upload Windows artifacts
-        if: ${{ inputs.platform == 'windows' }}
+        if: ${{ inputs.windows == true }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           bucket: ${{ secrets.GCS_BUCKET_NAME }}
@@ -70,12 +80,12 @@ jobs:
           predefinedAcl: publicRead
 
       - name: Windows upload confirmation
-        if: ${{ inputs.platform == 'windows' }}
+        if: ${{ inputs.windows == true }}
         run: |
           echo "Successfully uploaded Windows artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/windows/"
 
       - name: Upload Linux artifacts
-        if: ${{ inputs.platform == 'linux' }}
+        if: ${{ inputs.linux == true }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           bucket: ${{ secrets.GCS_BUCKET_NAME }}
@@ -84,6 +94,6 @@ jobs:
           predefinedAcl: publicRead
 
       - name: Linux upload confirmation
-        if: ${{ inputs.platform == 'linux' }}
+        if: ${{ inputs.linux == true }}
         run: |
           echo "Successfully uploaded Linux artifacts to https://storage.googleapis.com/${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/linux/"
