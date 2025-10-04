@@ -40,8 +40,6 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
           cache: true
-      - name: Get Flutter dependencies
-        run: flutter pub get
       - name: Build Flutter for Android
         run: flutter build apk --dart-define-from-file=secrets.json
       - name: Upload android outputs

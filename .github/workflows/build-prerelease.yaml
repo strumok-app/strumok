@@ -60,9 +60,8 @@ jobs:
         if: ${{ inputs.android == true }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          bucket: ${{ secrets.GCS_BUCKET_NAME }}
           path: artifacts/android-outputs/
-          destination: artifacts/prerelease/android/
+          destination:  ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/android/
           predefinedAcl: publicRead
 
       - name: Android upload confirmation
@@ -74,8 +73,7 @@ jobs:
         if: ${{ inputs.windows == true }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          bucket: ${{ secrets.GCS_BUCKET_NAME }}
-          path: artifacts/windows-outputs/
+          path: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/windows-outputs/
           destination: artifacts/prerelease/windows/
           predefinedAcl: publicRead
 
@@ -88,9 +86,8 @@ jobs:
         if: ${{ inputs.linux == true }}
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          bucket: ${{ secrets.GCS_BUCKET_NAME }}
           path: artifacts/linux-outputs/
-          destination: artifacts/prerelease/linux/
+          destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/linux/
           predefinedAcl: publicRead
 
       - name: Linux upload confirmation

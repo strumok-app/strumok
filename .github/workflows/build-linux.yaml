@@ -41,8 +41,6 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
           cache: true
-      - name: Get Flutter dependencies
-        run: flutter pub get
       - name: Build Flutter for Linux
         run: flutter build linux --dart-define-from-file=secrets.json
       - name: Upload linux outputs
