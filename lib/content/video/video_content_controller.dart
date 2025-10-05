@@ -298,6 +298,12 @@ class VideoContentController {
         logger.e("Fail to start video", error: e, stackTrace: stackTrace);
       }
 
+      if (_disposed ||
+          _currentItem != collectionItem.currentItem ||
+          _currentSourceName != collectionItem.currentSourceName) {
+        return;
+      }
+
       _videoPlayerController?.dispose();
       playerController.value = AsyncValue.error(e, stackTrace);
       _playerStateStreamController.add(VideoPlayerValue.uninitialized());
