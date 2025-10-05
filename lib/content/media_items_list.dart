@@ -31,7 +31,7 @@ class MediaItemsListRoute<T> extends PopupRoute<T> {
   });
 
   @override
-  Color? get barrierColor => Colors.black.withValues(alpha: 0.5);
+  Color? get barrierColor => null;
   @override
   bool get barrierDismissible => true;
   @override

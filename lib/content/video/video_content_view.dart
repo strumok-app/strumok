@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:strumok/collection/collection_item_model.dart';
@@ -12,6 +13,7 @@ import 'package:strumok/content/video/video_content_tv_controls.dart';
 import 'package:strumok/content/video/video_subtitles.dart';
 import 'package:strumok/content/video/video_view.dart';
 import 'package:strumok/utils/tv.dart';
+import 'package:video_player/video_player.dart';
 
 class VideoContentView extends ConsumerStatefulWidget {
   final ContentDetails contentDetails;
@@ -31,6 +33,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
   late final VideoContentController _controller;
   late final ProviderSubscription<AsyncValue<MediaCollectionItem>>
   _collectionItemSubscription;
+  late final StreamSubscription<VideoPlayerValue>? _playerStreamSubscription;
 
   @override
   void initState() {
@@ -53,10 +56,18 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
         _controller.update(collectionItem);
       });
     }, fireImmediately: true);
+
+    _playerStreamSubscription = _controller.playerStream.listen((playerValue) {
+      // Update collection item position when player position changes
+      ref
+          .read(collectionItemProv.notifier)
+          .setCurrentPosition(playerValue.position.inSeconds);
+    });
   }
 
   @override
   void dispose() {
+    _playerStreamSubscription?.cancel();
     _collectionItemSubscription.close();
     _controller.dispose();
     super.dispose();
