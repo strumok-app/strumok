@@ -342,7 +342,6 @@ class _VideoContentDesktopControlsState
                                           const _DesktopVideoControlsVolumeButton(),
                                           const DesktopVideoControlsPositionIndicator(),
                                           const Spacer(),
-                                          // const TrackSelector(),
                                           const SourceSelector(),
                                           const PlayerSettingsButton(),
                                           _PIPButton(

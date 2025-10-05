@@ -333,7 +333,6 @@ class _AndroidTVBottomBar extends ConsumerWidget {
           PlayOrPauseButton(focusNode: !isLastItem ? playPauseFocusNode : null),
           SkipNextButton(focusNode: isLastItem ? playPauseFocusNode : null),
           const Spacer(),
-          // const TrackSelector(),
           const SourceSelector(),
           const PlayerSettingsButton(),
         ],
