@@ -239,6 +239,12 @@ class VideoContentController {
 
       await videoController.initialize();
 
+      if (_currentItem != collectionItem.currentItem ||
+          _currentSourceName != collectionItem.currentSourceName) {
+        videoController.dispose();
+        return;
+      }
+
       playerController.value = AsyncValue.data(videoController);
       playerStateStreamController.add(videoController.value);
       videoController.addListener(() {
