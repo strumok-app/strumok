@@ -2,14 +2,10 @@
 
 // import 'package:flutter/material.dart';
 // import 'package:hooks_riverpod/hooks_riverpod.dart';
-// import 'package:media_kit/media_kit.dart';
-// import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 // import 'package:strumok/l10n/app_localizations.dart';
 
 // class TrackChangeDialog extends StatefulWidget {
-//   final Player player;
-
-//   const TrackChangeDialog({super.key, required this.player});
+//   const TrackChangeDialog({super.key});
 
 //   @override
 //   State<TrackChangeDialog> createState() => _TrackChangeDialogState();
@@ -59,13 +55,13 @@
 
 //   @override
 //   Widget build(BuildContext context) {
-//     final filteredAudioTracks =
-//         _audioTracks
-//             .where((track) => track.language != null || track.id == "auto")
-//             .toList();
+//     final filteredAudioTracks = _audioTracks
+//         .where((track) => track.language != null || track.id == "auto")
+//         .toList();
 
-//     final filteredVideoTracks =
-//         _videoTracks.where((track) => track.id != "no").toList();
+//     final filteredVideoTracks = _videoTracks
+//         .where((track) => track.id != "no")
+//         .toList();
 
 //     return Dialog(
 //       child: SizedBox(
@@ -111,8 +107,9 @@
 //               Navigator.of(context).pop();
 //             },
 //             title: Text(_audioTrackName(track)),
-//             trailing:
-//                 _currentAudioTrack == track ? const Icon(Icons.check) : null,
+//             trailing: _currentAudioTrack == track
+//                 ? const Icon(Icons.check)
+//                 : null,
 //           ),
 //         ),
 //       ],
@@ -141,8 +138,9 @@
 //               Navigator.of(context).pop();
 //             },
 //             title: Text(_videoTrackName(track)),
-//             trailing:
-//                 _currentVideoTrack == track ? const Icon(Icons.check) : null,
+//             trailing: _currentVideoTrack == track
+//                 ? const Icon(Icons.check)
+//                 : null,
 //           ),
 //         ),
 //       ],
@@ -196,8 +194,9 @@
 //   }
 
 //   bool _hasAnyTracks(Tracks tracks) {
-//     final hasAudioLanguage =
-//         tracks.audio.where((track) => track.language != null).isNotEmpty;
+//     final hasAudioLanguage = tracks.audio
+//         .where((track) => track.language != null)
+//         .isNotEmpty;
 //     final hasMultipleVideoTracks = tracks.video.length > 2;
 //     return hasAudioLanguage || hasMultipleVideoTracks;
 //   }

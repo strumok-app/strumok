@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
+import 'package:fvp/fvp.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
@@ -49,14 +50,16 @@ class VideoContentController {
   VideoPlayerValue get playerState =>
       _videoPlayerController?.value ?? VideoPlayerValue.uninitialized();
 
-  StreamController<VideoPlayerValue> playerStateStreamController =
+  final StreamController<VideoPlayerValue> _playerStateStreamController =
       StreamController.broadcast();
   Stream<VideoPlayerValue> get playerStream =>
-      playerStateStreamController.stream;
+      _playerStateStreamController.stream;
 
   ValueNotifier<AsyncValue<SubtitleController?>> subtitleController =
       ValueNotifier(AsyncValue.data(null));
   ValueNotifier<EdgeInsets> subtitlePaddings = ValueNotifier(EdgeInsets.zero);
+
+  bool _disposed = false;
 
   VideoContentController({
     required this.contentDetails,
@@ -65,6 +68,7 @@ class VideoContentController {
   });
 
   void playOrPause() {
+    if (_disposed) return;
     final controller = _videoPlayerController;
     if (controller != null) {
       if (controller.value.isPlaying) {
@@ -76,14 +80,17 @@ class VideoContentController {
   }
 
   void play() {
+    if (_disposed) return;
     _videoPlayerController?.play();
   }
 
   void pause() {
+    if (_disposed) return;
     _videoPlayerController?.pause();
   }
 
   void volumeChangeBy(double delta) {
+    if (_disposed) return;
     final controller = _videoPlayerController;
     if (controller != null) {
       final currentVolume = controller.value.volume;
@@ -93,14 +100,17 @@ class VideoContentController {
   }
 
   void volumeUp() {
+    if (_disposed) return;
     volumeChangeBy(0.05);
   }
 
   void volumeDown() {
+    if (_disposed) return;
     volumeChangeBy(-0.05);
   }
 
   Future<void> setVolume(double volume) async {
+    if (_disposed) return;
     final controller = _videoPlayerController;
     if (controller != null) {
       await controller.setVolume(volume);
@@ -108,10 +118,12 @@ class VideoContentController {
   }
 
   Future<void> seekTo(Duration position) async {
+    if (_disposed) return;
     _videoPlayerController?.seekTo(position);
   }
 
   void seekForward(Duration duration) {
+    if (_disposed) return;
     final controller = _videoPlayerController;
     if (controller == null) return;
 
@@ -127,6 +139,7 @@ class VideoContentController {
   }
 
   void seekBackward(Duration duration) {
+    if (_disposed) return;
     final controller = _videoPlayerController;
     if (controller == null) return;
 
@@ -142,15 +155,25 @@ class VideoContentController {
   }
 
   void setRate(double rate) {
+    if (_disposed) return;
     _videoPlayerController?.setPlaybackSpeed(rate);
   }
 
   void dispose() {
+    _disposed = true;
     _subtitleWorker.dispose();
     _videoPlayerController?.dispose();
+    _playerStateStreamController.close();
+    playerController.dispose();
+    subtitleController.dispose();
+    subtitlePaddings.dispose();
   }
 
   Future<void> update(MediaCollectionItem collectionItem) async {
+    if (_disposed) {
+      return;
+    }
+
     if (_currentItem != collectionItem.currentItem) {
       await _playCollectionItem(collectionItem);
       await _loadSubtitles(collectionItem);
@@ -168,9 +191,10 @@ class VideoContentController {
   Future<void> _playCollectionItem(MediaCollectionItem collectionItem) async {
     try {
       // reset state
+      _currentSources = null;
       _videoPlayerController?.dispose();
       playerController.value = AsyncValue.loading();
-      playerStateStreamController.add(VideoPlayerValue.uninitialized());
+      _playerStateStreamController.add(VideoPlayerValue.uninitialized());
 
       // select source
       _currentItem = collectionItem.currentItem;
@@ -179,7 +203,8 @@ class VideoContentController {
       final item = mediaItems[_currentItem!];
       final sources = await item.sources;
 
-      if (_currentItem != collectionItem.currentItem ||
+      if (_disposed ||
+          _currentItem != collectionItem.currentItem ||
           _currentSourceName != collectionItem.currentSourceName) {
         return;
       }
@@ -207,7 +232,8 @@ class VideoContentController {
 
       final link = await video.link;
 
-      if (_currentItem != collectionItem.currentItem ||
+      if (_disposed ||
+          _currentItem != collectionItem.currentItem ||
           _currentSourceName != collectionItem.currentSourceName) {
         return;
       }
@@ -239,17 +265,18 @@ class VideoContentController {
 
       await videoController.initialize();
 
-      if (_currentItem != collectionItem.currentItem ||
+      if (_disposed ||
+          _currentItem != collectionItem.currentItem ||
           _currentSourceName != collectionItem.currentSourceName) {
         videoController.dispose();
         return;
       }
 
       playerController.value = AsyncValue.data(videoController);
-      playerStateStreamController.add(videoController.value);
+      _playerStateStreamController.add(videoController.value);
       videoController.addListener(() {
         final value = videoController.value;
-        playerStateStreamController.add(value);
+        _playerStateStreamController.add(value);
 
         if (value.isEnded) {
           _onVideoEnds();
@@ -273,7 +300,7 @@ class VideoContentController {
 
       _videoPlayerController?.dispose();
       playerController.value = AsyncValue.error(e, stackTrace);
-      playerStateStreamController.add(VideoPlayerValue.uninitialized());
+      _playerStateStreamController.add(VideoPlayerValue.uninitialized());
     }
   }
 
@@ -292,7 +319,7 @@ class VideoContentController {
   }
 
   void nextItem() {
-    if (mediaItems.isEmpty) return;
+    if (_disposed || mediaItems.isEmpty) return;
 
     if (AppPreferences.videoPlayerSettingShuffleMode) {
       final shuffledPosition = _getShuffledPosition();
@@ -328,7 +355,7 @@ class VideoContentController {
   }
 
   void prevItem() {
-    if (mediaItems.isEmpty) return;
+    if (_disposed || mediaItems.isEmpty) return;
 
     final currentIndex = _currentItem ?? 0;
     if (currentIndex <= 0) return;
@@ -386,7 +413,8 @@ class VideoContentController {
       );
 
       // Check if the request is still valid
-      if (_currentItem != collectionItem.currentItem ||
+      if (_disposed ||
+          _currentItem != collectionItem.currentItem ||
           _currentSubtitleName != collectionItem.currentSubtitleName) {
         return;
       }
