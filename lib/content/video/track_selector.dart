@@ -115,7 +115,10 @@ class _TrackSelectorDialog extends StatelessWidget {
 
   String _audioTrackTitle(AudioStreamInfo track) {
     final Map<String, String> metadata = track.metadata;
-    return metadata["comment"] ?? metadata["language"] ?? metadata.toString();
+    return metadata["comment"] ??
+        metadata["language"] ??
+        metadata["variant_bitrate"] ??
+        metadata.toString();
   }
 
   Widget _buildVideoTracks(BuildContext context, List<VideoStreamInfo> tracks) {
