@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
@@ -215,8 +216,6 @@ class _VideoContentDesktopControlsState
                     _last = now;
                     if (difference < const Duration(milliseconds: 400)) {
                       toggleFullscreen();
-                    } else {
-                      videoContentController(context).playOrPause();
                     }
                   },
                   onPanUpdate: (e) {
@@ -342,6 +341,7 @@ class _VideoContentDesktopControlsState
                                           const _DesktopVideoControlsVolumeButton(),
                                           const DesktopVideoControlsPositionIndicator(),
                                           const Spacer(),
+                                          const TrackSelector(),
                                           const SourceSelector(),
                                           const PlayerSettingsButton(),
                                           _PIPButton(

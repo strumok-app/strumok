@@ -263,6 +263,12 @@ class VideoContentController {
         videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: true),
       );
 
+      // fvp specific settings
+      // videoController.setProperty("avformat.fflags", "+nobuffer");
+      // videoController.setProperty("avformat.fpsprobesize", "0");
+      // videoController.setProperty("avformat.analyzeduration", "100000");
+      // videoController.setBufferRange(min: 0, max: 1000, drop: true);
+
       await videoController.initialize();
 
       if (_disposed ||
@@ -272,12 +278,42 @@ class VideoContentController {
         return;
       }
 
+      //select best video stream
+      final mediaInfo = videoController.getMediaInfo();
+      logger.i(mediaInfo);
+      if (mediaInfo?.video != null) {
+        final videoTracks = mediaInfo!.video!;
+
+        int bestTrackIndex = 0;
+        int bestTrackRes = 0;
+
+        for (int i = 0; i < videoTracks.length; i++) {
+          final track = videoTracks[i];
+          final res = track.codec.width * track.codec.height;
+
+          if (res >= bestTrackRes) {
+            bestTrackRes = res;
+            bestTrackIndex = i;
+          }
+        }
+
+        logger.i(
+          "Best video track $bestTrackIndex: ${videoTracks[bestTrackIndex]}",
+        );
+
+        videoController.setVideoTracks([bestTrackIndex]);
+      }
+
       playerController.value = AsyncValue.data(videoController);
       _playerStateStreamController.add(videoController.value);
       videoController.addListener(() {
         final value = videoController.value;
-        _playerStateStreamController.add(value);
 
+        if (value.hasError) {
+          logger.e("Error: ${value.errorDescription}");
+        }
+
+        _playerStateStreamController.add(value);
         if (value.isEnded) {
           _onVideoEnds();
         }

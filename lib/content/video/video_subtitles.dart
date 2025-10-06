@@ -75,6 +75,15 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
   }
 
   @override
+  void didUpdateWidget(covariant PlayerSubtitleView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.subtitlesOffset != widget.subtitlesOffset) {
+      final controller = videoContentController(context);
+      _updateSubtitles(controller.playerState);
+    }
+  }
+
+  @override
   void dispose() {
     _subscription?.cancel();
 

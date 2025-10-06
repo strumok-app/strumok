@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
@@ -536,6 +537,7 @@ class _VideoContentMobileControlsState
                                       children: [
                                         const _MobileControlsPositionIndicator(),
                                         const Spacer(),
+                                        const TrackSelector(),
                                         const SourceSelector(),
                                         const PlayerSettingsButton(),
                                       ],

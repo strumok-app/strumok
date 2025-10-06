@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -18,7 +19,6 @@ import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:video_player_media_kit/video_player_media_kit.dart';
 import 'package:fvp/fvp.dart' as fvp;
 import 'package:window_manager/window_manager.dart';
 
@@ -41,7 +41,7 @@ void appRunner() async {
     await windowManager.ensureInitialized();
   }
 
-  fvp.registerWith();
+  fvp.registerWith(options: {"lowLatency": 1});
 
   await AppDatabase().init();
   await AppPreferences.init();
