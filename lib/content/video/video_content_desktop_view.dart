@@ -44,6 +44,7 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
       await windowManager.setAlignment(Alignment.center);
     } else {
       // Enter PiP Mode
+      await windowManager.setFullScreen(false);
       await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
       await Future.delayed(const Duration(milliseconds: 100));
       await windowManager.setSize(const Size(576, 324));
