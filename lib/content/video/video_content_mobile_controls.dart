@@ -575,41 +575,24 @@ class _VideoContentMobileControlsState
                     ),
                 // Buffering Indicator.
                 IgnorePointer(
-                  child: Padding(
-                    padding: MediaQuery.of(context).padding,
-                    child: Column(
-                      children: [
-                        Container(
-                          height: buttonBarHeight,
-                          margin: topButtonBarMargin,
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: TweenAnimationBuilder<double>(
-                              tween: Tween<double>(
-                                begin: 0.0,
-                                end: _buffering ? 1.0 : 0.0,
-                              ),
-                              duration: controlsTransitionDuration,
-                              builder: (context, value, child) {
-                                // Only mount the buffering indicator if the opacity is greater than 0.0.
-                                // This has been done to prevent redundant resource usage in [CircularProgressIndicator].
-                                if (value > 0.0) {
-                                  return Opacity(opacity: value, child: child!);
-                                }
-                                return const SizedBox.shrink();
-                              },
-                              child: const CircularProgressIndicator(
-                                color: Color(0xFFFFFFFF),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: buttonBarHeight,
-                          margin: bottomButtonBarMargin,
-                        ),
-                      ],
+                  child: Center(
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween<double>(
+                        begin: 0.0,
+                        end: _buffering ? 1.0 : 0.0,
+                      ),
+                      duration: controlsTransitionDuration,
+                      builder: (context, value, child) {
+                        // Only mount the buffering indicator if the opacity is greater than 0.0.
+                        // This has been done to prevent redundant resource usage in [CircularProgressIndicator].
+                        if (value > 0.0) {
+                          return Opacity(opacity: value, child: child!);
+                        }
+                        return const SizedBox.shrink();
+                      },
+                      child: const CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

@@ -85,7 +85,7 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
-    - secrets.json
+    - secrets.env
 
 flutter_launcher_icons:
   android: true 

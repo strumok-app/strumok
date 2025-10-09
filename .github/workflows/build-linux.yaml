@@ -20,9 +20,9 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
       - name: Create secrets
-        run: echo "$SECRETS_JSON" | base64 -di > secrets.json
+        run: echo "$SECRETS" | base64 -di > secrets.env
         env:
-          SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
+          SECRETS: ${{ secrets.SECRETS }}
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -42,7 +42,7 @@ jobs:
           flutter-version-file: pubspec.yaml
           cache: true
       - name: Build Flutter for Linux
-        run: flutter build linux --dart-define-from-file=secrets.json
+        run: flutter build linux --dart-define-from-file=secrets.env
       - name: Upload linux outputs
         uses: actions/upload-artifact@v4
         with:

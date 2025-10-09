@@ -5,6 +5,7 @@ import 'package:fvp/mdk.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/l10n/app_localizations.dart';
+import 'package:strumok/utils/text.dart';
 import 'package:video_player/video_player.dart';
 
 class TrackSelector extends StatelessWidget {
@@ -115,10 +116,17 @@ class _TrackSelectorDialog extends StatelessWidget {
 
   String _audioTrackTitle(AudioStreamInfo track) {
     final Map<String, String> metadata = track.metadata;
-    return metadata["comment"] ??
-        metadata["language"] ??
-        metadata["variant_bitrate"] ??
-        metadata.toString();
+    if (metadata["comment"] != null) {
+      return metadata["comment"]!;
+    } else if (metadata["language"] != null) {
+      return metadata["language"]!;
+    } else if (metadata["variant_bitrate"] != null) {
+      final variantBitrate = metadata["variant_bitrate"]!;
+      final formatBitrate = formatBytes(int.tryParse(variantBitrate) ?? 0);
+      return "${formatBitrate}it/s";
+    } else {
+      return metadata.toString();
+    }
   }
 
   Widget _buildVideoTracks(BuildContext context, List<VideoStreamInfo> tracks) {

@@ -263,12 +263,6 @@ class VideoContentController {
         videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: true),
       );
 
-      // fvp specific settings
-      // videoController.setProperty("avformat.fflags", "+nobuffer");
-      // videoController.setProperty("avformat.fpsprobesize", "0");
-      // videoController.setProperty("avformat.analyzeduration", "100000");
-      // videoController.setBufferRange(min: 0, max: 1000, drop: true);
-
       await videoController.initialize();
 
       if (_disposed ||

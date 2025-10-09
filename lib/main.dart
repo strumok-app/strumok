@@ -40,7 +40,12 @@ void appRunner() async {
     await windowManager.ensureInitialized();
   }
 
-  fvp.registerWith(options: {"lowLatency": 1});
+  fvp.registerWith(
+    options: {
+      "player": {"buffer": "2000-60000", "demux.buffer.ranges": "8"},
+      "global": {"ffmpeg.log": "debug"},
+    },
+  );
 
   await AppDatabase().init();
   await AppPreferences.init();

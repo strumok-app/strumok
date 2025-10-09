@@ -5,8 +5,8 @@ cd "$SCRIPT_DIR"
 
 set -e
 
-echo "SECRETS_JSON"
-base64 -w 0 secrets.json
+echo "SECRETS"
+base64 -w 0 secrets.env
 echo ""
 
 echo "GOOGLE_SERVICE_JSON"

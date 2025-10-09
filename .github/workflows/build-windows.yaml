@@ -20,10 +20,10 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
       - name: Create secrets
-        run: echo "$SECRETS_JSON" | base64 -di > secrets.json
+        run: echo "$SECRETS" | base64 -di > secrets.env
         shell: bash
         env:
-          SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
+          SECRETS: ${{ secrets.SECRETS }}
       - run: choco install yq
       - name: Install Inno Setup
         run: |
@@ -36,7 +36,7 @@ jobs:
           flutter-version-file: pubspec.yaml
           cache: true
       - name: Build Flutter for Windows
-        run: flutter build windows --dart-define-from-file=secrets.json
+        run: flutter build windows --dart-define-from-file=secrets.env
         shell: bash
       - name: Build Installer
         run: |

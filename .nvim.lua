@@ -1,7 +1,7 @@
 require("flutter-tools").setup_project({
 	{
 		name = "Default",
-		dart_define_from_file = "secrets.json",
+		dart_define_from_file = "secrets.env",
 		dart_define = {
 			FORCE_TV_MODE = "false",
 		},
@@ -13,6 +13,6 @@ require("flutter-tools").setup_project({
 			FFI_SUPPLIER_LIB_NAME = "strumok_suppliers",
 			FORCE_TV_MODE = "false",
 		},
-		dart_define_from_file = "secrets.json",
+		dart_define_from_file = "secrets.env",
 	},
 })

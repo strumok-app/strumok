@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/lib/main.dart",
             "toolArgs": [
                 "--dart-define-from-file",
-                "secrets.json",
+                "secrets.env",
                 "--dart-define", 
                 "FORCE_TV_MODE=false",
             ],
@@ -32,9 +32,11 @@
                 "--dart-define", 
                 "FORCE_TV_MODE=false",
                 "--dart-define-from-file",
-                "secrets.json"
+                "secrets.env"
             ],
             "env": {
+                "MDK_LOG": "1",
+                "MDK_LOG_STATUS": "0",
                 "RUST_LOG": "error"
             }
         },
