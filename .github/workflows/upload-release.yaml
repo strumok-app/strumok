@@ -57,4 +57,4 @@ jobs:
           files: |
             android-outputs/*
             strumok-linux.tar.gz
-            strumok-windows.zip
+            windows-outputs/*
