@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:strumok/app_database.dart';
 import 'package:strumok/app_init_firebase.dart';
@@ -11,6 +12,7 @@ import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/layouts/version_guard.dart';
 import 'package:strumok/download/offline_storage.dart';
+import 'package:strumok/video_player/media_kit.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/error_observer.dart';
@@ -18,7 +20,8 @@ import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fvp/fvp.dart' as fvp;
+import 'package:video_player_media_kit/video_player_media_kit.dart';
+// import 'package:fvp/fvp.dart' as fvp;
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -40,12 +43,14 @@ void appRunner() async {
     await windowManager.ensureInitialized();
   }
 
-  fvp.registerWith(
-    options: {
-      "player": {"buffer": "2000-60000", "demux.buffer.ranges": "8"},
-      "global": {"ffmpeg.log": "debug"},
-    },
-  );
+  // fvp.registerWith(
+  //   options: {
+  //     "player": {"buffer": "2000-60000", "demux.buffer.ranges": "8"},
+  //     "global": {"ffmpeg.log": "debug"},
+  //   },
+  // );
+  MediaKit.ensureInitialized();
+  MediaKitVideoPlayer.registerWith();
 
   await AppDatabase().init();
   await AppPreferences.init();

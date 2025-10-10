@@ -62,7 +62,10 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
       if (playerValue.isPlaying && !playerValue.isCompleted) {
         ref
             .read(collectionItemProv.notifier)
-            .setCurrentPosition(playerValue.position.inSeconds);
+            .setCurrentPosition(
+              playerValue.position.inSeconds,
+              playerValue.duration.inSeconds,
+            );
       }
     });
   }

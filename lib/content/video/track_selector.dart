@@ -1,11 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:fvp/fvp.dart';
-import 'package:fvp/mdk.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/utils/text.dart';
+import 'package:strumok/video_player/extension.dart';
+import 'package:strumok/video_player/tracks.dart';
 import 'package:video_player/video_player.dart';
 
 class TrackSelector extends StatelessWidget {
@@ -23,7 +23,7 @@ class TrackSelector extends StatelessWidget {
   }
 
   Widget _buildButton(BuildContext context, VideoPlayerController controller) {
-    if (!_hasAnyTracks(controller.getMediaInfo())) {
+    if (!_hasAnyTracks(controller)) {
       return SizedBox.shrink();
     }
 
@@ -41,13 +41,9 @@ class TrackSelector extends StatelessWidget {
     );
   }
 
-  bool _hasAnyTracks(MediaInfo? mediaInfo) {
-    if (mediaInfo == null) {
-      return false;
-    }
-
-    return (mediaInfo.video != null && mediaInfo.video!.length > 1) ||
-        (mediaInfo.audio != null && mediaInfo.audio!.length > 1);
+  bool _hasAnyTracks(VideoPlayerController controller) {
+    return (controller.videoTracks.length > 1) ||
+        (controller.audioTracks.length > 1);
   }
 }
 
@@ -58,10 +54,8 @@ class _TrackSelectorDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mediaInfo = controller.getMediaInfo()!;
-
-    final audioTracks = mediaInfo.audio ?? [];
-    final videoTracks = mediaInfo.video ?? [];
+    final audioTracks = controller.audioTracks;
+    final videoTracks = controller.videoTracks;
 
     return Dialog(
       child: SizedBox(
@@ -81,8 +75,8 @@ class _TrackSelectorDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildAudioTracks(BuildContext context, List<AudioStreamInfo> tracks) {
-    final currentTracks = controller.getActiveAudioTracks() ?? [];
+  Widget _buildAudioTracks(BuildContext context, List<AudioTrack> tracks) {
+    final currentTrackId = controller.currentAudioTrackId;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -97,15 +91,15 @@ class _TrackSelectorDialog extends StatelessWidget {
             ),
           ),
         ),
-        ...tracks.mapIndexed(
-          (idx, track) => ListTile(
+        ...tracks.map(
+          (track) => ListTile(
             leading: const Icon(Icons.videocam),
             onTap: () {
-              controller.setAudioTracks([idx]);
+              controller.selectAudioTrack(track.id);
               Navigator.of(context).pop();
             },
-            title: Text(_audioTrackTitle(track)),
-            trailing: currentTracks.contains(idx)
+            title: Text(track.name),
+            trailing: currentTrackId == track.id
                 ? const Icon(Icons.check)
                 : null,
           ),
@@ -114,23 +108,8 @@ class _TrackSelectorDialog extends StatelessWidget {
     );
   }
 
-  String _audioTrackTitle(AudioStreamInfo track) {
-    final Map<String, String> metadata = track.metadata;
-    if (metadata["comment"] != null) {
-      return metadata["comment"]!;
-    } else if (metadata["language"] != null) {
-      return metadata["language"]!;
-    } else if (metadata["variant_bitrate"] != null) {
-      final variantBitrate = metadata["variant_bitrate"]!;
-      final formatBitrate = formatBytes(int.tryParse(variantBitrate) ?? 0);
-      return "${formatBitrate}it/s";
-    } else {
-      return metadata.toString();
-    }
-  }
-
-  Widget _buildVideoTracks(BuildContext context, List<VideoStreamInfo> tracks) {
-    final currentTracks = controller.getActiveVideoTracks() ?? [];
+  Widget _buildVideoTracks(BuildContext context, List<VideoTrack> tracks) {
+    final currentTrackId = controller.currentVideoTrackId;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -145,25 +124,20 @@ class _TrackSelectorDialog extends StatelessWidget {
             ),
           ),
         ),
-        ...tracks.mapIndexed(
-          (idx, track) => ListTile(
+        ...tracks.map(
+          (track) => ListTile(
             leading: const Icon(Icons.videocam),
             onTap: () {
-              controller.setVideoTracks([idx]);
+              controller.selectVideoTrack(track.id);
               Navigator.of(context).pop();
             },
-            title: Text(_videoTrackTitle(track)),
-            trailing: currentTracks.contains(idx)
+            title: Text(track.name),
+            trailing: currentTrackId == track.id
                 ? const Icon(Icons.check)
                 : null,
           ),
         ),
       ],
     );
-  }
-
-  String _videoTrackTitle(VideoStreamInfo track) {
-    final codec = track.codec;
-    return "${codec.width}x${codec.height}";
   }
 }

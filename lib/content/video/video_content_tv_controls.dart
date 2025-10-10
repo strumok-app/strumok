@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:strumok/collection/collection_item_provider.dart';
+import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_content_desktop_controls.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
@@ -333,6 +334,7 @@ class _AndroidTVBottomBar extends ConsumerWidget {
           PlayOrPauseButton(focusNode: !isLastItem ? playPauseFocusNode : null),
           SkipNextButton(focusNode: isLastItem ? playPauseFocusNode : null),
           const Spacer(),
+          const TrackSelector(),
           const SourceSelector(),
           const PlayerSettingsButton(),
         ],

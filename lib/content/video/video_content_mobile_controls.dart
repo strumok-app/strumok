@@ -460,93 +460,88 @@ class _VideoContentMobileControlsState
                         ),
                       ),
                       if (_mount)
-                        Padding(
-                          padding: MediaQuery.of(context).padding,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Container(
-                                height: buttonBarHeight,
-                                margin: topButtonBarMargin,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const MediaTitle(),
-                                    const Spacer(),
-                                    const PlayerPlaylistButton(),
-                                  ],
-                                ),
-                              ),
-                              // Only display [primaryButtonBar] if [buffering] is false.
-                              Expanded(
-                                child: AnimatedOpacity(
-                                  curve: Curves.easeInOut,
-                                  opacity: _buffering ? 0.0 : 1.0,
-                                  duration: controlsTransitionDuration,
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const Spacer(flex: 2),
-                                        const SkipPrevButton(iconSize: 36.0),
-                                        const Spacer(),
-                                        const PlayOrPauseButton(iconSize: 48.0),
-                                        const Spacer(),
-                                        const SkipNextButton(iconSize: 36.0),
-                                        const Spacer(flex: 2),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Stack(
-                                alignment: Alignment.bottomCenter,
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              height: buttonBarHeight,
+                              margin: topButtonBarMargin,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  _MobileControlSeekBar(
-                                    onSeekStart: () {
-                                      _timer?.cancel();
-                                    },
-                                    onSeekEnd: () {
-                                      _timer = Timer(controlsHoverDuration, () {
-                                        if (mounted) {
-                                          setState(() {
-                                            _visible = false;
-                                          });
-                                          unshiftSubtitle();
-                                        }
-                                      });
-                                    },
-                                  ),
-                                  Container(
-                                    height: buttonBarHeight,
-                                    margin: bottomButtonBarMargin,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const _MobileControlsPositionIndicator(),
-                                        const Spacer(),
-                                        const TrackSelector(),
-                                        const SourceSelector(),
-                                        const PlayerSettingsButton(),
-                                      ],
-                                    ),
-                                  ),
+                                  const MediaTitle(),
+                                  const Spacer(),
+                                  const PlayerPlaylistButton(),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                            // Only display [primaryButtonBar] if [buffering] is false.
+                            Expanded(
+                              child: AnimatedOpacity(
+                                curve: Curves.easeInOut,
+                                opacity: _buffering ? 0.0 : 1.0,
+                                duration: controlsTransitionDuration,
+                                child: Center(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Spacer(flex: 2),
+                                      const SkipPrevButton(iconSize: 36.0),
+                                      const Spacer(),
+                                      const PlayOrPauseButton(iconSize: 48.0),
+                                      const Spacer(),
+                                      const SkipNextButton(iconSize: 36.0),
+                                      const Spacer(flex: 2),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: [
+                                _MobileControlSeekBar(
+                                  onSeekStart: () {
+                                    _timer?.cancel();
+                                  },
+                                  onSeekEnd: () {
+                                    _timer = Timer(controlsHoverDuration, () {
+                                      if (mounted) {
+                                        setState(() {
+                                          _visible = false;
+                                        });
+                                        unshiftSubtitle();
+                                      }
+                                    });
+                                  },
+                                ),
+                                Container(
+                                  height: buttonBarHeight,
+                                  margin: bottomButtonBarMargin,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const _MobileControlsPositionIndicator(),
+                                      const Spacer(),
+                                      const TrackSelector(),
+                                      const SourceSelector(),
+                                      const PlayerSettingsButton(),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                     ],
                   ),

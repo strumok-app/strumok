@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:fvp/fvp.dart';
+// import 'package:fvp/fvp.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
@@ -273,39 +273,35 @@ class VideoContentController {
       }
 
       //select best video stream
-      final mediaInfo = videoController.getMediaInfo();
-      logger.i(mediaInfo);
-      if (mediaInfo?.video != null) {
-        final videoTracks = mediaInfo!.video!;
+      // final mediaInfo = videoController.getMediaInfo();
+      // logger.i(mediaInfo);
+      // if (mediaInfo?.video != null) {
+      //   final videoTracks = mediaInfo!.video!;
 
-        int bestTrackIndex = 0;
-        int bestTrackRes = 0;
+      //   int bestTrackIndex = 0;
+      //   int bestTrackRes = 0;
 
-        for (int i = 0; i < videoTracks.length; i++) {
-          final track = videoTracks[i];
-          final res = track.codec.width * track.codec.height;
+      //   for (int i = 0; i < videoTracks.length; i++) {
+      //     final track = videoTracks[i];
+      //     final res = track.codec.width * track.codec.height;
 
-          if (res >= bestTrackRes) {
-            bestTrackRes = res;
-            bestTrackIndex = i;
-          }
-        }
+      //     if (res >= bestTrackRes) {
+      //       bestTrackRes = res;
+      //       bestTrackIndex = i;
+      //     }
+      //   }
 
-        logger.i(
-          "Best video track $bestTrackIndex: ${videoTracks[bestTrackIndex]}",
-        );
+      //   logger.i(
+      //     "Best video track $bestTrackIndex: ${videoTracks[bestTrackIndex]}",
+      //   );
 
-        videoController.setVideoTracks([bestTrackIndex]);
-      }
+      //   videoController.setVideoTracks([bestTrackIndex]);
+      // }
 
       playerController.value = AsyncValue.data(videoController);
       _playerStateStreamController.add(videoController.value);
       videoController.addListener(() {
         final value = videoController.value;
-
-        if (value.hasError) {
-          logger.e("Error: ${value.errorDescription}");
-        }
 
         _playerStateStreamController.add(value);
         if (value.isEnded) {
