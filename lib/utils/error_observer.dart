@@ -9,6 +9,6 @@ class ErrorProviderObserver extends ProviderObserver {
     StackTrace stackTrace,
     ProviderContainer container,
   ) {
-    logger.e("Provider $provider fails", error: error, stackTrace: stackTrace);
+    logger.severe("Provider $provider fails", error, stackTrace);
   }
 }

@@ -163,7 +163,7 @@ class AndroidPlatformSignIn extends PlatformSignIn {
   }
 
   void _handleAuthenticationError(dynamic error) {
-    logger.e("Authentication error: $error");
+    logger.warning("Authentication error: $error");
     traceError(error: error);
   }
 

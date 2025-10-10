@@ -85,13 +85,13 @@ class SuppliersBundleDownload extends _$SuppliersBundleDownload {
         await _reloadSuppliersBundle(info);
       } else if (task.status.value == DownloadStatus.failed) {
         state = state.fail("Download failed");
-        logger.i("New FFI bundle version donwload failed");
+        logger.info("New FFI bundle version donwload failed");
       }
     });
   }
 
   Future<void> _reloadSuppliersBundle(FFISupplierBundleInfo info) async {
-    logger.i("New FFI bundle version donwloaded");
+    logger.info("New FFI bundle version donwloaded");
 
     final bundle = RustContentSuppliersBundle(
       directory: FFISuppliersBundleStorage().libsDir,

@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
+import 'package:logging_to_logcat/logging_to_logcat.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:strumok/app_database.dart';
@@ -23,6 +26,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
+  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  if (Platform.isAndroid) {
+    Logger.root.activateLogcat();
+  } else {
+    Logger.root.onRecord.listen((record) {
+      // ignore: avoid_print
+      print('${record.level.name}: ${record.time}: ${record.message}');
+    });
+  }
+
   if (kDebugMode) {
     appRunner();
   } else {

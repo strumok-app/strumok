@@ -47,7 +47,7 @@ class FFISuppliersBundleStorage {
         }
       }
     } catch (error) {
-      logger.w("Cant remove ffi lib: $error");
+      logger.warning("Cant remove ffi lib: $error");
     }
   }
 }

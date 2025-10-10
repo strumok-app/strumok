@@ -61,7 +61,7 @@ void downloadManga(
 
     onDone(DownloadStatus.completed);
   } catch (e) {
-    logger.w("download failed for request: $request error: $e");
+    logger.warning("download failed for request: $request error: $e");
     onDone(DownloadStatus.failed);
   }
 }

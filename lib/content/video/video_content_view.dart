@@ -59,7 +59,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
 
     _playerStreamSubscription = _controller.playerStream.listen((playerValue) {
       // Update collection item position when player position changes
-      if (playerValue.isPlaying && !playerValue.isCompleted) {
+      if (playerValue.position > Duration.zero) {
         ref
             .read(collectionItemProv.notifier)
             .setCurrentPosition(

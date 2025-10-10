@@ -255,7 +255,7 @@ class VideoContentController {
         start = 0;
       }
 
-      logger.i("Starting video: $link, headers: ${video.headers}");
+      logger.info("Starting video: $link, headers: ${video.headers}");
 
       final videoController = VideoPlayerController.networkUrl(
         link,
@@ -321,7 +321,7 @@ class VideoContentController {
           message: "fail to start video",
         );
       } else {
-        logger.e("Fail to start video", error: e, stackTrace: stackTrace);
+        logger.severe("Fail to start video", e, stackTrace);
       }
 
       if (_disposed ||
@@ -435,7 +435,7 @@ class VideoContentController {
     }
 
     try {
-      logger.i("Loading subtitle: $subtitle");
+      logger.info("Loading subtitle: $subtitle");
 
       // Use the subtitle worker to parse subtitle in isolate
       final link = await subtitle.link;
@@ -454,9 +454,9 @@ class VideoContentController {
       _subsCache.put(SubCacheKey(itemIdx, _currentSubtitleName!), controller);
       subtitleController.value = AsyncValue.data(controller);
 
-      logger.i("Subtitle loaded successfully");
+      logger.info("Subtitle loaded successfully");
     } catch (e, stackTrace) {
-      logger.e("Fail to load subtitle", error: e, stackTrace: stackTrace);
+      logger.severe("Fail to load subtitle", e, stackTrace);
       subtitleController.value = AsyncValue.error(e, stackTrace);
     }
   }

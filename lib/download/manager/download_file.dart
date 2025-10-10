@@ -79,7 +79,7 @@ void donwloadFile(
     await partialFile.rename(request.fileSrc);
     onDone(DownloadStatus.completed);
   } catch (e) {
-    logger.w("download failed for request: $request error: $e");
+    logger.warning("download failed for request: $request error: $e");
   } finally {
     onDone(DownloadStatus.failed);
   }

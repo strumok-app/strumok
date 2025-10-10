@@ -87,7 +87,7 @@ void downloadVideo(
             );
             break;
           } catch (e) {
-            logger.w(
+            logger.warning(
               "download video failed for request: $request, selectedStream: $selectedStream, error: $e",
             );
             if (i == sortedStreams.length - 1) {
@@ -119,7 +119,7 @@ void downloadVideo(
       );
     }
   } catch (e) {
-    logger.w("download video failed for request: $request error: $e");
+    logger.warning("download video failed for request: $request error: $e");
     onDone(DownloadStatus.failed);
   }
 }
@@ -323,7 +323,7 @@ Future<Uint8List?> _parseHLSKey(String keyLine) async {
       return response.bodyBytes;
     }
   } catch (e) {
-    logger.w('Failed to download HLS key: $e');
+    logger.warning('Failed to download HLS key: $e');
   }
 
   return null;

@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart' as media_kit;
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/text.dart';
 import 'package:strumok/video_player/extension.dart';
 import 'package:strumok/video_player/tracks.dart';
@@ -67,7 +69,16 @@ class MediaKitVideoPlayer extends VideoPlayerPlatform
   Future<int?> create(DataSource dataSource) async {
     final player = media_kit.Player();
     final completer = Completer();
-    final videoController = VideoController(player);
+    final videoController = VideoController(
+      player,
+      configuration: Platform.isAndroid
+          ? VideoControllerConfiguration(
+              hwdec: "mediacodec",
+              vo: "gpu",
+              androidAttachSurfaceAfterVideoParameters: false,
+            )
+          : VideoControllerConfiguration(),
+    );
     // NOTE: [StreamController] without broadcast buffers events.
     final streamController = StreamController<VideoEvent>();
     final streamSubscriptions = <StreamSubscription>[];
@@ -80,7 +91,7 @@ class MediaKitVideoPlayer extends VideoPlayerPlatform
     _streamControllers[textureId] = streamController;
     _streamSubscriptions[textureId] = streamSubscriptions;
 
-    // --------------------------------------------------
+    // --------------------------------------------------]
     _initialize(textureId);
     // --------------------------------------------------
 
@@ -313,10 +324,14 @@ class MediaKitVideoPlayer extends VideoPlayerPlatform
 
       streamSubscriptions.add(
         player.stream.error.listen((event) async {
-          streamController.addError(
-            PlatformException(code: 'MediaKit Error', message: event),
-            StackTrace.empty,
-          );
+          if (completer.isCompleted) {
+            logger.warning("[media_kit] {event}");
+          } else {
+            streamController.addError(
+              PlatformException(code: 'MediaKit Error', message: event),
+              StackTrace.empty,
+            );
+          }
         }),
       );
     }
@@ -333,10 +348,10 @@ class MediaKitVideoPlayer extends VideoPlayerPlatform
     return tracks.audio.map((t) {
       String name = t.id;
 
-      if (t.language != null) {
+      if (t.title != null) {
         name = t.language!;
-      } else if (t.title != null) {
-        name = t.title!;
+      } else if (t.language != null) {
+        name = t.language!;
       } else if (t.samplerate != null) {
         final formatBitrate = formatBytes(t.samplerate!);
         name = "${t.id}. ${formatBitrate}it/s";

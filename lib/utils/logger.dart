@@ -1,3 +1,3 @@
-import 'package:logger/logger.dart';
+import 'package:logging/logging.dart';
 
-final logger = Logger();
+final logger = Logger("Strumok");

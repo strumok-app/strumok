@@ -69,7 +69,7 @@ class ContentSuppliers {
     String channel, {
     page = 1,
   }) async {
-    logger.i(
+    logger.info(
       "Loading content supplier: $supplierName recommendations channel: $channel",
     );
 
@@ -87,10 +87,11 @@ class ContentSuppliers {
     String id,
     Set<ContentLanguage> langs,
   ) async {
-    logger.i("Load content details supplier: $supplierName id: $id");
+    logger.info("Load content details supplier: $supplierName id: $id");
 
-    final supplier =
-        _suppliers.where((e) => e.name == supplierName).firstOrNull;
+    final supplier = _suppliers
+        .where((e) => e.name == supplierName)
+        .firstOrNull;
 
     if (supplier == null) {
       throw Exception("No supplier $supplierName found");
@@ -157,7 +158,7 @@ class ContentSuppliers {
       libDirectory = FFISuppliersBundleStorage().libsDir;
     }
 
-    logger.i("FFI libs directory: $libDirectory");
+    logger.info("FFI libs directory: $libDirectory");
 
     return [
       RustContentSuppliersBundle(directory: libDirectory, libName: libName),

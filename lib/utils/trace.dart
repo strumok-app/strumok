@@ -9,6 +9,6 @@ void traceError({required dynamic error, dynamic stackTrace, String? message}) {
   );
 
   if (message != null) {
-    logger.e(message, error: error, stackTrace: stackTrace);
+    logger.severe(message, error, stackTrace);
   }
 }

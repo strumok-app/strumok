@@ -84,16 +84,16 @@ class DownloadsServiceHandler extends TaskHandler {
           case downloadEventRestore:
             _sendCurrentRequestsList();
           default:
-            logger.e(
+            logger.warning(
               "[download foregroud service] unknow download service event: $data",
             );
         }
       }
     } catch (e, stackTrace) {
-      logger.e(
+      logger.severe(
         "[downlod foreground service] error processing event: $data",
-        error: e,
-        stackTrace: stackTrace,
+        e,
+        stackTrace,
       );
     }
   }

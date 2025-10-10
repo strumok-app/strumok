@@ -30,6 +30,6 @@ class AppDatabase {
 
     await SearchSuggestion.deleteOld();
 
-    logger.i("Database path: $directory");
+    logger.info("Database path: $directory");
   }
 }

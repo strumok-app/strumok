@@ -22,7 +22,7 @@ class OfflineStorage {
     _downloadsDir =
         "${(await getDownloadsDirectory())!.path}${Platform.pathSeparator}strumok";
 
-    logger.i("Downloads directory: $_downloadsDir");
+    logger.info("Downloads directory: $_downloadsDir");
   }
 
   Future<List<OfflineContentInfo>> offlineContent() async {
@@ -276,7 +276,7 @@ class OfflineStorage {
       try {
         detailsJson = json.decode(fileContent);
       } catch (e) {
-        logger.w("Cant decode details for : ${detailsFile.path}");
+        logger.warning("Cant decode details for : ${detailsFile.path}");
       }
     }
 

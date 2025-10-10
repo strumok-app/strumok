@@ -137,7 +137,7 @@ class AppDownload extends _$AppDownload {
       }
     }
 
-    logger.i("App download path: $filePath");
+    logger.info("App download path: $filePath");
 
     final task = DownloadManager().download(
       FileDownloadRequest("app_download", asset.browserDownloadUrl, filePath),
@@ -149,13 +149,13 @@ class AppDownload extends _$AppDownload {
     task.status.addListener(() async {
       if (task.status.value == DownloadStatus.failed) {
         state = state.fail("Download failed");
-        logger.i("New app version donwload failed");
+        logger.info("New app version donwload failed");
       }
     });
 
     await task.whenDownloadComplete();
 
-    logger.i("New app version donwload success");
+    logger.info("New app version donwload success");
 
     const installApk = MethodChannel('install_apk');
 

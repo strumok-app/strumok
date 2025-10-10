@@ -51,7 +51,7 @@ class DownloadManagerMobile implements DownloadManager {
         task.request.toJson(),
       ]);
     } catch (e) {
-      logger.e(
+      logger.warning(
         "Fail to send download task to foreground service: ${task.request}: $e",
       );
       task.status.value = DownloadStatus.failed;
@@ -94,15 +94,17 @@ class DownloadManagerMobile implements DownloadManager {
           case downloadEventRestore:
             _restoreDownloadTasks(data[1]);
           default:
-            logger.e("unknow event from download foregroud service: $data");
+            logger.warning(
+              "unknow event from download foregroud service: $data",
+            );
         }
       }
       // nothing
     } catch (e, stackTrace) {
-      logger.e(
+      logger.severe(
         "error during receive download foregroud service event: $data",
-        error: e,
-        stackTrace: stackTrace,
+        e,
+        stackTrace,
       );
     }
   }
