@@ -893,7 +893,7 @@ class _MobileControlSeekBar extends StatefulWidget {
 
 class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
   static const seekBarThumbSize = 12.8;
-  static const seekBarHeight = 8.0;
+  static const seekBarHeight = 12.8;
   static final barColor = const Color(0x3DFFFFFF);
 
   bool tapped = false;

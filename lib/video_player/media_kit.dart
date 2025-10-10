@@ -9,9 +9,6 @@ import 'package:strumok/video_player/extension.dart';
 import 'package:strumok/video_player/tracks.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 
-// https://github.com/dart-lang/linter/issues/1381
-// ignore_for_file: close_sinks
-
 /// package:media_kit implementation of [VideoPlayerPlatform].
 ///
 /// References:
@@ -109,9 +106,6 @@ class MediaKitVideoPlayer extends VideoPlayerPlatform
         }
         resource = dataSource.uri!;
         break;
-
-      default:
-        throw UnsupportedError('${dataSource.sourceType} is not supported');
     }
 
     await player.open(

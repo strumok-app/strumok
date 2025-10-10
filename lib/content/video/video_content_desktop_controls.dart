@@ -28,6 +28,7 @@ class _VideoContentDesktopControlsState
   static final controlsHoverDuration = const Duration(seconds: 3);
   static const subtitleVerticalShiftOffset = 96.0;
   static const buttonBarHeight = 56.0;
+  static const pointerEventsPad = 100;
 
   late bool _mount = true;
   late bool _visible = true;
@@ -38,7 +39,7 @@ class _VideoContentDesktopControlsState
     context,
   ).playerState.isBuffering;
 
-  DateTime _last = DateTime.now();
+  TapDownDetails? _lastTapDetails;
 
   StreamSubscription? _subscription;
 
@@ -131,12 +132,13 @@ class _VideoContentDesktopControlsState
 
   @override
   Widget build(BuildContext context) {
+    final screanSize = MediaQuery.sizeOf(context);
     return Theme(
       data: Theme.of(context).copyWith(
-        focusColor: const Color(0x00000000),
-        hoverColor: const Color(0x00000000),
-        splashColor: const Color(0x00000000),
-        highlightColor: const Color(0x00000000),
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
       ),
       child: CallbackShortcuts(
         bindings: {
@@ -196,9 +198,9 @@ class _VideoContentDesktopControlsState
               elevation: 0.0,
               borderOnForeground: false,
               animationDuration: Duration.zero,
-              color: const Color(0x00000000),
-              shadowColor: const Color(0x00000000),
-              surfaceTintColor: const Color(0x00000000),
+              color: Colors.transparent,
+              shadowColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
               child: Listener(
                 onPointerSignal: (e) {
                   if (e is PointerScrollEvent) {
@@ -210,13 +212,18 @@ class _VideoContentDesktopControlsState
                   }
                 },
                 child: GestureDetector(
-                  onTapUp: (e) {
-                    final now = DateTime.now();
-                    final difference = now.difference(_last);
-                    _last = now;
-                    if (difference < const Duration(milliseconds: 400)) {
-                      toggleFullscreen();
+                  onTapDown: (details) => {_lastTapDetails = details},
+                  onDoubleTap: () {
+                    if (_isTapPositionOutOfPads(screanSize)) {
+                      return;
                     }
+                    toggleFullscreen();
+                  },
+                  onTap: () {
+                    if (_isTapPositionOutOfPads(screanSize)) {
+                      return;
+                    }
+                    videoContentController(context).playOrPause();
                   },
                   onPanUpdate: (e) {
                     if (e.delta.dy > 0) {
@@ -411,6 +418,12 @@ class _VideoContentDesktopControlsState
       ),
     );
   }
+
+  bool _isTapPositionOutOfPads(Size screanSize) {
+    return _lastTapDetails!.globalPosition.dy < pointerEventsPad ||
+        _lastTapDetails!.globalPosition.dy >
+            screanSize.height - pointerEventsPad;
+  }
 }
 
 // SEEK BAR
@@ -565,7 +578,7 @@ class _DesktopVideoControlsSeekBarState
             onPointerDown: (e) => onPointerDown(),
             onPointerUp: (e) => onPointerUp(),
             child: Container(
-              color: const Color(0x00000000),
+              color: Colors.transparent,
               width: constraints.maxWidth,
               height: 36.0,
               child: Stack(
@@ -768,7 +781,7 @@ class _DesktopVideoControlsVolumeButtonState
                               pressedElevation: 0.0,
                             ),
                             trackShape: _CustomTrackShape(),
-                            overlayColor: const Color(0x00000000),
+                            overlayColor: Colors.transparent,
                           ),
                           child: Slider(
                             value: volume.clamp(0.0, 1.0),
