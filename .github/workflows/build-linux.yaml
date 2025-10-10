@@ -34,7 +34,9 @@ jobs:
             liblzma-dev \
             unzip \
             libcurl4-openssl-dev \
-            libasound2-dev
+            libasound2-dev \
+            libmpv-dev \
+            mpv
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
