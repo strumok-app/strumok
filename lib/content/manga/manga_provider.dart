@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:collection/collection.dart';
@@ -59,7 +60,9 @@ Future<List<ImageProvider>> currentMangaPages(
     return [];
   }
 
-  final pages = await currentSource.images;
+  final pages = (await currentSource.pages)
+      .map((url) => CachedNetworkImageProvider(url))
+      .toList();
 
   return pages;
 }

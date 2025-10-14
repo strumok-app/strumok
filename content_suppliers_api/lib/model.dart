@@ -67,7 +67,6 @@ abstract interface class MediaFileItemSource extends ContentMediaItemSource {
 
 abstract interface class MangaMediaItemSource extends ContentMediaItemSource {
   FutureOr<List<String>> get pages;
-  FutureOr<List<ImageProvider>> get images;
 }
 
 abstract interface class ContentDetails extends ContentInfo {

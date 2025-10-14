@@ -141,13 +141,8 @@ void main() async {
     expect(sources[2], isA<MangaMediaItemSource>());
     final mangaSource = sources[2] as MangaMediaItemSource;
 
-    final pages = await mangaSource.images;
-    expect(
-        pages,
-        equals([
-          const CachedNetworkImageProvider("http://page1"),
-          const CachedNetworkImageProvider("http://page2"),
-        ]));
+    final pages = await mangaSource.pages;
+    expect(pages, equals(["http://page1", "http://page2"]));
     expect(mangaSource.kind, equals(FileKind.manga));
     expect(mangaSource.description, equals("$id 1,2,3"));
   });
@@ -171,11 +166,7 @@ void main() async {
     final source = sources[0];
     expect(source, isA<MangaMediaItemSource>());
     final mangaSource = source as MangaMediaItemSource;
-    expect(
-        await mangaSource.images,
-        equals([
-          const CachedNetworkImageProvider("http://${id}_$id"),
-        ]));
+    expect(await mangaSource.pages, equals(["http://${id}_$id"]));
     expect(mangaSource.kind, equals(FileKind.manga));
     expect(mangaSource.description, id);
   });

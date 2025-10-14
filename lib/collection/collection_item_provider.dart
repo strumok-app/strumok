@@ -51,7 +51,8 @@ class CollectionItem extends _$CollectionItem {
     final currentItemPosition = value.currentMediaItemPosition;
 
     if (value.mediaType == MediaType.video) {
-      if ((currentItemPosition.position - position).abs() > 10) {
+      if (position > 10 &&
+          (currentItemPosition.position - position).abs() > 10) {
         final newValue = value.copyWith(
           positions: {
             value.currentItem: currentItemPosition.copyWith(
