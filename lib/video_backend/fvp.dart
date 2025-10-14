@@ -12,7 +12,12 @@ class FVPVideoPlayerPlatform extends MdkVideoPlayerPlatform
   static void registerWith() {
     MdkVideoPlayerPlatform.registerVideoPlayerPlatformsWith(
       options: {
-        "player": {"buffer": "1000+90000", "avsync.audio": "false"},
+        // "fastSeek": true,
+        "player": {
+          "buffer.range": "0+180000",
+          "avsync.audio": "1",
+          "demux.buffer.ranges": "8",
+        },
       },
     );
     VideoPlayerPlatform.instance = FVPVideoPlayerPlatform();
@@ -29,10 +34,8 @@ class FVPVideoPlayerPlatform extends MdkVideoPlayerPlatform
       String name = "";
 
       // Try to get human-readable name from metadata first
-      if (stream.metadata['title'] != null) {
-        name = stream.metadata['title']!;
-      } else if (stream.metadata['name'] != null) {
-        name = stream.metadata['name']!;
+      if (stream.metadata['comment'] != null) {
+        name = stream.metadata['comment']!;
       } else if (stream.metadata['language'] != null) {
         name = stream.metadata['language']!;
       } else {
@@ -49,7 +52,7 @@ class FVPVideoPlayerPlatform extends MdkVideoPlayerPlatform
         }
       }
 
-      return AudioTrack(id: idx.toString(), name: name);
+      return AudioTrack(id: idx.toString(), name: "${idx + 1}. $name");
     }).toList();
   }
 
