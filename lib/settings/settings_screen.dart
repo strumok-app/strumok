@@ -44,21 +44,6 @@ class _SettingsView extends StatelessWidget {
               ),
               _renderSection(
                 context,
-                AppLocalizations.of(context)!.settingsTheme,
-                const BrightnessSwitcher(),
-              ),
-              _renderSection(
-                context,
-                AppLocalizations.of(context)!.settingsColor,
-                const ColorSwitcher(),
-              ),
-              _renderSection(
-                context,
-                AppLocalizations.of(context)!.language,
-                const UserLanguage(),
-              ),
-              _renderSection(
-                context,
                 AppLocalizations.of(context)!.settingsVersion,
                 const AppVersionSettings(),
               ),
@@ -66,6 +51,11 @@ class _SettingsView extends StatelessWidget {
                 context,
                 AppLocalizations.of(context)!.settingsSuppliersVersion,
                 const SuppliersBundleVersionSettings(),
+              ),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.language,
+                const UserLanguage(),
               ),
               _renderSection(
                 context,
@@ -84,6 +74,16 @@ class _SettingsView extends StatelessWidget {
                 onTap: () {
                   context.navigateTo(const SuppliersSettingsRoute());
                 },
+              ),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsTheme,
+                const BrightnessSwitcher(),
+              ),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsColor,
+                const ColorSwitcher(),
               ),
             ],
           ),

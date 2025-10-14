@@ -150,11 +150,11 @@ class _VideoContentDesktopControlsState
               videoContentController(context).playOrPause(),
           const SingleActivator(LogicalKeyboardKey.mediaTrackNext):
               videoContentController(context).nextItem,
-          const SingleActivator(LogicalKeyboardKey.bracketLeft):
+          const SingleActivator(LogicalKeyboardKey.bracketRight):
               videoContentController(context).nextItem,
           const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious):
               videoContentController(context).prevItem,
-          const SingleActivator(LogicalKeyboardKey.bracketRight):
+          const SingleActivator(LogicalKeyboardKey.bracketLeft):
               videoContentController(context).prevItem,
           const SingleActivator(LogicalKeyboardKey.space): () =>
               videoContentController(context).playOrPause(),
