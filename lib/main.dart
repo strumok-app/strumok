@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:logging_to_logcat/logging_to_logcat.dart';
-import 'package:media_kit/media_kit.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:strumok/app_database.dart';
 import 'package:strumok/app_init_firebase.dart';
@@ -15,7 +14,7 @@ import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/layouts/version_guard.dart';
 import 'package:strumok/download/offline_storage.dart';
-import 'package:strumok/video_player/media_kit.dart';
+import 'package:strumok/video_backend/init.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/error_observer.dart';
@@ -54,8 +53,7 @@ void appRunner() async {
     await windowManager.ensureInitialized();
   }
 
-  MediaKit.ensureInitialized();
-  MediaKitVideoPlayer.registerWith();
+  initVideoBackend();
 
   await AppDatabase().init();
   await AppPreferences.init();

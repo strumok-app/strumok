@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:content_suppliers_rust/bundle.dart';
 import 'package:test/test.dart';

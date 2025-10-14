@@ -1,11 +1,9 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/l10n/app_localizations.dart';
-import 'package:strumok/utils/text.dart';
-import 'package:strumok/video_player/extension.dart';
-import 'package:strumok/video_player/tracks.dart';
+import 'package:strumok/video_backend/extension.dart';
+import 'package:strumok/video_backend/tracks.dart';
 import 'package:video_player/video_player.dart';
 
 class TrackSelector extends StatelessWidget {

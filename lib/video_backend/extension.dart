@@ -1,4 +1,4 @@
-import 'package:strumok/video_player/tracks.dart';
+import 'package:strumok/video_backend/tracks.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 

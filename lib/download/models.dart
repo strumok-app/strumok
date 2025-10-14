@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/widgets.dart';
 import 'package:strumok/download/offline_storage.dart';
 
 class OfflineContentDetails implements ContentDetails {
@@ -282,11 +281,6 @@ class OfflineMangaMediaItemSource
     }
 
     return orderedPages.values.toList();
-  }
-
-  @override
-  FutureOr<List<ImageProvider<Object>>> get images async {
-    return (await pages).map((path) => FileImage(File(path))).toList();
   }
 
   @override

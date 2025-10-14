@@ -1,12 +1,10 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:content_suppliers_rust/rust/frb_generated.dart';
 import 'package:content_suppliers_rust/rust/frb_generated.io.dart';
 import 'package:content_suppliers_rust/rust/models.dart' as models;
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 const compatibleApiVersoin = 3;
@@ -367,7 +365,6 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
   final Map<String, String>? headers;
 
   List<String>? _pages;
-  List<ImageProvider<Object>>? _images;
   final RustLibApi _api;
   final List<String> _params;
 
@@ -410,13 +407,6 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
       id: id,
       params: _params,
     ));
-  }
-
-  @override
-  Future<List<ImageProvider<Object>>> get images async {
-    return _images ??= (await pages)
-        .map((link) => CachedNetworkImageProvider(link, headers: headers))
-        .toList();
   }
 }
 
