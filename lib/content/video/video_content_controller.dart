@@ -42,13 +42,14 @@ class VideoContentController {
   String? _currentSourceName;
   String? _currentSubtitleName;
 
+  VideoPlayerController? _currentVideoPlayerController;
   ValueNotifier<AsyncValue<VideoPlayerController>> playerController =
       ValueNotifier(AsyncValue.loading());
-  VideoPlayerController? get _videoPlayerController =>
+  VideoPlayerController? get _readyVideoPlayerController =>
       playerController.value.valueOrNull;
 
   VideoPlayerValue get playerState =>
-      _videoPlayerController?.value ?? VideoPlayerValue.uninitialized();
+      _readyVideoPlayerController?.value ?? VideoPlayerValue.uninitialized();
 
   final StreamController<VideoPlayerValue> _playerStateStreamController =
       StreamController.broadcast();
@@ -69,7 +70,7 @@ class VideoContentController {
 
   void playOrPause() {
     if (_disposed) return;
-    final controller = _videoPlayerController;
+    final controller = _readyVideoPlayerController;
     if (controller != null) {
       if (controller.value.isPlaying) {
         controller.pause();
@@ -81,17 +82,17 @@ class VideoContentController {
 
   void play() {
     if (_disposed) return;
-    _videoPlayerController?.play();
+    _readyVideoPlayerController?.play();
   }
 
   void pause() {
     if (_disposed) return;
-    _videoPlayerController?.pause();
+    _readyVideoPlayerController?.pause();
   }
 
   void volumeChangeBy(double delta) {
     if (_disposed) return;
-    final controller = _videoPlayerController;
+    final controller = _readyVideoPlayerController;
     if (controller != null) {
       final currentVolume = controller.value.volume;
       final newVolume = (currentVolume + delta).clamp(0.0, 1.0);
@@ -111,7 +112,7 @@ class VideoContentController {
 
   Future<void> setVolume(double volume) async {
     if (_disposed) return;
-    final controller = _videoPlayerController;
+    final controller = _readyVideoPlayerController;
     if (controller != null) {
       await controller.setVolume(volume);
     }
@@ -119,12 +120,12 @@ class VideoContentController {
 
   Future<void> seekTo(Duration position) async {
     if (_disposed) return;
-    _videoPlayerController?.seekTo(position);
+    _readyVideoPlayerController?.seekTo(position);
   }
 
   void seekForward(Duration duration) {
     if (_disposed) return;
-    final controller = _videoPlayerController;
+    final controller = _readyVideoPlayerController;
     if (controller == null) return;
 
     final currentPosition = controller.value.position;
@@ -140,7 +141,7 @@ class VideoContentController {
 
   void seekBackward(Duration duration) {
     if (_disposed) return;
-    final controller = _videoPlayerController;
+    final controller = _readyVideoPlayerController;
     if (controller == null) return;
 
     final currentPosition = controller.value.position;
@@ -156,13 +157,13 @@ class VideoContentController {
 
   void setRate(double rate) {
     if (_disposed) return;
-    _videoPlayerController?.setPlaybackSpeed(rate);
+    _readyVideoPlayerController?.setPlaybackSpeed(rate);
   }
 
   void dispose() {
     _disposed = true;
     _subtitleWorker.dispose();
-    _videoPlayerController?.dispose();
+    _readyVideoPlayerController?.dispose();
     _playerStateStreamController.close();
     playerController.dispose();
     subtitleController.dispose();
@@ -192,7 +193,7 @@ class VideoContentController {
     try {
       // reset state
       _currentSources = null;
-      _videoPlayerController?.dispose();
+      _currentVideoPlayerController?.dispose();
       playerController.value = AsyncValue.loading();
       _playerStateStreamController.add(VideoPlayerValue.uninitialized());
 
@@ -263,6 +264,7 @@ class VideoContentController {
         videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: true),
       );
 
+      _currentVideoPlayerController = videoController;
       await videoController.initialize();
 
       if (_disposed ||
@@ -304,7 +306,7 @@ class VideoContentController {
         return;
       }
 
-      _videoPlayerController?.dispose();
+      _readyVideoPlayerController?.dispose();
       playerController.value = AsyncValue.error(e, stackTrace);
       _playerStateStreamController.add(VideoPlayerValue.uninitialized());
     }
@@ -315,8 +317,8 @@ class VideoContentController {
       case OnVideoEndsAction.playNext:
         nextItem();
       case OnVideoEndsAction.playAgain:
-        if (_videoPlayerController != null) {
-          final videoController = _videoPlayerController!;
+        if (_readyVideoPlayerController != null) {
+          final videoController = _readyVideoPlayerController!;
           await videoController.seekTo(Duration.zero);
           await videoController.play();
         }
