@@ -12,11 +12,11 @@ class FVPVideoPlayerPlatform extends MdkVideoPlayerPlatform
   static void registerWith() {
     MdkVideoPlayerPlatform.registerVideoPlayerPlatformsWith(
       options: {
-        "fastSeek": true,
+        // "fastSeek": true,
         "player": {
-          "buffer.range": "0+180000",
+          "buffer.range": "0+600000",
           "avsync.audio": "1",
-          "demux.buffer.ranges": "8",
+          // "demux.buffer.ranges": "8",
         },
       },
     );
