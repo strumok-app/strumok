@@ -35,7 +35,7 @@
                 "secrets.env"
             ],
             "env": {
-                "MDK_LOG": "1",
+                "MDK_LOG": "0",
                 "MDK_LOG_STATUS": "0",
                 "RUST_LOG": "error"
             }
