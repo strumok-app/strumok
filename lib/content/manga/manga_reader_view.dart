@@ -126,8 +126,9 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
 
     if (isMobileDevice()) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-      WakelockPlus.enable();
     }
+
+    WakelockPlus.enable();
 
     final readerMode = ref.read(mangaReaderModeSettingsProvider);
     animetedScrollController = AnimatedScrollController(
@@ -148,8 +149,9 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
   void dispose() {
     if (isMobileDevice()) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      WakelockPlus.disable();
     }
+
+    WakelockPlus.disable();
 
     super.dispose();
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/content/video/video_content_mobile_controls.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class VideoContentMobileView extends StatefulWidget {
   const VideoContentMobileView({super.key});
@@ -17,6 +18,7 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
     ]);
+    WakelockPlus.enable();
 
     super.initState();
   }
@@ -30,6 +32,7 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    WakelockPlus.disable();
 
     super.dispose();
   }

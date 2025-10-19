@@ -91,8 +91,8 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
         child: Stack(
           children: [
             VideoView(),
-            VideoSubtitles(),
             Positioned.fill(child: _buildControlsView()),
+            VideoSubtitles(),
           ],
         ),
       ),

@@ -16,7 +16,7 @@ class FVPVideoPlayerPlatform extends MdkVideoPlayerPlatform
         "player": {
           "buffer.range": "0+600000",
           "avsync.audio": "1",
-          // "demux.buffer.ranges": "8",
+          "demux.buffer.ranges": "10",
         },
       },
     );
