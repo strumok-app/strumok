@@ -41,7 +41,6 @@ class VideoContentController {
 
   String? _currentSourceName;
   String? _currentSubtitleName;
-  Duration? _seekingPosition;
 
   VideoPlayerController? _currentVideoPlayerController;
   ValueNotifier<AsyncValue<VideoPlayerController>> playerController =
@@ -70,7 +69,7 @@ class VideoContentController {
   });
 
   void playOrPause() {
-    if (_disposed || _seekingPosition != null) return;
+    if (_disposed) return;
     final controller = _readyVideoPlayerController;
     if (controller != null) {
       if (controller.value.isPlaying) {
@@ -82,12 +81,12 @@ class VideoContentController {
   }
 
   void play() {
-    if (_disposed || _seekingPosition != null) return;
+    if (_disposed) return;
     _readyVideoPlayerController?.play();
   }
 
   void pause() {
-    if (_disposed || _seekingPosition != null) return;
+    if (_disposed) return;
     _readyVideoPlayerController?.pause();
   }
 
@@ -122,17 +121,7 @@ class VideoContentController {
   Future<void> seekTo(Duration position) async {
     if (_disposed) return;
 
-    var controller = _readyVideoPlayerController;
-    if (controller == null) return;
-
-    _seekingPosition = position;
-    await controller.pause();
-    await controller.seekTo(position);
-
-    if (_seekingPosition == position) {
-      _seekingPosition = null;
-      await controller.play();
-    }
+    await _readyVideoPlayerController?.seekTo(position);
   }
 
   void seekForward(Duration duration) {
