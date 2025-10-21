@@ -76,9 +76,6 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
     );
     final completer = Completer();
 
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
-    logger.info(androidInfo);
-
     VideoController videoController;
     if (Platform.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
