@@ -291,6 +291,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get mangaReaderModeHorizontalRtlScroll => 'Прокрутка з права на ліво';
 
   @override
+  String get mangaReaderPageDownloadFailed => 'Невдалось завантажити сторінку';
+
+  @override
   String get errorGoBack => 'Повернутись назад';
 
   @override

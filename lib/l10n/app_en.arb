@@ -91,6 +91,7 @@
     "mangaReaderModeVerticalScroll": "Vertical scroll",
     "mangaReaderModeHorizontalScroll": "Scroll from left to right",
     "mangaReaderModeHorizontalRtlScroll": "Scroll from right to left",
+    "mangaReaderPageDownloadFailed": "Page download failed",
     "errorGoBack": "Go back",
     "errorReload": "Reload",
     "ffiLibNotInstalled": "Content suppliers module not installed",

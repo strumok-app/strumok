@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/download/offline_storage.dart';
+import 'package:strumok/l10n/app_localizations.dart';
 
 class MangaPageImage extends StatefulWidget {
   final MangaPageInfo page;
@@ -116,10 +117,10 @@ class _MangaPageImageState extends State<MangaPageImage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Download failed'),
+            Text(AppLocalizations.of(context)!.mangaReaderPageDownloadFailed),
             OutlinedButton(
               onPressed: _startDownload,
-              child: const Text('Retry'),
+              child: Text(AppLocalizations.of(context)!.errorReload),
             ),
           ],
         ),

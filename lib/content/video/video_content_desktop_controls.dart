@@ -9,8 +9,8 @@ import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/video_source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
+import 'package:strumok/utils/fullscrean.dart';
 import 'package:strumok/utils/text.dart';
-import 'package:window_manager/window_manager.dart';
 
 /// {@macro material_desktop_video_controls}
 class VideoContentDesktopControls extends StatefulWidget {
@@ -906,17 +906,4 @@ class _DesktopPlayerFullscreenButton extends StatelessWidget {
       color: Colors.white,
     );
   }
-}
-
-void toggleFullscreen() async {
-  final fullscrean = await windowManager.isFullScreen();
-  await windowManager.setFullScreen(!fullscrean);
-}
-
-void enterFullscreen() {
-  windowManager.setFullScreen(true);
-}
-
-void exitFullscreen() {
-  windowManager.setFullScreen(false);
 }

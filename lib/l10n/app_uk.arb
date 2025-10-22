@@ -92,6 +92,7 @@
     "mangaReaderModeVerticalScroll": "Вертикальна прокрутка",
     "mangaReaderModeHorizontalScroll": "Прокрутка з ліва на право",
     "mangaReaderModeHorizontalRtlScroll": "Прокрутка з права на ліво",
+    "mangaReaderPageDownloadFailed": "Невдалось завантажити сторінку",
     "errorGoBack": "Повернутись назад",
     "errorReload": "Повторити",
     "ffiLibNotInstalled": "Модуль постачальників не встановлений",

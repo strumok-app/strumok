@@ -291,6 +291,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mangaReaderModeHorizontalRtlScroll => 'Scroll from right to left';
 
   @override
+  String get mangaReaderPageDownloadFailed => 'Page download failed';
+
+  @override
   String get errorGoBack => 'Go back';
 
   @override

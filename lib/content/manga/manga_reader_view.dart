@@ -10,6 +10,7 @@ import 'package:strumok/content/manga/manga_scrolled_viewer.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/settings/settings_provider.dart';
+import 'package:strumok/utils/fullscrean.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/back_nav_button.dart';
 import 'package:strumok/widgets/display_error.dart';
@@ -18,34 +19,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:window_manager/window_manager.dart';
 
 class MangaReaderView extends ConsumerWidget {
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
   final CurrentMangaPagesProvider _pagesProvider;
-  final CollectionItemProvider _collectionItemProvider;
 
   MangaReaderView({
     super.key,
     required this.contentDetails,
     required this.mediaItems,
-  }) : _pagesProvider = currentMangaPagesProvider(contentDetails, mediaItems),
-       _collectionItemProvider = collectionItemProvider(contentDetails);
+  }) : _pagesProvider = currentMangaPagesProvider(contentDetails, mediaItems);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<AsyncValue<List<MangaPageInfo>>>(_pagesProvider, (
-      previous,
-      next,
-    ) {
-      final images = next.valueOrNull;
-      if (images != null) {
-        ref
-            .read(collectionItemProvider(contentDetails).notifier)
-            .setCurrentLength(images.length);
-      }
-    });
-
     return ref
         .watch(_pagesProvider)
         .when(
@@ -70,25 +58,15 @@ class MangaReaderView extends ConsumerWidget {
       );
     }
 
-    final pageFeature = ref.read(
-      collectionItemCurrentPositionProvider(contentDetails).future,
-    );
+    final collectionItem = ref
+        .read(collectionItemProvider(contentDetails))
+        .requireValue;
 
-    return FutureBuilder(
-      future: pageFeature,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const SizedBox.shrink();
-        }
-
-        return _MangaPagesReaderView(
-          pages: pages,
-          initialPage: snapshot.data!,
-          contentDetails: contentDetails,
-          mediaItems: mediaItems,
-          collectionItemProvider: _collectionItemProvider,
-        );
-      },
+    return _MangaPagesReaderView(
+      pages: pages,
+      initialPage: collectionItem.currentPosition,
+      contentDetails: contentDetails,
+      mediaItems: mediaItems,
     );
   }
 }
@@ -98,15 +76,14 @@ class _MangaPagesReaderView extends ConsumerStatefulWidget {
   final int initialPage;
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
-  final CollectionItemProvider collectionItemProvider;
+  final CollectionItemProvider itemProvider;
 
-  const _MangaPagesReaderView({
+  _MangaPagesReaderView({
     required this.pages,
     required this.initialPage,
     required this.contentDetails,
     required this.mediaItems,
-    required this.collectionItemProvider,
-  });
+  }) : itemProvider = collectionItemProvider(contentDetails);
 
   @override
   ConsumerState<_MangaPagesReaderView> createState() =>
@@ -122,13 +99,17 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
 
   @override
   void initState() {
-    pageListenable = ValueNotifier(widget.initialPage);
-
     if (isMobileDevice()) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     }
 
     WakelockPlus.enable();
+
+    pageListenable = ValueNotifier(widget.initialPage);
+
+    ref
+        .read(widget.itemProvider.notifier)
+        .setCurrentLength(widget.pages.length);
 
     final readerMode = ref.read(mangaReaderModeSettingsProvider);
     animetedScrollController = AnimatedScrollController(
@@ -138,7 +119,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
 
     pageListenable.addListener(() {
       ref
-          .read(widget.collectionItemProvider.notifier)
+          .read(widget.itemProvider.notifier)
           .setCurrentPosition(pageListenable.value);
     });
 
@@ -149,6 +130,8 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
   void dispose() {
     if (isMobileDevice()) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    } else if (isDesktopDevice()) {
+      windowManager.setFullScreen(false);
     }
 
     WakelockPlus.disable();
@@ -181,6 +164,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
         SingleActivator(LogicalKeyboardKey.select): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.space): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.enter): ShowUIIntent(),
+        SingleActivator(LogicalKeyboardKey.keyF): ToggleFullscreanIntent(),
       },
       actions: {
         PrevPageIntent: CallbackAction<PrevPageIntent>(
@@ -203,6 +187,9 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
         ),
         ScrollDownPageIntent: CallbackAction<ScrollDownPageIntent>(
           onInvoke: (_) => _scrollTo(readerMode, true),
+        ),
+        ToggleFullscreanIntent: CallbackAction<ToggleFullscreanIntent>(
+          onInvoke: (_) => toggleFullscreen(),
         ),
       },
       autofocus: true,
@@ -232,7 +219,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
     } else {
       int inc = forward ? 1 : -1;
 
-      final provider = widget.collectionItemProvider;
+      final provider = widget.itemProvider;
       final notifier = ref.read(provider.notifier);
 
       final newPos = pageListenable.value + inc;

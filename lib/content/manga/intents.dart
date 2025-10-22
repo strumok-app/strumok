@@ -27,3 +27,7 @@ class ScrollUpPageIntent extends Intent {
 class ShowUIIntent extends Intent {
   const ShowUIIntent();
 }
+
+class ToggleFullscreanIntent extends Intent {
+  const ToggleFullscreanIntent();
+}

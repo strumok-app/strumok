@@ -650,6 +650,12 @@ abstract class AppLocalizations {
   /// **'Scroll from right to left'**
   String get mangaReaderModeHorizontalRtlScroll;
 
+  /// No description provided for @mangaReaderPageDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Page download failed'**
+  String get mangaReaderPageDownloadFailed;
+
   /// No description provided for @errorGoBack.
   ///
   /// In en, this message translates to:

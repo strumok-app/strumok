@@ -2,11 +2,13 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/manga/manga_reader_settings_dialog.dart';
 import 'package:strumok/content/manga/widgets.dart';
+import 'package:strumok/utils/fullscrean.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/utils/visual.dart';
+import 'package:window_manager/window_manager.dart';
 
 class MangaReaderControlsRoute<T> extends PopupRoute<T> {
   final ContentDetails contentDetails;
@@ -101,10 +103,9 @@ class MangaReaderControlTopBar extends ConsumerWidget {
     final theme = Theme.of(context);
     final mobile = isMobile(context);
 
-    final item =
-        ref
-            .watch(collectionItemCurrentItemProvider(contentDetails))
-            .valueOrNull;
+    final item = ref
+        .watch(collectionItemCurrentItemProvider(contentDetails))
+        .valueOrNull;
 
     return Container(
       color: Colors.black45,
@@ -220,6 +221,13 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
                   pagesController: pagesController,
                 ),
               ),
+              SizedBox(width: 8),
+              IconButton(
+                onPressed: toggleFullscreen,
+                icon: const Icon(Icons.fullscreen),
+                color: Colors.white,
+              ),
+              SizedBox(width: 8),
               MangaSettingsButton(
                 contentDetails: contentDetails,
                 mediaItems: mediaItems,
@@ -297,11 +305,10 @@ class MangaSettingsButton extends StatelessWidget {
       onPressed: () {
         showDialog(
           context: context,
-          builder:
-              (context) => MangaReaderSettingsDialog(
-                contentDetails: contentDetails,
-                mediaItems: mediaItems,
-              ),
+          builder: (context) => MangaReaderSettingsDialog(
+            contentDetails: contentDetails,
+            mediaItems: mediaItems,
+          ),
         );
       },
       tooltip: AppLocalizations.of(context)!.settings,

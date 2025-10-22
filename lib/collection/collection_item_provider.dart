@@ -55,6 +55,7 @@ class CollectionItem extends _$CollectionItem {
           (currentItemPosition.position - position).abs() > 10) {
         final newValue = value.copyWith(
           positions: {
+            ...value.positions,
             value.currentItem: currentItemPosition.copyWith(
               position: position,
               length: length,
@@ -72,6 +73,7 @@ class CollectionItem extends _$CollectionItem {
 
       final newValue = value.copyWith(
         positions: {
+          ...value.positions,
           value.currentItem: currentItemPosition.copyWith(
             position: position,
             length: length,
@@ -90,9 +92,12 @@ class CollectionItem extends _$CollectionItem {
 
     final newValue = value.copyWith(
       positions: {
+        ...value.positions,
         value.currentItem: currentItemPosition.copyWith(
           length: length,
-          position: currentItemPosition.position >= length ? 0 : null,
+          position: currentItemPosition.position >= length
+              ? length - 1
+              : currentItemPosition.position,
         ),
       },
       status: MediaCollectionItemStatus.inProgress,

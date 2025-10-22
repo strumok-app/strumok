@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/content/manga/intents.dart';
 import 'package:strumok/content/manga/manga_page_image.dart';
 import 'package:strumok/content/manga/model.dart';
-import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/utils/matrix.dart';
 
 class MangaPagedViewer extends ConsumerStatefulWidget {
