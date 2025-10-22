@@ -257,7 +257,9 @@ class VideoContentController {
         start = 0;
       }
 
-      logger.info("Starting video: $link, headers: ${video.headers}");
+      logger.info(
+        "Starting video: $link, headers: ${video.headers}, startPos: $start",
+      );
 
       final videoController = VideoPlayerController.networkUrl(
         link,
@@ -286,8 +288,8 @@ class VideoContentController {
         }
       });
 
-      await videoController.seekTo(Duration(seconds: start));
       await videoController.play();
+      await videoController.seekTo(Duration(seconds: start));
 
       videoController.setVolume(AppPreferences.volume);
     } catch (e, stackTrace) {

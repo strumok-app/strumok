@@ -35,9 +35,7 @@ class _VideoContentDesktopControlsState
 
   Timer? _timer;
 
-  late bool _buffering = videoContentController(
-    context,
-  ).playerState.isBuffering;
+  late bool _buffering = true;
 
   TapDownDetails? _lastTapDetails;
 
@@ -56,9 +54,11 @@ class _VideoContentDesktopControlsState
     _subscription ??= videoContentController(context).playerStream.listen((
       event,
     ) {
-      if (_buffering != event.isBuffering) {
+      final newBuffering = event.isBuffering || !event.isInitialized;
+
+      if (_buffering != newBuffering) {
         setState(() {
-          _buffering = event.isBuffering;
+          _buffering = newBuffering;
         });
       }
     });

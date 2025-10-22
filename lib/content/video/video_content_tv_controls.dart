@@ -255,9 +255,7 @@ class _TVVideoBufferingIndicator extends StatefulWidget {
 
 class _TVVideoBufferingIndicatorState
     extends State<_TVVideoBufferingIndicator> {
-  late bool _buffering = videoContentController(
-    context,
-  ).playerState.isBuffering;
+  late bool _buffering = true;
 
   StreamSubscription? _subscription;
 
@@ -267,9 +265,11 @@ class _TVVideoBufferingIndicatorState
     _subscription = videoContentController(context).playerStream.listen((
       event,
     ) {
-      if (_buffering != event.isBuffering) {
+      final newBuffering = event.isBuffering || !event.isInitialized;
+
+      if (_buffering != newBuffering) {
         setState(() {
-          _buffering = event.isBuffering;
+          _buffering = newBuffering;
         });
       }
     });

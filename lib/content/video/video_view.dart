@@ -14,9 +14,7 @@ class VideoView extends StatelessWidget {
       builder: (context, asyncValue, _) {
         return Center(
           child: switch (asyncValue) {
-            AsyncLoading() => const CircularProgressIndicator(
-              color: Colors.white,
-            ),
+            AsyncLoading() => SizedBox.shrink(),
             AsyncError(:final error) => Text(
               'Error: $error',
               style: const TextStyle(fontSize: 24, color: Colors.white),

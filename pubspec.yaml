@@ -41,7 +41,7 @@ dependencies:
   device_info_plus: ^11.3.0
   package_info_plus: ^8.2.1
   # desktop
-  window_manager: ^0.5.0
+  window_manager: ^0.5.1
   # mobile
   flutter_foreground_task: ^9.1.0
   wakelock_plus: ^1.1.1

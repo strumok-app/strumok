@@ -66,9 +66,7 @@ class _VideoContentMobileControlsState
   bool showSwipeDuration = false; // Whether to show the seek duration overlay
 
   bool _speedUpIndicator = false;
-  late bool _buffering = videoContentController(
-    context,
-  ).playerState.isBuffering;
+  late bool _buffering = true;
   final VolumeController _volumeController = VolumeController.instance;
 
   bool _mountSeekBackwardButton = false;
@@ -120,9 +118,11 @@ class _VideoContentMobileControlsState
     _subscription ??= videoContentController(context).playerStream.listen((
       event,
     ) {
-      if (_buffering != event.isBuffering) {
+      final newBuffering = event.isBuffering || !event.isInitialized;
+
+      if (_buffering != newBuffering) {
         setState(() {
-          _buffering = event.isBuffering;
+          _buffering = newBuffering;
         });
       }
     });
@@ -783,7 +783,6 @@ class _VideoContentMobileControlsState
                     ),
                   ),
                 ),
-
                 // Double-Tap Seek Button(s):
                 if (_mountSeekBackwardButton || _mountSeekForwardButton)
                   Positioned.fill(
@@ -856,7 +855,7 @@ class _VideoContentMobileControlsState
 
                                       videoContentController(
                                         context,
-                                      ).seekBackward(value);
+                                      ).seekForward(value);
                                     },
                                   ),
                                 )
