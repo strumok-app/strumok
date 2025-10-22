@@ -221,13 +221,14 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
                   pagesController: pagesController,
                 ),
               ),
-              SizedBox(width: 8),
-              IconButton(
-                onPressed: toggleFullscreen,
-                icon: const Icon(Icons.fullscreen),
-                color: Colors.white,
-              ),
-              SizedBox(width: 8),
+              if (isDesktopDevice()) ...[
+                IconButton(
+                  onPressed: toggleFullscreen,
+                  icon: const Icon(Icons.fullscreen),
+                  color: Colors.white,
+                ),
+                SizedBox(width: 8),
+              ],
               MangaSettingsButton(
                 contentDetails: contentDetails,
                 mediaItems: mediaItems,
