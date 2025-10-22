@@ -21,26 +21,58 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:window_manager/window_manager.dart';
 
-class MangaReaderView extends ConsumerWidget {
+class MangaReaderView extends ConsumerStatefulWidget {
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
-  final CurrentMangaPagesProvider _pagesProvider;
 
-  MangaReaderView({
+  const MangaReaderView({
     super.key,
     required this.contentDetails,
     required this.mediaItems,
-  }) : _pagesProvider = currentMangaPagesProvider(contentDetails, mediaItems);
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MangaReaderView> createState() => _MangaReaderViewState();
+}
+
+class _MangaReaderViewState extends ConsumerState<MangaReaderView> {
+  @override
+  void initState() {
+    if (isMobileDevice()) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    }
+
+    WakelockPlus.enable();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (isMobileDevice()) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    } else if (isDesktopDevice()) {
+      windowManager.setFullScreen(false);
+    }
+
+    WakelockPlus.disable();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pagesProvider = currentMangaPagesProvider(
+      widget.contentDetails,
+      widget.mediaItems,
+    );
     return ref
-        .watch(_pagesProvider)
+        .watch(pagesProvider)
         .when(
           data: (pages) => _renderReader(context, ref, pages),
           error: (error, stackTrace) => DisplayError(
             error: error,
-            onRefresh: () => ref.invalidate(_pagesProvider),
+            onRefresh: () => ref.invalidate(pagesProvider),
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
         );
@@ -53,20 +85,20 @@ class MangaReaderView extends ConsumerWidget {
   ) {
     if (pages.isEmpty) {
       return _NoPagesView(
-        contentDetails: contentDetails,
-        mediaItems: mediaItems,
+        contentDetails: widget.contentDetails,
+        mediaItems: widget.mediaItems,
       );
     }
 
     final collectionItem = ref
-        .read(collectionItemProvider(contentDetails))
+        .read(collectionItemProvider(widget.contentDetails))
         .requireValue;
 
     return _MangaPagesReaderView(
       pages: pages,
       initialPage: collectionItem.currentPosition,
-      contentDetails: contentDetails,
-      mediaItems: mediaItems,
+      contentDetails: widget.contentDetails,
+      mediaItems: widget.mediaItems,
     );
   }
 }
@@ -99,12 +131,6 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
 
   @override
   void initState() {
-    if (isMobileDevice()) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    }
-
-    WakelockPlus.enable();
-
     pageListenable = ValueNotifier(widget.initialPage);
 
     ref
@@ -124,19 +150,6 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
     });
 
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    if (isMobileDevice()) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    } else if (isDesktopDevice()) {
-      windowManager.setFullScreen(false);
-    }
-
-    WakelockPlus.disable();
-
-    super.dispose();
   }
 
   @override
@@ -173,6 +186,9 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
         NextPageIntent: CallbackAction<NextPageIntent>(
           onInvoke: (_) => _movePage(readerMode, true),
         ),
+        NextChapterIntent: CallbackAction<NextChapterIntent>(
+          onInvoke: (_) => _nextItem(),
+        ),
         ShowUIIntent: CallbackAction<ShowUIIntent>(
           onInvoke: (_) => Navigator.of(context).push(
             MangaReaderControlsRoute(
@@ -193,23 +209,18 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
         ),
       },
       autofocus: true,
-      child: Stack(
-        children: [
-          const MangaBackground(),
-          readerMode.scroll
-              ? MangaScrolledViewer(
-                  pages: widget.pages,
-                  direction: readerMode.direction,
-                  scrollController: scrollController,
-                  pageListenable: pageListenable,
-                )
-              : MangaPagedViewer(
-                  pages: widget.pages,
-                  direction: readerMode.direction,
-                  pageListenable: pageListenable,
-                ),
-        ],
-      ),
+      child: readerMode.scroll
+          ? MangaScrolledViewer(
+              pages: widget.pages,
+              direction: readerMode.direction,
+              scrollController: scrollController,
+              pageListenable: pageListenable,
+            )
+          : MangaPagedViewer(
+              pages: widget.pages,
+              direction: readerMode.direction,
+              pageListenable: pageListenable,
+            ),
     );
   }
 
@@ -238,6 +249,15 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
         notifier.setCurrentPosition(newPos);
         pageListenable.value = newPos;
       }
+    }
+  }
+
+  void _nextItem() async {
+    final provider = widget.itemProvider;
+    final notifier = ref.read(provider.notifier);
+    final contentProgress = await ref.read(provider.future);
+    if (contentProgress.currentItem < widget.mediaItems.length - 1) {
+      notifier.setCurrentItem(contentProgress.currentItem + 1);
     }
   }
 

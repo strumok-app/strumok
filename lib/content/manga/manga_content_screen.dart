@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:strumok/content/details/content_details_provider.dart';
 import 'package:strumok/content/manga/manga_reader.dart';
+import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -21,17 +22,23 @@ class MangaContentScreen extends ConsumerWidget {
     final result = ref.watch(detailsAndMediaProvider(supplier, id));
     return SafeArea(
       child: Scaffold(
-        body: result.when(
-          skipLoadingOnRefresh: false,
-          data: (data) => MangaReader(
-            contentDetails: data.contentDetails,
-            mediaItems: data.mediaItems,
-          ),
-          error: (error, stackTrace) => DisplayError(
-            error: error,
-            onRefresh: () => ref.refresh(detailsProvider(supplier, id).future),
-          ),
-          loading: () => const Center(child: CircularProgressIndicator()),
+        body: Stack(
+          children: [
+            const MangaBackground(),
+            result.when(
+              skipLoadingOnRefresh: false,
+              data: (data) => MangaReader(
+                contentDetails: data.contentDetails,
+                mediaItems: data.mediaItems,
+              ),
+              error: (error, stackTrace) => DisplayError(
+                error: error,
+                onRefresh: () =>
+                    ref.refresh(detailsProvider(supplier, id).future),
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+            ),
+          ],
         ),
       ),
     );

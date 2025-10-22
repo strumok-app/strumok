@@ -21,6 +21,7 @@ class VideoContentScreen extends ConsumerWidget {
     final result = ref.watch(detailsAndMediaProvider(supplier, id));
 
     return Scaffold(
+      backgroundColor: Colors.black,
       body: result.when(
         skipLoadingOnRefresh: false,
         data: (data) => VideoContentView(

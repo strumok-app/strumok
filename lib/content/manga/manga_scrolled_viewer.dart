@@ -1,12 +1,10 @@
 import 'dart:collection';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/content/manga/intents.dart';
 import 'package:strumok/content/manga/manga_page_image.dart';
 import 'package:strumok/content/manga/model.dart';
-import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/utils/matrix.dart';
 
 class MangaScrolledViewer extends StatefulWidget {
@@ -85,14 +83,18 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
                 childCount: widget.pages.length - _page - 1,
               ),
             ),
-            SliverPadding(
-              padding: EdgeInsets.only(
-                right: widget.direction == Axis.horizontal
-                    ? size.width * 0.7
-                    : 0,
-                bottom: widget.direction == Axis.vertical
-                    ? size.height * 0.7
-                    : 0,
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => SizedBox(
+                  width: widget.direction == Axis.vertical
+                      ? size.width
+                      : size.width * 0.5,
+                  height: widget.direction == Axis.vertical
+                      ? size.height * 0.5
+                      : size.height,
+                  child: _NextChapterButton(),
+                ),
+                childCount: 1,
               ),
             ),
           ],
@@ -205,6 +207,31 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
         widget.pageListenable.value = firstPage;
       }
     });
+  }
+}
+
+class _NextChapterButton extends StatelessWidget {
+  const _NextChapterButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: AlignmentGeometry.bottomRight,
+      child: Center(
+        child: TextButton(
+          onPressed: () {
+            Actions.invoke(context, NextChapterIntent());
+          },
+          style: const ButtonStyle(
+            padding: WidgetStatePropertyAll(
+              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            ),
+            textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 32)),
+          ),
+          child: Text("Next"),
+        ),
+      ),
+    );
   }
 }
 

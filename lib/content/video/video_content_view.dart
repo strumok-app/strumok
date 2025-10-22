@@ -80,21 +80,14 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-
     return VideoContentControllerInheritedWidget(
       controller: _controller,
-      child: Container(
-        height: size.height,
-        width: size.width,
-        color: Colors.black,
-        child: Stack(
-          children: [
-            VideoView(),
-            Positioned.fill(child: _buildControlsView()),
-            VideoSubtitles(),
-          ],
-        ),
+      child: Stack(
+        children: [
+          VideoView(),
+          Positioned.fill(child: _buildControlsView()),
+          VideoSubtitles(),
+        ],
       ),
     );
   }
