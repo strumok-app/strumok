@@ -1,13 +1,16 @@
 import 'dart:collection';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/content/manga/intents.dart';
+import 'package:strumok/content/manga/manga_page_image.dart';
+import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/utils/matrix.dart';
 
 class MangaScrolledViewer extends StatefulWidget {
-  final List<ImageProvider<Object>> pages;
+  final List<MangaPageInfo> pages;
   final Axis direction;
   final ScrollController scrollController;
   final ValueNotifier<int> pageListenable;
@@ -141,18 +144,9 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
           _registeredPageElement.remove(_PageElement(index, el));
         }
       },
-      child: Image(
-        fit: BoxFit.fitWidth,
-        image: widget.pages[index],
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) {
-            return ManagPageAspectContainer(
-              direction: widget.direction,
-              child: child,
-            );
-          }
-          return MangaPagePlaceholder(direction: widget.direction);
-        },
+      child: MangaPageImage(
+        direction: widget.direction,
+        page: widget.pages[index],
       ),
     );
   }

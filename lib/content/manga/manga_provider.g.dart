@@ -327,14 +327,14 @@ class _CurrentMangaMediaItemSourceProviderElement
       (origin as CurrentMangaMediaItemSourceProvider).mediaItems;
 }
 
-String _$currentMangaPagesHash() => r'de0f22e866d23055587de21f38a3c8ea87902859';
+String _$currentMangaPagesHash() => r'd9675492a4f5a75f483903b8f9bf67e7f4433b59';
 
 /// See also [currentMangaPages].
 @ProviderFor(currentMangaPages)
 const currentMangaPagesProvider = CurrentMangaPagesFamily();
 
 /// See also [currentMangaPages].
-class CurrentMangaPagesFamily extends Family<AsyncValue<List<ImageProvider>>> {
+class CurrentMangaPagesFamily extends Family<AsyncValue<List<MangaPageInfo>>> {
   /// See also [currentMangaPages].
   const CurrentMangaPagesFamily();
 
@@ -370,7 +370,7 @@ class CurrentMangaPagesFamily extends Family<AsyncValue<List<ImageProvider>>> {
 
 /// See also [currentMangaPages].
 class CurrentMangaPagesProvider
-    extends AutoDisposeFutureProvider<List<ImageProvider>> {
+    extends AutoDisposeFutureProvider<List<MangaPageInfo>> {
   /// See also [currentMangaPages].
   CurrentMangaPagesProvider(
     ContentDetails contentDetails,
@@ -409,7 +409,7 @@ class CurrentMangaPagesProvider
 
   @override
   Override overrideWith(
-    FutureOr<List<ImageProvider>> Function(CurrentMangaPagesRef provider)
+    FutureOr<List<MangaPageInfo>> Function(CurrentMangaPagesRef provider)
     create,
   ) {
     return ProviderOverride(
@@ -428,7 +428,7 @@ class CurrentMangaPagesProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<ImageProvider>> createElement() {
+  AutoDisposeFutureProviderElement<List<MangaPageInfo>> createElement() {
     return _CurrentMangaPagesProviderElement(this);
   }
 
@@ -452,7 +452,7 @@ class CurrentMangaPagesProvider
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin CurrentMangaPagesRef
-    on AutoDisposeFutureProviderRef<List<ImageProvider>> {
+    on AutoDisposeFutureProviderRef<List<MangaPageInfo>> {
   /// The parameter `contentDetails` of this provider.
   ContentDetails get contentDetails;
 
@@ -461,7 +461,7 @@ mixin CurrentMangaPagesRef
 }
 
 class _CurrentMangaPagesProviderElement
-    extends AutoDisposeFutureProviderElement<List<ImageProvider>>
+    extends AutoDisposeFutureProviderElement<List<MangaPageInfo>>
     with CurrentMangaPagesRef {
   _CurrentMangaPagesProviderElement(super.provider);
 

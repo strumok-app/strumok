@@ -1,12 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/content/manga/intents.dart';
+import 'package:strumok/content/manga/manga_page_image.dart';
+import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/utils/matrix.dart';
 
 class MangaPagedViewer extends ConsumerStatefulWidget {
-  final List<ImageProvider<Object>> pages;
+  final List<MangaPageInfo> pages;
   final Axis direction;
   final ValueListenable<int> pageListenable;
 
@@ -41,21 +44,6 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
 
   void _onPageChanged() {
     final pageNum = widget.pageListenable.value;
-    final pages = widget.pages;
-
-    precacheImage(pages[pageNum], context);
-    for (int i = 1; i < 2; i++) {
-      final r = pageNum + i;
-      final l = pageNum - i;
-
-      if (r < pages.length) {
-        precacheImage(pages[r], context);
-      }
-
-      if (l >= 0) {
-        precacheImage(pages[l], context);
-      }
-    }
 
     _pageController?.animateToPage(
       pageNum,
@@ -181,7 +169,7 @@ class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
 }
 
 class _SinglePageView extends ConsumerWidget {
-  final ImageProvider<Object> page;
+  final MangaPageInfo page;
   final Axis direction;
   final TransformationController transformationController;
 
@@ -199,10 +187,17 @@ class _SinglePageView extends ConsumerWidget {
           minScale: 1,
           transformationController: transformationController,
           boundaryMargin: EdgeInsets.zero,
-          child: MangaPageImage(
-            direction: direction,
-            constraints: constraints,
-            page: page,
+          child: Container(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight,
+              minWidth: constraints.maxWidth,
+            ),
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+              height: constraints.maxHeight,
+              width: constraints.maxWidth,
+              child: MangaPageImage(direction: direction, page: page),
+            ),
           ),
         );
       },

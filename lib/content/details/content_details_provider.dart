@@ -33,7 +33,7 @@ Future<ContentDetails> details(Ref ref, String supplier, String id) async {
   });
 
   if (offlineMode) {
-    return OfflineStorage().getDetails(supplier, id);
+    return OfflineStorage().getContentDetails(supplier, id);
   }
 
   final details = await ContentSuppliers()
@@ -41,7 +41,7 @@ Future<ContentDetails> details(Ref ref, String supplier, String id) async {
       .then((d) => ContentDetailsWithOffline(d) as ContentDetails)
       .timeout(
         Duration(seconds: 30),
-        onTimeout: () async => OfflineStorage().getDetails(supplier, id),
+        onTimeout: () async => OfflineStorage().getContentDetails(supplier, id),
       );
 
   return details;

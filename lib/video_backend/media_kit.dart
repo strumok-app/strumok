@@ -71,7 +71,7 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
   Future<int?> create(DataSource dataSource) async {
     final player = media_kit.Player(
       configuration: media_kit.PlayerConfiguration(
-        logLevel: media_kit.MPVLogLevel.error,
+        logLevel: media_kit.MPVLogLevel.info,
       ),
     );
     final completer = Completer();
@@ -341,6 +341,7 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
             VideoEvent(
               eventType: VideoEventType.bufferingUpdate,
               buffered: [DurationRange(Duration.zero, event)],
+              duration: player.state.duration,
             ),
           );
         }),

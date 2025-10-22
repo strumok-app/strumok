@@ -158,7 +158,10 @@ class OfflineItem extends ConsumerWidget {
                   return;
                 }
 
-                await OfflineStorage().deleteAll(info.supplier, info.id);
+                await OfflineStorage().deleteContentDetails(
+                  info.supplier,
+                  info.id,
+                );
                 ref.invalidate(offlineContentProvider);
               },
             ),

@@ -118,7 +118,7 @@ class _VideoContentMobileControlsState
     _subscription ??= videoContentController(context).playerStream.listen((
       event,
     ) {
-      final newBuffering = event.isBuffering || !event.isInitialized;
+      final newBuffering = event.showBuffering;
 
       if (_buffering != newBuffering) {
         setState(() {

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
@@ -18,7 +19,6 @@ void downloadManga(
     var bytesDownloaded = 0;
     for (var i = 0; i < request.pages.length; i++) {
       if (cancelToken.isCanceled) {
-        await Directory(request.folder).delete(recursive: true);
         return;
       }
 
@@ -58,6 +58,15 @@ void downloadManga(
         downloadSpeed(startTs, bytesDownloaded),
       );
     }
+
+    final completeFile = File('${request.folder}/complete');
+    await completeFile.create(recursive: true);
+    await completeFile.writeAsString(
+      jsonEncode({
+        'pages': request.pages.length,
+        'timestamp': DateTime.now().toIso8601String(),
+      }),
+    );
 
     onDone(DownloadStatus.completed);
   } catch (e) {

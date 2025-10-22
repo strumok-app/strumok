@@ -1,9 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
-import 'package:flutter/material.dart';
+import 'package:strumok/content/manga/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'manga_provider.g.dart';
@@ -47,11 +46,15 @@ Future<MangaMediaItemSource?> currentMangaMediaItemSource(
 }
 
 @riverpod
-Future<List<ImageProvider>> currentMangaPages(
+Future<List<MangaPageInfo>> currentMangaPages(
   Ref ref,
   ContentDetails contentDetails,
   List<ContentMediaItem> mediaItems,
 ) async {
+  final itemNum = await ref.watch(
+    collectionItemCurrentItemProvider(contentDetails).future,
+  );
+
   final currentSource = await ref.watch(
     currentMangaMediaItemSourceProvider(contentDetails, mediaItems).future,
   );
@@ -60,9 +63,18 @@ Future<List<ImageProvider>> currentMangaPages(
     return [];
   }
 
-  final pages = (await currentSource.pages)
-      .map((url) => CachedNetworkImageProvider(url))
-      .toList();
+  final pages = await currentSource.pages;
 
-  return pages;
+  return pages
+      .mapIndexed(
+        (index, url) => MangaPageInfo(
+          supplier: contentDetails.supplier,
+          id: contentDetails.id,
+          itemNum: itemNum,
+          source: currentSource,
+          pageNum: index,
+          url: url,
+        ),
+      )
+      .toList();
 }

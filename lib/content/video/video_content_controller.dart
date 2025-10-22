@@ -20,6 +20,8 @@ extension VideoPlayerValueExt on VideoPlayerValue {
   Duration get lastBuffer => buffered.lastOrNull?.end ?? Duration.zero;
   bool get isEnded =>
       duration > Duration.zero && position >= duration && !isPlaying;
+
+  bool get showBuffering => (isBuffering || !isInitialized) && !hasError;
 }
 
 typedef ChangeCollectionCurrentItemCallback = void Function(int);
@@ -311,7 +313,9 @@ class VideoContentController {
 
       _readyVideoPlayerController?.dispose();
       playerController.value = AsyncValue.error(e, stackTrace);
-      _playerStateStreamController.add(VideoPlayerValue.uninitialized());
+      _playerStateStreamController.add(
+        VideoPlayerValue.erroneous(e.toString()),
+      );
     }
   }
 

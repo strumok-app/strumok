@@ -34,7 +34,7 @@ class MangaReaderView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<AsyncValue<List<ImageProvider>>>(_pagesProvider, (
+    ref.listen<AsyncValue<List<MangaPageInfo>>>(_pagesProvider, (
       previous,
       next,
     ) {
@@ -61,7 +61,7 @@ class MangaReaderView extends ConsumerWidget {
   Widget _renderReader(
     BuildContext context,
     WidgetRef ref,
-    List<ImageProvider> pages,
+    List<MangaPageInfo> pages,
   ) {
     if (pages.isEmpty) {
       return _NoPagesView(
@@ -94,7 +94,7 @@ class MangaReaderView extends ConsumerWidget {
 }
 
 class _MangaPagesReaderView extends ConsumerStatefulWidget {
-  final List<ImageProvider> pages;
+  final List<MangaPageInfo> pages;
   final int initialPage;
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;

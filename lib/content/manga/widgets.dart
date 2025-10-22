@@ -138,45 +138,6 @@ class MangaChapterProgressIndicator extends ConsumerWidget {
   }
 }
 
-class MangaPageImage extends StatelessWidget {
-  final Axis direction;
-  final BoxConstraints constraints;
-  final ImageProvider<Object> page;
-
-  const MangaPageImage({
-    super.key,
-    required this.direction,
-    required this.constraints,
-    required this.page,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(
-        minHeight: constraints.maxHeight,
-        minWidth: constraints.maxWidth,
-      ),
-      alignment: Alignment.topCenter,
-      child: SizedBox(
-        height: constraints.maxHeight,
-        width: constraints.maxWidth,
-        child: Image(
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-
-            return MangaPagePlaceholder(direction: direction);
-          },
-          fit: BoxFit.contain,
-          image: page,
-        ),
-      ),
-    );
-  }
-}
-
 class MangaPagePlaceholder extends StatefulWidget {
   final Axis direction;
 

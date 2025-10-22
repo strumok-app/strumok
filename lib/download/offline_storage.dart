@@ -79,7 +79,7 @@ class OfflineStorage {
     }
   }
 
-  Future<ContentDetails> getDetails(String supplier, String id) async {
+  Future<ContentDetails> getContentDetails(String supplier, String id) async {
     final contentDetailsPath = _getContentRootPath(supplier, id);
     final contentDetailsJson = await _readContentDetailsJson(
       contentDetailsPath,
@@ -163,6 +163,14 @@ class OfflineStorage {
         }
       } else if (fsEntry is Directory) {
         if (fsEntryName.startsWith("pages_")) {
+          final isComplete = await fsEntry.list().any(
+            (e) => e.path.endsWith("/complete"),
+          );
+
+          if (!isComplete) {
+            return [];
+          }
+
           final name = fsEntryName.substring(6);
           sources.add(
             OfflineMangaMediaItemSource(
@@ -190,7 +198,7 @@ class OfflineStorage {
     }
   }
 
-  Future<void> deleteAll(String supplier, String id) async {
+  Future<void> deleteContentDetails(String supplier, String id) async {
     final contentDetailsPath = _getContentRootPath(supplier, id);
     await Directory(contentDetailsPath).delete(recursive: true);
   }
@@ -201,7 +209,7 @@ class OfflineStorage {
     int number,
     ContentMediaItemSource source,
   ) async {
-    final sourcePath = _getMediaItemSourcePath(supplier, id, number, source);
+    final sourcePath = getMediaItemSourcePath(supplier, id, number, source);
 
     if (source.kind == FileKind.manga) {
       await Directory(sourcePath).delete(recursive: true);
@@ -234,7 +242,7 @@ class OfflineStorage {
   String _getContentDetailsFolderName(String supplier, String id) =>
       "${supplier}_${Uri.encodeComponent(id)}";
 
-  String _getMediaItemSourcePath(
+  String getMediaItemSourcePath(
     String supplier,
     String id,
     int number,
@@ -298,7 +306,7 @@ class OfflineStorage {
     if (source.kind == FileKind.video) {
       final mediaSource = source as MediaFileItemSource;
       final link = await mediaSource.link;
-      final sourcePath = OfflineStorage()._getMediaItemSourcePath(
+      final sourcePath = OfflineStorage().getMediaItemSourcePath(
         supplier,
         id,
         number,
@@ -316,7 +324,7 @@ class OfflineStorage {
       final mediaSource = source as MangaMediaItemSource;
       final pages = await mediaSource.pages;
 
-      final sourcePath = OfflineStorage()._getMediaItemSourcePath(
+      final sourcePath = OfflineStorage().getMediaItemSourcePath(
         supplier,
         id,
         number,
