@@ -111,5 +111,17 @@
     "connectTV": "Connect TV with code",
     "connectTVValue": "Connect code: {code}",
     "connectTVAuth": "Authenticate with code",
-    "connectTVInvalidCode": "Invalid code"
+    "connectTVInvalidCode": "Invalid code",
+    "equalizerTitle": "Equalizer",
+    "equalizerPresetClearDialogue": "Clear Dialogue",
+    "equalizerPresetCinema": "Cinema",
+    "equalizerPresetNightMode": "Night Mode",
+    "equalizerPresetAction": "Action",
+    "equalizerPresetReset": "Reset",
+    "equalizerPresetMax": "Max",
+    "equalizerBandBass": "Bass",
+    "equalizerBandLowMid": "Low Mid",
+    "equalizerBandMid": "Mid",
+    "equalizerBandHighMid": "High Mid",
+    "equalizerBandTreble": "Treble"
 }

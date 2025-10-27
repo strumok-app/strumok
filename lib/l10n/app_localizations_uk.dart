@@ -356,4 +356,40 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get connectTVInvalidCode => 'Невірний код авторизації';
+
+  @override
+  String get equalizerTitle => 'Еквалайзер';
+
+  @override
+  String get equalizerPresetClearDialogue => 'Чіткий діалог';
+
+  @override
+  String get equalizerPresetCinema => 'Кіно';
+
+  @override
+  String get equalizerPresetNightMode => 'Нічний режим';
+
+  @override
+  String get equalizerPresetAction => 'Екшн';
+
+  @override
+  String get equalizerPresetReset => 'Скинути';
+
+  @override
+  String get equalizerPresetMax => 'Максимум';
+
+  @override
+  String get equalizerBandBass => 'Бас';
+
+  @override
+  String get equalizerBandLowMid => 'Низькі середні';
+
+  @override
+  String get equalizerBandMid => 'Середні';
+
+  @override
+  String get equalizerBandHighMid => 'Високі середні';
+
+  @override
+  String get equalizerBandTreble => 'Високі';
 }

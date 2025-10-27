@@ -111,5 +111,17 @@
     "connectTV": "Отримати код підлюченя ТБ",
     "connectTVValue": "Код підлюченя: {code}",
     "connectTVAuth": "Ввести код авторизації",
-    "connectTVInvalidCode": "Невірний код авторизації"
+    "connectTVInvalidCode": "Невірний код авторизації",
+    "equalizerTitle": "Еквалайзер",
+    "equalizerPresetClearDialogue": "Чіткий діалог",
+    "equalizerPresetCinema": "Кіно",
+    "equalizerPresetNightMode": "Нічний режим",
+    "equalizerPresetAction": "Екшн",
+    "equalizerPresetReset": "Скинути",
+    "equalizerPresetMax": "Максимум",
+    "equalizerBandBass": "Бас",
+    "equalizerBandLowMid": "Низькі середні",
+    "equalizerBandMid": "Середні",
+    "equalizerBandHighMid": "Високі середні",
+    "equalizerBandTreble": "Високі"
 }

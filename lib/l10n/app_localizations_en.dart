@@ -356,4 +356,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectTVInvalidCode => 'Invalid code';
+
+  @override
+  String get equalizerTitle => 'Equalizer';
+
+  @override
+  String get equalizerPresetClearDialogue => 'Clear Dialogue';
+
+  @override
+  String get equalizerPresetCinema => 'Cinema';
+
+  @override
+  String get equalizerPresetNightMode => 'Night Mode';
+
+  @override
+  String get equalizerPresetAction => 'Action';
+
+  @override
+  String get equalizerPresetReset => 'Reset';
+
+  @override
+  String get equalizerPresetMax => 'Max';
+
+  @override
+  String get equalizerBandBass => 'Bass';
+
+  @override
+  String get equalizerBandLowMid => 'Low Mid';
+
+  @override
+  String get equalizerBandMid => 'Mid';
+
+  @override
+  String get equalizerBandHighMid => 'High Mid';
+
+  @override
+  String get equalizerBandTreble => 'Treble';
 }

@@ -769,6 +769,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid code'**
   String get connectTVInvalidCode;
+
+  /// No description provided for @equalizerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Equalizer'**
+  String get equalizerTitle;
+
+  /// No description provided for @equalizerPresetClearDialogue.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Dialogue'**
+  String get equalizerPresetClearDialogue;
+
+  /// No description provided for @equalizerPresetCinema.
+  ///
+  /// In en, this message translates to:
+  /// **'Cinema'**
+  String get equalizerPresetCinema;
+
+  /// No description provided for @equalizerPresetNightMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Night Mode'**
+  String get equalizerPresetNightMode;
+
+  /// No description provided for @equalizerPresetAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Action'**
+  String get equalizerPresetAction;
+
+  /// No description provided for @equalizerPresetReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get equalizerPresetReset;
+
+  /// No description provided for @equalizerPresetMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get equalizerPresetMax;
+
+  /// No description provided for @equalizerBandBass.
+  ///
+  /// In en, this message translates to:
+  /// **'Bass'**
+  String get equalizerBandBass;
+
+  /// No description provided for @equalizerBandLowMid.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Mid'**
+  String get equalizerBandLowMid;
+
+  /// No description provided for @equalizerBandMid.
+  ///
+  /// In en, this message translates to:
+  /// **'Mid'**
+  String get equalizerBandMid;
+
+  /// No description provided for @equalizerBandHighMid.
+  ///
+  /// In en, this message translates to:
+  /// **'High Mid'**
+  String get equalizerBandHighMid;
+
+  /// No description provided for @equalizerBandTreble.
+  ///
+  /// In en, this message translates to:
+  /// **'Treble'**
+  String get equalizerBandTreble;
 }
 
 class _AppLocalizationsDelegate

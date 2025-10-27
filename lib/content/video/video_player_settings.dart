@@ -104,32 +104,6 @@ class PlayerSettingsDialogState extends State<PlayerSettingsDialog>
                 );
               },
             ),
-            // AnimatedSwitcher(
-            //   duration: const Duration(milliseconds: 300),
-            //   transitionBuilder: (child, animation) {
-            //     final offsetAnimation =
-            //         Tween<Offset>(
-            //           begin: const Offset(1.0, 0.0),
-            //           end: Offset.zero,
-            //         ).animate(
-            //           CurvedAnimation(
-            //             parent: animation,
-            //             curve: Curves.easeInOut,
-            //           ),
-            //         );
-
-            //     return SlideTransition(position: offsetAnimation, child: child);
-            //   },
-            //   child: switch (_location) {
-            //     _MenuLocation.subtitlesOffset => _MenuSubtitlesOffset(
-            //       onNav: _navTo,
-            //     ),
-            //     _MenuLocation.equalizer => _MenuEqualizer(onNav: _navTo),
-            //     _MenuLocation.startFrom => _MenuStartFrom(onNav: _navTo),
-            //     _MenuLocation.onEnds => _MenuOnVideoEnds(onNav: _navTo),
-            //     _ => _MenuRoot(onNav: _navTo),
-            //   },
-            // ),
           ),
         ),
       ),
@@ -174,7 +148,10 @@ class _MenuEqualizer extends ConsumerWidget {
           onTap: () {
             onNav(_MenuLocation.root);
           },
-          title: Text('Equalizer', style: theme.textTheme.bodyLarge),
+          title: Text(
+            AppLocalizations.of(context)!.equalizerTitle,
+            style: theme.textTheme.bodyLarge,
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(16),
@@ -182,7 +159,7 @@ class _MenuEqualizer extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _EqualizerBand(
-                label: 'Bass',
+                label: AppLocalizations.of(context)!.equalizerBandBass,
                 value: equalizerBands[0],
                 onChanged: (value) {
                   ref
@@ -191,7 +168,7 @@ class _MenuEqualizer extends ConsumerWidget {
                 },
               ),
               _EqualizerBand(
-                label: 'Low Mid',
+                label: AppLocalizations.of(context)!.equalizerBandLowMid,
                 value: equalizerBands[1],
                 onChanged: (value) {
                   ref
@@ -200,7 +177,7 @@ class _MenuEqualizer extends ConsumerWidget {
                 },
               ),
               _EqualizerBand(
-                label: 'Mid',
+                label: AppLocalizations.of(context)!.equalizerBandMid,
                 value: equalizerBands[2],
                 onChanged: (value) {
                   ref
@@ -209,7 +186,7 @@ class _MenuEqualizer extends ConsumerWidget {
                 },
               ),
               _EqualizerBand(
-                label: 'High Mid',
+                label: AppLocalizations.of(context)!.equalizerBandHighMid,
                 value: equalizerBands[3],
                 onChanged: (value) {
                   ref
@@ -218,7 +195,7 @@ class _MenuEqualizer extends ConsumerWidget {
                 },
               ),
               _EqualizerBand(
-                label: 'Treble',
+                label: AppLocalizations.of(context)!.equalizerBandTreble,
                 value: equalizerBands[4],
                 onChanged: (value) {
                   ref
@@ -235,7 +212,9 @@ class _MenuEqualizer extends ConsumerWidget {
           alignment: WrapAlignment.spaceEvenly,
           children: [
             OutlinedButton(
-              child: Text('Clear Dialogue'),
+              child: Text(
+                AppLocalizations.of(context)!.equalizerPresetClearDialogue,
+              ),
               onPressed: () {
                 ref
                     .read(equalizerBandsSettingsProvider.notifier)
@@ -243,7 +222,7 @@ class _MenuEqualizer extends ConsumerWidget {
               },
             ),
             OutlinedButton(
-              child: Text('Cinema'),
+              child: Text(AppLocalizations.of(context)!.equalizerPresetCinema),
               onPressed: () {
                 ref
                     .read(equalizerBandsSettingsProvider.notifier)
@@ -251,7 +230,9 @@ class _MenuEqualizer extends ConsumerWidget {
               },
             ),
             OutlinedButton(
-              child: Text('Night Mode'),
+              child: Text(
+                AppLocalizations.of(context)!.equalizerPresetNightMode,
+              ),
               onPressed: () {
                 ref
                     .read(equalizerBandsSettingsProvider.notifier)
@@ -259,7 +240,7 @@ class _MenuEqualizer extends ConsumerWidget {
               },
             ),
             OutlinedButton(
-              child: Text('Action'),
+              child: Text(AppLocalizations.of(context)!.equalizerPresetAction),
               onPressed: () {
                 ref
                     .read(equalizerBandsSettingsProvider.notifier)
@@ -267,7 +248,7 @@ class _MenuEqualizer extends ConsumerWidget {
               },
             ),
             OutlinedButton(
-              child: Text('Reset'),
+              child: Text(AppLocalizations.of(context)!.equalizerPresetReset),
               onPressed: () {
                 ref
                     .read(equalizerBandsSettingsProvider.notifier)
@@ -275,7 +256,7 @@ class _MenuEqualizer extends ConsumerWidget {
               },
             ),
             OutlinedButton(
-              child: Text('Max'),
+              child: Text(AppLocalizations.of(context)!.equalizerPresetMax),
               onPressed: () {
                 ref
                     .read(equalizerBandsSettingsProvider.notifier)
@@ -328,12 +309,15 @@ class _EqualizerBandState extends State<_EqualizerBand> {
 
     return Column(
       children: [
-        Text(
-          widget.label,
-          style: theme.textTheme.bodyMedium,
-          textAlign: TextAlign.center,
+        SizedBox(
+          width: 60,
+          height: 38,
+          child: Text(
+            widget.label,
+            style: theme.textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
         ),
-        const SizedBox(height: 8),
         SizedBox(
           height: 120,
           width: 60,
@@ -533,7 +517,7 @@ class _MenuRoot extends ConsumerWidget {
           onTap: () {
             onNav(_MenuLocation.equalizer);
           },
-          title: const Text('Equalizer'),
+          title: Text(AppLocalizations.of(context)!.equalizerTitle),
         ),
         ListTile(
           onTap: () {
