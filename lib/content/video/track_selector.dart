@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/l10n/app_localizations.dart';
+import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/video_backend/extension.dart';
 import 'package:strumok/video_backend/tracks.dart';
 import 'package:video_player/video_player.dart';
@@ -55,18 +56,20 @@ class _TrackSelectorDialog extends StatelessWidget {
     final audioTracks = controller.audioTracks;
     final videoTracks = controller.videoTracks;
 
-    return Dialog(
-      child: SizedBox(
-        width: 480,
-        child: SingleChildScrollView(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (videoTracks.isNotEmpty)
-                Expanded(child: _buildVideoTracks(context, videoTracks)),
-              if (audioTracks.isNotEmpty)
-                Expanded(child: _buildAudioTracks(context, audioTracks)),
-            ],
+    return AppTheme(
+      child: Dialog(
+        child: SizedBox(
+          width: 480,
+          child: SingleChildScrollView(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (videoTracks.isNotEmpty)
+                  Expanded(child: _buildVideoTracks(context, videoTracks)),
+                if (audioTracks.isNotEmpty)
+                  Expanded(child: _buildAudioTracks(context, audioTracks)),
+              ],
+            ),
           ),
         ),
       ),

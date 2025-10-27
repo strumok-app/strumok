@@ -6,7 +6,7 @@ import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
-import 'package:strumok/content/video/video_source_selector.dart';
+import 'package:strumok/content/video/source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/utils/text.dart';
 import 'package:volume_controller/volume_controller.dart';

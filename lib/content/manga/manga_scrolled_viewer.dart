@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:strumok/content/manga/intents.dart';
 import 'package:strumok/content/manga/manga_page_image.dart';
 import 'package:strumok/content/manga/model.dart';
+import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/utils/matrix.dart';
 
 class MangaScrolledViewer extends StatefulWidget {
@@ -228,7 +229,7 @@ class _NextChapterButton extends StatelessWidget {
             ),
             textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 32)),
           ),
-          child: Text("Next"),
+          child: Text(AppLocalizations.of(context)!.mangaNextItem),
         ),
       ),
     );

@@ -46,13 +46,13 @@ class OnVideoEndsActionSettings extends _$OnVideoEndsActionSettings {
 }
 
 @riverpod
-class StarVideoPositionSettings extends _$StarVideoPositionSettings {
+class StartVideoPositionSettings extends _$StartVideoPositionSettings {
   @override
-  StarVideoPosition build() {
+  StartVideoPosition build() {
     return AppPreferences.videoPlayerSettingStarFrom;
   }
 
-  void select(StarVideoPosition starFrom) {
+  void select(StartVideoPosition starFrom) {
     AppPreferences.videoPlayerSettingStarFrom = starFrom;
     state = starFrom;
   }
@@ -68,6 +68,32 @@ class FixedPositionSettings extends _$FixedPositionSettings {
   void select(int position) {
     AppPreferences.videoPlayerSettingFixedPosition = position;
     state = position;
+  }
+}
+
+@riverpod
+class EqualizerBandsSettings extends _$EqualizerBandsSettings {
+  @override
+  List<double> build() {
+    return AppPreferences.videoPlayerEqualizerBands;
+  }
+
+  void updateBand(int index, double value) {
+    final newBands = List<double>.from(state);
+    newBands[index] = value;
+    AppPreferences.videoPlayerEqualizerBands = newBands;
+    state = newBands;
+  }
+
+  void reset() {
+    AppPreferences.videoPlayerEqualizerBands =
+        AppConstances.equalizerDefaultBands;
+    state = AppConstances.equalizerDefaultBands;
+  }
+
+  void setPreset(List<double> preset) {
+    AppPreferences.videoPlayerEqualizerBands = preset;
+    state = preset;
   }
 }
 

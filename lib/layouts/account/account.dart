@@ -5,6 +5,7 @@ import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/download/download_queue_icon_button.dart';
 import 'package:strumok/layouts/account/oflline_mode_item.dart';
 import 'package:strumok/layouts/account/user_menu_item.dart';
+import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/widgets/new_version_icon.dart';
 
 class AccountMenuIcon extends StatelessWidget {
@@ -39,33 +40,35 @@ class AccountMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      clipBehavior: Clip.antiAlias,
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 300),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const UserMenuItem(),
-              const OfllineModeItem(),
-              ListTile(
-                leading: const DownloadQueueIconButton(
-                  Icons.download_for_offline,
+    return AppTheme(
+      child: Dialog(
+        clipBehavior: Clip.antiAlias,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 300),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const UserMenuItem(),
+                const OfllineModeItem(),
+                ListTile(
+                  leading: const DownloadQueueIconButton(
+                    Icons.download_for_offline,
+                  ),
+                  title: Text(AppLocalizations.of(context)!.downloads),
+                  onTap: () {
+                    context.router.popAndPush(const OfflineItemsRoute());
+                  },
                 ),
-                title: Text(AppLocalizations.of(context)!.downloads),
-                onTap: () {
-                  context.router.popAndPush(const OfflineItemsRoute());
-                },
-              ),
-              ListTile(
-                leading: const NewVersionIcon(Icons.settings),
-                title: Text(AppLocalizations.of(context)!.settings),
-                onTap: () {
-                  context.router.popAndPush(const SettingsRoute());
-                },
-              ),
-            ],
+                ListTile(
+                  leading: const NewVersionIcon(Icons.settings),
+                  title: Text(AppLocalizations.of(context)!.settings),
+                  onTap: () {
+                    context.router.popAndPush(const SettingsRoute());
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

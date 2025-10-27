@@ -194,16 +194,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get videoPlayerEndsActionDoNothingLabel => 'Зупинити';
 
   @override
-  String get videoPlayerSettingStarFrom => 'Починати відео з';
+  String get videoPlayerSettingStartFrom => 'Починати відео з';
 
   @override
-  String get videoPlayerSettingStarFromBeginning => 'Початку';
+  String get videoPlayerSettingStartFromBeginning => 'Початку';
 
   @override
-  String get videoPlayerSettingStarFromRemembered => 'Запам\'ятованого часу';
+  String get videoPlayerSettingStartFromRemembered => 'Запам\'ятованого часу';
 
   @override
-  String get videoPlayerSettingStarFromFixed => 'Фіксованої секунди';
+  String get videoPlayerSettingStartFromFixed => 'Фіксованої секунди';
 
   @override
   String get videoPlayerBtnHintServers => 'Сервери';
@@ -292,6 +292,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get mangaReaderPageDownloadFailed => 'Невдалось завантажити сторінку';
+
+  @override
+  String get mangaNextItem => 'Далі';
 
   @override
   String get errorGoBack => 'Повернутись назад';

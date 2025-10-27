@@ -94,9 +94,9 @@ class AppTheme extends ConsumerWidget {
           ),
         ),
         dialogTheme: DialogThemeData(
+          clipBehavior: Clip.antiAlias,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: colorScheme.onSurfaceVariant),
           ),
         ),
         sliderTheme: SliderThemeData(activeTrackColor: colorScheme.primary),

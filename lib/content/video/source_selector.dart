@@ -7,6 +7,7 @@ import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
+import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/utils/visual.dart';
 
 class SourceSelector extends StatelessWidget {
@@ -51,21 +52,23 @@ class _SourceSelectDialog extends ConsumerWidget {
       sourceSelectorProvider(contentDetails, mediaItems),
     );
 
-    return Dialog(
-      child: sourceSelectorValue.when(
-        data: (model) {
-          return _SourceSelectorContent(
-            contentDetails: contentDetails,
-            model: model,
-          );
-        },
-        loading: () => const SizedBox(
-          width: 60,
-          height: 60,
-          child: Center(child: CircularProgressIndicator()),
+    return AppTheme(
+      child: Dialog(
+        child: sourceSelectorValue.when(
+          data: (model) {
+            return _SourceSelectorContent(
+              contentDetails: contentDetails,
+              model: model,
+            );
+          },
+          loading: () => const SizedBox(
+            width: 60,
+            height: 60,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (error, stackTrace) =>
+              Text(AppLocalizations.of(context)!.videoNoSources),
         ),
-        error: (error, stackTrace) =>
-            Text(AppLocalizations.of(context)!.videoNoSources),
       ),
     );
   }

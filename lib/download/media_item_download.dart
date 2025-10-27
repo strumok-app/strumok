@@ -8,6 +8,7 @@ import 'package:strumok/download/media_item_download_provider.dart';
 import 'package:strumok/download/models.dart';
 import 'package:strumok/download/offline_items_screen_provider.dart';
 import 'package:strumok/download/offline_storage.dart';
+import 'package:strumok/layouts/app_theme.dart';
 
 class MediaItemDownloadButton extends ConsumerWidget {
   final ContentDetails contentDetails;
@@ -116,64 +117,70 @@ class MediaItemDownloadDailog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Dialog(
-      child: FutureBuilder(
-        future: Future.value(item.sources),
-        builder: (context, snapshot) {
-          if (snapshot.data == null) {
-            return const SizedBox(
-              width: 60,
-              height: 60,
-              child: Center(child: CircularProgressIndicator()),
+      child: AppTheme(
+        child: FutureBuilder(
+          future: Future.value(item.sources),
+          builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return const SizedBox(
+                width: 60,
+                height: 60,
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+
+            final sources = snapshot.data!.where(
+              (it) => it.kind == FileKind.video || it.kind == FileKind.manga,
             );
-          }
 
-          final sources = snapshot.data!.where(
-            (it) => it.kind == FileKind.video || it.kind == FileKind.manga,
-          );
+            if (sources.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(AppLocalizations.of(context)!.videoNoSources),
+              );
+            }
 
-          if (sources.isEmpty) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(AppLocalizations.of(context)!.videoNoSources),
+            final supplier = contentDetails.supplier;
+            final id = contentDetails.id;
+            final number = item.number;
+
+            return Container(
+              width: 320,
+              constraints: BoxConstraints(maxHeight: 600),
+              child: _SourceList(
+                sources: sources,
+                onDownload: (source) async {
+                  await OfflineStorage().storeSource(
+                    contentDetails,
+                    number,
+                    source,
+                  );
+                  ref.invalidate(
+                    mediaItemDownloadProvider(supplier, id, number),
+                  );
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                onDelete: (source) async {
+                  await OfflineStorage().deleteSource(
+                    supplier,
+                    id,
+                    number,
+                    source,
+                  );
+                  ref.invalidate(
+                    mediaItemDownloadProvider(supplier, id, number),
+                  );
+                  ref.invalidate(offlineContentProvider);
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
             );
-          }
-
-          final supplier = contentDetails.supplier;
-          final id = contentDetails.id;
-          final number = item.number;
-
-          return Container(
-            width: 320,
-            constraints: BoxConstraints(maxHeight: 600),
-            child: _SourceList(
-              sources: sources,
-              onDownload: (source) async {
-                await OfflineStorage().storeSource(
-                  contentDetails,
-                  number,
-                  source,
-                );
-                ref.invalidate(mediaItemDownloadProvider(supplier, id, number));
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                }
-              },
-              onDelete: (source) async {
-                await OfflineStorage().deleteSource(
-                  supplier,
-                  id,
-                  number,
-                  source,
-                );
-                ref.invalidate(mediaItemDownloadProvider(supplier, id, number));
-                ref.invalidate(offlineContentProvider);
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

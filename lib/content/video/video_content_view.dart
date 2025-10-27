@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_content_desktop_view.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:strumok/content/video/video_content_mobile_view.dart';
 import 'package:strumok/content/video/video_content_tv_controls.dart';
+import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_subtitles.dart';
 import 'package:strumok/content/video/video_view.dart';
 import 'package:strumok/utils/tv.dart';
@@ -31,8 +31,7 @@ class VideoContentView extends ConsumerStatefulWidget {
 
 class VideoContentViewState extends ConsumerState<VideoContentView> {
   late final VideoContentController _controller;
-  late final ProviderSubscription<AsyncValue<MediaCollectionItem>>
-  _collectionItemSubscription;
+  late final List<ProviderSubscription> _providerSubscriptions = [];
   late final StreamSubscription<VideoPlayerValue>? _playerStreamSubscription;
 
   @override
@@ -48,7 +47,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
           ref.read(collectionItemProv.notifier).setCurrentItem(itemIdx),
     );
 
-    _collectionItemSubscription = ref.listenManual(collectionItemProv, (
+    final collectionItemSub = ref.listenManual(collectionItemProv, (
       previous,
       next,
     ) {
@@ -56,6 +55,17 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
         _controller.update(collectionItem);
       });
     }, fireImmediately: true);
+
+    _providerSubscriptions.add(collectionItemSub);
+
+    final eqailizerSub = ref.listenManual(equalizerBandsSettingsProvider, (
+      previous,
+      next,
+    ) {
+      _controller.setEquilizer(next);
+    });
+
+    _providerSubscriptions.add(eqailizerSub);
 
     _playerStreamSubscription = _controller.playerStream.listen((playerValue) {
       // Update collection item position when player position changes
@@ -73,7 +83,11 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
   @override
   void dispose() {
     _playerStreamSubscription?.cancel();
-    _collectionItemSubscription.close();
+
+    for (final sub in _providerSubscriptions) {
+      sub.close();
+    }
+
     _controller.dispose();
     super.dispose();
   }

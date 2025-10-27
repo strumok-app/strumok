@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 enum OnVideoEndsAction { playNext, playAgain, doNothing }
 
-enum StarVideoPosition { fromBeginning, fromRemembered, fromFixedPosition }
+enum StartVideoPosition { fromBeginning, fromRemembered, fromFixedPosition }
 
 class SubCacheKey extends Equatable {
   final int itemIdx;

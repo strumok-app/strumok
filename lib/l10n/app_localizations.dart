@@ -464,29 +464,29 @@ abstract class AppLocalizations {
   /// **'Stop playing'**
   String get videoPlayerEndsActionDoNothingLabel;
 
-  /// No description provided for @videoPlayerSettingStarFrom.
+  /// No description provided for @videoPlayerSettingStartFrom.
   ///
   /// In en, this message translates to:
   /// **'Start from'**
-  String get videoPlayerSettingStarFrom;
+  String get videoPlayerSettingStartFrom;
 
-  /// No description provided for @videoPlayerSettingStarFromBeginning.
+  /// No description provided for @videoPlayerSettingStartFromBeginning.
   ///
   /// In en, this message translates to:
   /// **'Beginning'**
-  String get videoPlayerSettingStarFromBeginning;
+  String get videoPlayerSettingStartFromBeginning;
 
-  /// No description provided for @videoPlayerSettingStarFromRemembered.
+  /// No description provided for @videoPlayerSettingStartFromRemembered.
   ///
   /// In en, this message translates to:
   /// **'Remembered time'**
-  String get videoPlayerSettingStarFromRemembered;
+  String get videoPlayerSettingStartFromRemembered;
 
-  /// No description provided for @videoPlayerSettingStarFromFixed.
+  /// No description provided for @videoPlayerSettingStartFromFixed.
   ///
   /// In en, this message translates to:
   /// **'Fixed second'**
-  String get videoPlayerSettingStarFromFixed;
+  String get videoPlayerSettingStartFromFixed;
 
   /// No description provided for @videoPlayerBtnHintServers.
   ///
@@ -655,6 +655,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Page download failed'**
   String get mangaReaderPageDownloadFailed;
+
+  /// No description provided for @mangaNextItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get mangaNextItem;
 
   /// No description provided for @errorGoBack.
   ///

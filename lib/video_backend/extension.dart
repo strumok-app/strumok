@@ -8,39 +8,43 @@ extension PlayerVideoControlerExt on VideoPlayerController {
     return d.playerId as int;
   }
 
-  VideoPlayerPlatformWithTracks? get _platformTracks {
-    if (VideoPlayerPlatform.instance is VideoPlayerPlatformWithTracks) {
-      return VideoPlayerPlatform.instance as VideoPlayerPlatformWithTracks;
+  VideoPlayerPlatformExtend? get _extendPlatform {
+    if (VideoPlayerPlatform.instance is VideoPlayerPlatformExtend) {
+      return VideoPlayerPlatform.instance as VideoPlayerPlatformExtend;
     }
 
     return null;
   }
 
   List<VideoTrack> get videoTracks =>
-      _platformTracks?.getVideoTracks(_textureId) ?? [];
+      _extendPlatform?.getVideoTracks(_textureId) ?? [];
   List<AudioTrack> get audioTracks =>
-      _platformTracks?.getAudioTracks(_textureId) ?? [];
+      _extendPlatform?.getAudioTracks(_textureId) ?? [];
 
   void selectAudioTrack(String id) {
-    _platformTracks?.selectAudioTrack(_textureId, id);
+    _extendPlatform?.selectAudioTrack(_textureId, id);
   }
 
   void selectVideoTrack(String id) {
-    _platformTracks?.selectVideoTrack(_textureId, id);
+    _extendPlatform?.selectVideoTrack(_textureId, id);
   }
 
   String? get currentVideoTrackId =>
-      _platformTracks?.getCurrentVideoTrackId(_textureId);
+      _extendPlatform?.getCurrentVideoTrackId(_textureId);
 
   String? get currentAudioTrackId =>
-      _platformTracks?.getCurrentAudioTrackId(_textureId);
+      _extendPlatform?.getCurrentAudioTrackId(_textureId);
+
+  set equilizer(List<double> bands) =>
+      _extendPlatform?.setEquilizer(_textureId, bands);
 }
 
-abstract interface class VideoPlayerPlatformWithTracks {
+abstract interface class VideoPlayerPlatformExtend {
   List<VideoTrack> getVideoTracks(int textureId);
   List<AudioTrack> getAudioTracks(int textureId);
   void selectAudioTrack(int textureId, String id) {}
   void selectVideoTrack(int textureId, String id) {}
   String? getCurrentVideoTrackId(int textureId);
   String? getCurrentAudioTrackId(int textureId);
+  void setEquilizer(int textureId, List<double> bands);
 }

@@ -97,17 +97,17 @@ String videoPlayerSettingEndsAction(
   };
 }
 
-String videoPlayerSettingStarFrom(
+String videoPlayerSettingStartFrom(
   BuildContext context,
-  StarVideoPosition from,
+  StartVideoPosition from,
 ) {
   final localization = AppLocalizations.of(context)!;
   return switch (from) {
-    StarVideoPosition.fromBeginning =>
-      localization.videoPlayerSettingStarFromBeginning,
-    StarVideoPosition.fromRemembered =>
-      localization.videoPlayerSettingStarFromRemembered,
-    StarVideoPosition.fromFixedPosition =>
-      localization.videoPlayerSettingStarFromFixed,
+    StartVideoPosition.fromBeginning =>
+      localization.videoPlayerSettingStartFromBeginning,
+    StartVideoPosition.fromRemembered =>
+      localization.videoPlayerSettingStartFromRemembered,
+    StartVideoPosition.fromFixedPosition =>
+      localization.videoPlayerSettingStartFromFixed,
   };
 }

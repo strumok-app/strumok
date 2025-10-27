@@ -194,16 +194,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoPlayerEndsActionDoNothingLabel => 'Stop playing';
 
   @override
-  String get videoPlayerSettingStarFrom => 'Start from';
+  String get videoPlayerSettingStartFrom => 'Start from';
 
   @override
-  String get videoPlayerSettingStarFromBeginning => 'Beginning';
+  String get videoPlayerSettingStartFromBeginning => 'Beginning';
 
   @override
-  String get videoPlayerSettingStarFromRemembered => 'Remembered time';
+  String get videoPlayerSettingStartFromRemembered => 'Remembered time';
 
   @override
-  String get videoPlayerSettingStarFromFixed => 'Fixed second';
+  String get videoPlayerSettingStartFromFixed => 'Fixed second';
 
   @override
   String get videoPlayerBtnHintServers => 'Servers';
@@ -292,6 +292,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mangaReaderPageDownloadFailed => 'Page download failed';
+
+  @override
+  String get mangaNextItem => 'Next';
 
   @override
   String get errorGoBack => 'Go back';

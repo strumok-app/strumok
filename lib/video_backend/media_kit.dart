@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
+import 'package:collection/collection.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart' as media_kit;
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:strumok/app_preferences.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/text.dart';
 import 'package:strumok/video_backend/extension.dart';
@@ -19,7 +21,7 @@ import 'package:video_player_platform_interface/video_player_platform_interface.
 /// * https://github.com/media-kit/media-kit
 ///
 class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
-    implements VideoPlayerPlatformWithTracks {
+    implements VideoPlayerPlatformExtend {
   // The implementation uses [Player.hashCode] as texture ID.
   final _players = HashMap<int, media_kit.Player>();
   final _completers = HashMap<int, Completer<void>>();
@@ -71,7 +73,7 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
   Future<int?> create(DataSource dataSource) async {
     final player = media_kit.Player(
       configuration: media_kit.PlayerConfiguration(
-        logLevel: media_kit.MPVLogLevel.info,
+        logLevel: media_kit.MPVLogLevel.v,
       ),
     );
     final completer = Completer();
@@ -341,7 +343,6 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
             VideoEvent(
               eventType: VideoEventType.bufferingUpdate,
               buffered: [DurationRange(Duration.zero, event)],
-              duration: player.state.duration,
             ),
           );
         }),
@@ -461,5 +462,24 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
 
     // Get the currently selected audio track ID from the player state
     return player.state.track.audio.id;
+  }
+
+  @override
+  void setEquilizer(int textureId, List<double> bands) {
+    final player = _players[textureId];
+    if (player == null) {
+      return;
+    }
+
+    final nativePlayer = player.platform as media_kit.NativePlayer;
+
+    final audioFilter = AppConstances.equalizerBandsFreq
+        .mapIndexed((idx, freq) {
+          final gain = bands[idx].toInt();
+          return 'equalizer=f=$freq:width_type=o:width=1:g=$gain';
+        })
+        .join(",");
+
+    nativePlayer.setProperty("af", audioFilter);
   }
 }

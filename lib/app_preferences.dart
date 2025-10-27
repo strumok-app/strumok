@@ -8,9 +8,19 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class AppConstances {
+  static const Color defaultColor = Colors.green;
+  static const equalizerBandsFreq = [60, 230, 910, 4000, 14000];
+  static const equalizerDefaultBands = [0.0, 0.0, 0.0, 0.0, 0.0];
+  static const equalizerMaxBands = [12.0, 12.0, 12.0, 12.0, 12.0];
+  static const equalizerClearDialogBands = [0.0, 2.0, 4.0, 5.0, 1.0];
+  static const equalizerCinemaBands = [4.0, 2.0, 0.0, 2.0, 4.0];
+  static const equalizerNightModeBands = [-3.0, 0.0, 3.0, 4.0, -2.0];
+  static const equalizerActionBands = [5.0, 3.0, -1.0, 1.0, 3.0];
+}
+
 class AppPreferences {
   static late final SharedPreferences instance;
-  static const Color defaultColor = Colors.green;
 
   static Future<void> init() async {
     instance = await SharedPreferences.getInstance();
@@ -76,7 +86,7 @@ class AppPreferences {
   static Color get themeColor {
     final colorValue = instance.getInt("theme_color");
     // colorValue
-    return colorValue != null ? Color(colorValue) : defaultColor;
+    return colorValue != null ? Color(colorValue) : AppConstances.defaultColor;
   }
 
   static int get lastSyncTimestamp => instance.getInt("last_sync_ts") ?? 0;
@@ -151,17 +161,17 @@ class AppPreferences {
   static set videoPlayerSettingEndsAction(OnVideoEndsAction action) =>
       instance.setString("video_player_setting_ends_action", action.name);
 
-  static StarVideoPosition get videoPlayerSettingStarFrom =>
-      StarVideoPosition.values
+  static StartVideoPosition get videoPlayerSettingStarFrom =>
+      StartVideoPosition.values
           .where(
             (startFrom) =>
                 startFrom.name ==
                 instance.getString("video_player_setting_start_from"),
           )
           .firstOrNull ??
-      StarVideoPosition.fromRemembered;
+      StartVideoPosition.fromRemembered;
 
-  static set videoPlayerSettingStarFrom(StarVideoPosition startFrom) =>
+  static set videoPlayerSettingStarFrom(StartVideoPosition startFrom) =>
       instance.setString("video_player_setting_start_from", startFrom.name);
 
   static int get videoPlayerSettingFixedPosition =>
@@ -169,6 +179,25 @@ class AppPreferences {
 
   static set videoPlayerSettingFixedPosition(int pos) =>
       instance.setInt("video_player_setting_fixed_position", pos);
+
+  static List<double> get videoPlayerEqualizerBands {
+    final bandsString = instance.getString("video_player_equalizer_bands");
+    if (bandsString == null) {
+      return AppConstances.equalizerDefaultBands;
+    }
+
+    final bands = bandsString
+        .split(',')
+        .map((e) => double.tryParse(e) ?? 0)
+        .toList();
+
+    return bands.length == 5 ? bands : AppConstances.equalizerDefaultBands;
+  }
+
+  static set videoPlayerEqualizerBands(List<double> bands) {
+    final bandsString = bands.map((e) => e.toString()).join(',');
+    instance.setString("video_player_equalizer_bands", bandsString);
+  }
 
   static bool get offlineMode => instance.getBool("offline_mode") ?? false;
 

@@ -224,26 +224,26 @@ final onVideoEndsActionSettingsProvider =
     );
 
 typedef _$OnVideoEndsActionSettings = AutoDisposeNotifier<OnVideoEndsAction>;
-String _$starVideoPositionSettingsHash() =>
-    r'b12d121e7d32acfcce6809d7537e30727220a6f6';
+String _$startVideoPositionSettingsHash() =>
+    r'ca71cd6c4fe13684d7aa9e7923166317d2a5c3c7';
 
-/// See also [StarVideoPositionSettings].
-@ProviderFor(StarVideoPositionSettings)
-final starVideoPositionSettingsProvider =
+/// See also [StartVideoPositionSettings].
+@ProviderFor(StartVideoPositionSettings)
+final startVideoPositionSettingsProvider =
     AutoDisposeNotifierProvider<
-      StarVideoPositionSettings,
-      StarVideoPosition
+      StartVideoPositionSettings,
+      StartVideoPosition
     >.internal(
-      StarVideoPositionSettings.new,
-      name: r'starVideoPositionSettingsProvider',
+      StartVideoPositionSettings.new,
+      name: r'startVideoPositionSettingsProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$starVideoPositionSettingsHash,
+          : _$startVideoPositionSettingsHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$StarVideoPositionSettings = AutoDisposeNotifier<StarVideoPosition>;
+typedef _$StartVideoPositionSettings = AutoDisposeNotifier<StartVideoPosition>;
 String _$fixedPositionSettingsHash() =>
     r'c8eccdf340da4f16b39a9c5fed0d5ebecfdf97fb';
 
@@ -261,5 +261,22 @@ final fixedPositionSettingsProvider =
     );
 
 typedef _$FixedPositionSettings = AutoDisposeNotifier<int>;
+String _$equalizerBandsSettingsHash() =>
+    r'437c5b4b22f2141cc78fa0827b31027e1931b9c2';
+
+/// See also [EqualizerBandsSettings].
+@ProviderFor(EqualizerBandsSettings)
+final equalizerBandsSettingsProvider =
+    AutoDisposeNotifierProvider<EqualizerBandsSettings, List<double>>.internal(
+      EqualizerBandsSettings.new,
+      name: r'equalizerBandsSettingsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$equalizerBandsSettingsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$EqualizerBandsSettings = AutoDisposeNotifier<List<double>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

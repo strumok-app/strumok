@@ -813,7 +813,7 @@ class _CollectionItemCurrentMediaItemPositionProviderElement
       (origin as CollectionItemCurrentMediaItemPositionProvider).contentDetails;
 }
 
-String _$collectionItemHash() => r'ac61764744dce52fb796fb4417daced2fc01adc6';
+String _$collectionItemHash() => r'da30322f1397d61f8aaf08da282584e01b7196f5';
 
 abstract class _$CollectionItem
     extends BuildlessAutoDisposeAsyncNotifier<MediaCollectionItem> {

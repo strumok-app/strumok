@@ -13,6 +13,7 @@ import 'package:strumok/content/video/subtitle_worker.dart';
 import 'package:strumok/utils/cache.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/trace.dart';
+import 'package:strumok/video_backend/extension.dart';
 import 'package:subtitle/subtitle.dart';
 import 'package:video_player/video_player.dart';
 
@@ -242,12 +243,13 @@ class VideoContentController {
         return;
       }
 
+      // select start position
       final startPosition = AppPreferences.videoPlayerSettingStarFrom;
 
       int start = switch (startPosition) {
-        StarVideoPosition.fromBeginning => 0,
-        StarVideoPosition.fromRemembered => collectionItem.currentPosition,
-        StarVideoPosition.fromFixedPosition =>
+        StartVideoPosition.fromBeginning => 0,
+        StartVideoPosition.fromRemembered => collectionItem.currentPosition,
+        StartVideoPosition.fromFixedPosition =>
           AppPreferences.videoPlayerSettingFixedPosition,
       };
 
@@ -293,6 +295,10 @@ class VideoContentController {
       await videoController.play();
       await videoController.seekTo(Duration(seconds: start));
 
+      // set equalizer
+      videoController.equilizer = AppPreferences.videoPlayerEqualizerBands;
+
+      // set volume
       videoController.setVolume(AppPreferences.volume);
     } catch (e, stackTrace) {
       if (e is ContentSuppliersException) {
@@ -317,6 +323,10 @@ class VideoContentController {
         VideoPlayerValue.erroneous(e.toString()),
       );
     }
+  }
+
+  void setEquilizer(List<double> bands) {
+    _readyVideoPlayerController?.equilizer = bands;
   }
 
   void _onVideoEnds() async {
