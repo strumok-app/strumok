@@ -39,27 +39,6 @@ class PlayerSettingsDialogState extends State<PlayerSettingsDialog>
     with SingleTickerProviderStateMixin {
   _MenuLocation _location = _MenuLocation.root;
 
-  late AnimationController _controller;
-  late Animation<double> _animation1;
-
-  @override
-  void initState() {
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
-
-    _animation1 = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return AppTheme(
@@ -67,41 +46,30 @@ class PlayerSettingsDialogState extends State<PlayerSettingsDialog>
         child: FocusScope(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 400),
-            child: AnimatedBuilder(
-              animation: _animation1,
-              builder: (BuildContext context, Widget? child) {
-                return Stack(
-                  children: [
-                    SlideTransition(
-                      position: Tween<Offset>(
-                        begin: Offset.zero,
-                        end: Offset(-1.0, 0.0),
-                      ).animate(_animation1),
-                      child: _location == _MenuLocation.root
-                          ? _MenuRoot(onNav: _navTo)
-                          : SizedBox.shrink(),
-                    ),
-                    SlideTransition(
-                      position: Tween<Offset>(
-                        begin: Offset(1.0, 0.0),
-                        end: Offset.zero,
-                      ).animate(_animation1),
-                      child: switch (_location) {
-                        _MenuLocation.subtitlesOffset => _MenuSubtitlesOffset(
-                          onNav: _navTo,
-                        ),
-                        _MenuLocation.equalizer => _MenuEqualizer(
-                          onNav: _navTo,
-                        ),
-                        _MenuLocation.startFrom => _MenuStartFrom(
-                          onNav: _navTo,
-                        ),
-                        _MenuLocation.onEnds => _MenuOnVideoEnds(onNav: _navTo),
-                        _ => SizedBox.shrink(),
-                      },
-                    ),
-                  ],
-                );
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) {
+                final offsetAnimation =
+                    Tween<Offset>(
+                      begin: const Offset(1.0, 0.0),
+                      end: Offset.zero,
+                    ).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeInOut,
+                      ),
+                    );
+
+                return SlideTransition(position: offsetAnimation, child: child);
+              },
+              child: switch (_location) {
+                _MenuLocation.subtitlesOffset => _MenuSubtitlesOffset(
+                  onNav: _navTo,
+                ),
+                _MenuLocation.equalizer => _MenuEqualizer(onNav: _navTo),
+                _MenuLocation.startFrom => _MenuStartFrom(onNav: _navTo),
+                _MenuLocation.onEnds => _MenuOnVideoEnds(onNav: _navTo),
+                _ => _MenuRoot(onNav: _navTo),
               },
             ),
           ),
@@ -111,17 +79,9 @@ class PlayerSettingsDialogState extends State<PlayerSettingsDialog>
   }
 
   void _navTo(_MenuLocation location) async {
-    if (location == _MenuLocation.root) {
-      setState(() {
-        _location = location;
-      });
-      _controller.reverse();
-    } else {
-      await _controller.forward();
-      setState(() {
-        _location = location;
-      });
-    }
+    setState(() {
+      _location = location;
+    });
   }
 }
 
