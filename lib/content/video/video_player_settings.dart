@@ -424,7 +424,6 @@ class _MenuStartFrom extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final starVideoPosition = ref.watch(startVideoPositionSettingsProvider);
-    final fixedPosition = ref.watch(fixedPositionSettingsProvider);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -441,18 +440,29 @@ class _MenuStartFrom extends ConsumerWidget {
           ),
         ),
         ...StartVideoPosition.values.map((position) {
-          return ListTile(
-            title: Text(videoPlayerSettingStartFrom(context, position)),
-            leading: Icon(starVideoPosition == position ? Icons.check : null),
-            onTap: () {
-              ref
-                  .read(startVideoPositionSettingsProvider.notifier)
-                  .select(position);
-            },
-            trailing: position == StartVideoPosition.fromFixedPosition
-                ? _FixedSecondInput(fixedPosition: fixedPosition)
-                : null,
-          );
+          return position == StartVideoPosition.fromFixedPosition
+              ? _FixedSecond(
+                  title: Text(videoPlayerSettingStartFrom(context, position)),
+                  leading: Icon(
+                    starVideoPosition == position ? Icons.check : null,
+                  ),
+                  onTap: () {
+                    ref
+                        .read(startVideoPositionSettingsProvider.notifier)
+                        .select(position);
+                  },
+                )
+              : ListTile(
+                  title: Text(videoPlayerSettingStartFrom(context, position)),
+                  leading: Icon(
+                    starVideoPosition == position ? Icons.check : null,
+                  ),
+                  onTap: () {
+                    ref
+                        .read(startVideoPositionSettingsProvider.notifier)
+                        .select(position);
+                  },
+                );
         }),
       ],
     );
@@ -522,16 +532,22 @@ class _MenuRoot extends ConsumerWidget {
   }
 }
 
-class _FixedSecondInput extends ConsumerStatefulWidget {
-  const _FixedSecondInput({required this.fixedPosition});
+class _FixedSecond extends ConsumerStatefulWidget {
+  final Widget title;
+  final Widget leading;
+  final VoidCallback onTap;
 
-  final int fixedPosition;
+  const _FixedSecond({
+    required this.title,
+    required this.leading,
+    required this.onTap,
+  });
 
   @override
-  ConsumerState<_FixedSecondInput> createState() => _FixedSecondInputState();
+  ConsumerState<_FixedSecond> createState() => _FixedSecondInputState();
 }
 
-class _FixedSecondInputState extends ConsumerState<_FixedSecondInput> {
+class _FixedSecondInputState extends ConsumerState<_FixedSecond> {
   late final FocusNode focusNode;
 
   @override
@@ -548,37 +564,46 @@ class _FixedSecondInputState extends ConsumerState<_FixedSecondInput> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 52,
-      height: 32,
-      child: BackButtonListener(
-        onBackButtonPressed: () async {
-          focusNode.previousFocus();
-          return true;
-        },
-        child: TextFormField(
-          focusNode: focusNode,
-          initialValue: widget.fixedPosition.toString(),
-          onChanged: (value) {
-            ref
-                .read(fixedPositionSettingsProvider.notifier)
-                .select(int.tryParse(value) ?? 0);
+    final fixedPosition = ref.watch(fixedPositionSettingsProvider);
+
+    return ListTile(
+      leading: widget.leading,
+      title: widget.title,
+      onTap: () {
+        focusNode.requestFocus();
+        widget.onTap();
+      },
+      trailing: SizedBox(
+        width: 52,
+        height: 32,
+        child: BackButtonListener(
+          onBackButtonPressed: () async {
+            focusNode.previousFocus();
+            return true;
           },
-          autofocus: true,
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          maxLength: 4,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+          child: TextFormField(
+            focusNode: focusNode,
+            initialValue: fixedPosition.toString(),
+            onChanged: (value) {
+              ref
+                  .read(fixedPositionSettingsProvider.notifier)
+                  .select(int.tryParse(value) ?? 0);
+            },
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            maxLength: 4,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            ),
+            buildCounter:
+                (
+                  context, {
+                  required currentLength,
+                  required isFocused,
+                  required maxLength,
+                }) => const SizedBox.shrink(),
           ),
-          buildCounter:
-              (
-                context, {
-                required currentLength,
-                required isFocused,
-                required maxLength,
-              }) => const SizedBox.shrink(),
         ),
       ),
     );
