@@ -44,33 +44,38 @@ class PlayerSettingsDialogState extends State<PlayerSettingsDialog>
     return AppTheme(
       child: Dialog(
         child: FocusScope(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              transitionBuilder: (child, animation) {
-                final offsetAnimation =
-                    Tween<Offset>(
-                      begin: const Offset(1.0, 0.0),
-                      end: Offset.zero,
-                    ).animate(
-                      CurvedAnimation(
-                        parent: animation,
-                        curve: Curves.easeInOut,
-                      ),
-                    );
+          child: SingleChildScrollView(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) {
+                  final offsetAnimation =
+                      Tween<Offset>(
+                        begin: const Offset(1.0, 0.0),
+                        end: Offset.zero,
+                      ).animate(
+                        CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeInOut,
+                        ),
+                      );
 
-                return SlideTransition(position: offsetAnimation, child: child);
-              },
-              child: switch (_location) {
-                _MenuLocation.subtitlesOffset => _MenuSubtitlesOffset(
-                  onNav: _navTo,
-                ),
-                _MenuLocation.equalizer => _MenuEqualizer(onNav: _navTo),
-                _MenuLocation.startFrom => _MenuStartFrom(onNav: _navTo),
-                _MenuLocation.onEnds => _MenuOnVideoEnds(onNav: _navTo),
-                _ => _MenuRoot(onNav: _navTo),
-              },
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  );
+                },
+                child: switch (_location) {
+                  _MenuLocation.subtitlesOffset => _MenuSubtitlesOffset(
+                    onNav: _navTo,
+                  ),
+                  _MenuLocation.equalizer => _MenuEqualizer(onNav: _navTo),
+                  _MenuLocation.startFrom => _MenuStartFrom(onNav: _navTo),
+                  _MenuLocation.onEnds => _MenuOnVideoEnds(onNav: _navTo),
+                  _ => _MenuRoot(onNav: _navTo),
+                },
+              ),
             ),
           ),
         ),
