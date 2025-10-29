@@ -23,7 +23,9 @@ Future<List<MangaMediaItemSource>> mangaMediaItemSources(
     return const [];
   }
 
-  return (await currentChapter.sources).cast();
+  final sources = await currentChapter.sources;
+
+  return sources.cast();
 }
 
 @riverpod

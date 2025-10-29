@@ -75,8 +75,9 @@ class OfflineContenMediaItem extends Equatable implements ContentMediaItem {
   @override
   final int number;
   final int _folderNumber;
+  List<ContentMediaItemSource>? _sources;
 
-  const OfflineContenMediaItem(
+  OfflineContenMediaItem(
     this.supplier,
     this.id,
     this.title,
@@ -94,8 +95,10 @@ class OfflineContenMediaItem extends Equatable implements ContentMediaItem {
   String? get section => null;
 
   @override
-  Future<List<ContentMediaItemSource>> get sources async =>
-      await OfflineStorage().getSources(supplier, id, _folderNumber);
+  Future<List<ContentMediaItemSource>> get sources async {
+    _sources ??= await OfflineStorage().getSources(supplier, id, _folderNumber);
+    return _sources!;
+  }
 }
 
 class ContentDetailsWithOffline extends Equatable implements ContentDetails {

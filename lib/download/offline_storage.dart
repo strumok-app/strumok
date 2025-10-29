@@ -137,7 +137,9 @@ class OfflineStorage {
 
     final sources = <ContentMediaItemSource>[];
 
-    await for (final fsEntry in dir.list()) {
+    final fsEntries = await dir.list().toList();
+
+    for (final fsEntry in fsEntries) {
       final fsEntryPath = fsEntry.path;
       final fsEntryName = fsEntryPath.substring(mediaItemPath.length + 1);
       if (fsEntry is File) {
@@ -168,7 +170,7 @@ class OfflineStorage {
           );
 
           if (!isComplete) {
-            return [];
+            continue;
           }
 
           final name = fsEntryName.substring(6);

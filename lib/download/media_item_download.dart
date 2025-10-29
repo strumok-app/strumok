@@ -9,6 +9,7 @@ import 'package:strumok/download/models.dart';
 import 'package:strumok/download/offline_items_screen_provider.dart';
 import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/layouts/app_theme.dart';
+import 'package:strumok/settings/settings_provider.dart';
 
 class MediaItemDownloadButton extends ConsumerWidget {
   final ContentDetails contentDetails;
@@ -27,9 +28,10 @@ class MediaItemDownloadButton extends ConsumerWidget {
       contentDetails.id,
       item.number,
     );
+    final offlineMode = ref.watch(offlineModeProvider);
     final state = ref.watch(provider).valueOrNull;
 
-    if (state == null) {
+    if (state == null || offlineMode) {
       return const SizedBox.shrink();
     }
 
