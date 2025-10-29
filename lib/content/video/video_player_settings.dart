@@ -172,8 +172,8 @@ class _MenuEqualizer extends ConsumerWidget {
           ),
         ),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: 4,
+          runSpacing: 4,
           alignment: WrapAlignment.spaceEvenly,
           children: [
             OutlinedButton(

@@ -9,7 +9,7 @@ class SettingsSection extends StatelessWidget {
   const SettingsSection({
     super.key,
     this.contentPadding = 4,
-    this.labelWidth = 300,
+    this.labelWidth = 200,
     required this.label,
     required this.section,
   });
@@ -31,7 +31,7 @@ class SettingsSection extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth < 350) {
+        if (constraints.maxWidth < 640) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [labelBox, sectionBox],

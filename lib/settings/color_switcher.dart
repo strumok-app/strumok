@@ -3,19 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final colors = [
-  Colors.deepOrange,
-  Colors.orange,
-  Colors.amber,
-  Colors.yellow,
-  Colors.lime,
-  Colors.lightGreen,
-  Colors.green,
-  Colors.teal,
-  Colors.cyan,
-  Colors.blue,
-  Colors.indigo,
+  Colors.red,
+  Colors.pink,
   Colors.purple,
   Colors.deepPurple,
+  Colors.indigo,
+  Colors.blue,
+  Colors.lightBlue,
+  Colors.cyan,
+  Colors.teal,
+  Colors.green,
+  Colors.lightGreen,
+  Colors.lime,
+  Colors.yellow,
+  Colors.amber,
+  Colors.orange,
+  Colors.deepOrange,
+  Colors.brown,
+  Colors.grey,
+  Colors.blueGrey,
+  // Colors.deepOrange,
+  // Colors.orange,
+  // Colors.amber,
+  // Colors.yellow,
+  // Colors.lime,
+  // Colors.lightGreen,
+  // Colors.green,
+  // Colors.teal,
+  // Colors.cyan,
+  // Colors.blue,
+  // Colors.indigo,
+  // Colors.purple,
+  // Colors.deepPurple,
 ];
 
 class ColorSwitcher extends ConsumerWidget {
@@ -24,12 +43,19 @@ class ColorSwitcher extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selected = ref.watch(colorSettingsProvider);
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: colors
-          .map((color) => _ColorSelector(color: color, selected: selected))
-          .toList(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Align(
+        alignment: AlignmentGeometry.topRight,
+        child: Wrap(
+          alignment: WrapAlignment.end,
+          spacing: 4,
+          runSpacing: 4,
+          children: colors
+              .map((color) => _ColorSelector(color: color, selected: selected))
+              .toList(),
+        ),
+      ),
     );
   }
 }
@@ -51,7 +77,7 @@ class _ColorSelectorState extends ConsumerState<_ColorSelector> {
   Widget build(BuildContext context) {
     final colorSchema = Theme.of(context).colorScheme;
 
-    final icon = widget.color == widget.selected
+    final icon = widget.color.toARGB32() == widget.selected.toARGB32()
         ? const Icon(
             color: Colors.white,
             shadows: [Shadow(blurRadius: 4, color: Colors.black)],

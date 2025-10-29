@@ -80,11 +80,7 @@ class _SettingsView extends StatelessWidget {
                 AppLocalizations.of(context)!.settingsTheme,
                 const BrightnessSwitcher(),
               ),
-              _renderSection(
-                context,
-                AppLocalizations.of(context)!.settingsColor,
-                const ColorSwitcher(),
-              ),
+              const ColorSwitcher(),
             ],
           ),
         ),
