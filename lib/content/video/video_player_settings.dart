@@ -505,20 +505,15 @@ class _MenuRoot extends ConsumerWidget {
           },
           title: Text(AppLocalizations.of(context)!.videoSubtitlesOffset),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 8),
-          child: SettingsSection(
-            labelWidth: 200,
-            label: Text(
-              AppLocalizations.of(context)!.videoPlayerSettingShuffleMode,
-              style: theme.textTheme.bodyLarge,
-            ),
-            section: Switch(
-              value: shuffleMode,
-              onChanged: (value) {
-                ref.read(shuffleModeSettingsProvider.notifier).select(value);
-              },
-            ),
+        ListTile(
+          title: Text(
+            AppLocalizations.of(context)!.videoPlayerSettingShuffleMode,
+          ),
+          trailing: Switch(
+            value: shuffleMode,
+            onChanged: (value) {
+              ref.read(shuffleModeSettingsProvider.notifier).select(value);
+            },
           ),
         ),
         ListTile(
