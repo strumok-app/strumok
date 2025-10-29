@@ -7,7 +7,7 @@ import 'package:strumok/download/media_item_download.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/utils/nav.dart';
 
 const mangaPageAspectRatio = 1.42;

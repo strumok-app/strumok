@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:readmore/readmore.dart';
 import 'package:strumok/app_localizations.dart';
+import 'package:strumok/content/details/cached_media_items.dart';
 import 'package:strumok/content/details/widgets.dart';
 import 'package:strumok/content/manga/content_details_manga_actions.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
@@ -38,8 +38,8 @@ class ContentDetailsDesktopView extends StatelessWidget {
                 image: CachedNetworkImageProvider(contentDetails.image),
                 height: screanHeight,
                 fit: BoxFit.fitHeight,
-                errorBuilder:
-                    (context, url, error) => Center(child: NothingToShow()),
+                errorBuilder: (context, url, error) =>
+                    Center(child: NothingToShow()),
               ),
               // child: CachedNetworkImage(
               //   imageUrl: contentDetails.image,
@@ -96,9 +96,8 @@ class _InfoBlock extends StatelessWidget {
                     child: CachedNetworkImage(
                       imageUrl: contentDetails.image,
                       width: 250,
-                      errorWidget:
-                          (context, url, error) =>
-                              Center(child: NothingToShow()),
+                      errorWidget: (context, url, error) =>
+                          Center(child: NothingToShow()),
                     ),
                   ),
                 ],
@@ -155,15 +154,27 @@ class _InfoBlock extends StatelessWidget {
   }
 }
 
-class _ContentActionsButtons extends HookWidget {
+class _ContentActionsButtons extends StatelessWidget {
   final ContentDetails contentDetails;
   const _ContentActionsButtons({required this.contentDetails});
 
   @override
   Widget build(BuildContext context) {
     return switch (contentDetails.mediaType) {
-      MediaType.video => ContentDetailsVideoActions(contentDetails),
-      MediaType.manga => ContentDetailsMangaActions(contentDetails),
+      MediaType.video => CachedMediaItems(
+        contentDetails: contentDetails,
+        builder: (context, mediaItems) => ContentDetailsVideoActions(
+          contentDetails: contentDetails,
+          mediaItems: mediaItems,
+        ),
+      ),
+      MediaType.manga => CachedMediaItems(
+        contentDetails: contentDetails,
+        builder: (context, mediaItems) => ContentDetailsMangaActions(
+          contentDetails: contentDetails,
+          mediaItems: mediaItems,
+        ),
+      ),
     };
   }
 }

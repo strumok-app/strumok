@@ -1,6 +1,6 @@
 import 'package:content_suppliers_rust/bundle.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/content_suppliers/ffi_supplier_bundle_info.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_provider.dart';
@@ -57,8 +57,8 @@ class _InstallSuppliersBundler extends ConsumerWidget {
       data: (info) {
         return info == null
             ? _Error(
-              error: AppLocalizations.of(context)!.ffiLibInstallationFailed,
-            )
+                error: AppLocalizations.of(context)!.ffiLibInstallationFailed,
+              )
             : _buildInstall(context, info);
       },
       error: (error, stackTrace) => _Error(error: error.toString()),

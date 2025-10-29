@@ -1,5 +1,5 @@
 import 'package:strumok/utils/logger.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ErrorProviderObserver extends ProviderObserver {
   @override

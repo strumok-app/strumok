@@ -1,22 +1,20 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/content_suppliers/ffi_supplier_bundle_info.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SuppliersBundleVersionSettings extends ConsumerWidget {
-  const SuppliersBundleVersionSettings({
-    super.key,
-  });
+  const SuppliersBundleVersionSettings({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final installedBundle = ref.watch(installedSupplierBundleInfoProvider);
 
     return installedBundle.maybeWhen(
-      data: (installed) =>
-          installed == null ? const _SuppliersBundleInstall() : _SuppliersBundleUpdate(installedBundle: installed),
+      data: (installed) => installed == null
+          ? const _SuppliersBundleInstall()
+          : _SuppliersBundleUpdate(installedBundle: installed),
       orElse: () => const SizedBox.shrink(),
     );
   }
@@ -49,7 +47,8 @@ class _SuppliersBundleInstall extends ConsumerWidget {
             width: 16,
             child: CircularProgressIndicator.adaptive(),
           ),
-          error: (Object error, StackTrace stackTrace) => const _RefreshButton(),
+          error: (Object error, StackTrace stackTrace) =>
+              const _RefreshButton(),
         ),
       ],
     );
@@ -72,12 +71,7 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
         const Spacer(),
         latestBundle.when(
           data: (data) {
-            return _renderUpdateButton(
-              context,
-              ref,
-              data,
-              installedBundle,
-            );
+            return _renderUpdateButton(context, ref, data, installedBundle);
           },
           skipLoadingOnRefresh: false,
           loading: () => OutlinedButton.icon(
@@ -90,7 +84,7 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
             label: Text(AppLocalizations.of(context)!.settingsCheckForUpdate),
           ),
           error: (error, stackTrace) => Text(error.toString()),
-        )
+        ),
       ],
     );
   }
@@ -101,10 +95,15 @@ class _SuppliersBundleUpdate extends ConsumerWidget {
     FFISupplierBundleInfo? latestInfo,
     FFISupplierBundleInfo installedInfo,
   ) {
-    if (latestInfo != null && latestInfo.version.compareTo(installedInfo.version) > 0) {
+    if (latestInfo != null &&
+        latestInfo.version.compareTo(installedInfo.version) > 0) {
       return SuppliersBundleDownloadButton(
         info: latestInfo,
-        label: Text(AppLocalizations.of(context)!.settingsDownloadUpdate(latestInfo.version)),
+        label: Text(
+          AppLocalizations.of(
+            context,
+          )!.settingsDownloadUpdate(latestInfo.version),
+        ),
       );
     }
 
@@ -130,14 +129,16 @@ class SuppliersBundleDownloadButton extends ConsumerWidget {
 
     ref.listen(suppliersBundleDownloadProvider, (_, state) {
       if (state.completed) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            state.error != null
-                ? AppLocalizations.of(context)!.ffiLibInstallationFailed
-                : AppLocalizations.of(context)!.ffiLibInstalled,
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              state.error != null
+                  ? AppLocalizations.of(context)!.ffiLibInstallationFailed
+                  : AppLocalizations.of(context)!.ffiLibInstalled,
+            ),
+            behavior: SnackBarBehavior.floating,
           ),
-          behavior: SnackBarBehavior.floating,
-        ));
+        );
       }
     });
 

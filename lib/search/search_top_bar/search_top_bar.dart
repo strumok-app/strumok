@@ -1,4 +1,3 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/search/search_provider.dart';
 import 'package:strumok/search/search_top_bar/search_suggestion_model.dart';
@@ -11,23 +10,36 @@ import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/filter_dialog_section.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchTopBar extends HookConsumerWidget {
+class SearchTopBar extends StatefulWidget {
   const SearchTopBar({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final searchController = useSearchController();
-    final searchBarFocusNode = useFocusNode();
+  State<SearchTopBar> createState() => _SearchTopBarState();
+}
 
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        searchBarFocusNode.requestFocus();
-      });
-      return null;
-    }, [searchController, searchBarFocusNode]);
+class _SearchTopBarState extends State<SearchTopBar> {
+  final searchController = SearchController();
+  final searchBarFocusNode = FocusNode();
 
+  @override
+  void dispose() {
+    searchController.dispose();
+    searchBarFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      searchBarFocusNode.requestFocus();
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
@@ -36,8 +48,9 @@ class SearchTopBar extends HookConsumerWidget {
             children: [
               Expanded(
                 child: Align(
-                  alignment:
-                      TVDetector.isTV ? Alignment.centerLeft : Alignment.center,
+                  alignment: TVDetector.isTV
+                      ? Alignment.centerLeft
+                      : Alignment.center,
                   child: _SearchBar(
                     searchController: searchController,
                     focusNode: searchBarFocusNode,
@@ -105,11 +118,10 @@ class _SearchBar extends ConsumerWidget {
           ),
         );
       },
-      viewBuilder:
-          (suggestions) => _TopSearchSuggestions(
-            searchController: searchController,
-            onSelect: (value) => _search(ref, value),
-          ),
+      viewBuilder: (suggestions) => _TopSearchSuggestions(
+        searchController: searchController,
+        onSelect: (value) => _search(ref, value),
+      ),
       suggestionsBuilder: (context, controller) => [],
     );
   }
@@ -117,10 +129,10 @@ class _SearchBar extends ConsumerWidget {
   Widget _buildLeading(bool isLoadingResults) {
     return isLoadingResults
         ? const SizedBox(
-          height: 24,
-          width: 24,
-          child: CircularProgressIndicator(),
-        )
+            height: 24,
+            width: 24,
+            child: CircularProgressIndicator(),
+          )
         : const Icon(Icons.search);
   }
 
@@ -250,14 +262,13 @@ class _FilterSelectorsDialog extends ConsumerWidget {
                     selected: searchSettings.searchSuppliersNames.contains(
                       item,
                     ),
-                    onSelected:
-                        searchSettings.avaliableSuppliers.contains(item)
-                            ? (value) {
-                              ref
-                                  .read(searchSettingsProvider.notifier)
-                                  .toggleSupplierName(item);
-                            }
-                            : null,
+                    onSelected: searchSettings.avaliableSuppliers.contains(item)
+                        ? (value) {
+                            ref
+                                .read(searchSettingsProvider.notifier)
+                                .toggleSupplierName(item);
+                          }
+                        : null,
                   );
                 },
                 onSelectAll: () {
@@ -279,7 +290,7 @@ class _FilterSelectorsDialog extends ConsumerWidget {
   }
 }
 
-class _TopSearchSuggestions extends HookConsumerWidget {
+class _TopSearchSuggestions extends ConsumerWidget {
   const _TopSearchSuggestions({
     required this.searchController,
     required this.onSelect,
@@ -297,10 +308,9 @@ class _TopSearchSuggestions extends HookConsumerWidget {
         return Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: ListView(
-            children:
-                suggestions
-                    .map((suggestion) => _renderSuggestion(suggestion, ref))
-                    .toList(),
+            children: suggestions
+                .map((suggestion) => _renderSuggestion(suggestion, ref))
+                .toList(),
           ),
         );
       },

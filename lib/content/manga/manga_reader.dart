@@ -1,9 +1,9 @@
 import 'package:strumok/content/manga/manga_reader_view.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MangaReader extends HookConsumerWidget {
+class MangaReader extends ConsumerWidget {
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
 

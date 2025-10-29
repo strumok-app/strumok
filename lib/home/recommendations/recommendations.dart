@@ -8,7 +8,7 @@ import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
 import 'package:strumok/widgets/nothing_to_show.dart';
 import 'package:strumok/widgets/set_recommendations_hint.dart';
@@ -68,7 +68,7 @@ class Recommendations extends ConsumerWidget {
   }
 }
 
-class _RecommendationChannel extends HookConsumerWidget {
+class _RecommendationChannel extends ConsumerWidget {
   final int channelIdx;
   final String supplierName;
   final String channel;

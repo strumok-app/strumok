@@ -5,7 +5,6 @@ import 'package:strumok/utils/visual.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 typedef SelectCallback = void Function(ContentMediaItem);
@@ -154,7 +153,7 @@ class _MediaItemsListView extends StatelessWidget {
   }
 }
 
-class _MediaItemsList extends HookWidget {
+class _MediaItemsList extends StatefulWidget {
   final List<ContentMediaItem> mediaItems;
   final ContentProgress? contentProgress;
   final SelectCallback onSelect;
@@ -168,17 +167,26 @@ class _MediaItemsList extends HookWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final groups = useMemoized(
-      () => mediaItems.groupListsBy((element) => element.section ?? ""),
-    );
+  State<_MediaItemsList> createState() => _MediaItemsListState();
+}
 
+class _MediaItemsListState extends State<_MediaItemsList> {
+  late final Map<String, List<ContentMediaItem>> groups;
+
+  @override
+  void initState() {
+    groups = widget.mediaItems.groupListsBy((element) => element.section ?? "");
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     if (groups.length == 1) {
       return _MediaItemsListSection(
         list: groups.values.first,
-        contentProgress: contentProgress,
-        onSelect: onSelect,
-        itemBuilder: itemBuilder,
+        contentProgress: widget.contentProgress,
+        onSelect: widget.onSelect,
+        itemBuilder: widget.itemBuilder,
       );
     }
 
@@ -198,9 +206,9 @@ class _MediaItemsList extends HookWidget {
                   .map(
                     (e) => _MediaItemsListSection(
                       list: e,
-                      contentProgress: contentProgress,
-                      onSelect: onSelect,
-                      itemBuilder: itemBuilder,
+                      contentProgress: widget.contentProgress,
+                      onSelect: widget.onSelect,
+                      itemBuilder: widget.itemBuilder,
                     ),
                   )
                   .toList(),
@@ -212,16 +220,16 @@ class _MediaItemsList extends HookWidget {
   }
 
   int _currentSectionIndex(Map<String, dynamic> groups) {
-    if (contentProgress == null) {
+    if (widget.contentProgress == null) {
       return 0;
     }
 
-    final currentItem = mediaItems[contentProgress!.currentItem];
+    final currentItem = widget.mediaItems[widget.contentProgress!.currentItem];
     return groups.keys.toList().indexOf(currentItem.section!);
   }
 }
 
-class _MediaItemsListSection extends HookWidget {
+class _MediaItemsListSection extends StatefulWidget {
   final List<ContentMediaItem> list;
   final ContentProgress? contentProgress;
   final SelectCallback onSelect;
@@ -235,26 +243,43 @@ class _MediaItemsListSection extends HookWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final index = useMemoized(() {
-      final currentItem = contentProgress?.currentItem ?? 0;
-      final index = list.indexWhere((element) => element.number == currentItem);
-      return index > 0 ? index - 1 : 0;
-    });
+  State<_MediaItemsListSection> createState() => _MediaItemsListSectionState();
+}
 
+class _MediaItemsListSectionState extends State<_MediaItemsListSection> {
+  late final int index;
+
+  @override
+  void initState() {
+    final currentItem = widget.contentProgress?.currentItem ?? 0;
+    final foundIndex = widget.list.indexWhere(
+      (element) => element.number == currentItem,
+    );
+
+    index = foundIndex > 0 ? foundIndex - 1 : 0;
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return ScrollablePositionedList.builder(
       initialScrollIndex: index,
       itemBuilder: (context, index) {
-        final item = list[index];
+        final item = widget.list[index];
 
-        return itemBuilder(item, contentProgress, onSelect);
+        return widget.itemBuilder(
+          item,
+          widget.contentProgress,
+          widget.onSelect,
+        );
       },
-      itemCount: list.length,
+      itemCount: widget.list.length,
     );
   }
 }
 
-class MediaItemsListItem extends HookWidget {
+class MediaItemsListItem extends StatefulWidget {
   final ContentMediaItem item;
   final bool selected;
   final double progress;
@@ -273,17 +298,21 @@ class MediaItemsListItem extends HookWidget {
   });
 
   @override
+  State<MediaItemsListItem> createState() => _MediaItemsListItemState();
+}
+
+class _MediaItemsListItemState extends State<MediaItemsListItem> {
+  bool focused = false;
+
+  @override
   Widget build(BuildContext context) {
-    final focused = useState(false);
     final theme = Theme.of(context);
-    final title = item.title;
-    final image = item.image;
+    final title = widget.item.title;
+    final image = widget.item.image;
     final colorScheme = theme.colorScheme;
     final accentColor = colorScheme.surfaceTint.withValues(alpha: 0.5);
-    final focusColor = focused.value
-        ? colorScheme.onSurfaceVariant
-        : accentColor;
-    final backgroundColor = focused.value
+    final focusColor = focused ? colorScheme.onSurfaceVariant : accentColor;
+    final backgroundColor = focused
         ? colorScheme.onSurface.withValues(alpha: 0.15)
         : Colors.transparent;
     final isTv = TVDetector.isTV;
@@ -304,7 +333,7 @@ class MediaItemsListItem extends HookWidget {
             children: [
               if (image != null)
                 GestureDetector(
-                  onTap: onTap,
+                  onTap: widget.onTap,
                   child: Container(
                     width: 80,
                     decoration: BoxDecoration(
@@ -313,10 +342,10 @@ class MediaItemsListItem extends HookWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    child: selected
+                    child: widget.selected
                         ? Center(
                             child: Icon(
-                              selectIcon,
+                              widget.selectIcon,
                               color: Colors.white,
                               size: 48,
                             ),
@@ -326,16 +355,20 @@ class MediaItemsListItem extends HookWidget {
                 ),
               Expanded(
                 child: ListTile(
-                  onTap: onTap,
-                  autofocus: selected,
-                  onFocusChange: (value) => focused.value = value,
+                  onTap: widget.onTap,
+                  autofocus: widget.selected,
+                  onFocusChange: (value) {
+                    setState(() {
+                      focused = value;
+                    });
+                  },
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
                   title: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (image == null && selected) ...[
+                      if (image == null && widget.selected) ...[
                         const SizedBox(width: 8),
-                        Icon(selectIcon),
+                        Icon(widget.selectIcon),
                       ],
                       const SizedBox(width: 8),
                       Expanded(
@@ -345,19 +378,19 @@ class MediaItemsListItem extends HookWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      if (!isTv && trailing != null) trailing!,
+                      if (!isTv && widget.trailing != null) widget.trailing!,
                     ],
                   ),
                   subtitle: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: LinearProgressIndicator(value: progress),
+                    child: LinearProgressIndicator(value: widget.progress),
                   ),
                 ),
               ),
-              if (isTv && trailing != null)
+              if (isTv && widget.trailing != null)
                 Container(
                   color: accentColor,
-                  child: Center(child: trailing!),
+                  child: Center(child: widget.trailing!),
                 ),
             ],
           ),

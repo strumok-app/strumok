@@ -6,7 +6,7 @@ import 'package:strumok/utils/fullscrean.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/utils/visual.dart';
 
 class MangaReaderControlsRoute<T> extends PopupRoute<T> {

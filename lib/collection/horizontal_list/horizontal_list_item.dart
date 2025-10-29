@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
 import 'package:strumok/collection/widgets/priority_selector.dart';
@@ -8,7 +7,7 @@ import 'package:strumok/collection/widgets/status_selector.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/utils/visual.dart';
 
-class CollectionHorizontalListItem extends HookConsumerWidget {
+class CollectionHorizontalListItem extends ConsumerStatefulWidget {
   final MediaCollectionItem item;
   final FocusNode? focusNode;
 
@@ -19,31 +18,44 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return isDesktopDevice()
-        ? _buildDesktop(context, ref)
-        : _buildNoMouse(context, ref);
+  ConsumerState<CollectionHorizontalListItem> createState() =>
+      _CollectionHorizontalListItemState();
+}
+
+class _CollectionHorizontalListItemState
+    extends ConsumerState<CollectionHorizontalListItem> {
+  final FocusNode itemActionsfocusNode = FocusNode();
+  bool cornerVisible = false;
+
+  @override
+  void dispose() {
+    itemActionsfocusNode.dispose();
+    super.dispose();
   }
 
-  Widget _buildNoMouse(BuildContext context, WidgetRef ref) {
-    final itemActionsfocusNode = useFocusNode();
-    final cornerVisible = useState(false);
+  @override
+  Widget build(BuildContext context) {
+    return isDesktopDevice() ? _buildDesktop(context) : _buildNoMouse(context);
+  }
 
+  Widget _buildNoMouse(BuildContext context) {
     return ContentInfoCard(
-      focusNode: focusNode,
-      contentInfo: item,
+      focusNode: widget.focusNode,
+      contentInfo: widget.item,
       onLongPress: () {
-        cornerVisible.value = !cornerVisible.value;
+        setState(() {
+          cornerVisible = !cornerVisible;
+        });
         itemActionsfocusNode.requestFocus();
       },
-      corner: cornerVisible.value
+      corner: cornerVisible
           ? BackButtonListener(
               onBackButtonPressed: () async {
                 itemActionsfocusNode.previousFocus();
                 return true;
               },
               child: _CollectionListItemCorner(
-                item: item,
+                item: widget.item,
                 focusNode: itemActionsfocusNode,
               ),
             )
@@ -51,19 +63,19 @@ class CollectionHorizontalListItem extends HookConsumerWidget {
     );
   }
 
-  Widget _buildDesktop(BuildContext context, WidgetRef ref) {
-    final cornerVisible = useState(false);
-
+  Widget _buildDesktop(BuildContext context) {
     return ContentInfoCard(
-      focusNode: focusNode,
-      contentInfo: item,
+      focusNode: widget.focusNode,
+      contentInfo: widget.item,
       onHover: (value) {
-        cornerVisible.value = value;
+        setState(() {
+          cornerVisible = !cornerVisible;
+        });
       },
       corner: AnimatedOpacity(
-        opacity: cornerVisible.value ? 1 : 0,
+        opacity: cornerVisible ? 1 : 0,
         duration: const Duration(milliseconds: 200),
-        child: _CollectionListItemCorner(item: item),
+        child: _CollectionListItemCorner(item: widget.item),
       ),
     );
   }

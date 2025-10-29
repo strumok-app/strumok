@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 // import 'package:fvp/fvp.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/content/video/model.dart';

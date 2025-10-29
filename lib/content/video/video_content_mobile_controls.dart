@@ -481,26 +481,27 @@ class _VideoContentMobileControlsState
                             ),
                             // Only display [primaryButtonBar] if [buffering] is false.
                             Expanded(
-                              child: AnimatedOpacity(
-                                curve: Curves.easeInOut,
-                                opacity: _buffering ? 0.0 : 1.0,
-                                duration: controlsTransitionDuration,
-                                child: Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Spacer(flex: 2),
-                                      const SkipPrevButton(iconSize: 36.0),
-                                      const Spacer(),
-                                      const PlayOrPauseButton(iconSize: 48.0),
-                                      const Spacer(),
-                                      const SkipNextButton(iconSize: 36.0),
-                                      const Spacer(flex: 2),
-                                    ],
-                                  ),
+                              child: Center(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Spacer(flex: 2),
+                                    const SkipPrevButton(iconSize: 36.0),
+                                    const Spacer(),
+                                    AnimatedOpacity(
+                                      curve: Curves.easeInOut,
+                                      opacity: _buffering ? 0.0 : 1.0,
+                                      duration: controlsTransitionDuration,
+                                      child: const PlayOrPauseButton(
+                                        iconSize: 48.0,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    const SkipNextButton(iconSize: 36.0),
+                                    const Spacer(flex: 2),
+                                  ],
                                 ),
                               ),
                             ),

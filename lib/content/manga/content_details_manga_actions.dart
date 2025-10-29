@@ -1,18 +1,21 @@
 import 'package:strumok/app_localizations.dart';
-import 'package:strumok/content/details/content_details_actions.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/utils/nav.dart';
 
-class ContentDetailsMangaActions extends ContentDetailsActions {
-  const ContentDetailsMangaActions(super.contentDetails, {super.key});
+class ContentDetailsMangaActions extends StatelessWidget {
+  final ContentDetails contentDetails;
+  final List<ContentMediaItem> mediaItems;
+
+  const ContentDetailsMangaActions({
+    super.key,
+    required this.contentDetails,
+    required this.mediaItems,
+  });
 
   @override
-  Widget renderActions(
-    BuildContext context,
-    List<ContentMediaItem> mediaItems,
-  ) {
+  Widget build(BuildContext context) {
     return Row(
       children: [
         _renderReadButton(context),

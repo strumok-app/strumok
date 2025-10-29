@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/auth/auth.dart';
 
-class ConnectTVWithCode extends HookWidget {
+class ConnectTVWithCode extends StatefulWidget {
   const ConnectTVWithCode({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    ValueNotifier<bool> showInput = useState(false);
-    final inputFocusNode = useFocusNode();
+  State<ConnectTVWithCode> createState() => _ConnectTVWithCodeState();
+}
 
-    if (showInput.value) {
+class _ConnectTVWithCodeState extends State<ConnectTVWithCode> {
+  bool showInput = false;
+  final inputFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    inputFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (showInput) {
       return Padding(
         padding: const EdgeInsets.only(left: 16, right: 8, top: 4, bottom: 4),
         child: _LoginWithCode(
           onCancel: () {
-            showInput.value = false;
+            setState(() {
+              showInput = false;
+            });
           },
           focusNode: inputFocusNode,
         ),
@@ -27,7 +39,9 @@ class ConnectTVWithCode extends HookWidget {
         leading: Icon(Icons.tv),
         title: Text(AppLocalizations.of(context)!.connectTVAuth),
         onTap: () {
-          showInput.value = true;
+          setState(() {
+            showInput = true;
+          });
           inputFocusNode.requestFocus();
         },
       );
@@ -35,18 +49,30 @@ class ConnectTVWithCode extends HookWidget {
   }
 }
 
-class _LoginWithCode extends HookWidget {
+class _LoginWithCode extends StatefulWidget {
   final VoidCallback onCancel;
   final FocusNode? focusNode;
 
   const _LoginWithCode({required this.onCancel, this.focusNode});
 
   @override
-  Widget build(BuildContext context) {
-    ValueNotifier<bool> isLoading = useState(false);
-    ValueNotifier<String> code = useState("");
-    final acceptFocusNode = useFocusNode();
+  State<_LoginWithCode> createState() => _LoginWithCodeState();
+}
 
+class _LoginWithCodeState extends State<_LoginWithCode> {
+  bool isLoading = false;
+  final codeEditController = TextEditingController();
+  final acceptFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    acceptFocusNode.dispose();
+    codeEditController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Icon(Icons.tv),
@@ -58,15 +84,15 @@ class _LoginWithCode extends HookWidget {
               return true;
             },
             child: TextField(
-              enabled: !isLoading.value,
-              focusNode: focusNode,
+              controller: codeEditController,
+              enabled: !isLoading,
+              focusNode: widget.focusNode,
               maxLength: 6,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9]")),
               ],
               decoration: InputDecoration(border: InputBorder.none),
-              onChanged: (value) => code.value = value,
-              onSubmitted: (value) => _handleLoggin(value, isLoading, context),
+              onSubmitted: (value) => _handleLoggin(context),
               buildCounter:
                   (
                     context, {
@@ -78,29 +104,31 @@ class _LoginWithCode extends HookWidget {
           ),
         ),
         SizedBox(width: 8),
-        if (isLoading.value) ...[
+        if (isLoading) ...[
           SizedBox.square(dimension: 24, child: CircularProgressIndicator()),
           SizedBox(width: 8),
         ],
-        if (!isLoading.value) ...[
+        if (!isLoading) ...[
           IconButton(
             focusNode: acceptFocusNode,
-            onPressed: () => _handleLoggin(code.value, isLoading, context),
+            onPressed: () => _handleLoggin(context),
             icon: Icon(Icons.check),
           ),
-          IconButton(onPressed: onCancel, icon: Icon(Icons.cancel_outlined)),
+          IconButton(
+            onPressed: widget.onCancel,
+            icon: Icon(Icons.cancel_outlined),
+          ),
         ],
       ],
     );
   }
 
-  void _handleLoggin(
-    String code,
-    ValueNotifier<bool> isLoading,
-    BuildContext context,
-  ) async {
+  void _handleLoggin(BuildContext context) async {
+    final code = codeEditController.text;
     if (code.length == 6) {
-      isLoading.value = true;
+      setState(() {
+        isLoading = true;
+      });
       try {
         await Auth().signInWithPairCode(code.toUpperCase());
       } catch (e) {
@@ -113,46 +141,62 @@ class _LoginWithCode extends HookWidget {
           );
         }
       }
-      isLoading.value = false;
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 }
 
-class ConnectTVCode extends HookWidget {
+class ConnectTVCode extends StatefulWidget {
   const ConnectTVCode({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    ValueNotifier<String?> pairCode = useState(null);
-    ValueNotifier<bool> isLoading = useState(false);
+  State<ConnectTVCode> createState() => _ConnectTVCodeState();
+}
 
-    if (pairCode.value == null) {
+class _ConnectTVCodeState extends State<ConnectTVCode> {
+  String? pairCode;
+  bool isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (pairCode == null) {
       return ListTile(
         leading: Icon(Icons.tv),
         title: Text(AppLocalizations.of(context)!.connectTV),
         onTap: () async {
-          if (!isLoading.value) {
-            isLoading.value = true;
-            pairCode.value = await Auth().getPairCode();
-            isLoading.value = false;
+          if (!isLoading) {
+            setState(() {
+              isLoading = true;
+            });
+
+            final code = await Auth().getPairCode();
+
+            if (mounted) {
+              setState(() {
+                pairCode = code;
+                isLoading = false;
+              });
+            }
           }
         },
-        trailing:
-            isLoading.value
-                ? SizedBox.square(
-                  dimension: 24,
-                  child: CircularProgressIndicator(),
-                )
-                : null,
+        trailing: isLoading
+            ? SizedBox.square(dimension: 24, child: CircularProgressIndicator())
+            : null,
       );
     } else {
       return ListTile(
         contentPadding: const EdgeInsets.only(left: 16, right: 8),
         leading: Icon(Icons.tv),
-        title: Text(pairCode.value!),
+        title: Text(pairCode!),
         trailing: IconButton(
           onPressed: () {
-            pairCode.value = null;
+            setState(() {
+              pairCode = null;
+            });
           },
           icon: Icon(Icons.delete),
         ),

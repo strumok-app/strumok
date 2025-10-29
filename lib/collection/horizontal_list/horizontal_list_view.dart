@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_provider.dart';
@@ -33,15 +32,14 @@ class CollectionHorizontalView extends ConsumerWidget {
     }
 
     return ListView(
-      children:
-          groupsOrder.mapIndexed((groupIdx, e) {
-            return CollectionHorizontalGroup(groupIdx: groupIdx, status: e);
-          }).toList(),
+      children: groupsOrder.mapIndexed((groupIdx, e) {
+        return CollectionHorizontalGroup(groupIdx: groupIdx, status: e);
+      }).toList(),
     );
   }
 }
 
-class CollectionHorizontalGroup extends HookConsumerWidget {
+class CollectionHorizontalGroup extends ConsumerStatefulWidget {
   final MediaCollectionItemStatus status;
   final int groupIdx;
 
@@ -52,19 +50,33 @@ class CollectionHorizontalGroup extends HookConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final primaryFocusNode = useFocusNode();
+  ConsumerState<CollectionHorizontalGroup> createState() =>
+      _CollectionHorizontalGroupState();
+}
 
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        primaryFocusNode.requestFocus();
-      });
-      return null;
-    }, [primaryFocusNode]);
+class _CollectionHorizontalGroupState
+    extends ConsumerState<CollectionHorizontalGroup> {
+  final primaryFocusNode = FocusNode();
 
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      primaryFocusNode.requestFocus();
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    primaryFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final groupItems = ref.watch(
       collectionItemsByStatusProvider.select(
-        (value) => value.valueOrNull?[status],
+        (value) => value.valueOrNull?[widget.status],
       ),
     );
 
@@ -73,11 +85,11 @@ class CollectionHorizontalGroup extends HookConsumerWidget {
     }
 
     Widget title = Text(
-      statusLabel(context, status),
+      statusLabel(context, widget.status),
       style: Theme.of(context).textTheme.titleMedium,
     );
 
-    if (groupIdx == 0) {
+    if (widget.groupIdx == 0) {
       title = FocusIndicator(child: title);
     }
 
@@ -87,7 +99,9 @@ class CollectionHorizontalGroup extends HookConsumerWidget {
         final item = groupItems[index];
         return CollectionHorizontalListItem(
           key: ValueKey(item),
-          focusNode: (groupIdx == 0 && index == 0) ? primaryFocusNode : null,
+          focusNode: (widget.groupIdx == 0 && index == 0)
+              ? primaryFocusNode
+              : null,
           item: groupItems[index],
         );
       },

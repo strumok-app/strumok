@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:content_suppliers_rust/bundle.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/content_suppliers/ffi_supplier_bundle_info.dart';

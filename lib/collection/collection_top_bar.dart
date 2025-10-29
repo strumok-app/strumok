@@ -6,18 +6,36 @@ import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/filter_dialog_section.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CollectionTopBar extends HookConsumerWidget {
+class CollectionTopBar extends ConsumerStatefulWidget {
   const CollectionTopBar({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useTextEditingController(
+  ConsumerState<CollectionTopBar> createState() => _CollectionTopBarState();
+}
+
+class _CollectionTopBarState extends ConsumerState<CollectionTopBar> {
+  late final TextEditingController controller;
+  final FocusNode searchBarFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    controller = TextEditingController(
       text: ref.read(collectionFilterQueryProvider),
     );
+    super.initState();
+  }
 
+  @override
+  void dispose() {
+    controller.dispose();
+    searchBarFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(children: [_renderSearchBar(context, ref, controller)]);
   }
 
@@ -26,9 +44,9 @@ class CollectionTopBar extends HookConsumerWidget {
     WidgetRef ref,
     TextEditingController controller,
   ) {
-    final searchBarFocusNode = useFocusNode(
-      debugLabel: "Collections serach bar",
-    );
+    // final searchBarFocusNode = useFocusNode(
+    //   debugLabel: "Collections serach bar",
+    // );
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -36,8 +54,9 @@ class CollectionTopBar extends HookConsumerWidget {
         children: [
           Expanded(
             child: Align(
-              alignment:
-                  TVDetector.isTV ? Alignment.centerLeft : Alignment.center,
+              alignment: TVDetector.isTV
+                  ? Alignment.centerLeft
+                  : Alignment.center,
               child: BackButtonListener(
                 onBackButtonPressed: () async {
                   if (searchBarFocusNode.hasFocus) {
@@ -53,8 +72,9 @@ class CollectionTopBar extends HookConsumerWidget {
                   ),
                   focusNode: searchBarFocusNode,
                   leading: const Icon(Icons.search),
-                  trailing:
-                      TVDetector.isTV ? null : [_renderFilterSwitcher(context)],
+                  trailing: TVDetector.isTV
+                      ? null
+                      : [_renderFilterSwitcher(context)],
                   onSubmitted: (value) {
                     ref.read(collectionFilterQueryProvider.notifier).state =
                         value;
@@ -94,10 +114,9 @@ class _StatusFilterDialog extends ConsumerWidget {
     final collectionFilter = ref.watch(collectionFilterProvider);
     final suppliersNames =
         ref.watch(collectionItemsSuppliersProvider).valueOrNull?.toList() ?? [];
-    final allStatus =
-        MediaCollectionItemStatus.values
-            .where((s) => s != MediaCollectionItemStatus.none)
-            .toList();
+    final allStatus = MediaCollectionItemStatus.values
+        .where((s) => s != MediaCollectionItemStatus.none)
+        .toList();
 
     return Dialog(
       insetPadding: EdgeInsets.only(left: isMobile(context) ? 0 : 80.0),

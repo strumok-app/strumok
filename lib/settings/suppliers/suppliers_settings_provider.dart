@@ -1,5 +1,5 @@
 import 'package:content_suppliers_api/model.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:equatable/equatable.dart';
@@ -156,8 +156,9 @@ class SuppliersSettings extends _$SuppliersSettings {
   void disableChannel(String supplierName, String channel) {
     final config = state.getConfig(supplierName);
 
-    final newChannels =
-        config.channels.where((element) => element != channel).toSet();
+    final newChannels = config.channels
+        .where((element) => element != channel)
+        .toSet();
 
     AppPreferences.setSupplierChannels(supplierName, newChannels);
     state = state.copyWith(

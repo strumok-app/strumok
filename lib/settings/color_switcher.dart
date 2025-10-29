@@ -1,4 +1,3 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,48 +27,48 @@ class ColorSwitcher extends ConsumerWidget {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children:
-          colors
-              .map(
-                (color) =>
-                    _ColorSelector(color: color, selected: selected, ref: ref),
-              )
-              .toList(),
+      children: colors
+          .map((color) => _ColorSelector(color: color, selected: selected))
+          .toList(),
     );
   }
 }
 
-class _ColorSelector extends HookWidget {
-  const _ColorSelector({
-    required this.color,
-    required this.selected,
-    required this.ref,
-  });
+class _ColorSelector extends ConsumerStatefulWidget {
+  const _ColorSelector({required this.color, required this.selected});
 
   final Color color;
   final Color selected;
-  final WidgetRef ref;
+
+  @override
+  ConsumerState<_ColorSelector> createState() => _ColorSelectorState();
+}
+
+class _ColorSelectorState extends ConsumerState<_ColorSelector> {
+  bool focused = false;
 
   @override
   Widget build(BuildContext context) {
-    final focused = useState(false);
     final colorSchema = Theme.of(context).colorScheme;
 
-    final icon =
-        color == selected
-            ? const Icon(
-              color: Colors.white,
-              shadows: [Shadow(blurRadius: 4, color: Colors.black)],
-              Icons.check,
-            )
-            : null;
+    final icon = widget.color == widget.selected
+        ? const Icon(
+            color: Colors.white,
+            shadows: [Shadow(blurRadius: 4, color: Colors.black)],
+            Icons.check,
+          )
+        : null;
 
     return InkResponse(
       onTap: () {
-        ref.read(colorSettingsProvider.notifier).select(color);
+        ref.read(colorSettingsProvider.notifier).select(widget.color);
       },
       radius: 20,
-      onFocusChange: (value) => focused.value = value,
+      onFocusChange: (value) {
+        setState(() {
+          focused = value;
+        });
+      },
       focusColor: Colors.transparent,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
@@ -82,9 +81,9 @@ class _ColorSelector extends HookWidget {
                 border: Border.all(color: colorSchema.onSurfaceVariant),
                 shape: BoxShape.circle,
               ),
-              height: focused.value ? 32 : 26,
-              width: focused.value ? 32 : 26,
-              child: CircleAvatar(backgroundColor: color, child: icon),
+              height: focused ? 32 : 26,
+              width: focused ? 32 : 26,
+              child: CircleAvatar(backgroundColor: widget.color, child: icon),
             ),
           ),
         ),

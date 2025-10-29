@@ -1,22 +1,26 @@
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
-import 'package:strumok/content/details/content_details_actions.dart';
+import 'package:strumok/content/details/cached_media_items.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/download/media_item_download.dart';
 import 'package:strumok/utils/nav.dart';
 
-class ContentDetailsVideoActions extends ContentDetailsActions {
-  const ContentDetailsVideoActions(super.contentDetails, {super.key});
+class ContentDetailsVideoActions extends StatelessWidget {
+  final ContentDetails contentDetails;
+  final List<ContentMediaItem> mediaItems;
+
+  const ContentDetailsVideoActions({
+    super.key,
+    required this.contentDetails,
+    required this.mediaItems,
+  });
 
   @override
-  Widget renderActions(
-    BuildContext context,
-    List<ContentMediaItem> mediaItems,
-  ) {
+  Widget build(BuildContext context) {
     final showList = mediaItems.firstOrNull?.title.isNotEmpty ?? false;
 
     return Row(

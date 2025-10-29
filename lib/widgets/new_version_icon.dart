@@ -1,7 +1,7 @@
 import 'package:strumok/settings/app_version/app_version_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/utils/sem_ver.dart';
 
@@ -10,11 +10,18 @@ part 'new_version_icon.g.dart';
 @riverpod
 bool hasNewVersion(Ref ref) {
   final currentAppVersion = ref.watch(currentAppVersionProvider).valueOrNull;
-  final latestAppVersionInfo = ref.watch(latestAppVersionInfoProvider).valueOrNull;
+  final latestAppVersionInfo = ref
+      .watch(latestAppVersionInfoProvider)
+      .valueOrNull;
 
-  final installedSupplierBundleVersion = ref.watch(installedSupplierBundleInfoProvider).valueOrNull?.version;
+  final installedSupplierBundleVersion = ref
+      .watch(installedSupplierBundleInfoProvider)
+      .valueOrNull
+      ?.version;
 
-  final latestSupplierBundleVersion = ref.watch(latestSupplierBundleInfoProvider).valueOrNull?.version ?? SemVer.zero;
+  final latestSupplierBundleVersion =
+      ref.watch(latestSupplierBundleInfoProvider).valueOrNull?.version ??
+      SemVer.zero;
 
   if (installedSupplierBundleVersion == null) {
     return true;

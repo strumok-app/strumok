@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:readmore/readmore.dart';
 import 'package:strumok/app_localizations.dart';
+import 'package:strumok/content/details/cached_media_items.dart';
 import 'package:strumok/content/details/widgets.dart';
 import 'package:strumok/content/manga/content_details_manga_actions.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
@@ -35,14 +35,19 @@ class ContentDetailsMobileView extends StatelessWidget {
   }
 }
 
-class _MainAccentBlock extends HookWidget {
+class _MainAccentBlock extends StatefulWidget {
   final ContentDetails contentDetails;
 
   const _MainAccentBlock({required this.contentDetails});
 
   @override
+  State<_MainAccentBlock> createState() => _MainAccentBlockState();
+}
+
+class _MainAccentBlockState extends State<_MainAccentBlock> {
+  bool showPoster = false;
+  @override
   Widget build(BuildContext context) {
-    final showPoster = useState(false);
     final screenWidth = MediaQuery.of(context).size.width;
     final background = Theme.of(context).colorScheme.surface;
 
@@ -54,24 +59,26 @@ class _MainAccentBlock extends HookWidget {
           color: background,
           child: GestureDetector(
             onTap: () {
-              showPoster.value = !showPoster.value;
+              setState(() {
+                showPoster = !showPoster;
+              });
             },
             child: CachedNetworkImage(
-              imageUrl: contentDetails.image,
+              imageUrl: widget.contentDetails.image,
               fit: BoxFit.fitWidth,
               width: screenWidth,
-              placeholder:
-                  (context, url) => _buildImagePlaceholder(screenWidth),
-              errorWidget:
-                  (context, url, error) => Center(child: NothingToShow()),
+              placeholder: (context, url) =>
+                  _buildImagePlaceholder(screenWidth),
+              errorWidget: (context, url, error) =>
+                  Center(child: NothingToShow()),
             ),
           ),
         ),
-        if (!showPoster.value) ...[
+        if (!showPoster) ...[
           Positioned.fill(
             child: Align(
               alignment: Alignment.topLeft,
-              child: _TitleBox(contentDetails: contentDetails),
+              child: _TitleBox(contentDetails: widget.contentDetails),
             ),
           ),
           Positioned.fill(
@@ -114,9 +121,21 @@ class _MainAccentBlock extends HookWidget {
       ),
       child: Align(
         alignment: Alignment.bottomLeft,
-        child: switch (contentDetails.mediaType) {
-          MediaType.video => ContentDetailsVideoActions(contentDetails),
-          MediaType.manga => ContentDetailsMangaActions(contentDetails),
+        child: switch (widget.contentDetails.mediaType) {
+          MediaType.video => CachedMediaItems(
+            contentDetails: widget.contentDetails,
+            builder: (context, mediaItems) => ContentDetailsVideoActions(
+              contentDetails: widget.contentDetails,
+              mediaItems: mediaItems,
+            ),
+          ),
+          MediaType.manga => CachedMediaItems(
+            contentDetails: widget.contentDetails,
+            builder: (context, mediaItems) => ContentDetailsMangaActions(
+              contentDetails: widget.contentDetails,
+              mediaItems: mediaItems,
+            ),
+          ),
         },
       ),
     );

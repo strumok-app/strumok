@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/collection/collection_item_model.dart';

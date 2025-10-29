@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/auth/auth.dart';
 import 'package:strumok/auth/auth_provider.dart';
@@ -23,19 +23,19 @@ class UserMenuItem extends ConsumerWidget {
       data: (user) {
         return user != null
             ? Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _renderUserInfo(user),
-                if (!TVDetector.isTV) ConnectTVCode(),
-              ],
-            )
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _renderUserInfo(user),
+                  if (!TVDetector.isTV) ConnectTVCode(),
+                ],
+              )
             : Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _renderSignIn(context),
-                if (TVDetector.isTV) ConnectTVWithCode(),
-              ],
-            );
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _renderSignIn(context),
+                  if (TVDetector.isTV) ConnectTVWithCode(),
+                ],
+              );
       },
       orElse: () => const SizedBox.shrink(),
     );
@@ -58,8 +58,9 @@ class UserMenuItem extends ConsumerWidget {
         height: 48,
         width: 48,
         child: CircleAvatar(
-          backgroundImage:
-              user.picture != null ? NetworkImage(user.picture!) : null,
+          backgroundImage: user.picture != null
+              ? NetworkImage(user.picture!)
+              : null,
         ),
       ),
       title: Center(child: Text(user.name!)),

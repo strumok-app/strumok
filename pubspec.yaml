@@ -57,8 +57,6 @@ dependencies:
 
   # state managment
   riverpod_annotation: ^2.3.5
-  hooks_riverpod: ^2.5.2
-  flutter_hooks: ^0.21.2
   flutter_riverpod: ^2.5.1
 
   # utillity

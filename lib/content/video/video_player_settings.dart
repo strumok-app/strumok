@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/video/model.dart';
@@ -114,7 +114,7 @@ class _MenuEqualizer extends ConsumerWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -272,14 +272,18 @@ class _EqualizerBandState extends State<_EqualizerBand> {
         SizedBox(
           width: 60,
           height: 38,
-          child: Text(
-            widget.label,
-            style: theme.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
+          child: Align(
+            alignment: AlignmentGeometry.center,
+            child: Text(
+              widget.label,
+              style: theme.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
+        SizedBox(height: 8),
         SizedBox(
-          height: 120,
+          height: 80,
           width: 60,
           child: RotatedBox(
             quarterTurns: 3,
@@ -288,6 +292,7 @@ class _EqualizerBandState extends State<_EqualizerBand> {
                 trackHeight: 4,
                 thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
                 overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
+                padding: EdgeInsets.zero,
               ),
               child: Slider(
                 allowedInteraction: SliderInteraction.tapAndSlide,

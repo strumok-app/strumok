@@ -4,7 +4,7 @@ import 'package:strumok/content/manga/manga_reader.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
 class MangaContentScreen extends ConsumerWidget {

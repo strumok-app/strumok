@@ -1,4 +1,4 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';

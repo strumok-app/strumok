@@ -1,9 +1,8 @@
 import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 // ignore: must_be_immutable
-class HorizontalListCard extends HookWidget {
+class HorizontalListCard extends StatelessWidget {
   final GestureTapCallback onTap;
   final ValueChanged<bool>? onHover;
   final GestureLongPressCallback? onLongPress;

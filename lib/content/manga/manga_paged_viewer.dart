@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/content/manga/intents.dart';
 import 'package:strumok/content/manga/manga_page_image.dart';
 import 'package:strumok/content/manga/model.dart';
@@ -151,10 +151,6 @@ class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
 
     final position = _lastTapDetails!.globalPosition;
     final transfomationController = widget.transformationController;
-
-    if (!_isInZone(2, 3, position)) {
-      return;
-    }
 
     if (!transfomationController.value.isIdentity()) {
       transfomationController.value = Matrix4.identity();

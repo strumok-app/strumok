@@ -1,4 +1,4 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/search/search_model.dart';
@@ -148,8 +148,9 @@ class SearchSettings extends _$SearchSettings {
   }
 
   void toggleAllSuppliers(bool select) {
-    final newSupplierNames =
-        select ? ContentSuppliers().suppliersName : <String>{};
+    final newSupplierNames = select
+        ? ContentSuppliers().suppliersName
+        : <String>{};
     state = state.copyWith(suppliersNames: newSupplierNames);
     AppPreferences.searchContentSuppliers = newSupplierNames;
   }

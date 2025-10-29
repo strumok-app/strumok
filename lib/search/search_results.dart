@@ -1,4 +1,4 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/search/search_provider.dart';
@@ -27,16 +27,15 @@ class SearchResults extends ConsumerWidget {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            searchState.suppliers
-                .map((s) => SupplierSearchResultsItems(supplier: s))
-                .toList(),
+        children: searchState.suppliers
+            .map((s) => SupplierSearchResultsItems(supplier: s))
+            .toList(),
       ),
     );
   }
 }
 
-class SupplierSearchResultsItems extends HookConsumerWidget {
+class SupplierSearchResultsItems extends ConsumerWidget {
   final String supplier;
 
   const SupplierSearchResultsItems({super.key, required this.supplier});
@@ -58,18 +57,15 @@ class SupplierSearchResultsItems extends HookConsumerWidget {
         return ContentInfoCard(contentInfo: item, showSupplier: false);
       },
       itemCount: results.length,
-      trailing:
-          searchResults.hasMore
-              ? LoadMoreItems(
-                label: AppLocalizations.of(context)!.searchMore,
-                onTap:
-                    () =>
-                        ref
-                            .read(supplierSearchProvider(supplier).notifier)
-                            .loadNext(),
-                loading: searchResults.isLoading,
-              )
-              : null,
+      trailing: searchResults.hasMore
+          ? LoadMoreItems(
+              label: AppLocalizations.of(context)!.searchMore,
+              onTap: () => ref
+                  .read(supplierSearchProvider(supplier).notifier)
+                  .loadNext(),
+              loading: searchResults.isLoading,
+            )
+          : null,
     );
   }
 }

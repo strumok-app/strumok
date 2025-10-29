@@ -7,7 +7,7 @@ import 'package:strumok/content/details/content_details_view.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
 class ContentDetailsScreen extends ConsumerWidget {
@@ -29,15 +29,11 @@ class ContentDetailsScreen extends ConsumerWidget {
       child: details.when(
         skipLoadingOnRefresh: false,
         data: (data) => ContentDetailsView(data),
-        error:
-            (error, stackTrace) => DisplayError(
-              error: error,
-              onRefresh:
-                  () => ref.refresh(detailsProvider(supplier, id).future),
-              actions: [
-                _RemoveFromCollectionButton(supplier: supplier, id: id),
-              ],
-            ),
+        error: (error, stackTrace) => DisplayError(
+          error: error,
+          onRefresh: () => ref.refresh(detailsProvider(supplier, id).future),
+          actions: [_RemoveFromCollectionButton(supplier: supplier, id: id)],
+        ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
     );
@@ -57,12 +53,12 @@ class _RemoveFromCollectionButton extends ConsumerWidget {
 
     return inCollection
         ? OutlinedButton(
-          onPressed: () {
-            ref.read(collectionServiceProvider).delete(supplier, id);
-            context.pop();
-          },
-          child: Text(AppLocalizations.of(context)!.removeFromCollection),
-        )
+            onPressed: () {
+              ref.read(collectionServiceProvider).delete(supplier, id);
+              context.pop();
+            },
+            child: Text(AppLocalizations.of(context)!.removeFromCollection),
+          )
         : const SizedBox.shrink();
   }
 }
