@@ -6,7 +6,7 @@ on:
       prerelease:
         required: false
         type: boolean
-        default: true
+        default: false
 
 jobs:
   bump-release: 
