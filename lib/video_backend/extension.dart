@@ -17,16 +17,16 @@ extension PlayerVideoControlerExt on VideoPlayerController {
   }
 
   List<VideoTrack> get videoTracks =>
-      _extendPlatform?.getVideoTracks(_textureId) ?? [];
+      _extendPlatform?.getAllVideoTracks(_textureId) ?? [];
   List<AudioTrack> get audioTracks =>
-      _extendPlatform?.getAudioTracks(_textureId) ?? [];
+      _extendPlatform?.getAllAudioTracks(_textureId) ?? [];
 
-  void selectAudioTrack(String id) {
-    _extendPlatform?.selectAudioTrack(_textureId, id);
+  set currentAudioTrackId(String? id) {
+    if (id != null) _extendPlatform?.setCurrentAudioTrack(_textureId, id);
   }
 
-  void selectVideoTrack(String id) {
-    _extendPlatform?.selectVideoTrack(_textureId, id);
+  set currentVideoTrackId(String? id) {
+    if (id != null) _extendPlatform?.setCurrentVideoTrack(_textureId, id);
   }
 
   String? get currentVideoTrackId =>
@@ -40,10 +40,10 @@ extension PlayerVideoControlerExt on VideoPlayerController {
 }
 
 abstract interface class VideoPlayerPlatformExtend {
-  List<VideoTrack> getVideoTracks(int textureId);
-  List<AudioTrack> getAudioTracks(int textureId);
-  void selectAudioTrack(int textureId, String id) {}
-  void selectVideoTrack(int textureId, String id) {}
+  List<VideoTrack> getAllVideoTracks(int textureId);
+  List<AudioTrack> getAllAudioTracks(int textureId);
+  void setCurrentAudioTrack(int textureId, String id) {}
+  void setCurrentVideoTrack(int textureId, String id) {}
   String? getCurrentVideoTrackId(int textureId);
   String? getCurrentAudioTrackId(int textureId);
   void setEquilizer(int textureId, List<double> bands);

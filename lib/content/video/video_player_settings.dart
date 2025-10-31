@@ -6,7 +6,6 @@ import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/layouts/app_theme.dart';
-import 'package:strumok/widgets/settings_section.dart';
 
 class PlayerSettingsButton extends StatelessWidget {
   const PlayerSettingsButton({super.key});
@@ -486,7 +485,6 @@ class _MenuRoot extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final shuffleMode = ref.watch(shuffleModeSettingsProvider);
 
     return Column(

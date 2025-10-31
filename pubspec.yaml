@@ -28,7 +28,7 @@ dependencies:
   
   # video_player
   video_player: ^2.10.0
-  video_player_platform_interface: any
+  video_player_platform_interface: ^6.6.0
   # fvp: ^0.35.0
 
   media_kit: ^1.2.1 # Primary package.
@@ -91,11 +91,15 @@ dev_dependencies:
   riverpod_generator: ^2.6.5
   flutter_launcher_icons: ^0.14.3
 
-# dependency_overrides:
-#   media_kit_libs_android_video: 
-#     git:
-#       url: https://github.com/Andro999b/media-kit
-#       path: libs/android/media_kit_libs_android_video
+dependency_overrides:
+  video_player: 
+    git:
+      url: https://github.com/Andro999b/packages
+      path: packages/video_player/video_player
+  video_player_platform_interface: 
+    git:
+      url: https://github.com/Andro999b/packages
+      path: packages/video_player/video_player_platform_interface
 
 
 flutter:

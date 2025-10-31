@@ -78,6 +78,9 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
     );
     final completer = Completer();
 
+    final nativePlayer = player.platform as media_kit.NativePlayer;
+    nativePlayer.setProperty("force-seekable", "yes");
+
     VideoController videoController;
     if (Platform.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -279,7 +282,17 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
         player.stream.duration.listen((event) {
           if (event > Duration.zero) {
             duration = event;
-            notify();
+
+            if (completer.isCompleted) {
+              streamController.add(
+                VideoEvent(
+                  eventType: VideoEventType.durationUpdate,
+                  duration: event,
+                ),
+              );
+            } else {
+              notify();
+            }
           }
         }),
       );
@@ -343,6 +356,7 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
             VideoEvent(
               eventType: VideoEventType.bufferingUpdate,
               buffered: [DurationRange(Duration.zero, event)],
+              duration: player.state.duration,
             ),
           );
         }),
@@ -364,7 +378,7 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
   }
 
   @override
-  List<AudioTrack> getAudioTracks(int textureId) {
+  List<AudioTrack> getAllAudioTracks(int textureId) {
     final tracks = _tracks[textureId];
 
     if (tracks == null) {
@@ -388,7 +402,7 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
   }
 
   @override
-  List<VideoTrack> getVideoTracks(int textureId) {
+  List<VideoTrack> getAllVideoTracks(int textureId) {
     final tracks = _tracks[textureId];
 
     if (tracks == null) {
@@ -407,7 +421,7 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
   }
 
   @override
-  void selectAudioTrack(int textureId, String id) {
+  void setCurrentAudioTrack(int textureId, String id) {
     final player = _players[textureId];
     final tracks = _tracks[textureId];
 
@@ -425,7 +439,7 @@ class MediaKitVideoPlayerPlatform extends VideoPlayerPlatform
   }
 
   @override
-  void selectVideoTrack(int textureId, String id) {
+  void setCurrentVideoTrack(int textureId, String id) {
     final player = _players[textureId];
     final tracks = _tracks[textureId];
 

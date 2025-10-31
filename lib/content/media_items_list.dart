@@ -334,23 +334,26 @@ class _MediaItemsListItemState extends State<MediaItemsListItem> {
               if (image != null)
                 GestureDetector(
                   onTap: widget.onTap,
-                  child: Container(
+                  child: SizedBox(
                     width: 80,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(image),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: widget.selected
-                        ? Center(
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: CachedNetworkImage(
+                            imageUrl: image,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        if (widget.selected)
+                          Center(
                             child: Icon(
                               widget.selectIcon,
                               color: Colors.white,
                               size: 48,
                             ),
-                          )
-                        : const SizedBox.shrink(),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               Expanded(

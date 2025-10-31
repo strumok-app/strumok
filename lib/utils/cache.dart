@@ -1,5 +1,3 @@
-import 'dart:async';
-
 class SimpleCache<K, V> {
   final int capacity;
   final Map<K, V> _cache = {};

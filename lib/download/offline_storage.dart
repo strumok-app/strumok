@@ -8,6 +8,13 @@ import 'package:strumok/download/models.dart';
 import 'package:strumok/utils/logger.dart';
 
 class OfflineStorage {
+  static const String _detailsFileName = 'details.json';
+  static const String _completeFileName = 'complete';
+
+  static const String _videoExtension = 'mp4';
+  static const String _subtitleExtension = 'vtt';
+  static const String _mangaPagesPrefix = 'pages_';
+
   static final OfflineStorage _instance = OfflineStorage._internal();
 
   late String _downloadsDir;
@@ -25,6 +32,7 @@ class OfflineStorage {
     logger.info("Downloads directory: $_downloadsDir");
   }
 
+  /// Retrieves a list of offline content information from the downloads directory.
   Future<List<OfflineContentInfo>> offlineContent() async {
     final root = Directory(_downloadsDir);
 
@@ -41,13 +49,7 @@ class OfflineStorage {
         if (fsEntryNameParts.length == 2) {
           final [supplier, id] = fsEntryNameParts;
           final detailsJson = await _readContentDetailsJson(fsEntry.path);
-
-          int diskUsage = 0;
-          await for (var entity in fsEntry.list(recursive: true)) {
-            if (entity is File) {
-              diskUsage += await entity.length();
-            }
-          }
+          final diskUsage = await _calculateDiskUsage(fsEntry);
 
           result.add(
             OfflineContentInfo.create(
@@ -64,13 +66,18 @@ class OfflineStorage {
     return result;
   }
 
-  Future<void> storeDetails(ContentDetails details, {overrride = false}) async {
+  /// Stores content details to disk.
+  /// If [override] is true, overwrites existing file.
+  Future<void> storeDetails(
+    ContentDetails details, {
+    bool override = false,
+  }) async {
     final contentDetailsPath = _getContentDetailsPath(
       details.supplier,
       details.id,
     );
     final contentDetailsFile = File(contentDetailsPath);
-    if (!await contentDetailsFile.exists() || overrride) {
+    if (!await contentDetailsFile.exists() || override) {
       await contentDetailsFile.create(recursive: true);
       await contentDetailsFile.writeAsString(
         _contentDetailsToJson(details),
@@ -137,9 +144,7 @@ class OfflineStorage {
 
     final sources = <ContentMediaItemSource>[];
 
-    final fsEntries = await dir.list().toList();
-
-    for (final fsEntry in fsEntries) {
+    await for (final fsEntry in dir.list()) {
       final fsEntryPath = fsEntry.path;
       final fsEntryName = fsEntryPath.substring(mediaItemPath.length + 1);
       if (fsEntry is File) {
@@ -149,8 +154,8 @@ class OfflineStorage {
           final ext = fsEntryName.substring(extIndex + 1);
 
           FileKind? kind = switch (ext) {
-            "mp4" => FileKind.video,
-            "vtt" => FileKind.subtitle,
+            _videoExtension => FileKind.video,
+            _subtitleExtension => FileKind.subtitle,
             _ => null,
           };
 
@@ -164,9 +169,9 @@ class OfflineStorage {
           }
         }
       } else if (fsEntry is Directory) {
-        if (fsEntryName.startsWith("pages_")) {
+        if (fsEntryName.startsWith(_mangaPagesPrefix)) {
           final isComplete = await fsEntry.list().any(
-            (e) => e.path.endsWith("/complete"),
+            (e) => e.path.endsWith(_completeFileName),
           );
 
           if (!isComplete) {
@@ -200,7 +205,13 @@ class OfflineStorage {
     }
   }
 
+  /// Deletes content details and all associated files.
+  /// Throws an exception if content is currently downloading.
   Future<void> deleteContentDetails(String supplier, String id) async {
+    if (hasAnyDownloadingItems(supplier, id)) {
+      return;
+    }
+
     final contentDetailsPath = _getContentRootPath(supplier, id);
     await Directory(contentDetailsPath).delete(recursive: true);
   }
@@ -236,7 +247,7 @@ class OfflineStorage {
       "${_getContentRootPath(supplier, id)}${Platform.pathSeparator}$number";
 
   String _getContentDetailsPath(String supplier, String id) =>
-      "${_getContentRootPath(supplier, id)}${Platform.pathSeparator}details.json";
+      "${_getContentRootPath(supplier, id)}${Platform.pathSeparator}$_detailsFileName";
 
   String _getContentRootPath(String supplier, String id) =>
       "$_downloadsDir${Platform.pathSeparator}${_getContentDetailsFolderName(supplier, id)}";
@@ -276,7 +287,7 @@ class OfflineStorage {
     String contentDetailsPath,
   ) async {
     final detailsFile = File(
-      "$contentDetailsPath${Platform.pathSeparator}details.json",
+      "$contentDetailsPath${Platform.pathSeparator}$_detailsFileName",
     );
 
     Map<String, Object?>? detailsJson;
@@ -286,7 +297,7 @@ class OfflineStorage {
       try {
         detailsJson = json.decode(fileContent);
       } catch (e) {
-        logger.warning("Cant decode details for : ${detailsFile.path}");
+        logger.warning("Can't decode details for: ${detailsFile.path}");
       }
     }
 
@@ -308,12 +319,7 @@ class OfflineStorage {
     if (source.kind == FileKind.video) {
       final mediaSource = source as MediaFileItemSource;
       final link = await mediaSource.link;
-      final sourcePath = OfflineStorage().getMediaItemSourcePath(
-        supplier,
-        id,
-        number,
-        source,
-      );
+      final sourcePath = getMediaItemSourcePath(supplier, id, number, source);
 
       return VideoDownloadRequest(
         id: getMediaItemDownloadId(supplier, id, number),
@@ -326,12 +332,7 @@ class OfflineStorage {
       final mediaSource = source as MangaMediaItemSource;
       final pages = await mediaSource.pages;
 
-      final sourcePath = OfflineStorage().getMediaItemSourcePath(
-        supplier,
-        id,
-        number,
-        source,
-      );
+      final sourcePath = getMediaItemSourcePath(supplier, id, number, source);
 
       return MangaDownloadRequest(
         id: getMediaItemDownloadId(supplier, id, number),
@@ -343,6 +344,16 @@ class OfflineStorage {
     }
 
     return null;
+  }
+
+  Future<int> _calculateDiskUsage(Directory dir) async {
+    int size = 0;
+    await for (var entity in dir.list(recursive: true)) {
+      if (entity is File) {
+        size += await entity.length();
+      }
+    }
+    return size;
   }
 }
 

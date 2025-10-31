@@ -96,7 +96,7 @@ class _TrackSelectorDialog extends StatelessWidget {
           (track) => ListTile(
             leading: const Icon(Icons.videocam),
             onTap: () {
-              controller.selectAudioTrack(track.id);
+              controller.currentAudioTrackId = track.id;
               Navigator.of(context).pop();
             },
             title: Text(track.name),
@@ -129,7 +129,7 @@ class _TrackSelectorDialog extends StatelessWidget {
           (track) => ListTile(
             leading: const Icon(Icons.videocam),
             onTap: () {
-              controller.selectVideoTrack(track.id);
+              controller.currentVideoTrackId = track.id;
               Navigator.of(context).pop();
             },
             title: Text(track.name),

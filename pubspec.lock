@@ -1486,11 +1486,12 @@ packages:
   video_player:
     dependency: "direct main"
     description:
-      name: video_player
-      sha256: "0d55b1f1a31e5ad4c4967bfaa8ade0240b07d20ee4af1dfef5f531056512961a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.10.0"
+      path: "packages/video_player/video_player"
+      ref: HEAD
+      resolved-ref: "1df3a544869bbf5945101dbdd47a0a2357c7bcd0"
+      url: "https://github.com/Andro999b/packages"
+    source: git
+    version: "2.11.0"
   video_player_android:
     dependency: transitive
     description:
@@ -1510,11 +1511,12 @@ packages:
   video_player_platform_interface:
     dependency: "direct main"
     description:
-      name: video_player_platform_interface
-      sha256: cf2a1d29a284db648fd66cbd18aacc157f9862d77d2cc790f6f9678a46c1db5a
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.4.0"
+      path: "packages/video_player/video_player_platform_interface"
+      ref: HEAD
+      resolved-ref: "1df3a544869bbf5945101dbdd47a0a2357c7bcd0"
+      url: "https://github.com/Andro999b/packages"
+    source: git
+    version: "6.7.0"
   video_player_web:
     dependency: transitive
     description:
