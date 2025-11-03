@@ -1,9 +1,9 @@
-## [1.22.5](https://github.com/strumok-app/strumok/compare/v1.22.4...v1.22.5) (2025-10-31)
+## [1.22.6](https://github.com/strumok-app/strumok/compare/v1.22.5...v1.22.6) (2025-11-03)
 
 
 ### Bug Fixes
 
-* late duration and video blinking on desktop when playlist opened ([9bae57c](https://github.com/strumok-app/strumok/commit/9bae57c12892d40d13f04adeea06ae5f042aa0ce))
+* subworker ([48091ca](https://github.com/strumok-app/strumok/commit/48091ca4d79b15f2e473a15a5cc74686d3505e9e))
 
 
 
