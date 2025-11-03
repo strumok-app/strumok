@@ -50,8 +50,20 @@ Future<SubtitleController> _parseSubtitle(
   String uri,
   Map<String, String>? headers,
 ) async {
+  // todo: rework this.
+  SubtitleType? type;
+  if (uri.contains("srt")) {
+    type = SubtitleType.srt;
+  } else if (uri.contains("vtt")) {
+    type = SubtitleType.vtt;
+  }
+
   final controller = SubtitleController(
-    provider: NetworkSubtitle(Uri.parse(uri), headers: headers ?? {}),
+    provider: NetworkSubtitle(
+      Uri.parse(uri),
+      type: type,
+      headers: headers ?? {},
+    ),
   );
 
   // Initialize the controller (this is where the actual parsing happens)
