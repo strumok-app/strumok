@@ -94,7 +94,7 @@ class _VideoContentMobileControlsState
       _speedUpIndicator = true;
     });
     final controller = videoContentController(context);
-    _currentRate = controller.playerState.playbackSpeed;
+    _currentRate = controller.videoBackendState.playbackSpeed;
     controller.setRate(_currentRate * speedUpFactor);
   }
 
@@ -115,17 +115,16 @@ class _VideoContentMobileControlsState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _subscription ??= videoContentController(context).playerStream.listen((
-      event,
-    ) {
-      final newBuffering = event.showBuffering;
+    _subscription ??= videoContentController(context).videoBackendStateStream
+        .listen((event) {
+          final newBuffering = event.showBuffering;
 
-      if (_buffering != newBuffering) {
-        setState(() {
-          _buffering = newBuffering;
+          if (_buffering != newBuffering) {
+            setState(() {
+              _buffering = newBuffering;
+            });
+          }
         });
-      }
-    });
 
     _timer = Timer(controlsHoverDuration, () {
       if (mounted) {
@@ -242,10 +241,10 @@ class _VideoContentMobileControlsState
     final diff = _dragInitialDelta.dx - details.localPosition.dx;
     final duration = videoContentController(
       context,
-    ).playerState.duration.inSeconds;
+    ).videoBackendState.duration.inSeconds;
     final position = videoContentController(
       context,
-    ).playerState.position.inSeconds;
+    ).videoBackendState.position.inSeconds;
 
     final seconds = -(diff * duration / horizontalGestureSensitivity).round();
     final relativePosition = position + seconds;
@@ -899,10 +898,18 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
   bool tapped = false;
   double slider = 0.0;
 
-  late bool playing = videoContentController(context).playerState.isPlaying;
-  late Duration position = videoContentController(context).playerState.position;
-  late Duration duration = videoContentController(context).playerState.duration;
-  late Duration buffer = videoContentController(context).playerState.lastBuffer;
+  late bool playing = videoContentController(
+    context,
+  ).videoBackendState.isPlaying;
+  late Duration position = videoContentController(
+    context,
+  ).videoBackendState.position;
+  late Duration duration = videoContentController(
+    context,
+  ).videoBackendState.duration;
+  late Duration buffer = videoContentController(
+    context,
+  ).videoBackendState.buffered;
 
   StreamSubscription? _subscription;
 
@@ -916,7 +923,8 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
   void listener() {
     setState(() {
       final delta = widget.delta?.value ?? Duration.zero;
-      position = videoContentController(context).playerState.position + delta;
+      position =
+          videoContentController(context).videoBackendState.position + delta;
     });
   }
 
@@ -924,21 +932,20 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     widget.delta?.addListener(listener);
-    _subscription ??= videoContentController(context).playerStream.listen((
-      event,
-    ) {
-      if (playing != event.isPlaying ||
-          position != event.position ||
-          duration != event.duration ||
-          buffer != event.lastBuffer) {
-        setState(() {
-          playing = event.isPlaying;
-          position = event.position;
-          duration = event.duration;
-          buffer = event.lastBuffer;
+    _subscription ??= videoContentController(context).videoBackendStateStream
+        .listen((event) {
+          if (playing != event.isPlaying ||
+              position != event.position ||
+              duration != event.duration ||
+              buffer != event.buffered) {
+            setState(() {
+              playing = event.isPlaying;
+              position = event.position;
+              duration = event.duration;
+              buffer = event.buffered;
+            });
+          }
         });
-      }
-    });
   }
 
   @override
@@ -1114,8 +1121,12 @@ class _MobileControlsPositionIndicator extends StatefulWidget {
 
 class _MobileControlsPositionIndicatorState
     extends State<_MobileControlsPositionIndicator> {
-  late Duration position = videoContentController(context).playerState.position;
-  late Duration duration = videoContentController(context).playerState.duration;
+  late Duration position = videoContentController(
+    context,
+  ).videoBackendState.position;
+  late Duration duration = videoContentController(
+    context,
+  ).videoBackendState.duration;
 
   StreamSubscription? _subscription;
 
@@ -1130,16 +1141,15 @@ class _MobileControlsPositionIndicatorState
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _subscription ??= videoContentController(context).playerStream.listen((
-      event,
-    ) {
-      if (position != event.position || duration != event.duration) {
-        setState(() {
-          position = event.position;
-          duration = event.duration;
+    _subscription ??= videoContentController(context).videoBackendStateStream
+        .listen((event) {
+          if (position != event.position || duration != event.duration) {
+            setState(() {
+              position = event.position;
+              duration = event.duration;
+            });
+          }
         });
-      }
-    });
   }
 
   @override

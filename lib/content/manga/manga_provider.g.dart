@@ -7,7 +7,7 @@ part of 'manga_provider.dart';
 // **************************************************************************
 
 String _$mangaMediaItemSourcesHash() =>
-    r'8a7de16220d3f54517b2b46af8f0f1b8e179c6af';
+    r'09cb4d0b2fed9d1952116094473f3d443168f8a7';
 
 /// Copied from Dart SDK
 class _SystemHash {

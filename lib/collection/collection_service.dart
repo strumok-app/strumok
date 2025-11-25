@@ -9,7 +9,7 @@ class CollectionService {
 
   CollectionService({required this.repository});
 
-  Stream<void> get changesStream => repository.changesStream;
+  Stream<int> get changesStream => repository.changesStream;
 
   FutureOr<MediaCollectionItem?> getCollectionItem(String supplier, String id) {
     return repository.getCollectionItem(supplier, id);

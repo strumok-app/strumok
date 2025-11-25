@@ -262,7 +262,7 @@ final fixedPositionSettingsProvider =
 
 typedef _$FixedPositionSettings = AutoDisposeNotifier<int>;
 String _$equalizerBandsSettingsHash() =>
-    r'437c5b4b22f2141cc78fa0827b31027e1931b9c2';
+    r'02c1a692d0332b10715d412a8f1e9251a8b6259b';
 
 /// See also [EqualizerBandsSettings].
 @ProviderFor(EqualizerBandsSettings)

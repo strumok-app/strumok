@@ -65,12 +65,8 @@ CollectionService collectionService(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-class CollectionChanges extends _$CollectionChanges {
-  @override
-  Stream<void> build() {
-    return ref.watch(collectionServiceProvider).changesStream;
-  }
-}
+Stream<int> collectionChanges(Ref ref) =>
+    ref.watch(collectionServiceProvider).changesStream;
 
 final collectionFilterQueryProvider = StateProvider<String>((ref) => "");
 

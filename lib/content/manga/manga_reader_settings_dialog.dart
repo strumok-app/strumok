@@ -9,7 +9,6 @@ import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:strumok/widgets/settings_section.dart';
 
 class MangaReaderSettingsDialog extends ConsumerWidget {
   final ContentDetails contentDetails;
@@ -25,8 +24,9 @@ class MangaReaderSettingsDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AppTheme(
       child: Dialog(
+        insetPadding: EdgeInsets.all(8),
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: 800),
           padding: const EdgeInsets.all(8),
           child: FocusScope(
             child: Column(
@@ -59,28 +59,34 @@ class _MangaReaderBackgroundSelector extends ConsumerWidget {
     final theme = Theme.of(context);
     final currentBackground = ref.watch(mangaReaderBackgroundSettingsProvider);
 
-    return SettingsSection(
-      labelWidth: 400,
-      label: Text(
-        AppLocalizations.of(context)!.mangaReaderBackground,
-        style: theme.textTheme.headlineSmall,
-      ),
-      section: Dropdown.button(
-        label: mangaReaderBackgroundLabel(context, currentBackground),
-        menuChildrenBulder: (focusNode) => MangaReaderBackground.values
-            .mapIndexed(
-              (index, value) => MenuItemButton(
-                focusNode: index == 0 ? focusNode : null,
-                onPressed: () {
-                  ref
-                      .read(mangaReaderBackgroundSettingsProvider.notifier)
-                      .select(value);
-                },
-                child: Text(mangaReaderBackgroundLabel(context, value)),
-              ),
-            )
-            .toList(),
-      ),
+    return Row(
+      children: [
+        SizedBox(
+          width: 160,
+          child: Text(
+            AppLocalizations.of(context)!.mangaReaderBackground,
+            style: theme.textTheme.headlineSmall,
+          ),
+        ),
+        Expanded(
+          child: Dropdown.button(
+            label: mangaReaderBackgroundLabel(context, currentBackground),
+            menuChildrenBulder: (focusNode) => MangaReaderBackground.values
+                .mapIndexed(
+                  (index, value) => MenuItemButton(
+                    focusNode: index == 0 ? focusNode : null,
+                    onPressed: () {
+                      ref
+                          .read(mangaReaderBackgroundSettingsProvider.notifier)
+                          .select(value);
+                    },
+                    child: Text(mangaReaderBackgroundLabel(context, value)),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -122,28 +128,34 @@ class MangaTranslationSelector extends ConsumerWidget {
 
     final theme = Theme.of(context);
 
-    return SettingsSection(
-      labelWidth: 400,
-      label: Text(
-        AppLocalizations.of(context)!.mangaTranslation,
-        style: theme.textTheme.headlineSmall,
-      ),
-      section: Dropdown.button(
-        label: currentSource ?? sources.first.description,
-        menuChildrenBulder: (focusNode) => sources
-            .mapIndexed(
-              (index, value) => MenuItemButton(
-                focusNode: index == 0 ? focusNode : null,
-                onPressed: () {
-                  ref
-                      .read(collectionItemProvider(contentDetails).notifier)
-                      .setCurrentSource(value.description);
-                },
-                child: Text(value.description),
-              ),
-            )
-            .toList(),
-      ),
+    return Row(
+      children: [
+        SizedBox(
+          width: 160,
+          child: Text(
+            AppLocalizations.of(context)!.mangaTranslation,
+            style: theme.textTheme.headlineSmall,
+          ),
+        ),
+        Expanded(
+          child: Dropdown.button(
+            label: currentSource ?? sources.first.description,
+            menuChildrenBulder: (focusNode) => sources
+                .mapIndexed(
+                  (index, value) => MenuItemButton(
+                    focusNode: index == 0 ? focusNode : null,
+                    onPressed: () {
+                      ref
+                          .read(collectionItemProvider(contentDetails).notifier)
+                          .setCurrentSource(value.description);
+                    },
+                    child: Text(value.description),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -156,28 +168,34 @@ class _MangaReaderModeSelector extends ConsumerWidget {
     final theme = Theme.of(context);
     final currentMode = ref.watch(mangaReaderModeSettingsProvider);
 
-    return SettingsSection(
-      labelWidth: 400,
-      label: Text(
-        AppLocalizations.of(context)!.mangaReaderMode,
-        style: theme.textTheme.headlineSmall,
-      ),
-      section: Dropdown.button(
-        label: mangaReaderModeLabel(context, currentMode),
-        menuChildrenBulder: (focusNode) => MangaReaderMode.values
-            .mapIndexed(
-              (index, value) => MenuItemButton(
-                focusNode: index == 0 ? focusNode : null,
-                onPressed: () {
-                  ref
-                      .read(mangaReaderModeSettingsProvider.notifier)
-                      .select(value);
-                },
-                child: Text(mangaReaderModeLabel(context, value)),
-              ),
-            )
-            .toList(),
-      ),
+    return Row(
+      children: [
+        SizedBox(
+          width: 160,
+          child: Text(
+            AppLocalizations.of(context)!.mangaReaderMode,
+            style: theme.textTheme.headlineSmall,
+          ),
+        ),
+        Expanded(
+          child: Dropdown.button(
+            label: mangaReaderModeLabel(context, currentMode),
+            menuChildrenBulder: (focusNode) => MangaReaderMode.values
+                .mapIndexed(
+                  (index, value) => MenuItemButton(
+                    focusNode: index == 0 ? focusNode : null,
+                    onPressed: () {
+                      ref
+                          .read(mangaReaderModeSettingsProvider.notifier)
+                          .select(value);
+                    },
+                    child: Text(mangaReaderModeLabel(context, value)),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 }

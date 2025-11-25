@@ -13,17 +13,8 @@ import 'package:strumok/content/video/subtitle_worker.dart';
 import 'package:strumok/utils/cache.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/trace.dart';
-import 'package:strumok/video_backend/extension.dart';
+import 'package:strumok/video_backend/video_backend.dart';
 import 'package:subtitle/subtitle.dart';
-import 'package:video_player/video_player.dart';
-
-extension VideoPlayerValueExt on VideoPlayerValue {
-  Duration get lastBuffer => buffered.lastOrNull?.end ?? Duration.zero;
-  bool get isEnded =>
-      duration > Duration.zero && position >= duration && !isPlaying;
-
-  bool get showBuffering => (isBuffering || !isInitialized) && !hasError;
-}
 
 typedef ChangeCollectionCurrentItemCallback = void Function(int);
 
@@ -45,19 +36,18 @@ class VideoContentController {
   String? _currentSourceName;
   String? _currentSubtitleName;
 
-  VideoPlayerController? _currentVideoPlayerController;
-  ValueNotifier<AsyncValue<VideoPlayerController>> playerController =
-      ValueNotifier(AsyncValue.loading());
-  VideoPlayerController? get _readyVideoPlayerController =>
-      playerController.value.valueOrNull;
+  VideoBackend? _currentVideoBackend;
+  ValueNotifier<AsyncValue<VideoBackend>> videoBackend = ValueNotifier(
+    AsyncValue.loading(),
+  );
 
-  VideoPlayerValue get playerState =>
-      _readyVideoPlayerController?.value ?? VideoPlayerValue.uninitialized();
+  VideoBackendState get videoBackendState =>
+      _currentVideoBackend?.value ?? VideoBackendState.uninitialized();
 
-  final StreamController<VideoPlayerValue> _playerStateStreamController =
+  final StreamController<VideoBackendState> _videoBackendStateStreamController =
       StreamController.broadcast();
-  Stream<VideoPlayerValue> get playerStream =>
-      _playerStateStreamController.stream;
+  Stream<VideoBackendState> get videoBackendStateStream =>
+      _videoBackendStateStreamController.stream;
 
   ValueNotifier<AsyncValue<SubtitleController?>> subtitleController =
       ValueNotifier(AsyncValue.data(null));
@@ -73,33 +63,39 @@ class VideoContentController {
 
   void playOrPause() {
     if (_disposed) return;
-    final controller = _readyVideoPlayerController;
-    if (controller != null) {
-      if (controller.value.isPlaying) {
-        controller.pause();
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      if (backend!.value.isPlaying) {
+        backend.pause();
       } else {
-        controller.play();
+        backend.play();
       }
     }
   }
 
   void play() {
     if (_disposed) return;
-    _readyVideoPlayerController?.play();
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      backend!.play();
+    }
   }
 
   void pause() {
     if (_disposed) return;
-    _readyVideoPlayerController?.pause();
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      backend!.pause();
+    }
   }
 
   void volumeChangeBy(double delta) {
     if (_disposed) return;
-    final controller = _readyVideoPlayerController;
-    if (controller != null) {
-      final currentVolume = controller.value.volume;
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      final currentVolume = backend!.value.volume;
       final newVolume = (currentVolume + delta).clamp(0.0, 1.0);
-      controller.setVolume(newVolume);
+      backend.setVolume(newVolume);
     }
   }
 
@@ -115,61 +111,76 @@ class VideoContentController {
 
   Future<void> setVolume(double volume) async {
     if (_disposed) return;
-    final controller = _readyVideoPlayerController;
-    if (controller != null) {
-      await controller.setVolume(volume);
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      await backend!.setVolume(volume);
     }
   }
 
   Future<void> seekTo(Duration position) async {
     if (_disposed) return;
 
-    await _readyVideoPlayerController?.seekTo(position);
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      backend!.seekTo(position);
+    }
   }
 
   void seekForward(Duration duration) {
     if (_disposed) return;
-    final controller = _readyVideoPlayerController;
-    if (controller == null) return;
 
-    final currentPosition = controller.value.position;
-    final newPosition = currentPosition + duration;
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      final currentPosition = backend!.value.position;
+      final newPosition = currentPosition + duration;
 
-    // Clamp to video duration if seeking beyond end
-    final clampedPosition = newPosition > controller.value.duration
-        ? controller.value.duration
-        : newPosition;
+      // Clamp to video duration if seeking beyond end
+      final clampedPosition = newPosition > backend.value.duration
+          ? backend.value.duration
+          : newPosition;
 
-    seekTo(clampedPosition);
+      backend.seekTo(clampedPosition);
+    }
   }
 
   void seekBackward(Duration duration) {
     if (_disposed) return;
-    final controller = _readyVideoPlayerController;
-    if (controller == null) return;
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      final currentPosition = backend!.value.position;
+      final newPosition = currentPosition - duration;
 
-    final currentPosition = controller.value.position;
-    final newPosition = currentPosition - duration;
+      // Clamp to zero if seeking before start
+      final clampedPosition = newPosition < Duration.zero
+          ? Duration.zero
+          : newPosition;
 
-    // Clamp to zero if seeking before start
-    final clampedPosition = newPosition < Duration.zero
-        ? Duration.zero
-        : newPosition;
-
-    seekTo(clampedPosition);
+      backend.seekTo(clampedPosition);
+    }
   }
 
   void setRate(double rate) {
     if (_disposed) return;
-    _readyVideoPlayerController?.setPlaybackSpeed(rate);
+
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      backend?.setPlaybackSpeed(rate);
+    }
+  }
+
+  void setEquilizer(List<double> bands) {
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      backend!.setEquilizer(bands);
+    }
   }
 
   void dispose() {
     _disposed = true;
     _subtitleWorker.dispose();
-    _readyVideoPlayerController?.dispose();
-    _playerStateStreamController.close();
-    playerController.dispose();
+    _currentVideoBackend?.dispose();
+    _videoBackendStateStreamController.close();
+    videoBackend.dispose();
     subtitleController.dispose();
     subtitlePaddings.dispose();
   }
@@ -197,9 +208,9 @@ class VideoContentController {
     try {
       // reset state
       _currentSources = null;
-      _currentVideoPlayerController?.dispose();
-      playerController.value = AsyncValue.loading();
-      _playerStateStreamController.add(VideoPlayerValue.uninitialized());
+      _currentVideoBackend?.dispose();
+      videoBackend.value = AsyncValue.loading();
+      _videoBackendStateStreamController.add(VideoBackendState.uninitialized());
 
       // select source
       _currentItem = collectionItem.currentItem;
@@ -228,7 +239,7 @@ class VideoContentController {
       }
 
       if (video == null) {
-        playerController.value = AsyncValue.error(
+        videoBackend.value = AsyncValue.error(
           "Video source $_currentSourceName not avalaible",
           StackTrace.current,
         );
@@ -265,41 +276,38 @@ class VideoContentController {
         "Starting video: $link, headers: ${video.headers}, startPos: $start",
       );
 
-      final videoController = VideoPlayerController.networkUrl(
-        link,
-        httpHeaders: video.headers ?? {},
-        videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: true),
-      );
+      final newVideoBackend = VideoBackend.create();
 
-      _currentVideoPlayerController = videoController;
-      await videoController.initialize();
+      _currentVideoBackend = newVideoBackend;
+      await newVideoBackend.initialize(
+        link,
+        headers: video.headers ?? {},
+        start: Duration(seconds: start),
+      );
 
       if (_disposed ||
           _currentItem != collectionItem.currentItem ||
           _currentSourceName != collectionItem.currentSourceName) {
-        videoController.dispose();
+        videoBackend.dispose();
         return;
       }
 
-      playerController.value = AsyncValue.data(videoController);
-      _playerStateStreamController.add(videoController.value);
-      videoController.addListener(() {
-        final value = videoController.value;
+      videoBackend.value = AsyncValue.data(newVideoBackend);
+      _videoBackendStateStreamController.add(newVideoBackend.value);
 
-        _playerStateStreamController.add(value);
+      newVideoBackend.addListener(() {
+        final value = newVideoBackend.value;
+        _videoBackendStateStreamController.add(value);
         if (value.isEnded) {
           _onVideoEnds();
         }
       });
 
-      await videoController.play();
-      await videoController.seekTo(Duration(seconds: start));
-
       // set equalizer
-      videoController.equilizer = AppPreferences.videoPlayerEqualizerBands;
+      newVideoBackend.setEquilizer(AppPreferences.videoPlayerEqualizerBands);
 
       // set volume
-      videoController.setVolume(AppPreferences.volume);
+      newVideoBackend.setVolume(AppPreferences.volume);
     } catch (e, stackTrace) {
       if (e is ContentSuppliersException) {
         traceError(
@@ -317,16 +325,12 @@ class VideoContentController {
         return;
       }
 
-      _readyVideoPlayerController?.dispose();
-      playerController.value = AsyncValue.error(e, stackTrace);
-      _playerStateStreamController.add(
-        VideoPlayerValue.erroneous(e.toString()),
+      _currentVideoBackend?.dispose();
+      videoBackend.value = AsyncValue.error(e, stackTrace);
+      _videoBackendStateStreamController.add(
+        VideoBackendState.erroneous(e.toString()),
       );
     }
-  }
-
-  void setEquilizer(List<double> bands) {
-    _readyVideoPlayerController?.equilizer = bands;
   }
 
   void _onVideoEnds() async {
@@ -334,8 +338,8 @@ class VideoContentController {
       case OnVideoEndsAction.playNext:
         nextItem();
       case OnVideoEndsAction.playAgain:
-        if (_readyVideoPlayerController != null) {
-          final videoController = _readyVideoPlayerController!;
+        if (_currentVideoBackend != null) {
+          final videoController = _currentVideoBackend!;
           await videoController.seekTo(Duration.zero);
           await videoController.play();
         }

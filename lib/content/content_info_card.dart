@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:strumok/widgets/nothing_to_show.dart';
 
 class ContentInfoCard extends StatefulWidget {
-  final FocusNode focusNode;
+  // final FocusNode focusNode;
   final bool showSupplier;
 
   final ValueChanged<bool>? onHover;
@@ -15,43 +15,51 @@ class ContentInfoCard extends StatefulWidget {
   final Widget? corner;
   final ContentInfo contentInfo;
   final GestureTapCallback? onTap;
+  final bool autofocuse;
 
-  ContentInfoCard({
+  const ContentInfoCard({
     super.key,
     required this.contentInfo,
     this.corner,
     this.onTap,
     this.onHover,
     this.onLongPress,
-    FocusNode? focusNode,
     this.showSupplier = true,
-  }) : focusNode = focusNode ?? FocusNode(debugLabel: "ContentInfoCard");
+    this.autofocuse = false,
+  });
 
   @override
   State<ContentInfoCard> createState() => _ContentInfoCardState();
 }
 
 class _ContentInfoCardState extends State<ContentInfoCard> {
+  final FocusNode focusNode = FocusNode();
   bool _focused = false;
 
   @override
   void initState() {
     if (!isMobileDevice()) {
-      _focused = widget.focusNode.hasFocus;
-      widget.focusNode.addListener(_handleFocusChange);
+      _focused = focusNode.hasFocus;
+      focusNode.addListener(_handleFocusChange);
+
+      if (widget.autofocuse) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          focusNode.requestFocus();
+        });
+      }
     }
     super.initState();
   }
 
   @override
   void dispose() {
-    widget.focusNode.removeListener(_handleFocusChange);
+    focusNode.removeListener(_handleFocusChange);
     super.dispose();
   }
 
   void _handleFocusChange() {
     setState(() {
-      _focused = widget.focusNode.hasFocus;
+      _focused = focusNode.hasFocus;
     });
   }
 
@@ -64,7 +72,7 @@ class _ContentInfoCardState extends State<ContentInfoCard> {
 
     return HorizontalListCard(
       key: Key("${widget.contentInfo.supplier}/${widget.contentInfo.id}"),
-      focusNode: widget.focusNode,
+      focusNode: focusNode,
       onTap:
           widget.onTap ??
           () => navigateToContentDetails(context, widget.contentInfo),

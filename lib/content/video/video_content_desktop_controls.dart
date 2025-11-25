@@ -51,17 +51,16 @@ class _VideoContentDesktopControlsState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _subscription ??= videoContentController(context).playerStream.listen((
-      event,
-    ) {
-      final newBuffering = event.showBuffering;
+    _subscription ??= videoContentController(context).videoBackendStateStream
+        .listen((event) {
+          final newBuffering = event.showBuffering;
 
-      if (_buffering != newBuffering) {
-        setState(() {
-          _buffering = newBuffering;
+          if (_buffering != newBuffering) {
+            setState(() {
+              _buffering = newBuffering;
+            });
+          }
         });
-      }
-    });
 
     _timer = Timer(controlsHoverDuration, () {
       if (mounted) {
@@ -449,10 +448,18 @@ class _DesktopVideoControlsSeekBarState
   bool click = false;
   double slider = 0.0;
 
-  late bool playing = videoContentController(context).playerState.isPlaying;
-  late Duration position = videoContentController(context).playerState.position;
-  late Duration duration = videoContentController(context).playerState.duration;
-  late Duration buffer = videoContentController(context).playerState.lastBuffer;
+  late bool playing = videoContentController(
+    context,
+  ).videoBackendState.isPlaying;
+  late Duration position = videoContentController(
+    context,
+  ).videoBackendState.position;
+  late Duration duration = videoContentController(
+    context,
+  ).videoBackendState.duration;
+  late Duration buffer = videoContentController(
+    context,
+  ).videoBackendState.buffered;
 
   StreamSubscription? _subscription;
 
@@ -466,21 +473,20 @@ class _DesktopVideoControlsSeekBarState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _subscription ??= videoContentController(context).playerStream.listen((
-      event,
-    ) {
-      if (playing != event.isPlaying ||
-          position != event.position ||
-          duration != event.duration ||
-          buffer != event.lastBuffer) {
-        setState(() {
-          playing = event.isPlaying;
-          position = event.position;
-          duration = event.duration;
-          buffer = event.lastBuffer;
+    _subscription ??= videoContentController(context).videoBackendStateStream
+        .listen((event) {
+          if (playing != event.isPlaying ||
+              position != event.position ||
+              duration != event.duration ||
+              buffer != event.buffered) {
+            setState(() {
+              playing = event.isPlaying;
+              position = event.position;
+              duration = event.duration;
+              buffer = event.buffered;
+            });
+          }
         });
-      }
-    });
   }
 
   @override
@@ -655,7 +661,7 @@ class _DesktopVideoControlsVolumeButtonState
     with SingleTickerProviderStateMixin {
   static final volumeBarTransitionDuration = const Duration(milliseconds: 150);
 
-  late double volume = videoContentController(context).playerState.volume;
+  late double volume = videoContentController(context).videoBackendState.volume;
 
   StreamSubscription? _subscription;
 
@@ -674,15 +680,14 @@ class _DesktopVideoControlsVolumeButtonState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _subscription ??= videoContentController(context).playerStream.listen((
-      event,
-    ) {
-      if (volume != event.volume) {
-        setState(() {
-          volume = event.volume;
+    _subscription ??= videoContentController(context).videoBackendStateStream
+        .listen((event) {
+          if (volume != event.volume) {
+            setState(() {
+              volume = event.volume;
+            });
+          }
         });
-      }
-    });
   }
 
   @override
@@ -821,8 +826,12 @@ class DesktopVideoControlsPositionIndicator extends StatefulWidget {
 
 class DesktopVideoControlsPositionIndicatorState
     extends State<DesktopVideoControlsPositionIndicator> {
-  late Duration position = videoContentController(context).playerState.position;
-  late Duration duration = videoContentController(context).playerState.duration;
+  late Duration position = videoContentController(
+    context,
+  ).videoBackendState.position;
+  late Duration duration = videoContentController(
+    context,
+  ).videoBackendState.duration;
 
   StreamSubscription? _subscription;
 
@@ -836,16 +845,15 @@ class DesktopVideoControlsPositionIndicatorState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _subscription ??= videoContentController(context).playerStream.listen((
-      event,
-    ) {
-      if (position != event.position || duration != event.duration) {
-        setState(() {
-          position = event.position;
-          duration = event.duration;
+    _subscription ??= videoContentController(context).videoBackendStateStream
+        .listen((event) {
+          if (position != event.position || duration != event.duration) {
+            setState(() {
+              position = event.position;
+              duration = event.duration;
+            });
+          }
         });
-      }
-    });
   }
 
   @override

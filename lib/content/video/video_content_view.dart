@@ -13,7 +13,7 @@ import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_subtitles.dart';
 import 'package:strumok/content/video/video_view.dart';
 import 'package:strumok/utils/tv.dart';
-import 'package:video_player/video_player.dart';
+import 'package:strumok/video_backend/video_backend.dart';
 
 class VideoContentView extends ConsumerStatefulWidget {
   final ContentDetails contentDetails;
@@ -32,7 +32,7 @@ class VideoContentView extends ConsumerStatefulWidget {
 class VideoContentViewState extends ConsumerState<VideoContentView> {
   late final VideoContentController _controller;
   late final List<ProviderSubscription> _providerSubscriptions = [];
-  late final StreamSubscription<VideoPlayerValue>? _playerStreamSubscription;
+  late final StreamSubscription<VideoBackendState>? _playerStreamSubscription;
 
   @override
   void initState() {
@@ -67,7 +67,9 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
 
     _providerSubscriptions.add(eqailizerSub);
 
-    _playerStreamSubscription = _controller.playerStream.listen((playerValue) {
+    _playerStreamSubscription = _controller.videoBackendStateStream.listen((
+      playerValue,
+    ) {
       // Update collection item position when player position changes
       if (playerValue.position > Duration.zero) {
         ref

@@ -65,7 +65,7 @@ class _VideoContentTVControlsState extends State<VideoContentTVControls> {
   }
 
   void seek(int sec) {
-    var playerState = videoContentController(context).playerState;
+    var playerState = videoContentController(context).videoBackendState;
     int targetPosition = _seekVisible
         ? _seekPosition
         : playerState.position.inSeconds;
@@ -262,17 +262,16 @@ class _TVVideoBufferingIndicatorState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _subscription = videoContentController(context).playerStream.listen((
-      event,
-    ) {
-      final newBuffering = event.showBuffering;
+    _subscription = videoContentController(context).videoBackendStateStream
+        .listen((event) {
+          final newBuffering = event.showBuffering;
 
-      if (_buffering != newBuffering) {
-        setState(() {
-          _buffering = newBuffering;
+          if (_buffering != newBuffering) {
+            setState(() {
+              _buffering = newBuffering;
+            });
+          }
         });
-      }
-    });
   }
 
   @override
@@ -353,9 +352,15 @@ class _TVSeekBar extends StatefulWidget {
 class _TVSeekBarState extends State<_TVSeekBar> {
   static const _seekUnit = 10;
 
-  late Duration position = videoContentController(context).playerState.position;
-  late Duration duration = videoContentController(context).playerState.duration;
-  late Duration buffer = videoContentController(context).playerState.lastBuffer;
+  late Duration position = videoContentController(
+    context,
+  ).videoBackendState.position;
+  late Duration duration = videoContentController(
+    context,
+  ).videoBackendState.duration;
+  late Duration buffer = videoContentController(
+    context,
+  ).videoBackendState.buffered;
   late int? divisions = _calcDivisions();
 
   double? slidePosition;
@@ -372,29 +377,28 @@ class _TVSeekBarState extends State<_TVSeekBar> {
 
   void listener() {
     setState(() {
-      position = videoContentController(context).playerState.position;
+      position = videoContentController(context).videoBackendState.position;
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _subscription ??= videoContentController(context).playerStream.listen((
-      event,
-    ) {
-      if (position != event.position ||
-          duration != event.duration ||
-          buffer != event.lastBuffer) {
-        setState(() {
-          if (duration != event.duration) {
-            duration = event.duration;
-            divisions = _calcDivisions();
+    _subscription ??= videoContentController(context).videoBackendStateStream
+        .listen((event) {
+          if (position != event.position ||
+              duration != event.duration ||
+              buffer != event.buffered) {
+            setState(() {
+              if (duration != event.duration) {
+                duration = event.duration;
+                divisions = _calcDivisions();
+              }
+              position = event.position;
+              buffer = event.buffered;
+            });
           }
-          position = event.position;
-          buffer = event.lastBuffer;
         });
-      }
-    });
   }
 
   @override

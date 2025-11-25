@@ -39,7 +39,7 @@ class CollectionHorizontalView extends ConsumerWidget {
   }
 }
 
-class CollectionHorizontalGroup extends ConsumerStatefulWidget {
+class CollectionHorizontalGroup extends ConsumerWidget {
   final MediaCollectionItemStatus status;
   final int groupIdx;
 
@@ -50,33 +50,10 @@ class CollectionHorizontalGroup extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<CollectionHorizontalGroup> createState() =>
-      _CollectionHorizontalGroupState();
-}
-
-class _CollectionHorizontalGroupState
-    extends ConsumerState<CollectionHorizontalGroup> {
-  final primaryFocusNode = FocusNode();
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      primaryFocusNode.requestFocus();
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    primaryFocusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final groupItems = ref.watch(
       collectionItemsByStatusProvider.select(
-        (value) => value.valueOrNull?[widget.status],
+        (value) => value.valueOrNull?[status],
       ),
     );
 
@@ -85,11 +62,11 @@ class _CollectionHorizontalGroupState
     }
 
     Widget title = Text(
-      statusLabel(context, widget.status),
+      statusLabel(context, status),
       style: Theme.of(context).textTheme.titleMedium,
     );
 
-    if (widget.groupIdx == 0) {
+    if (groupIdx == 0) {
       title = FocusIndicator(child: title);
     }
 
@@ -98,11 +75,9 @@ class _CollectionHorizontalGroupState
       itemBuilder: (context, index) {
         final item = groupItems[index];
         return CollectionHorizontalListItem(
-          key: ValueKey(item),
-          focusNode: (widget.groupIdx == 0 && index == 0)
-              ? primaryFocusNode
-              : null,
+          key: ValueKey("${item.supplier}/${item.id}"),
           item: groupItems[index],
+          autofocuse: (groupIdx == 0 && index == 0),
         );
       },
       itemCount: groupItems.length,

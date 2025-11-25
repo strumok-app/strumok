@@ -13,7 +13,7 @@ import 'package:strumok/utils/text.dart';
 import 'package:firebase_dart/src/database/impl/firebase_impl.dart';
 
 abstract interface class CollectionRepository {
-  Stream<void> get changesStream;
+  Stream<int> get changesStream;
   FutureOr<MediaCollectionItem?> getCollectionItem(String supplier, String id);
   FutureOr<void> save(MediaCollectionItem collectionItem);
   FutureOr<Iterable<MediaCollectionItem>> search({String? query});
@@ -26,11 +26,13 @@ class LocalCollectionRepository extends CollectionRepository {
   static StoreRef<String, Map<String, Object?>> store = stringMapStoreFactory
       .store("collection");
 
+  int _version = 0;
   final Database db = AppDatabase().db();
-  final StreamController<void> syncStreamController = StreamController();
+  final StreamController<int> syncStreamController =
+      StreamController.broadcast();
 
   @override
-  Stream<void> get changesStream => syncStreamController.stream;
+  Stream<int> get changesStream => syncStreamController.stream;
 
   @override
   FutureOr<MediaCollectionItem?> getCollectionItem(
@@ -57,7 +59,7 @@ class LocalCollectionRepository extends CollectionRepository {
 
     await db.transaction((tx) => store.record(itemId).put(tx, recordValue));
 
-    syncStreamController.add(null);
+    syncStreamController.add(++_version);
   }
 
   @override
@@ -93,7 +95,7 @@ class LocalCollectionRepository extends CollectionRepository {
 
     await db.transaction((tx) => store.record(itemId).delete(tx));
 
-    syncStreamController.sink.add(null);
+    syncStreamController.add(++_version);
   }
 
   void deleteOlder(Map<String, dynamic> remote) {
@@ -109,7 +111,7 @@ class LocalCollectionRepository extends CollectionRepository {
       }
 
       if (localRecord != null) {
-        syncStreamController.sink.add(null);
+        syncStreamController.add(++_version);
       }
     });
   }
@@ -140,7 +142,7 @@ class LocalCollectionRepository extends CollectionRepository {
       }
 
       if (localRecord?["status"] != remote["status"]) {
-        syncStreamController.sink.add(null);
+        syncStreamController.add(++_version);
       }
     });
   }
@@ -187,7 +189,7 @@ class FirebaseRepository extends CollectionRepository {
   }
 
   @override
-  Stream<void> get changesStream => localRepo.changesStream;
+  Stream<int> get changesStream => localRepo.changesStream;
 
   @override
   FutureOr<MediaCollectionItem?> getCollectionItem(String supplier, String id) {

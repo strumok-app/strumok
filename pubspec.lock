@@ -295,14 +295,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.0+2"
-  csslib:
-    dependency: transitive
-    description:
-      name: csslib
-      sha256: "09bad715f418841f976c77db72d5398dc1253c21fb9c0c7f0b0b985860b2d58e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
   custom_lint:
     dependency: "direct dev"
     description:
@@ -582,14 +574,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.3.0"
-  html:
-    dependency: transitive
-    description:
-      name: html
-      sha256: "6d1264f2dffa1b1101c25a91dff0dc2daee4c18e87cd8538729773c073dbf602"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.15.6"
   http:
     dependency: "direct main"
     description:
@@ -1483,48 +1467,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
-  video_player:
-    dependency: "direct main"
-    description:
-      path: "packages/video_player/video_player"
-      ref: HEAD
-      resolved-ref: "1df3a544869bbf5945101dbdd47a0a2357c7bcd0"
-      url: "https://github.com/Andro999b/packages"
-    source: git
-    version: "2.11.0"
-  video_player_android:
-    dependency: transitive
-    description:
-      name: video_player_android
-      sha256: "6cfe0b1e102522eda1e139b82bf00602181c5844fd2885340f595fb213d74842"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.8.14"
-  video_player_avfoundation:
-    dependency: transitive
-    description:
-      name: video_player_avfoundation
-      sha256: f9a780aac57802b2892f93787e5ea53b5f43cc57dc107bee9436458365be71cd
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.8.4"
-  video_player_platform_interface:
-    dependency: "direct main"
-    description:
-      path: "packages/video_player/video_player_platform_interface"
-      ref: HEAD
-      resolved-ref: "1df3a544869bbf5945101dbdd47a0a2357c7bcd0"
-      url: "https://github.com/Andro999b/packages"
-    source: git
-    version: "6.7.0"
-  video_player_web:
-    dependency: transitive
-    description:
-      name: video_player_web
-      sha256: "9f3c00be2ef9b76a95d94ac5119fb843dca6f2c69e6c9968f6f2b6c9e7afbdeb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.0"
   vm_service:
     dependency: transitive
     description:

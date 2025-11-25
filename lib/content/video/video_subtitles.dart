@@ -6,8 +6,8 @@ import 'package:rounded_background_text/rounded_background_text.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/l10n/app_localizations.dart';
+import 'package:strumok/video_backend/video_backend.dart';
 import 'package:subtitle/subtitle.dart';
-import 'package:video_player/video_player.dart';
 
 class VideoSubtitles extends ConsumerWidget {
   const VideoSubtitles({super.key});
@@ -68,9 +68,11 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
 
     if (_subscription == null) {
       final controller = videoContentController(context);
-      _subscription = controller.playerStream.listen(_updateSubtitles);
+      _subscription = controller.videoBackendStateStream.listen(
+        _updateSubtitles,
+      );
 
-      _updateSubtitles(controller.playerState);
+      _updateSubtitles(controller.videoBackendState);
     }
   }
 
@@ -79,7 +81,7 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.subtitlesOffset != widget.subtitlesOffset) {
       final controller = videoContentController(context);
-      _updateSubtitles(controller.playerState);
+      _updateSubtitles(controller.videoBackendState);
     }
   }
 
@@ -90,8 +92,8 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
     super.dispose();
   }
 
-  void _updateSubtitles(VideoPlayerValue value) {
-    final time = value.position + widget.subtitlesOffset;
+  void _updateSubtitles(VideoBackendState state) {
+    final time = state.position + widget.subtitlesOffset;
 
     if (_subtitles.firstOrNull?.inRange(time) == true) {
       return;

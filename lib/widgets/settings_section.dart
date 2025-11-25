@@ -31,7 +31,7 @@ class SettingsSection extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth < 640) {
+        if (constraints.maxWidth < 500) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [labelBox, sectionBox],

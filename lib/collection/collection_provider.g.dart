@@ -23,6 +23,23 @@ final collectionServiceProvider = Provider<CollectionService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CollectionServiceRef = ProviderRef<CollectionService>;
+String _$collectionChangesHash() => r'26d8c9c739edebc08c4da58edb7e712c2eb8af32';
+
+/// See also [collectionChanges].
+@ProviderFor(collectionChanges)
+final collectionChangesProvider = StreamProvider<int>.internal(
+  collectionChanges,
+  name: r'collectionChangesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$collectionChangesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CollectionChangesRef = StreamProviderRef<int>;
 String _$collectionItemsHash() => r'7f061ed51578f3d6a84966ab98d145a95f417e43';
 
 /// See also [collectionItems].
@@ -105,22 +122,6 @@ final collectionActiveItemsProvider =
 // ignore: unused_element
 typedef CollectionActiveItemsRef =
     AutoDisposeFutureProviderRef<List<MediaCollectionItem>>;
-String _$collectionChangesHash() => r'9cdbf00aee59ae6661f58a392677e0a6aa07d663';
-
-/// See also [CollectionChanges].
-@ProviderFor(CollectionChanges)
-final collectionChangesProvider =
-    StreamNotifierProvider<CollectionChanges, void>.internal(
-      CollectionChanges.new,
-      name: r'collectionChangesProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$collectionChangesHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$CollectionChanges = StreamNotifier<void>;
 String _$collectionFilterHash() => r'7f607bbc281e55623e6f0dca4b02a846e5549532';
 
 /// See also [CollectionFilter].

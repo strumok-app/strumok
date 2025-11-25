@@ -153,9 +153,13 @@ class PlayOrPauseButton extends StatefulWidget {
 
 class PlayOrPauseButtonState extends State<PlayOrPauseButton>
     with SingleTickerProviderStateMixin {
+  late bool isPlaying = videoContentController(
+    context,
+  ).videoBackendState.isPlaying;
+
   late final animation = AnimationController(
     vsync: this,
-    value: videoContentController(context).playerState.isPlaying ? 1 : 0,
+    value: isPlaying ? 1 : 0,
     duration: const Duration(milliseconds: 200),
   );
 
@@ -171,15 +175,17 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    subscription ??= videoContentController(context).playerStream.listen((
-      event,
-    ) {
-      if (event.isPlaying) {
-        animation.forward();
-      } else {
-        animation.reverse();
-      }
-    });
+    subscription ??= videoContentController(context).videoBackendStateStream
+        .listen((event) {
+          if (isPlaying != event.isPlaying) {
+            if (event.isPlaying) {
+              animation.forward();
+            } else {
+              animation.reverse();
+            }
+            isPlaying = event.isPlaying;
+          }
+        });
   }
 
   @override

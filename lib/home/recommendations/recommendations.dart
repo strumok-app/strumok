@@ -91,7 +91,11 @@ class _RecommendationChannel extends ConsumerWidget {
         itemBuilder: (context, index) {
           final item = state.recommendations[index];
 
-          return ContentInfoCard(contentInfo: item, showSupplier: false);
+          return ContentInfoCard(
+            key: ValueKey("${item.supplier}/${item.id}"),
+            contentInfo: item,
+            showSupplier: false,
+          );
         },
         itemCount: state.recommendations.length,
         trailing: state.hasMore

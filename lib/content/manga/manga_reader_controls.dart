@@ -214,11 +214,18 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
                   );
                 },
               ),
-              Expanded(
-                child: MangaPagesSlider(
-                  pageNumbers: pageNumbers,
-                  pagesController: pagesController,
-                ),
+              pageNumbers > 1
+                  ? Expanded(
+                      child: MangaPagesSlider(
+                        pageNumbers: pageNumbers,
+                        pagesController: pagesController,
+                      ),
+                    )
+                  : Spacer(),
+              MangaSettingsButton(
+                contentDetails: contentDetails,
+                mediaItems: mediaItems,
+                color: Colors.white,
               ),
               if (isDesktopDevice()) ...[
                 IconButton(
@@ -228,11 +235,6 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
                 ),
                 SizedBox(width: 8),
               ],
-              MangaSettingsButton(
-                contentDetails: contentDetails,
-                mediaItems: mediaItems,
-                color: Colors.white,
-              ),
             ],
           ),
         ),
