@@ -11,6 +11,7 @@ class HorizontalListCard extends StatelessWidget {
   final Widget? corner;
   final Widget? badge;
   final FocusNode? focusNode;
+  final bool autofocus;
 
   const HorizontalListCard({
     super.key,
@@ -22,6 +23,7 @@ class HorizontalListCard extends StatelessWidget {
     this.corner,
     this.badge,
     this.focusNode,
+    this.autofocus = false,
   });
 
   @override
@@ -35,6 +37,7 @@ class HorizontalListCard extends StatelessWidget {
       child: Card(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: InkWell(
+          autofocus: autofocus,
           focusNode: focusNode,
           onTap: onTap,
           onLongPress: onLongPress,

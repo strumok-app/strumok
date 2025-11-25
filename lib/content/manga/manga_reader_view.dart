@@ -165,6 +165,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
     });
 
     return FocusableActionDetector(
+      focusNode: FocusNode(debugLabel: "manga view"),
       shortcuts: {
         SingleActivator(LogicalKeyboardKey.arrowLeft): PrevPageIntent(),
         SingleActivator(LogicalKeyboardKey.arrowRight): NextPageIntent(),

@@ -77,7 +77,7 @@ class CollectionHorizontalGroup extends ConsumerWidget {
         return CollectionHorizontalListItem(
           key: ValueKey("${item.supplier}/${item.id}"),
           item: groupItems[index],
-          autofocuse: (groupIdx == 0 && index == 0),
+          autofocus: (groupIdx == 0 && index == 0),
         );
       },
       itemCount: groupItems.length,

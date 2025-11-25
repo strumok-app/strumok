@@ -9,12 +9,12 @@ import 'package:strumok/utils/visual.dart';
 
 class CollectionHorizontalListItem extends ConsumerStatefulWidget {
   final MediaCollectionItem item;
-  final bool autofocuse;
+  final bool autofocus;
 
   const CollectionHorizontalListItem({
     super.key,
     required this.item,
-    required this.autofocuse,
+    required this.autofocus,
   });
 
   @override
@@ -64,7 +64,7 @@ class _CollectionHorizontalListItemState
 
   Widget _buildDesktop(BuildContext context) {
     return ContentInfoCard(
-      autofocuse: widget.autofocuse,
+      autofocus: widget.autofocus,
       contentInfo: widget.item,
       onHover: (value) {
         setState(() {

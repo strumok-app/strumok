@@ -65,7 +65,6 @@ class _ActiveCollectionItems extends ConsumerWidget {
         final item = items[index];
 
         return ContentInfoCard(
-          autofocuse: index == 0,
           key: Key("${item.supplier}/${item.id}"),
           contentInfo: item,
         );

@@ -15,7 +15,7 @@ class ContentInfoCard extends StatefulWidget {
   final Widget? corner;
   final ContentInfo contentInfo;
   final GestureTapCallback? onTap;
-  final bool autofocuse;
+  final bool autofocus;
 
   const ContentInfoCard({
     super.key,
@@ -25,7 +25,7 @@ class ContentInfoCard extends StatefulWidget {
     this.onHover,
     this.onLongPress,
     this.showSupplier = true,
-    this.autofocuse = false,
+    this.autofocus = false,
   });
 
   @override
@@ -41,12 +41,6 @@ class _ContentInfoCardState extends State<ContentInfoCard> {
     if (!isMobileDevice()) {
       _focused = focusNode.hasFocus;
       focusNode.addListener(_handleFocusChange);
-
-      if (widget.autofocuse) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          focusNode.requestFocus();
-        });
-      }
     }
     super.initState();
   }
@@ -72,6 +66,7 @@ class _ContentInfoCardState extends State<ContentInfoCard> {
 
     return HorizontalListCard(
       key: Key("${widget.contentInfo.supplier}/${widget.contentInfo.id}"),
+      autofocus: widget.autofocus,
       focusNode: focusNode,
       onTap:
           widget.onTap ??
