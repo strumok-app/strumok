@@ -96,12 +96,6 @@ class MediaKitVideoBackend extends VideoBackend {
       }),
     );
 
-    _streamSubscriptions.add(
-      player.stream.error.listen((event) async {
-        logger.warning("[media_kit] {event}");
-      }),
-    );
-
     Completer completer = initializationCompleter(player);
 
     // --------------------------------------------------
@@ -111,11 +105,6 @@ class MediaKitVideoBackend extends VideoBackend {
     );
 
     await completer.future;
-
-    await Future.wait(
-      _initializationStreamSubscriptions.map((e) => e.cancel()),
-    );
-    _initializationStreamSubscriptions.clear();
 
     // --------------------------------------------------
     // subscribe on updates
@@ -204,10 +193,25 @@ class MediaKitVideoBackend extends VideoBackend {
             aspectRatio: width!.toDouble() / height!.toDouble(),
           );
 
+          _initializationStreamSubscriptions.map((e) => e.cancel());
+          _initializationStreamSubscriptions.clear();
+
           completer.complete();
         }
       }
     }
+
+    _initializationStreamSubscriptions.add(
+      player.stream.error.listen((event) async {
+        logger.warning("[media_kit] $event");
+        if (!completer.isCompleted) {
+          _initializationStreamSubscriptions.map((e) => e.cancel());
+          _initializationStreamSubscriptions.clear();
+
+          completer.completeError(event);
+        }
+      }),
+    );
 
     _initializationStreamSubscriptions.add(
       player.stream.duration.listen((event) {

@@ -81,10 +81,6 @@ class MainApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userLang = ref.watch(userLanguageSettingProvider);
 
-    FocusManager.instance.addListener(() {
-      print("${FocusManager.instance.primaryFocus?.context}");
-    });
-
     return Shortcuts(
       shortcuts: <LogicalKeySet, Intent>{
         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
