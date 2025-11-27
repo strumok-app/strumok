@@ -43,6 +43,7 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
           cache: true
+      - run: flutter --version
       - name: Build Flutter for Linux
         run: flutter build linux --dart-define-from-file=secrets.env
       - name: Upload linux outputs

@@ -37,6 +37,7 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
           cache: true
+      - run: flutter --version
       - name: Build Flutter for Windows
         run: flutter build windows --dart-define-from-file=secrets.env
         shell: bash
