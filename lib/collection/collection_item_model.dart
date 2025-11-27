@@ -120,7 +120,16 @@ class MediaCollectionItem extends Equatable
   Map<String, dynamic> toJson() => _$MediaCollectionItemToJson(this);
 
   @override
-  List<Object?> get props => [id, supplier];
+  List<Object?> get props => [
+    id,
+    supplier,
+    status,
+    priority,
+    currentItem,
+    currentPosition,
+    currentSourceName,
+    currentSubtitleName,
+  ];
 }
 
 @immutable

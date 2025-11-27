@@ -251,6 +251,7 @@ class MediaKitVideoBackend extends VideoBackend {
     return media_kit_video.Video(
       controller: _videoController!,
       controls: NoVideoControls,
+      pauseUponEnteringBackgroundMode: false,
     );
   }
 

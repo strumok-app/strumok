@@ -8,7 +8,7 @@ import 'dart:io';
 
 part 'settings_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class OfflineMode extends _$OfflineMode {
   @override
   bool build() {
@@ -21,7 +21,7 @@ class OfflineMode extends _$OfflineMode {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class BrightnessSetting extends _$BrightnessSetting {
   @override
   Brightness? build() {
@@ -34,7 +34,7 @@ class BrightnessSetting extends _$BrightnessSetting {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ColorSettings extends _$ColorSettings {
   @override
   Color build() {
@@ -47,7 +47,7 @@ class ColorSettings extends _$ColorSettings {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class UserLanguageSetting extends _$UserLanguageSetting {
   @override
   String build() {
@@ -61,7 +61,7 @@ class UserLanguageSetting extends _$UserLanguageSetting {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class MangaReaderBackgroundSettings extends _$MangaReaderBackgroundSettings {
   @override
   MangaReaderBackground build() {
@@ -74,7 +74,7 @@ class MangaReaderBackgroundSettings extends _$MangaReaderBackgroundSettings {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class MangaReaderModeSettings extends _$MangaReaderModeSettings {
   @override
   MangaReaderMode build() {
@@ -87,7 +87,7 @@ class MangaReaderModeSettings extends _$MangaReaderModeSettings {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ContentLanguageSettings extends _$ContentLanguageSettings {
   @override
   Set<ContentLanguage> build() {

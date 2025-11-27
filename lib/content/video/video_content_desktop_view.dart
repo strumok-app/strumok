@@ -3,7 +3,6 @@ import 'package:strumok/content/video/video_content_desktop_controls.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:window_manager/window_manager.dart';
 
 class VideoContentDesktopView extends StatefulWidget {
@@ -26,14 +25,12 @@ class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
 
   @override
   void initState() {
-    WakelockPlus.enable();
     super.initState();
   }
 
   @override
   void dispose() {
     windowManager.setFullScreen(false);
-    WakelockPlus.disable();
     super.dispose();
   }
 

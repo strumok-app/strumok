@@ -68,7 +68,15 @@ CollectionService collectionService(Ref ref) {
 Stream<int> collectionChanges(Ref ref) =>
     ref.watch(collectionServiceProvider).changesStream;
 
-final collectionFilterQueryProvider = StateProvider<String>((ref) => "");
+@riverpod
+class CollectionFilterQuery extends _$CollectionFilterQuery {
+  @override
+  String build() => "";
+
+  void set(String query) {
+    state = query;
+  }
+}
 
 @riverpod
 Future<List<MediaCollectionItem>> collectionItems(Ref ref) async {

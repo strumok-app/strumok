@@ -23,7 +23,7 @@ final collectionServiceProvider = Provider<CollectionService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CollectionServiceRef = ProviderRef<CollectionService>;
-String _$collectionChangesHash() => r'26d8c9c739edebc08c4da58edb7e712c2eb8af32';
+String _$collectionChangesHash() => r'0f8683a1d3a68b5c375db0b94fdb336ae790f9bb';
 
 /// See also [collectionChanges].
 @ProviderFor(collectionChanges)
@@ -122,6 +122,23 @@ final collectionActiveItemsProvider =
 // ignore: unused_element
 typedef CollectionActiveItemsRef =
     AutoDisposeFutureProviderRef<List<MediaCollectionItem>>;
+String _$collectionFilterQueryHash() =>
+    r'16565f9f860fbcc33aeca272cea9d8987dc8e785';
+
+/// See also [CollectionFilterQuery].
+@ProviderFor(CollectionFilterQuery)
+final collectionFilterQueryProvider =
+    AutoDisposeNotifierProvider<CollectionFilterQuery, String>.internal(
+      CollectionFilterQuery.new,
+      name: r'collectionFilterQueryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$collectionFilterQueryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$CollectionFilterQuery = AutoDisposeNotifier<String>;
 String _$collectionFilterHash() => r'7f607bbc281e55623e6f0dca4b02a846e5549532';
 
 /// See also [CollectionFilter].

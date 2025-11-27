@@ -76,8 +76,7 @@ class _CollectionTopBarState extends ConsumerState<CollectionTopBar> {
                       ? null
                       : [_renderFilterSwitcher(context)],
                   onSubmitted: (value) {
-                    ref.read(collectionFilterQueryProvider.notifier).state =
-                        value;
+                    ref.read(collectionFilterQueryProvider.notifier).set(value);
                     searchBarFocusNode.previousFocus();
                   },
                 ),
