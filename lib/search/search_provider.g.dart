@@ -6,209 +6,252 @@ part of 'search_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(enabledSearchSuppliersNames)
+const enabledSearchSuppliersNamesProvider =
+    EnabledSearchSuppliersNamesProvider._();
+
+final class EnabledSearchSuppliersNamesProvider
+    extends $FunctionalProvider<Set<String>, Set<String>, Set<String>>
+    with $Provider<Set<String>> {
+  const EnabledSearchSuppliersNamesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'enabledSearchSuppliersNamesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$enabledSearchSuppliersNamesHash();
+
+  @$internal
+  @override
+  $ProviderElement<Set<String>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Set<String> create(Ref ref) {
+    return enabledSearchSuppliersNames(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Set<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Set<String>>(value),
+    );
+  }
+}
+
 String _$enabledSearchSuppliersNamesHash() =>
     r'385e38a8ebd0db0c12576729777096508c4e19b9';
 
-/// See also [enabledSearchSuppliersNames].
-@ProviderFor(enabledSearchSuppliersNames)
-final enabledSearchSuppliersNamesProvider =
-    AutoDisposeProvider<Set<String>>.internal(
-      enabledSearchSuppliersNames,
-      name: r'enabledSearchSuppliersNamesProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$enabledSearchSuppliersNamesHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef EnabledSearchSuppliersNamesRef = AutoDisposeProviderRef<Set<String>>;
-String _$searchHash() => r'41470ba87684667f9dd8198e4f0b27f2ba57364f';
-
-/// See also [Search].
 @ProviderFor(Search)
-final searchProvider = NotifierProvider<Search, SearchState>.internal(
-  Search.new,
-  name: r'searchProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$searchHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const searchProvider = SearchProvider._();
 
-typedef _$Search = Notifier<SearchState>;
-String _$supplierSearchHash() => r'cd16397459d17cc4fbd66e69f3daaa39f19c4e3a';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$SupplierSearch
-    extends BuildlessNotifier<SuppliersSearchResults> {
-  late final String suppliersName;
-
-  SuppliersSearchResults build(String suppliersName);
-}
-
-/// See also [SupplierSearch].
-@ProviderFor(SupplierSearch)
-const supplierSearchProvider = SupplierSearchFamily();
-
-/// See also [SupplierSearch].
-class SupplierSearchFamily extends Family<SuppliersSearchResults> {
-  /// See also [SupplierSearch].
-  const SupplierSearchFamily();
-
-  /// See also [SupplierSearch].
-  SupplierSearchProvider call(String suppliersName) {
-    return SupplierSearchProvider(suppliersName);
-  }
-
-  @override
-  SupplierSearchProvider getProviderOverride(
-    covariant SupplierSearchProvider provider,
-  ) {
-    return call(provider.suppliersName);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'supplierSearchProvider';
-}
-
-/// See also [SupplierSearch].
-class SupplierSearchProvider
-    extends NotifierProviderImpl<SupplierSearch, SuppliersSearchResults> {
-  /// See also [SupplierSearch].
-  SupplierSearchProvider(String suppliersName)
-    : this._internal(
-        () => SupplierSearch()..suppliersName = suppliersName,
-        from: supplierSearchProvider,
-        name: r'supplierSearchProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$supplierSearchHash,
-        dependencies: SupplierSearchFamily._dependencies,
-        allTransitiveDependencies:
-            SupplierSearchFamily._allTransitiveDependencies,
-        suppliersName: suppliersName,
+final class SearchProvider extends $NotifierProvider<Search, SearchState> {
+  const SearchProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'searchProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
 
-  SupplierSearchProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.suppliersName,
-  }) : super.internal();
-
-  final String suppliersName;
-
   @override
-  SuppliersSearchResults runNotifierBuild(covariant SupplierSearch notifier) {
-    return notifier.build(suppliersName);
-  }
+  String debugGetCreateSourceHash() => _$searchHash();
 
+  @$internal
   @override
-  Override overrideWith(SupplierSearch Function() create) {
-    return ProviderOverride(
+  Search create() => Search();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SearchState value) {
+    return $ProviderOverride(
       origin: this,
-      override: SupplierSearchProvider._internal(
-        () => create()..suppliersName = suppliersName,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        suppliersName: suppliersName,
-      ),
+      providerOverride: $SyncValueProvider<SearchState>(value),
     );
   }
+}
+
+String _$searchHash() => r'41470ba87684667f9dd8198e4f0b27f2ba57364f';
+
+abstract class _$Search extends $Notifier<SearchState> {
+  SearchState build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<SearchState, SearchState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SearchState, SearchState>,
+              SearchState,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(SupplierSearch)
+const supplierSearchProvider = SupplierSearchFamily._();
+
+final class SupplierSearchProvider
+    extends $NotifierProvider<SupplierSearch, SuppliersSearchResults> {
+  const SupplierSearchProvider._({
+    required SupplierSearchFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'supplierSearchProvider',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
-  NotifierProviderElement<SupplierSearch, SuppliersSearchResults>
-  createElement() {
-    return _SupplierSearchProviderElement(this);
+  String debugGetCreateSourceHash() => _$supplierSearchHash();
+
+  @override
+  String toString() {
+    return r'supplierSearchProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  SupplierSearch create() => SupplierSearch();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SuppliersSearchResults value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SuppliersSearchResults>(value),
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is SupplierSearchProvider &&
-        other.suppliersName == suppliersName;
+    return other is SupplierSearchProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, suppliersName.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin SupplierSearchRef on NotifierProviderRef<SuppliersSearchResults> {
-  /// The parameter `suppliersName` of this provider.
-  String get suppliersName;
-}
+String _$supplierSearchHash() => r'cd16397459d17cc4fbd66e69f3daaa39f19c4e3a';
 
-class _SupplierSearchProviderElement
-    extends NotifierProviderElement<SupplierSearch, SuppliersSearchResults>
-    with SupplierSearchRef {
-  _SupplierSearchProviderElement(super.provider);
+final class SupplierSearchFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          SupplierSearch,
+          SuppliersSearchResults,
+          SuppliersSearchResults,
+          SuppliersSearchResults,
+          String
+        > {
+  const SupplierSearchFamily._()
+    : super(
+        retry: null,
+        name: r'supplierSearchProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
+
+  SupplierSearchProvider call(String suppliersName) =>
+      SupplierSearchProvider._(argument: suppliersName, from: this);
 
   @override
-  String get suppliersName => (origin as SupplierSearchProvider).suppliersName;
+  String toString() => r'supplierSearchProvider';
+}
+
+abstract class _$SupplierSearch extends $Notifier<SuppliersSearchResults> {
+  late final _$args = ref.$arg as String;
+  String get suppliersName => _$args;
+
+  SuppliersSearchResults build(String suppliersName);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build(_$args);
+    final ref =
+        this.ref as $Ref<SuppliersSearchResults, SuppliersSearchResults>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SuppliersSearchResults, SuppliersSearchResults>,
+              SuppliersSearchResults,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(SearchSettings)
+const searchSettingsProvider = SearchSettingsProvider._();
+
+final class SearchSettingsProvider
+    extends $NotifierProvider<SearchSettings, SearchSettingsModel> {
+  const SearchSettingsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'searchSettingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$searchSettingsHash();
+
+  @$internal
+  @override
+  SearchSettings create() => SearchSettings();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SearchSettingsModel value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SearchSettingsModel>(value),
+    );
+  }
 }
 
 String _$searchSettingsHash() => r'7030f15b26f51cfbf0d5caeb7dfef8ffa8bf3fbe';
 
-/// See also [SearchSettings].
-@ProviderFor(SearchSettings)
-final searchSettingsProvider =
-    AutoDisposeNotifierProvider<SearchSettings, SearchSettingsModel>.internal(
-      SearchSettings.new,
-      name: r'searchSettingsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$searchSettingsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$SearchSettings = AutoDisposeNotifier<SearchSettingsModel>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$SearchSettings extends $Notifier<SearchSettingsModel> {
+  SearchSettingsModel build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<SearchSettingsModel, SearchSettingsModel>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SearchSettingsModel, SearchSettingsModel>,
+              SearchSettingsModel,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

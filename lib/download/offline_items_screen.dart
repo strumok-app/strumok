@@ -82,7 +82,7 @@ class _OfflineItemsView extends ConsumerWidget {
     final offlineContentAsync = ref.watch(offlineContentProvider);
 
     ref.listen(downloadsUpdateStreamProvider, (_, next) {
-      final task = next.valueOrNull;
+      final task = next.value;
       if (task != null && task.status.value.isCompleted) {
         ref.invalidate(offlineContentProvider);
       }

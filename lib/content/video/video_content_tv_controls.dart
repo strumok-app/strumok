@@ -313,7 +313,7 @@ class _AndroidTVBottomBar extends ConsumerWidget {
     final currentProgress = ref.watch(collectionItemProvider(contentDetails));
 
     final isLastItem =
-        currentProgress.valueOrNull?.currentItem != mediaItems.length - 1;
+        currentProgress.value?.currentItem != mediaItems.length - 1;
 
     return Container(
       decoration: const BoxDecoration(

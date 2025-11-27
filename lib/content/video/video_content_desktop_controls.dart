@@ -12,7 +12,6 @@ import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/utils/fullscrean.dart';
 import 'package:strumok/utils/text.dart';
 
-/// {@macro material_desktop_video_controls}
 class VideoContentDesktopControls extends StatefulWidget {
   final VoidCallback onPipEnter;
   const VideoContentDesktopControls({super.key, required this.onPipEnter});
@@ -22,7 +21,6 @@ class VideoContentDesktopControls extends StatefulWidget {
       _VideoContentDesktopControlsState();
 }
 
-/// {@macro material_desktop_video_controls}
 class _VideoContentDesktopControlsState
     extends State<VideoContentDesktopControls> {
   static final controlsHoverDuration = const Duration(seconds: 3);
@@ -33,20 +31,10 @@ class _VideoContentDesktopControlsState
   late bool _mount = true;
   late bool _visible = true;
 
-  Timer? _timer;
-
   late bool _buffering = true;
-
   TapDownDetails? _lastTapDetails;
-
   StreamSubscription? _subscription;
-
-  @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
+  Timer? _timer;
 
   @override
   void didChangeDependencies() {
@@ -62,18 +50,12 @@ class _VideoContentDesktopControlsState
           }
         });
 
-    _timer = Timer(controlsHoverDuration, () {
-      if (mounted) {
-        setState(() {
-          _visible = false;
-        });
-        unshiftSubtitle();
-      }
-    });
+    _timer = Timer(controlsHoverDuration, _hideUI);
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _subscription?.cancel();
     super.dispose();
   }
@@ -89,49 +71,29 @@ class _VideoContentDesktopControlsState
 
   void onHover() {
     setState(() {
+      print("HOVER!!! $_visible $_mount");
       _mount = true;
       _visible = true;
     });
     shiftSubtitle();
     _timer?.cancel();
-    _timer = Timer(controlsHoverDuration, () {
-      if (mounted) {
-        setState(() {
-          _visible = false;
-        });
-        unshiftSubtitle();
-      }
-    });
+    _timer = Timer(controlsHoverDuration, _hideUI);
   }
 
-  void onEnter() {
-    setState(() {
-      _mount = true;
-      _visible = true;
-    });
-    shiftSubtitle();
-    _timer?.cancel();
-    _timer = Timer(controlsHoverDuration, () {
-      if (mounted) {
-        setState(() {
-          _visible = false;
-        });
-        unshiftSubtitle();
-      }
-    });
-  }
-
-  void onExit() {
-    setState(() {
-      _visible = false;
-    });
-    unshiftSubtitle();
-    _timer?.cancel();
+  void _hideUI() {
+    if (mounted) {
+      setState(() {
+        _visible = false;
+        _mount = false;
+      });
+      unshiftSubtitle();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final screanSize = MediaQuery.sizeOf(context);
+    print("BUILD $_visible $_mount");
     return Theme(
       data: Theme.of(context).copyWith(
         focusColor: Colors.transparent,
@@ -236,21 +198,13 @@ class _VideoContentDesktopControlsState
                         ? SystemMouseCursors.basic
                         : SystemMouseCursors.none,
                     onHover: (_) => onHover(),
-                    onEnter: (_) => onEnter(),
-                    onExit: (_) => onExit(),
+                    onEnter: (_) => onHover(),
                     child: Stack(
                       children: [
                         AnimatedOpacity(
                           curve: Curves.easeInOut,
                           opacity: _visible ? 1.0 : 0.0,
                           duration: const Duration(milliseconds: 150),
-                          onEnd: () {
-                            if (!_visible) {
-                              setState(() {
-                                _mount = false;
-                              });
-                            }
-                          },
                           child: Stack(
                             clipBehavior: Clip.none,
                             alignment: Alignment.bottomCenter,
@@ -318,14 +272,7 @@ class _VideoContentDesktopControlsState
                                         onSeekEnd: () {
                                           _timer = Timer(
                                             controlsHoverDuration,
-                                            () {
-                                              if (mounted) {
-                                                setState(() {
-                                                  _visible = false;
-                                                });
-                                                unshiftSubtitle();
-                                              }
-                                            },
+                                            _hideUI,
                                           );
                                         },
                                       ),
@@ -363,48 +310,42 @@ class _VideoContentDesktopControlsState
                           ),
                         ),
                         // Buffering Indicator.
-                        IgnorePointer(
-                          child: Column(
-                            children: [
-                              Container(
-                                height: buttonBarHeight,
-                                margin: const EdgeInsets.all(8),
-                              ),
-                              Expanded(
-                                child: Center(
-                                  child: Center(
-                                    child: TweenAnimationBuilder<double>(
-                                      tween: Tween<double>(
-                                        begin: 0.0,
-                                        end: _buffering ? 1.0 : 0.0,
-                                      ),
-                                      duration: const Duration(
-                                        milliseconds: 150,
-                                      ),
-                                      builder: (context, value, child) {
-                                        // Only mount the buffering indicator if the opacity is greater than 0.0.
-                                        // This has been done to prevent redundant resource usage in [CircularProgressIndicator].
-                                        if (value > 0.0) {
-                                          return Opacity(
-                                            opacity: value,
-                                            child: child!,
-                                          );
-                                        }
-                                        return const SizedBox.shrink();
-                                      },
-                                      child: const CircularProgressIndicator(
-                                        color: Color(0xFFFFFFFF),
-                                      ),
-                                    ),
+                        Column(
+                          children: [
+                            Container(
+                              height: buttonBarHeight,
+                              margin: const EdgeInsets.all(8),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: TweenAnimationBuilder<double>(
+                                  tween: Tween<double>(
+                                    begin: 0.0,
+                                    end: _buffering ? 1.0 : 0.0,
+                                  ),
+                                  duration: const Duration(milliseconds: 150),
+                                  builder: (context, value, child) {
+                                    // Only mount the buffering indicator if the opacity is greater than 0.0.
+                                    // This has been done to prevent redundant resource usage in [CircularProgressIndicator].
+                                    if (value > 0.0) {
+                                      return Opacity(
+                                        opacity: value,
+                                        child: child!,
+                                      );
+                                    }
+                                    return const SizedBox.shrink();
+                                  },
+                                  child: const CircularProgressIndicator(
+                                    color: Color(0xFFFFFFFF),
                                   ),
                                 ),
                               ),
-                              Container(
-                                height: buttonBarHeight,
-                                margin: const EdgeInsets.all(8),
-                              ),
-                            ],
-                          ),
+                            ),
+                            Container(
+                              height: buttonBarHeight,
+                              margin: const EdgeInsets.all(8),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -462,13 +403,6 @@ class _DesktopVideoControlsSeekBarState
   ).videoBackendState.buffered;
 
   StreamSubscription? _subscription;
-
-  @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
 
   @override
   void didChangeDependencies() {
@@ -671,13 +605,6 @@ class _DesktopVideoControlsVolumeButtonState
   double _volume = 0.0;
 
   @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _subscription ??= videoContentController(context).videoBackendStateStream
@@ -834,13 +761,6 @@ class DesktopVideoControlsPositionIndicatorState
   ).videoBackendState.duration;
 
   StreamSubscription? _subscription;
-
-  @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
 
   @override
   void didChangeDependencies() {

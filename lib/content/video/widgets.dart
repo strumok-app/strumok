@@ -15,7 +15,7 @@ class MediaTitle extends ConsumerWidget {
 
     final currentItem = ref
         .watch(collectionItemCurrentItemProvider(contentDetails))
-        .valueOrNull;
+        .value;
 
     if (currentItem == null) {
       return const SizedBox.shrink();

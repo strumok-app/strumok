@@ -9,19 +9,16 @@ part 'new_version_icon.g.dart';
 
 @riverpod
 bool hasNewVersion(Ref ref) {
-  final currentAppVersion = ref.watch(currentAppVersionProvider).valueOrNull;
-  final latestAppVersionInfo = ref
-      .watch(latestAppVersionInfoProvider)
-      .valueOrNull;
+  final currentAppVersion = ref.watch(currentAppVersionProvider).value;
+  final latestAppVersionInfo = ref.watch(latestAppVersionInfoProvider).value;
 
   final installedSupplierBundleVersion = ref
       .watch(installedSupplierBundleInfoProvider)
-      .valueOrNull
+      .value
       ?.version;
 
   final latestSupplierBundleVersion =
-      ref.watch(latestSupplierBundleInfoProvider).valueOrNull?.version ??
-      SemVer.zero;
+      ref.watch(latestSupplierBundleInfoProvider).value?.version ?? SemVer.zero;
 
   if (installedSupplierBundleVersion == null) {
     return true;

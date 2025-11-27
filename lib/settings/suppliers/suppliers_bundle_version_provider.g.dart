@@ -6,62 +6,144 @@ part of 'suppliers_bundle_version_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(installedSupplierBundleInfo)
+const installedSupplierBundleInfoProvider =
+    InstalledSupplierBundleInfoProvider._();
+
+final class InstalledSupplierBundleInfoProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<FFISupplierBundleInfo?>,
+          FFISupplierBundleInfo?,
+          FutureOr<FFISupplierBundleInfo?>
+        >
+    with
+        $FutureModifier<FFISupplierBundleInfo?>,
+        $FutureProvider<FFISupplierBundleInfo?> {
+  const InstalledSupplierBundleInfoProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'installedSupplierBundleInfoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$installedSupplierBundleInfoHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<FFISupplierBundleInfo?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<FFISupplierBundleInfo?> create(Ref ref) {
+    return installedSupplierBundleInfo(ref);
+  }
+}
+
 String _$installedSupplierBundleInfoHash() =>
     r'b7378bcf1fe611ff83ec4c8662f80a3777377c9b';
 
-/// See also [installedSupplierBundleInfo].
-@ProviderFor(installedSupplierBundleInfo)
-final installedSupplierBundleInfoProvider =
-    AutoDisposeFutureProvider<FFISupplierBundleInfo?>.internal(
-      installedSupplierBundleInfo,
-      name: r'installedSupplierBundleInfoProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$installedSupplierBundleInfoHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+@ProviderFor(latestSupplierBundleInfo)
+const latestSupplierBundleInfoProvider = LatestSupplierBundleInfoProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef InstalledSupplierBundleInfoRef =
-    AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
+final class LatestSupplierBundleInfoProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<FFISupplierBundleInfo?>,
+          FFISupplierBundleInfo?,
+          FutureOr<FFISupplierBundleInfo?>
+        >
+    with
+        $FutureModifier<FFISupplierBundleInfo?>,
+        $FutureProvider<FFISupplierBundleInfo?> {
+  const LatestSupplierBundleInfoProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'latestSupplierBundleInfoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$latestSupplierBundleInfoHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<FFISupplierBundleInfo?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<FFISupplierBundleInfo?> create(Ref ref) {
+    return latestSupplierBundleInfo(ref);
+  }
+}
+
 String _$latestSupplierBundleInfoHash() =>
     r'b99b01b7a7f96a4e5f93f2f149d54951d393da78';
 
-/// See also [latestSupplierBundleInfo].
-@ProviderFor(latestSupplierBundleInfo)
-final latestSupplierBundleInfoProvider =
-    AutoDisposeFutureProvider<FFISupplierBundleInfo?>.internal(
-      latestSupplierBundleInfo,
-      name: r'latestSupplierBundleInfoProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$latestSupplierBundleInfoHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+@ProviderFor(SuppliersBundleDownload)
+const suppliersBundleDownloadProvider = SuppliersBundleDownloadProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef LatestSupplierBundleInfoRef =
-    AutoDisposeFutureProviderRef<FFISupplierBundleInfo?>;
+final class SuppliersBundleDownloadProvider
+    extends $NotifierProvider<SuppliersBundleDownload, DownloadState> {
+  const SuppliersBundleDownloadProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'suppliersBundleDownloadProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$suppliersBundleDownloadHash();
+
+  @$internal
+  @override
+  SuppliersBundleDownload create() => SuppliersBundleDownload();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DownloadState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DownloadState>(value),
+    );
+  }
+}
+
 String _$suppliersBundleDownloadHash() =>
     r'1b8be1f4923906e595e8cc986889b3d25a9c550c';
 
-/// See also [SuppliersBundleDownload].
-@ProviderFor(SuppliersBundleDownload)
-final suppliersBundleDownloadProvider =
-    NotifierProvider<SuppliersBundleDownload, DownloadState>.internal(
-      SuppliersBundleDownload.new,
-      name: r'suppliersBundleDownloadProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$suppliersBundleDownloadHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$SuppliersBundleDownload = Notifier<DownloadState>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$SuppliersBundleDownload extends $Notifier<DownloadState> {
+  DownloadState build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<DownloadState, DownloadState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<DownloadState, DownloadState>,
+              DownloadState,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

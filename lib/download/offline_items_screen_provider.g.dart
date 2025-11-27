@@ -6,24 +6,46 @@ part of 'offline_items_screen_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$offlineContentHash() => r'da5407569508efe9ffbbdb98ada3718ccd265d5b';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [offlineContent].
 @ProviderFor(offlineContent)
-final offlineContentProvider =
-    AutoDisposeFutureProvider<List<OfflineContentInfo>>.internal(
-      offlineContent,
-      name: r'offlineContentProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$offlineContentHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+const offlineContentProvider = OfflineContentProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef OfflineContentRef =
-    AutoDisposeFutureProviderRef<List<OfflineContentInfo>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class OfflineContentProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<OfflineContentInfo>>,
+          List<OfflineContentInfo>,
+          FutureOr<List<OfflineContentInfo>>
+        >
+    with
+        $FutureModifier<List<OfflineContentInfo>>,
+        $FutureProvider<List<OfflineContentInfo>> {
+  const OfflineContentProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'offlineContentProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$offlineContentHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<OfflineContentInfo>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<OfflineContentInfo>> create(Ref ref) {
+    return offlineContent(ref);
+  }
+}
+
+String _$offlineContentHash() => r'da5407569508efe9ffbbdb98ada3718ccd265d5b';

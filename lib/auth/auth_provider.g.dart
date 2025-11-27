@@ -6,39 +6,78 @@ part of 'auth_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(auth)
+const authProvider = AuthProvider._();
+
+final class AuthProvider extends $FunctionalProvider<Auth, Auth, Auth>
+    with $Provider<Auth> {
+  const AuthProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authHash();
+
+  @$internal
+  @override
+  $ProviderElement<Auth> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Auth create(Ref ref) {
+    return auth(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Auth value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Auth>(value),
+    );
+  }
+}
+
 String _$authHash() => r'bdbda8b2b536217917227b604f9fd99bc2bb3527';
 
-/// See also [auth].
-@ProviderFor(auth)
-final authProvider = Provider<Auth>.internal(
-  auth,
-  name: r'authProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$authHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AuthRef = ProviderRef<Auth>;
-String _$userHash() => r'a47fd82d15ea15bad0639df1c9d0764e5f285d6d';
-
-/// See also [user].
 @ProviderFor(user)
-final userProvider = StreamProvider<User?>.internal(
-  user,
-  name: r'userProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$userHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const userProvider = UserProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef UserRef = StreamProviderRef<User?>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class UserProvider
+    extends $FunctionalProvider<AsyncValue<User?>, User?, Stream<User?>>
+    with $FutureModifier<User?>, $StreamProvider<User?> {
+  const UserProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<User?> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<User?> create(Ref ref) {
+    return user(ref);
+  }
+}
+
+String _$userHash() => r'a47fd82d15ea15bad0639df1c9d0764e5f285d6d';

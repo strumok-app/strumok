@@ -38,7 +38,7 @@ class PlayerPlaylistButton extends ConsumerWidget {
 
     final collectionItem = ref
         .watch(collectionItemProvider(contentDetails))
-        .valueOrNull;
+        .value;
 
     if (collectionItem == null || mediaItems.length < 2) {
       return const SizedBox.shrink();
@@ -78,7 +78,7 @@ class SkipPrevButton extends ConsumerWidget {
 
     final currentItem = ref
         .watch(collectionItemCurrentItemProvider(contentDetails))
-        .valueOrNull;
+        .value;
 
     final shuffleMode = ref.watch(shuffleModeSettingsProvider);
 
@@ -113,7 +113,7 @@ class SkipNextButton extends ConsumerWidget {
 
     final currentItem = ref
         .watch(collectionItemCurrentItemProvider(contentDetails))
-        .valueOrNull;
+        .value;
 
     final shuffleMode = ref.watch(shuffleModeSettingsProvider);
 

@@ -104,7 +104,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
 
     final item = ref
         .watch(collectionItemCurrentItemProvider(contentDetails))
-        .valueOrNull;
+        .value;
 
     return Container(
       color: Colors.black45,

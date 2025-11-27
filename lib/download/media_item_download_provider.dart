@@ -43,7 +43,7 @@ class MediaItemDownload extends _$MediaItemDownload {
   }
 
   void _onDonwloadStatusChanged() {
-    final currentState = state.valueOrNull;
+    final currentState = state.value;
     final downloadTask = currentState?.downloadTask;
     if (downloadTask != null && downloadTask.status.value.isCompleted) {
       downloadTask.status.removeListener(_onDonwloadStatusChanged);

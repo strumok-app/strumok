@@ -106,13 +106,6 @@ class _VideoContentMobileControlsState
   }
 
   @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _subscription ??= videoContentController(context).videoBackendStateStream
@@ -203,20 +196,23 @@ class _VideoContentMobileControlsState
       });
       shiftSubtitle();
       _timer?.cancel();
-      _timer = Timer(controlsHoverDuration, () {
-        if (mounted) {
-          setState(() {
-            _visible = false;
-          });
-          unshiftSubtitle();
-        }
-      });
+      _timer = Timer(controlsHoverDuration, _hideUI);
     } else {
       setState(() {
         _visible = false;
       });
       unshiftSubtitle();
       _timer?.cancel();
+    }
+  }
+
+  void _hideUI() {
+    if (mounted) {
+      setState(() {
+        _visible = false;
+        _mount = false;
+      });
+      unshiftSubtitle();
     }
   }
 
@@ -393,13 +389,6 @@ class _VideoContentMobileControlsState
                   curve: Curves.easeInOut,
                   opacity: _visible ? 1.0 : 0.0,
                   duration: controlsTransitionDuration,
-                  onEnd: () {
-                    setState(() {
-                      if (!_visible) {
-                        _mount = false;
-                      }
-                    });
-                  },
                   child: Stack(
                     clipBehavior: Clip.none,
                     alignment: Alignment.center,
@@ -913,13 +902,6 @@ class _MobileControlSeekBarState extends State<_MobileControlSeekBar> {
 
   StreamSubscription? _subscription;
 
-  @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
-
   void listener() {
     setState(() {
       final delta = widget.delta?.value ?? Duration.zero;
@@ -1131,13 +1113,6 @@ class _MobileControlsPositionIndicatorState
   StreamSubscription? _subscription;
 
   @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
@@ -1185,13 +1160,6 @@ class _BackwardSeekIndicatorState extends State<_BackwardSeekIndicator> {
   late Duration value = widget.duration;
 
   Timer? timer;
-
-  @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
 
   @override
   void didChangeDependencies() {
@@ -1270,13 +1238,6 @@ class _ForwardSeekIndicatorState extends State<_ForwardSeekIndicator> {
   late Duration value = widget.duration;
 
   Timer? timer;
-
-  @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
 
   @override
   void didChangeDependencies() {

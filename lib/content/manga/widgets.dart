@@ -128,7 +128,7 @@ class MangaChapterProgressIndicator extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pos = ref
         .watch(collectionItemCurrentMediaItemPositionProvider(contentDetails))
-        .valueOrNull;
+        .value;
 
     if (pos == null || pos.length == 0) {
       return const SizedBox.shrink();

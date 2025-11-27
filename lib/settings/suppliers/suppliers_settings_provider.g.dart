@@ -6,38 +6,100 @@ part of 'suppliers_settings_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$enabledSuppliersHash() => r'00803c2a340060d8ed40af06f0ca991945656505';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [enabledSuppliers].
-@ProviderFor(enabledSuppliers)
-final enabledSuppliersProvider = Provider<Set<String>>.internal(
-  enabledSuppliers,
-  name: r'enabledSuppliersProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$enabledSuppliersHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(SuppliersSettings)
+const suppliersSettingsProvider = SuppliersSettingsProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef EnabledSuppliersRef = ProviderRef<Set<String>>;
+final class SuppliersSettingsProvider
+    extends $NotifierProvider<SuppliersSettings, SuppliersSettingsModel> {
+  const SuppliersSettingsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'suppliersSettingsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$suppliersSettingsHash();
+
+  @$internal
+  @override
+  SuppliersSettings create() => SuppliersSettings();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SuppliersSettingsModel value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SuppliersSettingsModel>(value),
+    );
+  }
+}
+
 String _$suppliersSettingsHash() => r'11b82c203b8f917db0e2d695af61416fb450cd4e';
 
-/// See also [SuppliersSettings].
-@ProviderFor(SuppliersSettings)
-final suppliersSettingsProvider =
-    NotifierProvider<SuppliersSettings, SuppliersSettingsModel>.internal(
-      SuppliersSettings.new,
-      name: r'suppliersSettingsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$suppliersSettingsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$SuppliersSettings extends $Notifier<SuppliersSettingsModel> {
+  SuppliersSettingsModel build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref =
+        this.ref as $Ref<SuppliersSettingsModel, SuppliersSettingsModel>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SuppliersSettingsModel, SuppliersSettingsModel>,
+              SuppliersSettingsModel,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$SuppliersSettings = Notifier<SuppliersSettingsModel>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+@ProviderFor(enabledSuppliers)
+const enabledSuppliersProvider = EnabledSuppliersProvider._();
+
+final class EnabledSuppliersProvider
+    extends $FunctionalProvider<Set<String>, Set<String>, Set<String>>
+    with $Provider<Set<String>> {
+  const EnabledSuppliersProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'enabledSuppliersProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$enabledSuppliersHash();
+
+  @$internal
+  @override
+  $ProviderElement<Set<String>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Set<String> create(Ref ref) {
+    return enabledSuppliers(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Set<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Set<String>>(value),
+    );
+  }
+}
+
+String _$enabledSuppliersHash() => r'00803c2a340060d8ed40af06f0ca991945656505';

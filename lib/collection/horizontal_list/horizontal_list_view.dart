@@ -21,7 +21,7 @@ class CollectionHorizontalView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final collections = ref.watch(collectionItemsByStatusProvider).valueOrNull;
+    final collections = ref.watch(collectionItemsByStatusProvider).value;
 
     if (collections == null) {
       return const SizedBox.shrink();
@@ -52,9 +52,7 @@ class CollectionHorizontalGroup extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groupItems = ref.watch(
-      collectionItemsByStatusProvider.select(
-        (value) => value.valueOrNull?[status],
-      ),
+      collectionItemsByStatusProvider.select((value) => value.value?[status]),
     );
 
     if (groupItems == null) {

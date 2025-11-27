@@ -43,7 +43,7 @@ class CollectionState {
 
 @Riverpod(keepAlive: true)
 CollectionService collectionService(Ref ref) {
-  final user = ref.watch(userProvider).valueOrNull;
+  final user = ref.watch(userProvider).value;
   final offlineMode = ref.read(offlineModeProvider);
 
   final localRepository = LocalCollectionRepository();

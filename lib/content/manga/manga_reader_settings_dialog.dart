@@ -105,7 +105,7 @@ class MangaTranslationSelector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentSource = ref
         .watch(collectionItemCurrentSourceNameProvider(contentDetails))
-        .valueOrNull;
+        .value;
 
     return ref
             .watch(mangaMediaItemSourcesProvider(contentDetails, mediaItems))

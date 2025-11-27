@@ -6,277 +6,417 @@ part of 'video_player_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sourceSelectorHash() => r'b3d9994934390c45715949ca761df1128a31d292';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+@ProviderFor(SubtitlesOffset)
+const subtitlesOffsetProvider = SubtitlesOffsetProvider._();
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [sourceSelector].
-@ProviderFor(sourceSelector)
-const sourceSelectorProvider = SourceSelectorFamily();
-
-/// See also [sourceSelector].
-class SourceSelectorFamily extends Family<AsyncValue<SourceSelectorModel>> {
-  /// See also [sourceSelector].
-  const SourceSelectorFamily();
-
-  /// See also [sourceSelector].
-  SourceSelectorProvider call(
-    ContentDetails contentDetails,
-    List<ContentMediaItem> mediaItems,
-  ) {
-    return SourceSelectorProvider(contentDetails, mediaItems);
-  }
-
-  @override
-  SourceSelectorProvider getProviderOverride(
-    covariant SourceSelectorProvider provider,
-  ) {
-    return call(provider.contentDetails, provider.mediaItems);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'sourceSelectorProvider';
-}
-
-/// See also [sourceSelector].
-class SourceSelectorProvider
-    extends AutoDisposeFutureProvider<SourceSelectorModel> {
-  /// See also [sourceSelector].
-  SourceSelectorProvider(
-    ContentDetails contentDetails,
-    List<ContentMediaItem> mediaItems,
-  ) : this._internal(
-        (ref) => sourceSelector(
-          ref as SourceSelectorRef,
-          contentDetails,
-          mediaItems,
-        ),
-        from: sourceSelectorProvider,
-        name: r'sourceSelectorProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$sourceSelectorHash,
-        dependencies: SourceSelectorFamily._dependencies,
-        allTransitiveDependencies:
-            SourceSelectorFamily._allTransitiveDependencies,
-        contentDetails: contentDetails,
-        mediaItems: mediaItems,
+final class SubtitlesOffsetProvider
+    extends $NotifierProvider<SubtitlesOffset, Duration> {
+  const SubtitlesOffsetProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'subtitlesOffsetProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
 
-  SourceSelectorProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.contentDetails,
-    required this.mediaItems,
-  }) : super.internal();
-
-  final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
-
   @override
-  Override overrideWith(
-    FutureOr<SourceSelectorModel> Function(SourceSelectorRef provider) create,
-  ) {
-    return ProviderOverride(
+  String debugGetCreateSourceHash() => _$subtitlesOffsetHash();
+
+  @$internal
+  @override
+  SubtitlesOffset create() => SubtitlesOffset();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Duration value) {
+    return $ProviderOverride(
       origin: this,
-      override: SourceSelectorProvider._internal(
-        (ref) => create(ref as SourceSelectorRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        contentDetails: contentDetails,
-        mediaItems: mediaItems,
-      ),
+      providerOverride: $SyncValueProvider<Duration>(value),
     );
   }
-
-  @override
-  AutoDisposeFutureProviderElement<SourceSelectorModel> createElement() {
-    return _SourceSelectorProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is SourceSelectorProvider &&
-        other.contentDetails == contentDetails &&
-        other.mediaItems == mediaItems;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, contentDetails.hashCode);
-    hash = _SystemHash.combine(hash, mediaItems.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin SourceSelectorRef on AutoDisposeFutureProviderRef<SourceSelectorModel> {
-  /// The parameter `contentDetails` of this provider.
-  ContentDetails get contentDetails;
-
-  /// The parameter `mediaItems` of this provider.
-  List<ContentMediaItem> get mediaItems;
-}
-
-class _SourceSelectorProviderElement
-    extends AutoDisposeFutureProviderElement<SourceSelectorModel>
-    with SourceSelectorRef {
-  _SourceSelectorProviderElement(super.provider);
-
-  @override
-  ContentDetails get contentDetails =>
-      (origin as SourceSelectorProvider).contentDetails;
-  @override
-  List<ContentMediaItem> get mediaItems =>
-      (origin as SourceSelectorProvider).mediaItems;
 }
 
 String _$subtitlesOffsetHash() => r'ca269576b78821079311fdc31ae931b964c9e830';
 
-/// See also [SubtitlesOffset].
-@ProviderFor(SubtitlesOffset)
-final subtitlesOffsetProvider =
-    AutoDisposeNotifierProvider<SubtitlesOffset, Duration>.internal(
-      SubtitlesOffset.new,
-      name: r'subtitlesOffsetProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$subtitlesOffsetHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$SubtitlesOffset extends $Notifier<Duration> {
+  Duration build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<Duration, Duration>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Duration, Duration>,
+              Duration,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$SubtitlesOffset = AutoDisposeNotifier<Duration>;
+@ProviderFor(ShuffleModeSettings)
+const shuffleModeSettingsProvider = ShuffleModeSettingsProvider._();
+
+final class ShuffleModeSettingsProvider
+    extends $NotifierProvider<ShuffleModeSettings, bool> {
+  const ShuffleModeSettingsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'shuffleModeSettingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$shuffleModeSettingsHash();
+
+  @$internal
+  @override
+  ShuffleModeSettings create() => ShuffleModeSettings();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
 String _$shuffleModeSettingsHash() =>
     r'4f9d678e0dbacffc8e4ded86d13a44dd301ef298';
 
-/// See also [ShuffleModeSettings].
-@ProviderFor(ShuffleModeSettings)
-final shuffleModeSettingsProvider =
-    AutoDisposeNotifierProvider<ShuffleModeSettings, bool>.internal(
-      ShuffleModeSettings.new,
-      name: r'shuffleModeSettingsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$shuffleModeSettingsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$ShuffleModeSettings extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$ShuffleModeSettings = AutoDisposeNotifier<bool>;
+@ProviderFor(OnVideoEndsActionSettings)
+const onVideoEndsActionSettingsProvider = OnVideoEndsActionSettingsProvider._();
+
+final class OnVideoEndsActionSettingsProvider
+    extends $NotifierProvider<OnVideoEndsActionSettings, OnVideoEndsAction> {
+  const OnVideoEndsActionSettingsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'onVideoEndsActionSettingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$onVideoEndsActionSettingsHash();
+
+  @$internal
+  @override
+  OnVideoEndsActionSettings create() => OnVideoEndsActionSettings();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(OnVideoEndsAction value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<OnVideoEndsAction>(value),
+    );
+  }
+}
+
 String _$onVideoEndsActionSettingsHash() =>
     r'645262e61474502f40af4f09324292bd26253d41';
 
-/// See also [OnVideoEndsActionSettings].
-@ProviderFor(OnVideoEndsActionSettings)
-final onVideoEndsActionSettingsProvider =
-    AutoDisposeNotifierProvider<
-      OnVideoEndsActionSettings,
-      OnVideoEndsAction
-    >.internal(
-      OnVideoEndsActionSettings.new,
-      name: r'onVideoEndsActionSettingsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$onVideoEndsActionSettingsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$OnVideoEndsActionSettings
+    extends $Notifier<OnVideoEndsAction> {
+  OnVideoEndsAction build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<OnVideoEndsAction, OnVideoEndsAction>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<OnVideoEndsAction, OnVideoEndsAction>,
+              OnVideoEndsAction,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$OnVideoEndsActionSettings = AutoDisposeNotifier<OnVideoEndsAction>;
+@ProviderFor(StartVideoPositionSettings)
+const startVideoPositionSettingsProvider =
+    StartVideoPositionSettingsProvider._();
+
+final class StartVideoPositionSettingsProvider
+    extends $NotifierProvider<StartVideoPositionSettings, StartVideoPosition> {
+  const StartVideoPositionSettingsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'startVideoPositionSettingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$startVideoPositionSettingsHash();
+
+  @$internal
+  @override
+  StartVideoPositionSettings create() => StartVideoPositionSettings();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(StartVideoPosition value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<StartVideoPosition>(value),
+    );
+  }
+}
+
 String _$startVideoPositionSettingsHash() =>
     r'ca71cd6c4fe13684d7aa9e7923166317d2a5c3c7';
 
-/// See also [StartVideoPositionSettings].
-@ProviderFor(StartVideoPositionSettings)
-final startVideoPositionSettingsProvider =
-    AutoDisposeNotifierProvider<
-      StartVideoPositionSettings,
-      StartVideoPosition
-    >.internal(
-      StartVideoPositionSettings.new,
-      name: r'startVideoPositionSettingsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$startVideoPositionSettingsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$StartVideoPositionSettings
+    extends $Notifier<StartVideoPosition> {
+  StartVideoPosition build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<StartVideoPosition, StartVideoPosition>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<StartVideoPosition, StartVideoPosition>,
+              StartVideoPosition,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$StartVideoPositionSettings = AutoDisposeNotifier<StartVideoPosition>;
+@ProviderFor(FixedPositionSettings)
+const fixedPositionSettingsProvider = FixedPositionSettingsProvider._();
+
+final class FixedPositionSettingsProvider
+    extends $NotifierProvider<FixedPositionSettings, int> {
+  const FixedPositionSettingsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'fixedPositionSettingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$fixedPositionSettingsHash();
+
+  @$internal
+  @override
+  FixedPositionSettings create() => FixedPositionSettings();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
 String _$fixedPositionSettingsHash() =>
     r'c8eccdf340da4f16b39a9c5fed0d5ebecfdf97fb';
 
-/// See also [FixedPositionSettings].
-@ProviderFor(FixedPositionSettings)
-final fixedPositionSettingsProvider =
-    AutoDisposeNotifierProvider<FixedPositionSettings, int>.internal(
-      FixedPositionSettings.new,
-      name: r'fixedPositionSettingsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$fixedPositionSettingsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$FixedPositionSettings extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$FixedPositionSettings = AutoDisposeNotifier<int>;
+@ProviderFor(EqualizerBandsSettings)
+const equalizerBandsSettingsProvider = EqualizerBandsSettingsProvider._();
+
+final class EqualizerBandsSettingsProvider
+    extends $NotifierProvider<EqualizerBandsSettings, List<double>> {
+  const EqualizerBandsSettingsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'equalizerBandsSettingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$equalizerBandsSettingsHash();
+
+  @$internal
+  @override
+  EqualizerBandsSettings create() => EqualizerBandsSettings();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<double> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<double>>(value),
+    );
+  }
+}
+
 String _$equalizerBandsSettingsHash() =>
     r'02c1a692d0332b10715d412a8f1e9251a8b6259b';
 
-/// See also [EqualizerBandsSettings].
-@ProviderFor(EqualizerBandsSettings)
-final equalizerBandsSettingsProvider =
-    AutoDisposeNotifierProvider<EqualizerBandsSettings, List<double>>.internal(
-      EqualizerBandsSettings.new,
-      name: r'equalizerBandsSettingsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$equalizerBandsSettingsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$EqualizerBandsSettings extends $Notifier<List<double>> {
+  List<double> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<List<double>, List<double>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<List<double>, List<double>>,
+              List<double>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$EqualizerBandsSettings = AutoDisposeNotifier<List<double>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+@ProviderFor(sourceSelector)
+const sourceSelectorProvider = SourceSelectorFamily._();
+
+final class SourceSelectorProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SourceSelectorModel>,
+          SourceSelectorModel,
+          FutureOr<SourceSelectorModel>
+        >
+    with
+        $FutureModifier<SourceSelectorModel>,
+        $FutureProvider<SourceSelectorModel> {
+  const SourceSelectorProvider._({
+    required SourceSelectorFamily super.from,
+    required (ContentDetails, List<ContentMediaItem>) super.argument,
+  }) : super(
+         retry: null,
+         name: r'sourceSelectorProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$sourceSelectorHash();
+
+  @override
+  String toString() {
+    return r'sourceSelectorProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<SourceSelectorModel> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SourceSelectorModel> create(Ref ref) {
+    final argument = this.argument as (ContentDetails, List<ContentMediaItem>);
+    return sourceSelector(ref, argument.$1, argument.$2);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SourceSelectorProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$sourceSelectorHash() => r'b3d9994934390c45715949ca761df1128a31d292';
+
+final class SourceSelectorFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          FutureOr<SourceSelectorModel>,
+          (ContentDetails, List<ContentMediaItem>)
+        > {
+  const SourceSelectorFamily._()
+    : super(
+        retry: null,
+        name: r'sourceSelectorProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  SourceSelectorProvider call(
+    ContentDetails contentDetails,
+    List<ContentMediaItem> mediaItems,
+  ) => SourceSelectorProvider._(
+    argument: (contentDetails, mediaItems),
+    from: this,
+  );
+
+  @override
+  String toString() => r'sourceSelectorProvider';
+}

@@ -49,7 +49,7 @@ class _RemoveFromCollectionButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inCollection =
-        ref.watch(hasCollectionItemProvider(supplier, id)).valueOrNull ?? false;
+        ref.watch(hasCollectionItemProvider(supplier, id)).value ?? false;
 
     return inCollection
         ? OutlinedButton(

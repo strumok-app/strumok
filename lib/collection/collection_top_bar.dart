@@ -112,7 +112,7 @@ class _StatusFilterDialog extends ConsumerWidget {
     final theme = Theme.of(context);
     final collectionFilter = ref.watch(collectionFilterProvider);
     final suppliersNames =
-        ref.watch(collectionItemsSuppliersProvider).valueOrNull?.toList() ?? [];
+        ref.watch(collectionItemsSuppliersProvider).value?.toList() ?? [];
     final allStatus = MediaCollectionItemStatus.values
         .where((s) => s != MediaCollectionItemStatus.none)
         .toList();

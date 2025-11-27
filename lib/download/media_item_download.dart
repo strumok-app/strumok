@@ -29,7 +29,7 @@ class MediaItemDownloadButton extends ConsumerWidget {
       item.number,
     );
     final offlineMode = ref.watch(offlineModeProvider);
-    final state = ref.watch(provider).valueOrNull;
+    final state = ref.watch(provider).value;
 
     if (state == null || offlineMode) {
       return const SizedBox.shrink();
