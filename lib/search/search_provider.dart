@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/search/search_model.dart';

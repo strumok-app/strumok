@@ -70,11 +70,15 @@ class _VideoContentDesktopControlsState
   }
 
   void onHover() {
+    if (_visible) {
+      return;
+    }
+
     setState(() {
-      print("HOVER!!! $_visible $_mount");
       _mount = true;
       _visible = true;
     });
+
     shiftSubtitle();
     _timer?.cancel();
     _timer = Timer(controlsHoverDuration, _hideUI);
@@ -93,7 +97,6 @@ class _VideoContentDesktopControlsState
   @override
   Widget build(BuildContext context) {
     final screanSize = MediaQuery.sizeOf(context);
-    print("BUILD $_visible $_mount");
     return Theme(
       data: Theme.of(context).copyWith(
         focusColor: Colors.transparent,

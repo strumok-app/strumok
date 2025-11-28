@@ -1,5 +1,4 @@
 import 'package:content_suppliers_api/model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
