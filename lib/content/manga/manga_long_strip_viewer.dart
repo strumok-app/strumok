@@ -6,15 +6,14 @@ import 'package:strumok/content/manga/intents.dart';
 import 'package:strumok/content/manga/manga_page_image.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/l10n/app_localizations.dart';
-import 'package:strumok/utils/matrix.dart';
 
-class MangaScrolledViewer extends StatefulWidget {
+class MangaLongStripViewer extends StatefulWidget {
   final List<MangaPageInfo> pages;
   final Axis direction;
   final ScrollController scrollController;
   final ValueNotifier<int> pageListenable;
 
-  const MangaScrolledViewer({
+  const MangaLongStripViewer({
     super.key,
     required this.pages,
     required this.direction,
@@ -23,29 +22,21 @@ class MangaScrolledViewer extends StatefulWidget {
   });
 
   @override
-  State<MangaScrolledViewer> createState() => _MangaScrolledViewerState();
+  State<MangaLongStripViewer> createState() => _MangaLongStripViewerState();
 }
 
-class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
+class _MangaLongStripViewerState extends State<MangaLongStripViewer> {
   final _transformationController = TransformationController();
-  final Key _centerKey = UniqueKey();
   final Set<_PageElement> _registeredPageElement = {};
 
-  bool _scaling = false;
+  // bool _scaling = false;
   bool _scheduleUpdate = false;
   late int _page;
   int _firstVisiablePage = 0;
 
-  void _handleTransformationChange() {
-    final newScaling = _transformationController.value.isScaled();
-    if (_scaling != newScaling) {
-      if (mounted) {
-        setState(() {
-          _scaling = newScaling;
-        });
-      }
-    }
-  }
+  late Key _top;
+  late Key _center;
+  late Key _bottom;
 
   @override
   Widget build(BuildContext context) {
@@ -54,32 +45,38 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
     return _ReaderGestureDetector(
       transformationController: _transformationController,
       child: InteractiveViewer(
+        maxScale: 5,
+        minScale: .5,
         transformationController: _transformationController,
-        scaleEnabled: _scaling,
-        panEnabled: _scaling,
+        // scaleEnabled: _scaling,
+        panAxis: widget.direction == Axis.vertical
+            ? PanAxis.horizontal
+            : PanAxis.vertical,
+        // panEnabled: _scaling,
         child: CustomScrollView(
-          physics: _scaling
-              ? NeverScrollableScrollPhysics()
-              : AlwaysScrollableScrollPhysics(),
-          center: _centerKey,
+          physics: AlwaysScrollableScrollPhysics(),
+          center: _center,
           controller: widget.scrollController,
           scrollDirection: widget.direction,
           slivers: [
             SliverList(
+              key: _top,
               delegate: SliverChildBuilderDelegate(
                 (context, index) => buildImage(_page - index - 1),
                 childCount: _page,
               ),
             ),
             SliverList(
-              key: _centerKey,
+              key: _center,
               delegate: SliverChildBuilderDelegate(
                 (context, index) => buildImage(_page + index),
                 childCount: 1,
               ),
             ),
             SliverList(
+              key: _bottom,
               delegate: SliverChildBuilderDelegate(
+                addRepaintBoundaries: true,
                 (context, index) => buildImage(_page + index + 1),
                 childCount: widget.pages.length - _page - 1,
               ),
@@ -107,9 +104,10 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
   @override
   void initState() {
     _page = widget.pageListenable.value;
+    _setWidgetKeys();
     widget.pageListenable.addListener(_handlePageChange);
     widget.scrollController.addListener(_handleScroll);
-    _transformationController.addListener(_handleTransformationChange);
+    // _transformationController.addListener(_handleTransformationChange);
 
     super.initState();
   }
@@ -118,8 +116,9 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
   void dispose() {
     widget.pageListenable.removeListener(_handlePageChange);
     widget.scrollController.removeListener(_handleScroll);
-    _transformationController.removeListener(_handleTransformationChange);
+    // _transformationController.removeListener(_handleTransformationChange);
 
+    _transformationController.dispose();
     super.dispose();
   }
 
@@ -130,12 +129,19 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
       setState(() {
         widget.scrollController.jumpTo(0);
         _page = page;
+        _setWidgetKeys();
       });
     }
   }
 
   void _handleScroll() {
     _calcVisiablePages();
+  }
+
+  void _setWidgetKeys() {
+    _top = Key("top$_page");
+    _center = Key("center$_page");
+    _bottom = Key("bottom$_page");
   }
 
   Widget buildImage(int index) {
@@ -205,6 +211,7 @@ class _MangaScrolledViewerState extends State<MangaScrolledViewer> {
       final currentPage = widget.pageListenable.value;
       if (firstPage != currentPage) {
         _firstVisiablePage = firstPage;
+
         widget.pageListenable.value = firstPage;
       }
     });
@@ -309,7 +316,7 @@ class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
           onDoubleTapDown: (details) => _lastTapDetails = details,
           onTapDown: (details) => _lastTapDetails = details,
           onDoubleTap: _toggleZoom,
-          onTap: value.isScaled() ? null : _toggleUI,
+          onTap: _toggleUI,
           child: Container(
             width: size.width,
             height: size.height,

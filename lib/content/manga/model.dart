@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 enum MangaReaderMode {
-  vericalScroll(scroll: true, direction: Axis.vertical),
-  hotizontalScroll(scroll: true),
+  longStrip(scroll: true, direction: Axis.vertical),
+  // longStripHorizontal(scroll: true),
   vertical(direction: Axis.vertical),
   leftToRight();
 

@@ -6,7 +6,7 @@ import 'package:strumok/content/manga/intents.dart';
 import 'package:strumok/content/manga/manga_paged_viewer.dart';
 import 'package:strumok/content/manga/manga_provider.dart';
 import 'package:strumok/content/manga/manga_reader_controls.dart';
-import 'package:strumok/content/manga/manga_scrolled_viewer.dart';
+import 'package:strumok/content/manga/manga_long_strip_viewer.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/settings/settings_provider.dart';
@@ -211,7 +211,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
       },
       autofocus: true,
       child: readerMode.scroll
-          ? MangaScrolledViewer(
+          ? MangaLongStripViewer(
               pages: widget.pages,
               direction: readerMode.direction,
               scrollController: scrollController,

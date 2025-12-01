@@ -246,16 +246,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get mangaPageLoading => 'Завантаження сторінки';
 
   @override
-  String get mangaReaderScale => 'Масштабування зображення';
+  String get mangaReaderScale => 'Scale mode';
 
   @override
-  String get mangaReaderScaleFit => 'Умістити';
+  String get mangaReaderScaleFit => 'Fit';
 
   @override
-  String get mangaReaderScaleFitWidth => 'Розтягнути по ширині';
+  String get mangaReaderScaleFitWidth => 'Fit width';
 
   @override
-  String get mangaReaderScaleFitHeight => 'Розтягнути по висоті';
+  String get mangaReaderScaleFitHeight => 'Fit height';
 
   @override
   String get mangaTranslation => 'Переклад';
@@ -282,13 +282,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get mangaReaderModeRightToLeft => 'З права на ліво';
 
   @override
-  String get mangaReaderModeVerticalScroll => 'Вертикальна прокрутка';
-
-  @override
-  String get mangaReaderModeHorizontalScroll => 'Прокрутка з ліва на право';
-
-  @override
-  String get mangaReaderModeHorizontalRtlScroll => 'Прокрутка з права на ліво';
+  String get mangaReaderModeLongStrip => 'Довга смуга';
 
   @override
   String get mangaReaderPageDownloadFailed => 'Невдалось завантажити сторінку';

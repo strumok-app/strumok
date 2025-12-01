@@ -282,13 +282,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mangaReaderModeRightToLeft => 'Right to left';
 
   @override
-  String get mangaReaderModeVerticalScroll => 'Vertical scroll';
-
-  @override
-  String get mangaReaderModeHorizontalScroll => 'Scroll from left to right';
-
-  @override
-  String get mangaReaderModeHorizontalRtlScroll => 'Scroll from right to left';
+  String get mangaReaderModeLongStrip => 'Long strip';
 
   @override
   String get mangaReaderPageDownloadFailed => 'Page download failed';

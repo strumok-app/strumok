@@ -632,23 +632,11 @@ abstract class AppLocalizations {
   /// **'Right to left'**
   String get mangaReaderModeRightToLeft;
 
-  /// No description provided for @mangaReaderModeVerticalScroll.
+  /// No description provided for @mangaReaderModeLongStrip.
   ///
   /// In en, this message translates to:
-  /// **'Vertical scroll'**
-  String get mangaReaderModeVerticalScroll;
-
-  /// No description provided for @mangaReaderModeHorizontalScroll.
-  ///
-  /// In en, this message translates to:
-  /// **'Scroll from left to right'**
-  String get mangaReaderModeHorizontalScroll;
-
-  /// No description provided for @mangaReaderModeHorizontalRtlScroll.
-  ///
-  /// In en, this message translates to:
-  /// **'Scroll from right to left'**
-  String get mangaReaderModeHorizontalRtlScroll;
+  /// **'Long strip'**
+  String get mangaReaderModeLongStrip;
 
   /// No description provided for @mangaReaderPageDownloadFailed.
   ///

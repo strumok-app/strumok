@@ -25,18 +25,34 @@ class MangaPagedViewer extends ConsumerStatefulWidget {
 class _PagedViewState extends ConsumerState<MangaPagedViewer> {
   final _transformationController = TransformationController();
   PageController? _pageController;
+  bool _scaling = false;
 
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.pageListenable.value);
     widget.pageListenable.addListener(_onPageChanged);
+    _transformationController.addListener(_handleTransformationChange);
 
     super.initState();
+  }
+
+  void _handleTransformationChange() {
+    final newScaling = _transformationController.value.isScaled();
+    if (_scaling != newScaling) {
+      if (mounted) {
+        setState(() {
+          _scaling = newScaling;
+        });
+      }
+    }
   }
 
   @override
   void dispose() {
     widget.pageListenable.removeListener(_onPageChanged);
+    _transformationController.removeListener(_handleTransformationChange);
+
+    _transformationController.dispose();
     super.dispose();
   }
 
@@ -57,7 +73,9 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
       transformationController: _transformationController,
       child: PageView.builder(
         controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
+        physics: _scaling
+            ? const NeverScrollableScrollPhysics()
+            : const AlwaysScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return _SinglePageView(
             direction: widget.direction,

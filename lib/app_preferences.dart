@@ -140,7 +140,7 @@ class AppPreferences {
       MangaReaderMode.values
           .where((type) => type.name == instance.getString("manga_reader_mode"))
           .firstOrNull ??
-      MangaReaderMode.vericalScroll;
+      MangaReaderMode.longStrip;
 
   static bool get videoPlayerSettingShuffleMode =>
       instance.getBool("video_player_setting_shuffle_mode") ?? false;
