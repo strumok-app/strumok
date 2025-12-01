@@ -197,6 +197,7 @@ class _SinglePageView extends ConsumerWidget {
       builder: (context, constraints) {
         return InteractiveViewer(
           minScale: 1,
+          maxScale: 5,
           transformationController: transformationController,
           boundaryMargin: EdgeInsets.zero,
           child: Container(

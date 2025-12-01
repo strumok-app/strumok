@@ -46,7 +46,7 @@ class _MangaLongStripViewerState extends State<MangaLongStripViewer> {
       transformationController: _transformationController,
       child: InteractiveViewer(
         maxScale: 5,
-        minScale: .5,
+        minScale: 1,
         transformationController: _transformationController,
         // scaleEnabled: _scaling,
         panAxis: widget.direction == Axis.vertical
