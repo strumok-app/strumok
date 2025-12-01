@@ -46,7 +46,7 @@ app.*.map.json
 /android/app/.cxx
 
 secrets.env
-secrets.env
+untranslated-messages.json 
 /android/app/google-services.json
 /android/app/strumok.jks
 

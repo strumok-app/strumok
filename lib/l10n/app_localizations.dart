@@ -560,30 +560,6 @@ abstract class AppLocalizations {
   /// **'Page loading'**
   String get mangaPageLoading;
 
-  /// No description provided for @mangaReaderScale.
-  ///
-  /// In en, this message translates to:
-  /// **'Scale mode'**
-  String get mangaReaderScale;
-
-  /// No description provided for @mangaReaderScaleFit.
-  ///
-  /// In en, this message translates to:
-  /// **'Fit'**
-  String get mangaReaderScaleFit;
-
-  /// No description provided for @mangaReaderScaleFitWidth.
-  ///
-  /// In en, this message translates to:
-  /// **'Fit width'**
-  String get mangaReaderScaleFitWidth;
-
-  /// No description provided for @mangaReaderScaleFitHeight.
-  ///
-  /// In en, this message translates to:
-  /// **'Fit height'**
-  String get mangaReaderScaleFitHeight;
-
   /// No description provided for @mangaTranslation.
   ///
   /// In en, this message translates to:

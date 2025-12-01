@@ -246,18 +246,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get mangaPageLoading => 'Завантаження сторінки';
 
   @override
-  String get mangaReaderScale => 'Scale mode';
-
-  @override
-  String get mangaReaderScaleFit => 'Fit';
-
-  @override
-  String get mangaReaderScaleFitWidth => 'Fit width';
-
-  @override
-  String get mangaReaderScaleFitHeight => 'Fit height';
-
-  @override
   String get mangaTranslation => 'Переклад';
 
   @override
