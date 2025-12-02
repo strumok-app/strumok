@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
+import 'package:strumok/download/manager/download_manga.dart';
 import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 
@@ -56,11 +57,11 @@ class _MangaPageImageState extends State<MangaPageImage> {
       _status = _Status.downloaded;
       if (mounted) setState(() {});
     } else {
-      _startDownload(page.url);
+      _startDownload(page.url, page.source.headers);
     }
   }
 
-  void _startDownload(String url) async {
+  void _startDownload(String url, Map<String, String>? headers) async {
     if (!mounted) {
       return;
     }
@@ -70,41 +71,27 @@ class _MangaPageImageState extends State<MangaPageImage> {
       _progress = 0;
     });
 
-    _Status status;
+    _Status status = _Status.error;
     File? file;
 
     try {
-      final client = HttpClient();
-      final request = await client.getUrl(Uri.parse(url));
-      final response = await request.close();
+      final path = _getPagePath();
+      file = File(path);
 
-      if (response.statusCode == 200) {
-        final path = _getPagePath();
-        file = File(path);
-        await file.create(recursive: true);
-        final sink = file.openWrite();
-
-        int total = response.contentLength;
-        int received = 0;
-
-        await for (var chunk in response) {
-          sink.add(chunk);
-          received += chunk.length;
-          if (total > 0) {
-            if (mounted && url == widget.page.url) {
-              setState(() {
-                _progress = received / total;
-              });
-            }
+      await downloadPageToFile(
+        pageUrl: url,
+        targetFile: file,
+        headers: headers,
+        onProgress: (progress) {
+          if (mounted && url == widget.page.url) {
+            setState(() {
+              _progress = progress;
+            });
           }
-        }
+        },
+      );
 
-        await sink.close();
-        status = _Status.downloaded;
-      } else {
-        status = _Status.error;
-      }
-      client.close();
+      status = _Status.downloaded;
     } catch (e) {
       status = _Status.error;
     }
@@ -143,7 +130,8 @@ class _MangaPageImageState extends State<MangaPageImage> {
           children: [
             Text(AppLocalizations.of(context)!.mangaReaderPageDownloadFailed),
             OutlinedButton(
-              onPressed: () => _startDownload(widget.page.url),
+              onPressed: () =>
+                  _startDownload(widget.page.url, widget.page.source.headers),
               child: Text(AppLocalizations.of(context)!.errorReload),
             ),
           ],

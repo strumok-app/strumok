@@ -23,36 +23,20 @@ void downloadManga(
       }
 
       final page = request.pages[i];
+      final targetFile = File('${request.folder}/$i.jpg');
 
-      final fileSrc = '${request.folder}/$i.jpg';
-      final file = File(fileSrc);
-      if (await file.exists()) {
+      // Skip if file already exists
+      if (await targetFile.exists()) {
         continue;
       }
 
-      final httpReq = Request('GET', Uri.parse(page));
-      httpReq.followRedirects = true;
-
-      if (request.headers != null) {
-        httpReq.headers.addAll(request.headers!);
-      }
-
-      final httpRes = await retry(
-        () => Client().send(httpReq).timeout(httpTimeout),
-        3,
-        const Duration(seconds: 10),
+      await downloadPageToFile(
+        pageUrl: page,
+        targetFile: targetFile,
+        headers: request.headers,
       );
 
-      if (httpRes.statusCode != HttpStatus.ok) {
-        throw Exception("httpStatus: ${httpRes.statusCode}");
-      }
-
-      await file.create(recursive: true);
-
-      final responseBytes = await httpRes.stream.toBytes();
-      await file.writeAsBytes(responseBytes);
-
-      bytesDownloaded += responseBytes.length;
+      bytesDownloaded += await targetFile.length();
       updateProgress(
         (i + 1) / request.pages.length,
         downloadSpeed(startTs, bytesDownloaded),
@@ -72,5 +56,65 @@ void downloadManga(
   } catch (e) {
     logger.warning("download failed for request: $request error: $e");
     onDone(DownloadStatus.failed);
+  }
+}
+
+Future<void> downloadPageToFile({
+  required String pageUrl,
+  required File targetFile,
+  required Map<String, String>? headers,
+  void Function(double)? onProgress,
+}) async {
+  final tempFile = File(
+    '${targetFile.path}.tmp.${DateTime.now().millisecondsSinceEpoch}',
+  );
+
+  try {
+    final httpReq = Request('GET', Uri.parse(pageUrl));
+    httpReq.followRedirects = true;
+
+    if (headers != null) {
+      httpReq.headers.addAll(headers);
+    }
+
+    final httpRes = await retry(
+      () => Client().send(httpReq).timeout(httpTimeout),
+      3,
+      const Duration(seconds: 10),
+    );
+
+    if (httpRes.statusCode != HttpStatus.ok) {
+      throw Exception("httpStatus: ${httpRes.statusCode}");
+    }
+
+    await tempFile.create(recursive: true);
+
+    final contentLength = httpRes.contentLength ?? 0;
+    var bytesReceived = 0;
+
+    final bytes = <int>[];
+    await for (final chunk in httpRes.stream) {
+      bytes.addAll(chunk);
+      bytesReceived += chunk.length;
+
+      if (onProgress != null && contentLength > 0) {
+        onProgress(bytesReceived / contentLength);
+      }
+    }
+
+    await tempFile.writeAsBytes(bytes);
+
+    // Move temp file to target only if target doesn't exist
+    if (!await targetFile.exists()) {
+      await tempFile.rename(targetFile.path);
+    } else {
+      await tempFile.delete();
+    }
+  } catch (e) {
+    // Clean up temp file on error
+    if (await tempFile.exists()) {
+      await tempFile.delete();
+    }
+    rethrow;
   }
 }
