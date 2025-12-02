@@ -24,7 +24,7 @@ class MangaPagedViewer extends ConsumerStatefulWidget {
 
 class _PagedViewState extends ConsumerState<MangaPagedViewer> {
   final _transformationController = TransformationController();
-  PageController? _pageController;
+  late PageController _pageController;
   bool _scaling = false;
 
   @override
@@ -34,6 +34,26 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
     _transformationController.addListener(_handleTransformationChange);
 
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant MangaPagedViewer oldWidget) {
+    oldWidget.pageListenable.removeListener(_onPageChanged);
+
+    widget.pageListenable.addListener(_onPageChanged);
+    _pageController.jumpToPage(widget.pageListenable.value);
+
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    widget.pageListenable.removeListener(_onPageChanged);
+    _transformationController.removeListener(_handleTransformationChange);
+
+    _transformationController.dispose();
+    super.dispose();
   }
 
   void _handleTransformationChange() {
@@ -47,20 +67,15 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
     }
   }
 
-  @override
-  void dispose() {
-    widget.pageListenable.removeListener(_onPageChanged);
-    _transformationController.removeListener(_handleTransformationChange);
-
-    _transformationController.dispose();
-    super.dispose();
-  }
-
   void _onPageChanged() {
-    final pageNum = widget.pageListenable.value;
+    final page = widget.pageListenable.value;
 
-    _pageController?.animateToPage(
-      pageNum,
+    if (page >= widget.pages.length) {
+      return;
+    }
+
+    _pageController.animateToPage(
+      page,
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOutCubic,
     );

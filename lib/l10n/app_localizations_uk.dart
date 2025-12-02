@@ -276,7 +276,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get mangaReaderPageDownloadFailed => 'Невдалось завантажити сторінку';
 
   @override
-  String get mangaNextItem => 'Далі';
+  String get mangaNextItem => 'Наступний розділ';
+
+  @override
+  String get mangaPrevItem => 'Попредній розділ';
 
   @override
   String get errorGoBack => 'Повернутись назад';

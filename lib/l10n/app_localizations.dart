@@ -626,6 +626,12 @@ abstract class AppLocalizations {
   /// **'Next'**
   String get mangaNextItem;
 
+  /// No description provided for @mangaPrevItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Prev'**
+  String get mangaPrevItem;
+
   /// No description provided for @errorGoBack.
   ///
   /// In en, this message translates to:

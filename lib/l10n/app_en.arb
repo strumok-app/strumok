@@ -87,6 +87,7 @@
     "mangaReaderModeLongStrip": "Long strip",
     "mangaReaderPageDownloadFailed": "Page download failed",
     "mangaNextItem": "Next",
+    "mangaPrevItem": "Prev",
     "errorGoBack": "Go back",
     "errorReload": "Reload",
     "ffiLibNotInstalled": "Content suppliers module not installed",

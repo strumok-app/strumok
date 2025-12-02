@@ -279,6 +279,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mangaNextItem => 'Next';
 
   @override
+  String get mangaPrevItem => 'Prev';
+
+  @override
   String get errorGoBack => 'Go back';
 
   @override

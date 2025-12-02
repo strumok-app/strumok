@@ -99,6 +99,8 @@ class _MangaReaderViewState extends ConsumerState<MangaReaderView> {
       initialPage: collectionItem.currentPosition,
       contentDetails: widget.contentDetails,
       mediaItems: widget.mediaItems,
+      hasNextChapter: collectionItem.currentItem < widget.mediaItems.length - 1,
+      hasPrevChapter: collectionItem.currentItem > 0,
     );
   }
 }
@@ -109,12 +111,16 @@ class _MangaPagesReaderView extends ConsumerStatefulWidget {
   final ContentDetails contentDetails;
   final List<ContentMediaItem> mediaItems;
   final CollectionItemProvider itemProvider;
+  final bool hasPrevChapter;
+  final bool hasNextChapter;
 
   _MangaPagesReaderView({
     required this.pages,
     required this.initialPage,
     required this.contentDetails,
     required this.mediaItems,
+    required this.hasPrevChapter,
+    required this.hasNextChapter,
   }) : itemProvider = collectionItemProvider(contentDetails);
 
   @override
@@ -124,15 +130,13 @@ class _MangaPagesReaderView extends ConsumerStatefulWidget {
 
 class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
     with SingleTickerProviderStateMixin {
-  late final ValueNotifier<int> pageListenable;
+  late ValueNotifier<int> _pageListenable;
 
   final scrollController = ScrollController();
   late final AnimatedScrollController animetedScrollController;
 
   @override
   void initState() {
-    pageListenable = ValueNotifier(widget.initialPage);
-
     ref
         .read(widget.itemProvider.notifier)
         .setCurrentLength(widget.pages.length);
@@ -143,13 +147,34 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
       readerMode.direction,
     );
 
-    pageListenable.addListener(() {
+    _pageListenable = ValueNotifier(widget.initialPage);
+    _pageListenable.addListener(() {
       ref
           .read(widget.itemProvider.notifier)
-          .setCurrentPosition(pageListenable.value);
+          .setCurrentPosition(_pageListenable.value);
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageListenable.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _MangaPagesReaderView oldWidget) {
+    _pageListenable.dispose();
+
+    _pageListenable = ValueNotifier(widget.initialPage);
+    _pageListenable.addListener(() {
+      ref
+          .read(widget.itemProvider.notifier)
+          .setCurrentPosition(_pageListenable.value);
+    });
+
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -190,12 +215,15 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
         NextChapterIntent: CallbackAction<NextChapterIntent>(
           onInvoke: (_) => _nextItem(),
         ),
+        PrevChapterIntent: CallbackAction<PrevChapterIntent>(
+          onInvoke: (_) => _prevItem(),
+        ),
         ShowUIIntent: CallbackAction<ShowUIIntent>(
           onInvoke: (_) => Navigator.of(context).push(
             MangaReaderControlsRoute(
               contentDetails: widget.contentDetails,
               mediaItems: widget.mediaItems,
-              pagesController: pageListenable,
+              pagesController: _pageListenable,
             ),
           ),
         ),
@@ -215,12 +243,14 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
               pages: widget.pages,
               direction: readerMode.direction,
               scrollController: scrollController,
-              pageListenable: pageListenable,
+              pageListenable: _pageListenable,
+              hasPrevChapter: widget.hasPrevChapter,
+              hasNextChapter: widget.hasNextChapter,
             )
           : MangaPagedViewer(
               pages: widget.pages,
               direction: readerMode.direction,
-              pageListenable: pageListenable,
+              pageListenable: _pageListenable,
             ),
     );
   }
@@ -234,31 +264,40 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
       final provider = widget.itemProvider;
       final notifier = ref.read(provider.notifier);
 
-      final newPos = pageListenable.value + inc;
+      final newPos = _pageListenable.value + inc;
 
       if (newPos < 0) {
-        final contentProgress = await ref.read(provider.future);
-        if (contentProgress.currentItem > 0) {
+        if (widget.hasPrevChapter) {
+          final contentProgress = await ref.read(provider.future);
           notifier.setCurrentItem(contentProgress.currentItem - 1);
         }
       } else if (newPos >= widget.pages.length) {
-        final contentProgress = await ref.read(provider.future);
-        if (contentProgress.currentItem < widget.mediaItems.length - 1) {
+        if (widget.hasNextChapter) {
+          final contentProgress = await ref.read(provider.future);
           notifier.setCurrentItem(contentProgress.currentItem + 1);
         }
       } else {
         notifier.setCurrentPosition(newPos);
-        pageListenable.value = newPos;
+        _pageListenable.value = newPos;
       }
     }
   }
 
   void _nextItem() async {
-    final provider = widget.itemProvider;
-    final notifier = ref.read(provider.notifier);
-    final contentProgress = await ref.read(provider.future);
-    if (contentProgress.currentItem < widget.mediaItems.length - 1) {
+    if (widget.hasNextChapter) {
+      final provider = widget.itemProvider;
+      final notifier = ref.read(provider.notifier);
+      final contentProgress = await ref.read(provider.future);
       notifier.setCurrentItem(contentProgress.currentItem + 1);
+    }
+  }
+
+  void _prevItem() async {
+    if (widget.hasPrevChapter) {
+      final provider = widget.itemProvider;
+      final notifier = ref.read(provider.notifier);
+      final contentProgress = await ref.read(provider.future);
+      notifier.setCurrentItem(contentProgress.currentItem - 1);
     }
   }
 

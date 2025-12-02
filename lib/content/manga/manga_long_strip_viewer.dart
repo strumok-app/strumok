@@ -6,12 +6,15 @@ import 'package:strumok/content/manga/intents.dart';
 import 'package:strumok/content/manga/manga_page_image.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/l10n/app_localizations.dart';
+import 'package:strumok/widgets/zoom_view.dart';
 
 class MangaLongStripViewer extends StatefulWidget {
   final List<MangaPageInfo> pages;
   final Axis direction;
   final ScrollController scrollController;
   final ValueNotifier<int> pageListenable;
+  final bool hasPrevChapter;
+  final bool hasNextChapter;
 
   const MangaLongStripViewer({
     super.key,
@@ -19,6 +22,8 @@ class MangaLongStripViewer extends StatefulWidget {
     required this.direction,
     required this.pageListenable,
     required this.scrollController,
+    required this.hasPrevChapter,
+    required this.hasNextChapter,
   });
 
   @override
@@ -26,10 +31,10 @@ class MangaLongStripViewer extends StatefulWidget {
 }
 
 class _MangaLongStripViewerState extends State<MangaLongStripViewer> {
-  final _transformationController = TransformationController();
   final Set<_PageElement> _registeredPageElement = {};
+  final ZoomViewController _zoomViewController = ZoomViewController();
+  late final ZoomViewGestureHandler _zoomViewGestureHandler;
 
-  // bool _scaling = false;
   bool _scheduleUpdate = false;
   late int _page;
   int _firstVisiablePage = 0;
@@ -39,87 +44,104 @@ class _MangaLongStripViewerState extends State<MangaLongStripViewer> {
   late Key _bottom;
 
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return _ReaderGestureDetector(
-      transformationController: _transformationController,
-      child: InteractiveViewer(
-        maxScale: 5,
-        minScale: 1,
-        transformationController: _transformationController,
-        // scaleEnabled: _scaling,
-        panAxis: widget.direction == Axis.vertical
-            ? PanAxis.horizontal
-            : PanAxis.vertical,
-        // panEnabled: _scaling,
-        child: CustomScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          center: _center,
-          controller: widget.scrollController,
-          scrollDirection: widget.direction,
-          slivers: [
-            SliverList(
-              key: _top,
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => buildImage(_page - index - 1),
-                childCount: _page,
-              ),
-            ),
-            SliverList(
-              key: _center,
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => buildImage(_page + index),
-                childCount: 1,
-              ),
-            ),
-            SliverList(
-              key: _bottom,
-              delegate: SliverChildBuilderDelegate(
-                addRepaintBoundaries: true,
-                (context, index) => buildImage(_page + index + 1),
-                childCount: widget.pages.length - _page - 1,
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => SizedBox(
-                  width: widget.direction == Axis.vertical
-                      ? size.width
-                      : size.width * 0.5,
-                  height: widget.direction == Axis.vertical
-                      ? size.height * 0.5
-                      : size.height,
-                  child: _NextChapterButton(),
-                ),
-                childCount: 1,
-              ),
-            ),
-          ],
-        ),
-      ),
+  void initState() {
+    _zoomViewGestureHandler = ZoomViewGestureHandler(
+      zoomLevels: [2, 1],
+      controller: _zoomViewController,
     );
+    _page = widget.pageListenable.value;
+    _setWidgetKeys();
+
+    widget.pageListenable.addListener(_handlePageChange);
+    widget.scrollController.addListener(_handleScroll);
+
+    super.initState();
   }
 
   @override
-  void initState() {
+  void didUpdateWidget(covariant MangaLongStripViewer oldWidget) {
+    oldWidget.pageListenable.removeListener(_handlePageChange);
+    oldWidget.scrollController.removeListener(_handleScroll);
+
     _page = widget.pageListenable.value;
     _setWidgetKeys();
+
     widget.pageListenable.addListener(_handlePageChange);
     widget.scrollController.addListener(_handleScroll);
-    // _transformationController.addListener(_handleTransformationChange);
 
-    super.initState();
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
     widget.pageListenable.removeListener(_handlePageChange);
     widget.scrollController.removeListener(_handleScroll);
-    // _transformationController.removeListener(_handleTransformationChange);
-
-    _transformationController.dispose();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ZoomView(
+      maxScale: 5,
+      minScale: .5,
+      zoomViewController: _zoomViewController,
+      onTap: () => Actions.invoke(context, ShowUIIntent()),
+      onDoubleTap: (details) => _zoomViewGestureHandler.onDoubleTap(details),
+      scrollAxis: widget.direction,
+      controller: widget.scrollController,
+      child: CustomScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        center: _center,
+        controller: widget.scrollController,
+        scrollDirection: widget.direction,
+        slivers: [
+          if (widget.hasPrevChapter)
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => _ChapterNav(
+                  direction: widget.direction,
+                  label: AppLocalizations.of(context)!.mangaPrevItem,
+                  onPressed: () => Actions.invoke(context, PrevChapterIntent()),
+                ),
+                childCount: 1,
+              ),
+            ),
+          SliverList(
+            key: _top,
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => buildImage(_page - index - 1),
+              childCount: _page,
+            ),
+          ),
+          SliverList(
+            key: _center,
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => buildImage(_page + index),
+              childCount: 1,
+            ),
+          ),
+          SliverList(
+            key: _bottom,
+            delegate: SliverChildBuilderDelegate(
+              addRepaintBoundaries: true,
+              (context, index) => buildImage(_page + index + 1),
+              childCount: widget.pages.length - _page - 1,
+            ),
+          ),
+          if (widget.hasNextChapter)
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => _ChapterNav(
+                  direction: widget.direction,
+                  label: AppLocalizations.of(context)!.mangaNextItem,
+                  onPressed: () => Actions.invoke(context, NextChapterIntent()),
+                ),
+                childCount: 1,
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   void _handlePageChange() {
@@ -218,25 +240,37 @@ class _MangaLongStripViewerState extends State<MangaLongStripViewer> {
   }
 }
 
-class _NextChapterButton extends StatelessWidget {
-  const _NextChapterButton();
+class _ChapterNav extends StatelessWidget {
+  final Axis direction;
+  final String label;
+  final VoidCallback? onPressed;
+
+  const _ChapterNav({
+    required this.direction,
+    required this.label,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: AlignmentGeometry.bottomRight,
-      child: Center(
-        child: TextButton(
-          onPressed: () {
-            Actions.invoke(context, NextChapterIntent());
-          },
-          style: const ButtonStyle(
-            padding: WidgetStatePropertyAll(
-              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    final size = MediaQuery.of(context).size;
+
+    return SizedBox(
+      width: direction == Axis.vertical ? size.width : size.width * 0.5,
+      height: direction == Axis.vertical ? size.height * 0.5 : size.height,
+      child: Align(
+        alignment: AlignmentGeometry.bottomRight,
+        child: Center(
+          child: TextButton(
+            onPressed: onPressed,
+            style: const ButtonStyle(
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+              textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 32)),
             ),
-            textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 32)),
+            child: Text(label),
           ),
-          child: Text(AppLocalizations.of(context)!.mangaNextItem),
         ),
       ),
     );
@@ -287,65 +321,5 @@ class _RegisterWidgetElement extends ProxyElement {
   void unmount() {
     onMountChange(false, this);
     super.unmount();
-  }
-}
-
-class _ReaderGestureDetector extends StatefulWidget {
-  final TransformationController transformationController;
-  final Widget child;
-
-  const _ReaderGestureDetector({
-    required this.transformationController,
-    required this.child,
-  });
-
-  @override
-  State<_ReaderGestureDetector> createState() => _ReaderGestureDetectorState();
-}
-
-class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
-  TapDownDetails? _lastTapDetails;
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return ValueListenableBuilder(
-      valueListenable: widget.transformationController,
-      builder: (context, value, child) {
-        return GestureDetector(
-          onDoubleTapDown: (details) => _lastTapDetails = details,
-          onTapDown: (details) => _lastTapDetails = details,
-          onDoubleTap: _toggleZoom,
-          onTap: _toggleUI,
-          child: Container(
-            width: size.width,
-            height: size.height,
-            color: Colors.transparent,
-            child: widget.child,
-          ),
-        );
-      },
-    );
-  }
-
-  void _toggleUI() {
-    Actions.invoke(context, const ShowUIIntent());
-  }
-
-  void _toggleZoom() {
-    if (_lastTapDetails == null) {
-      return;
-    }
-
-    final position = _lastTapDetails!.globalPosition;
-    final transfomationController = widget.transformationController;
-
-    if (!transfomationController.value.isIdentity()) {
-      transfomationController.value = Matrix4.identity();
-    } else {
-      transfomationController.value = Matrix4.identity()
-        ..translateByDouble(-position.dx, -position.dy, 0, 1)
-        ..scaleByDouble(2.0, 2.0, 2.0, 1.0);
-    }
   }
 }
