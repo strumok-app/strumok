@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/content/manga/intents.dart';
@@ -9,7 +8,7 @@ import 'package:strumok/utils/matrix.dart';
 class MangaPagedViewer extends ConsumerStatefulWidget {
   final List<MangaPageInfo> pages;
   final Axis direction;
-  final ValueListenable<int> pageListenable;
+  final ValueNotifier<int> pageListenable;
 
   const MangaPagedViewer({
     super.key,
@@ -30,10 +29,19 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.pageListenable.value);
+    _pageController.addListener(_hadlePageContoller);
     widget.pageListenable.addListener(_onPageChanged);
     _transformationController.addListener(_handleTransformationChange);
 
     super.initState();
+  }
+
+  void _hadlePageContoller() {
+    final page = _pageController.page!;
+
+    if (page.floor() == page && widget.pageListenable.value != page) {
+      widget.pageListenable.value = page.toInt();
+    }
   }
 
   @override
@@ -43,7 +51,6 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
     widget.pageListenable.addListener(_onPageChanged);
     _pageController.jumpToPage(widget.pageListenable.value);
 
-    // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
   }
 
@@ -52,6 +59,7 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
     widget.pageListenable.removeListener(_onPageChanged);
     _transformationController.removeListener(_handleTransformationChange);
 
+    _pageController.dispose();
     _transformationController.dispose();
     super.dispose();
   }
@@ -86,20 +94,26 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
     return _ReaderGestureDetector(
       direction: widget.direction,
       transformationController: _transformationController,
-      child: PageView.builder(
-        controller: _pageController,
-        physics: _scaling
-            ? const NeverScrollableScrollPhysics()
-            : const AlwaysScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return _SinglePageView(
-            direction: widget.direction,
-            page: widget.pages[index],
-            transformationController: _transformationController,
-          );
-        },
-        itemCount: widget.pages.length,
-        scrollDirection: widget.direction,
+      child: InteractiveViewer(
+        maxScale: 5,
+        minScale: 1,
+        panEnabled: _scaling,
+        scaleEnabled: _scaling,
+        transformationController: _transformationController,
+        child: PageView.builder(
+          controller: _pageController,
+          physics: _scaling
+              ? const NeverScrollableScrollPhysics()
+              : const BouncingScrollPhysics(),
+          itemBuilder: (context, index) {
+            return MangaPageImage(
+              direction: widget.direction,
+              page: widget.pages[index],
+            );
+          },
+          itemCount: widget.pages.length,
+          scrollDirection: widget.direction,
+        ),
       ),
     );
   }
@@ -192,43 +206,5 @@ class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
         ..translateByDouble(-position.dx, -position.dy, 0, 1)
         ..scaleByDouble(2.0, 2.0, 2.0, 1.0);
     }
-  }
-}
-
-class _SinglePageView extends ConsumerWidget {
-  final MangaPageInfo page;
-  final Axis direction;
-  final TransformationController transformationController;
-
-  const _SinglePageView({
-    required this.page,
-    required this.direction,
-    required this.transformationController,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return InteractiveViewer(
-          minScale: 1,
-          maxScale: 5,
-          transformationController: transformationController,
-          boundaryMargin: EdgeInsets.zero,
-          child: Container(
-            constraints: BoxConstraints(
-              minHeight: constraints.maxHeight,
-              minWidth: constraints.maxWidth,
-            ),
-            alignment: Alignment.topCenter,
-            child: SizedBox(
-              height: constraints.maxHeight,
-              width: constraints.maxWidth,
-              child: MangaPageImage(direction: direction, page: page),
-            ),
-          ),
-        );
-      },
-    );
   }
 }

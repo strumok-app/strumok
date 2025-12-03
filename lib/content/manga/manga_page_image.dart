@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:strumok/content/manga/model.dart';
@@ -40,6 +42,7 @@ class _MangaPageImageState extends State<MangaPageImage> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.page.url != widget.page.url) {
       _downloadSubscription?.cancel();
+      _file = null;
       _initialize(widget.page);
     }
   }
@@ -48,18 +51,23 @@ class _MangaPageImageState extends State<MangaPageImage> {
     if (!mounted) return;
 
     if (page.url.startsWith('file://')) {
-      _file = File(page.url.substring(7));
-      _status = MangaPageDownloadStatus.completed;
-      setState(() {});
+      final file = File(page.url.substring(7));
+      setState(() {
+        _file = file;
+        _status = MangaPageDownloadStatus.completed;
+      });
       return;
     }
 
     final path = _getPagePath();
     final file = File(path);
     if (await file.exists()) {
-      _file = file;
-      _status = MangaPageDownloadStatus.completed;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {
+          _file = file;
+          _status = MangaPageDownloadStatus.completed;
+        });
+      }
     } else {
       _startDownload(widget.page);
     }
@@ -81,7 +89,11 @@ class _MangaPageImageState extends State<MangaPageImage> {
         setState(() {
           _status = event.status;
           _progress = event.progress;
-          _file = event.file;
+
+          if (event.status == MangaPageDownloadStatus.completed &&
+              event.file != null) {
+            _file = file;
+          }
         });
       }
     });
@@ -112,10 +124,10 @@ class _MangaPageImageState extends State<MangaPageImage> {
           value: _progress > 0 ? _progress : null,
         ),
       ),
-      MangaPageDownloadStatus.completed => Image.file(
-        _file!,
-        fit: BoxFit.contain,
-      ),
+      MangaPageDownloadStatus.completed =>
+        _file != null
+            ? _AutoCropPage(imageProvider: FileImage(_file!))
+            : const SizedBox.shrink(),
       MangaPageDownloadStatus.failed => Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -135,4 +147,172 @@ class _MangaPageImageState extends State<MangaPageImage> {
       child: content,
     );
   }
+}
+
+class _AutoCropPage extends StatefulWidget {
+  final ImageProvider imageProvider;
+  final int threshold;
+
+  const _AutoCropPage({required this.imageProvider, this.threshold = 230});
+
+  @override
+  State<_AutoCropPage> createState() => _AutoCropPageState();
+}
+
+class _AutoCropPageState extends State<_AutoCropPage> {
+  ui.Image? _image;
+  Rect? _cropRect;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImage();
+  }
+
+  void _loadImage() {
+    // 1. Resolve the ImageProvider to a ui.Image
+    final stream = widget.imageProvider.resolve(const ImageConfiguration());
+    stream.addListener(
+      ImageStreamListener((ImageInfo info, bool _) async {
+        final ui.Image image = info.image;
+
+        // 2. Calculate the crop rect
+        final Rect rect = await _calculateContentRect(
+          image,
+          threshold: widget.threshold,
+        );
+
+        if (mounted) {
+          setState(() {
+            _image = image;
+            _cropRect = rect;
+            _loading = false;
+          });
+        }
+      }),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading || _image == null) {
+      return SizedBox();
+    }
+
+    return ClipRect(
+      child: CustomPaint(
+        painter: _PageRectPainter(image: _image!, displayRect: _cropRect!),
+        child: Container(),
+      ),
+    );
+  }
+}
+
+class _PageRectPainter extends CustomPainter {
+  final ui.Image image;
+  final Rect displayRect;
+  final BoxFit fit;
+
+  _PageRectPainter({
+    required this.image,
+    required this.displayRect,
+    this.fit = BoxFit.contain,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final dstRect = _applyBoxFit(fit, displayRect.size, size);
+
+    // Draw only the specified rectangle portion of the image
+    canvas.drawImageRect(image, displayRect, dstRect, Paint());
+  }
+
+  Rect _applyBoxFit(BoxFit fit, Size srcSize, Size dstSize) {
+    final FittedSizes fittedSizes = applyBoxFit(fit, srcSize, dstSize);
+    final Size outputSize = fittedSizes.destination;
+
+    final double dx = (dstSize.width - outputSize.width) / 2.0;
+    final double dy = (dstSize.height - outputSize.height) / 2.0;
+
+    return Rect.fromLTWH(dx, dy, outputSize.width, outputSize.height);
+  }
+
+  @override
+  bool shouldRepaint(_PageRectPainter oldDelegate) {
+    return oldDelegate.image != image ||
+        oldDelegate.displayRect != displayRect ||
+        oldDelegate.fit != fit;
+  }
+}
+
+Future<Rect> _calculateContentRect(
+  ui.Image image, {
+  int threshold = 230,
+}) async {
+  final int width = image.width;
+  final int height = image.height;
+
+  // Get raw RGBA bytes from the image
+  final ByteData? byteData = await image.toByteData(
+    format: ui.ImageByteFormat.rawRgba,
+  );
+  if (byteData == null) {
+    return Rect.fromLTWH(0, 0, width.toDouble(), height.toDouble());
+  }
+
+  final Uint8List pixels = byteData.buffer.asUint8List();
+
+  // Helper: Check if a pixel index is "dark" (content)
+  // RGBA format: [R, G, B, A] -> 4 bytes per pixel
+  bool isContent(int x, int y) {
+    final int index = (y * width + x) * 4;
+    final int r = pixels[index];
+    final int g = pixels[index + 1];
+    final int b = pixels[index + 2];
+
+    // Simple average luminance
+    return ((r + g + b) / 3) < threshold;
+  }
+
+  int stride = 10; // Check every 10th row for speed
+  int leftBound = 0;
+  int rightBound = width;
+
+  // Scan for Left Bound
+  bool found = false;
+  for (int x = 0; x < width; x++) {
+    for (int y = 0; y < height; y += stride) {
+      if (isContent(x, y)) {
+        leftBound = x;
+        found = true;
+        break;
+      }
+    }
+    if (found) break;
+  }
+
+  // Scan for Right Bound
+  found = false;
+  for (int x = width - 1; x >= 0; x--) {
+    for (int y = 0; y < height; y += stride) {
+      if (isContent(x, y)) {
+        rightBound = x + 1;
+        found = true;
+        break;
+      }
+    }
+    if (found) break;
+  }
+
+  // Return the Rectangle of the content
+  // We keep the full height (0 to height), but crop the width
+  final cropRect = Rect.fromLTRB(
+    leftBound.toDouble(),
+    0.0,
+    rightBound.toDouble(),
+    height.toDouble(),
+  );
+
+  return cropRect;
 }
