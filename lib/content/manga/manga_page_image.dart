@@ -4,13 +4,15 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/download/manager/manga_pages_download_manager.dart';
 import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/l10n/app_localizations.dart';
+import 'package:strumok/settings/settings_provider.dart';
 
-class MangaPageImage extends StatefulWidget {
+class MangaPageImage extends ConsumerStatefulWidget {
   final MangaPageInfo page;
   final Axis direction;
 
@@ -21,10 +23,10 @@ class MangaPageImage extends StatefulWidget {
   });
 
   @override
-  State<MangaPageImage> createState() => _MangaPageImageState();
+  ConsumerState<MangaPageImage> createState() => _MangaPageImageState();
 }
 
-class _MangaPageImageState extends State<MangaPageImage> {
+class _MangaPageImageState extends ConsumerState<MangaPageImage> {
   StreamSubscription<MangaPageDownloadEvent>? _downloadSubscription;
 
   MangaPageDownloadStatus _status = MangaPageDownloadStatus.loading;
@@ -118,6 +120,8 @@ class _MangaPageImageState extends State<MangaPageImage> {
 
   @override
   Widget build(BuildContext context) {
+    final autoCropEnabled = ref.watch(mangaReaderAutoCropSettingsProvider);
+
     final content = switch (_status) {
       MangaPageDownloadStatus.loading => Center(
         child: CircularProgressIndicator(
@@ -126,7 +130,9 @@ class _MangaPageImageState extends State<MangaPageImage> {
       ),
       MangaPageDownloadStatus.completed =>
         _file != null
-            ? _AutoCropPage(imageProvider: FileImage(_file!))
+            ? autoCropEnabled
+                  ? _AutoCropPage(imageProvider: FileImage(_file!))
+                  : Image(image: FileImage(_file!), fit: BoxFit.contain)
             : const SizedBox.shrink(),
       MangaPageDownloadStatus.failed => Center(
         child: Column(
@@ -151,9 +157,8 @@ class _MangaPageImageState extends State<MangaPageImage> {
 
 class _AutoCropPage extends StatefulWidget {
   final ImageProvider imageProvider;
-  final int threshold;
 
-  const _AutoCropPage({required this.imageProvider, this.threshold = 230});
+  const _AutoCropPage({required this.imageProvider});
 
   @override
   State<_AutoCropPage> createState() => _AutoCropPageState();
@@ -178,10 +183,7 @@ class _AutoCropPageState extends State<_AutoCropPage> {
         final ui.Image image = info.image;
 
         // 2. Calculate the crop rect
-        final Rect rect = await _calculateContentRect(
-          image,
-          threshold: widget.threshold,
-        );
+        final Rect rect = await _calculateContentRect(image);
 
         if (mounted) {
           setState(() {
@@ -202,7 +204,11 @@ class _AutoCropPageState extends State<_AutoCropPage> {
 
     return ClipRect(
       child: CustomPaint(
-        painter: _PageRectPainter(image: _image!, displayRect: _cropRect!),
+        painter: _PageRectPainter(
+          image: _image!,
+          displayRect: _cropRect!,
+          fit: BoxFit.contain,
+        ),
         child: Container(),
       ),
     );
@@ -214,10 +220,10 @@ class _PageRectPainter extends CustomPainter {
   final Rect displayRect;
   final BoxFit fit;
 
-  _PageRectPainter({
+  const _PageRectPainter({
     required this.image,
     required this.displayRect,
-    this.fit = BoxFit.contain,
+    required this.fit,
   });
 
   @override
@@ -249,6 +255,7 @@ class _PageRectPainter extends CustomPainter {
 Future<Rect> _calculateContentRect(
   ui.Image image, {
   int threshold = 230,
+  int stride = 10,
 }) async {
   final int width = image.width;
   final int height = image.height;
@@ -275,7 +282,7 @@ Future<Rect> _calculateContentRect(
     return ((r + g + b) / 3) < threshold;
   }
 
-  int stride = 10; // Check every 10th row for speed
+  // Check every 10th row for speed
   int leftBound = 0;
   int rightBound = width;
 

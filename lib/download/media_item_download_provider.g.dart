@@ -50,7 +50,7 @@ final class MediaItemDownloadProvider
   }
 }
 
-String _$mediaItemDownloadHash() => r'f4ac58802eac64a4fb0cc830068307aeeffddc8a';
+String _$mediaItemDownloadHash() => r'd62991fafb23346393cb89385363c347340f6291';
 
 final class MediaItemDownloadFamily extends $Family
     with

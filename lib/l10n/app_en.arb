@@ -86,6 +86,7 @@
     "mangaReaderModeRightToLeft": "Right to left",
     "mangaReaderModeLongStrip": "Long strip",
     "mangaReaderPageDownloadFailed": "Page download failed",
+    "mangaReaderAutoCrop": "Auto crop",
     "mangaNextItem": "Next",
     "mangaPrevItem": "Prev",
     "errorGoBack": "Go back",

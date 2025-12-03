@@ -276,6 +276,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mangaReaderPageDownloadFailed => 'Page download failed';
 
   @override
+  String get mangaReaderAutoCrop => 'Auto crop';
+
+  @override
   String get mangaNextItem => 'Next';
 
   @override

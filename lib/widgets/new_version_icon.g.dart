@@ -47,4 +47,4 @@ final class HasNewVersionProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$hasNewVersionHash() => r'c59064f914a68646e5d36ae4aa8f2145646929bc';
+String _$hasNewVersionHash() => r'aa9c583fdb6beb21e683f3cd206c4bd8212f70d5';

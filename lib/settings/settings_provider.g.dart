@@ -335,6 +335,61 @@ abstract class _$MangaReaderModeSettings extends $Notifier<MangaReaderMode> {
   }
 }
 
+@ProviderFor(MangaReaderAutoCropSettings)
+const mangaReaderAutoCropSettingsProvider =
+    MangaReaderAutoCropSettingsProvider._();
+
+final class MangaReaderAutoCropSettingsProvider
+    extends $NotifierProvider<MangaReaderAutoCropSettings, bool> {
+  const MangaReaderAutoCropSettingsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'mangaReaderAutoCropSettingsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$mangaReaderAutoCropSettingsHash();
+
+  @$internal
+  @override
+  MangaReaderAutoCropSettings create() => MangaReaderAutoCropSettings();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$mangaReaderAutoCropSettingsHash() =>
+    r'08e6eb853cc1f757406b18253389a9e453fbdb7e';
+
+abstract class _$MangaReaderAutoCropSettings extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
 @ProviderFor(ContentLanguageSettings)
 const contentLanguageSettingsProvider = ContentLanguageSettingsProvider._();
 

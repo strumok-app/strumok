@@ -620,6 +620,12 @@ abstract class AppLocalizations {
   /// **'Page download failed'**
   String get mangaReaderPageDownloadFailed;
 
+  /// No description provided for @mangaReaderAutoCrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto crop'**
+  String get mangaReaderAutoCrop;
+
   /// No description provided for @mangaNextItem.
   ///
   /// In en, this message translates to:

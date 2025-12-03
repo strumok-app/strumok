@@ -276,6 +276,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get mangaReaderPageDownloadFailed => 'Невдалось завантажити сторінку';
 
   @override
+  String get mangaReaderAutoCrop => 'Автообрізання';
+
+  @override
   String get mangaNextItem => 'Наступний розділ';
 
   @override

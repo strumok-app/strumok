@@ -142,6 +142,12 @@ class AppPreferences {
           .firstOrNull ??
       MangaReaderMode.longStrip;
 
+  static bool get mangaReaderAutoCrop =>
+      instance.getBool("manga_reader_auto_crop") ?? true;
+
+  static set mangaReaderAutoCrop(bool enabled) =>
+      instance.setBool("manga_reader_auto_crop", enabled);
+
   static bool get videoPlayerSettingShuffleMode =>
       instance.getBool("video_player_setting_shuffle_mode") ?? false;
 

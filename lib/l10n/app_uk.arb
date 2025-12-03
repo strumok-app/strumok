@@ -87,6 +87,7 @@
     "mangaReaderModeRightToLeft": "З права на ліво",
     "mangaReaderModeLongStrip": "Довга смуга",
     "mangaReaderPageDownloadFailed": "Невдалось завантажити сторінку",
+    "mangaReaderAutoCrop": "Автообрізання",
     "mangaNextItem": "Наступний розділ",
     "mangaPrevItem": "Попредній розділ",
     "errorGoBack": "Повернутись назад",

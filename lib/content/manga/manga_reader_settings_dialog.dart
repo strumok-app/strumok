@@ -42,6 +42,8 @@ class MangaReaderSettingsDialog extends ConsumerWidget {
                 const SizedBox(height: 8),
                 const _MangaReaderModeSelector(),
                 const SizedBox(height: 8),
+                const _MangaReaderAutoCropSelector(),
+                const SizedBox(height: 8),
               ],
             ),
           ),
@@ -62,29 +64,28 @@ class _MangaReaderBackgroundSelector extends ConsumerWidget {
     return Row(
       children: [
         SizedBox(
-          width: 160,
+          width: 200,
           child: Text(
             AppLocalizations.of(context)!.mangaReaderBackground,
             style: theme.textTheme.headlineSmall,
           ),
         ),
-        Expanded(
-          child: Dropdown.button(
-            label: mangaReaderBackgroundLabel(context, currentBackground),
-            menuChildrenBulder: (focusNode) => MangaReaderBackground.values
-                .mapIndexed(
-                  (index, value) => MenuItemButton(
-                    focusNode: index == 0 ? focusNode : null,
-                    onPressed: () {
-                      ref
-                          .read(mangaReaderBackgroundSettingsProvider.notifier)
-                          .select(value);
-                    },
-                    child: Text(mangaReaderBackgroundLabel(context, value)),
-                  ),
-                )
-                .toList(),
-          ),
+        Spacer(),
+        Dropdown.button(
+          label: mangaReaderBackgroundLabel(context, currentBackground),
+          menuChildrenBulder: (focusNode) => MangaReaderBackground.values
+              .mapIndexed(
+                (index, value) => MenuItemButton(
+                  focusNode: index == 0 ? focusNode : null,
+                  onPressed: () {
+                    ref
+                        .read(mangaReaderBackgroundSettingsProvider.notifier)
+                        .select(value);
+                  },
+                  child: Text(mangaReaderBackgroundLabel(context, value)),
+                ),
+              )
+              .toList(),
         ),
       ],
     );
@@ -131,29 +132,28 @@ class MangaTranslationSelector extends ConsumerWidget {
     return Row(
       children: [
         SizedBox(
-          width: 160,
+          width: 200,
           child: Text(
             AppLocalizations.of(context)!.mangaTranslation,
             style: theme.textTheme.headlineSmall,
           ),
         ),
-        Expanded(
-          child: Dropdown.button(
-            label: currentSource ?? sources.first.description,
-            menuChildrenBulder: (focusNode) => sources
-                .mapIndexed(
-                  (index, value) => MenuItemButton(
-                    focusNode: index == 0 ? focusNode : null,
-                    onPressed: () {
-                      ref
-                          .read(collectionItemProvider(contentDetails).notifier)
-                          .setCurrentSource(value.description);
-                    },
-                    child: Text(value.description),
-                  ),
-                )
-                .toList(),
-          ),
+        Spacer(),
+        Dropdown.button(
+          label: currentSource ?? sources.first.description,
+          menuChildrenBulder: (focusNode) => sources
+              .mapIndexed(
+                (index, value) => MenuItemButton(
+                  focusNode: index == 0 ? focusNode : null,
+                  onPressed: () {
+                    ref
+                        .read(collectionItemProvider(contentDetails).notifier)
+                        .setCurrentSource(value.description);
+                  },
+                  child: Text(value.description),
+                ),
+              )
+              .toList(),
         ),
       ],
     );
@@ -171,29 +171,59 @@ class _MangaReaderModeSelector extends ConsumerWidget {
     return Row(
       children: [
         SizedBox(
-          width: 160,
+          width: 200,
           child: Text(
             AppLocalizations.of(context)!.mangaReaderMode,
             style: theme.textTheme.headlineSmall,
           ),
         ),
-        Expanded(
-          child: Dropdown.button(
-            label: mangaReaderModeLabel(context, currentMode),
-            menuChildrenBulder: (focusNode) => MangaReaderMode.values
-                .mapIndexed(
-                  (index, value) => MenuItemButton(
-                    focusNode: index == 0 ? focusNode : null,
-                    onPressed: () {
-                      ref
-                          .read(mangaReaderModeSettingsProvider.notifier)
-                          .select(value);
-                    },
-                    child: Text(mangaReaderModeLabel(context, value)),
-                  ),
-                )
-                .toList(),
+        Spacer(),
+        Dropdown.button(
+          label: mangaReaderModeLabel(context, currentMode),
+          menuChildrenBulder: (focusNode) => MangaReaderMode.values
+              .mapIndexed(
+                (index, value) => MenuItemButton(
+                  focusNode: index == 0 ? focusNode : null,
+                  onPressed: () {
+                    ref
+                        .read(mangaReaderModeSettingsProvider.notifier)
+                        .select(value);
+                  },
+                  child: Text(mangaReaderModeLabel(context, value)),
+                ),
+              )
+              .toList(),
+        ),
+      ],
+    );
+  }
+}
+
+class _MangaReaderAutoCropSelector extends ConsumerWidget {
+  const _MangaReaderAutoCropSelector();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final autoCropEnabled = ref.watch(mangaReaderAutoCropSettingsProvider);
+
+    return Row(
+      children: [
+        SizedBox(
+          width: 200,
+          child: Text(
+            AppLocalizations.of(context)!.mangaReaderAutoCrop,
+            style: theme.textTheme.headlineSmall,
           ),
+        ),
+        Spacer(),
+        Switch(
+          value: autoCropEnabled,
+          onChanged: (value) {
+            ref
+                .read(mangaReaderAutoCropSettingsProvider.notifier)
+                .toggle(value);
+          },
         ),
       ],
     );

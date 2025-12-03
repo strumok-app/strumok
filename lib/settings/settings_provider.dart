@@ -88,6 +88,19 @@ class MangaReaderModeSettings extends _$MangaReaderModeSettings {
 }
 
 @Riverpod(keepAlive: true)
+class MangaReaderAutoCropSettings extends _$MangaReaderAutoCropSettings {
+  @override
+  bool build() {
+    return AppPreferences.mangaReaderAutoCrop;
+  }
+
+  void toggle(bool enabled) {
+    AppPreferences.mangaReaderAutoCrop = enabled;
+    state = enabled;
+  }
+}
+
+@Riverpod(keepAlive: true)
 class ContentLanguageSettings extends _$ContentLanguageSettings {
   @override
   Set<ContentLanguage> build() {
