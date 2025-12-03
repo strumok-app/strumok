@@ -8,7 +8,9 @@ import 'package:strumok/content/manga/manga_provider.dart';
 import 'package:strumok/content/manga/manga_reader_controls.dart';
 import 'package:strumok/content/manga/manga_long_strip_viewer.dart';
 import 'package:strumok/content/manga/model.dart';
+import 'package:strumok/content/manga/utils.dart';
 import 'package:strumok/content/manga/widgets.dart';
+import 'package:strumok/download/manager/manga_pages_download_manager.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/fullscrean.dart';
 import 'package:strumok/utils/visual.dart';
@@ -135,6 +137,9 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
   final scrollController = ScrollController();
   late final AnimatedScrollController animetedScrollController;
 
+  // Preload N pages ahead
+  static const _preloadPagesAhead = 3;
+
   @override
   void initState() {
     ref
@@ -148,11 +153,7 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
     );
 
     _pageListenable = ValueNotifier(widget.initialPage);
-    _pageListenable.addListener(() {
-      ref
-          .read(widget.itemProvider.notifier)
-          .setCurrentPosition(_pageListenable.value);
-    });
+    _pageListenable.addListener(_onPageChanged);
 
     super.initState();
   }
@@ -168,13 +169,42 @@ class _MangaPagesReaderViewState extends ConsumerState<_MangaPagesReaderView>
     _pageListenable.dispose();
 
     _pageListenable = ValueNotifier(widget.initialPage);
-    _pageListenable.addListener(() {
-      ref
-          .read(widget.itemProvider.notifier)
-          .setCurrentPosition(_pageListenable.value);
-    });
+    _pageListenable.addListener(_onPageChanged);
 
     super.didUpdateWidget(oldWidget);
+  }
+
+  void _onPageChanged() {
+    final currentPage = _pageListenable.value;
+
+    ref.read(widget.itemProvider.notifier).setCurrentPosition(currentPage);
+
+    // Preload N pages ahead
+    _preloadPages(currentPage);
+  }
+
+  void _preloadPages(int currentPageIndex) {
+    final manager = MangaPagesDownloadManager();
+    final endIndex = (currentPageIndex + _preloadPagesAhead).clamp(
+      0,
+      widget.pages.length - 1,
+    );
+
+    for (int i = currentPageIndex + 1; i <= endIndex; i++) {
+      final page = widget.pages[i];
+
+      // Skip if already downloading or downloaded
+      if (manager.isDownloading(page.url)) {
+        continue;
+      }
+
+      // Start background download without waiting
+      manager.downloadPage(
+        pageUrl: page.url,
+        targetFile: getPageFile(page),
+        headers: page.source.headers,
+      );
+    }
   }
 
   @override

@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/download/manager/manga_pages_download_manager.dart';
-import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/settings/settings_provider.dart';
+import 'package:strumok/content/manga/utils.dart';
 
 class MangaPageImage extends ConsumerStatefulWidget {
   final MangaPageInfo page;
@@ -61,8 +61,7 @@ class _MangaPageImageState extends ConsumerState<MangaPageImage> {
       return;
     }
 
-    final path = _getPagePath();
-    final file = File(path);
+    final file = getPageFile(page);
     if (await file.exists()) {
       if (mounted) {
         setState(() {
@@ -77,8 +76,7 @@ class _MangaPageImageState extends ConsumerState<MangaPageImage> {
 
   void _startDownload(MangaPageInfo page) {
     final manager = MangaPagesDownloadManager();
-    final path = _getPagePath();
-    final file = File(path);
+    final file = getPageFile(page);
 
     final downloadStream = manager.downloadPage(
       pageUrl: page.url,
@@ -99,17 +97,6 @@ class _MangaPageImageState extends ConsumerState<MangaPageImage> {
         });
       }
     });
-  }
-
-  String _getPagePath() {
-    var page = widget.page;
-    final sourcePath = OfflineStorage().getMediaItemSourcePath(
-      page.supplier,
-      page.id,
-      page.itemNum,
-      page.source,
-    );
-    return "$sourcePath/${page.pageNum}.jpg";
   }
 
   @override
