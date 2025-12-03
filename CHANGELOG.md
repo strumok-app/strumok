@@ -1,11 +1,9 @@
-## [1.23.1](https://github.com/strumok-app/strumok/compare/v1.23.0...v1.23.1) (2025-12-01)
+## [1.23.2](https://github.com/strumok-app/strumok/compare/v1.23.1...v1.23.2) (2025-12-02)
 
 
 ### Bug Fixes
 
-* cleanup translation ([015aa90](https://github.com/strumok-app/strumok/commit/015aa90f8ef65a2019cdd2b82d8184fa2bdef86d))
-* manga page zoom ([483bccf](https://github.com/strumok-app/strumok/commit/483bccf13d117a7a8472565c8ec3e5e088001db5))
-* manga reader long stripe and fix page slector ([0c4b99b](https://github.com/strumok-app/strumok/commit/0c4b99b98db97082db69b4a4b93ebe2f0bd2d752))
+* improve manga reader ([6e194b6](https://github.com/strumok-app/strumok/commit/6e194b62c0d9b06766b1ee8b734d1dbdbfee1b65))
 
 
 
