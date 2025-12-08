@@ -1,29 +1,25 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:strumok/content/manga/intents.dart';
 import 'package:strumok/content/manga/manga_page_image.dart';
+import 'package:strumok/content/manga/manga_reader_controller.dart';
 import 'package:strumok/content/manga/model.dart';
+import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/widgets/zoom_view.dart';
 
 class MangaLongStripViewer extends StatefulWidget {
-  final List<MangaPageInfo> pages;
-  final Axis direction;
-  final ScrollController scrollController;
-  final ValueNotifier<int> pageListenable;
-  final bool hasPrevChapter;
-  final bool hasNextChapter;
+  final MangaReaderMode readerMode;
+  final MangaReaderState readerState;
 
   const MangaLongStripViewer({
     super.key,
-    required this.pages,
-    required this.direction,
-    required this.pageListenable,
-    required this.scrollController,
-    required this.hasPrevChapter,
-    required this.hasNextChapter,
+    required this.readerMode,
+    required this.readerState,
   });
 
   @override
@@ -32,7 +28,12 @@ class MangaLongStripViewer extends StatefulWidget {
 
 class _MangaLongStripViewerState extends State<MangaLongStripViewer> {
   final Set<_PageElement> _registeredPageElement = {};
-  final ZoomViewController _zoomViewController = ZoomViewController();
+
+  final _zoomViewController = ZoomViewController();
+  final _scrollController = ScrollController();
+  late final AnimatedScrollController _animatedScrollController;
+  final _focusNode = FocusNode(debugLabel: "manga_long_strip_viewer");
+
   late final ZoomViewGestureHandler _zoomViewGestureHandler;
 
   bool _scheduleUpdate = false;
@@ -49,107 +50,180 @@ class _MangaLongStripViewerState extends State<MangaLongStripViewer> {
       zoomLevels: [2, 1],
       controller: _zoomViewController,
     );
-    _page = widget.pageListenable.value;
+
+    final currentPage = widget.readerState.currentPage;
+
+    _page = currentPage.value;
     _setWidgetKeys();
 
-    widget.pageListenable.addListener(_handlePageChange);
-    widget.scrollController.addListener(_handleScroll);
+    currentPage.addListener(_handlePageChange);
+
+    _scrollController.addListener(_handleScroll);
+    _animatedScrollController = AnimatedScrollController(
+      _scrollController,
+      widget.readerMode.direction,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
 
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant MangaLongStripViewer oldWidget) {
-    oldWidget.pageListenable.removeListener(_handlePageChange);
-    oldWidget.scrollController.removeListener(_handleScroll);
+    final currentPage = widget.readerState.currentPage;
 
-    _page = widget.pageListenable.value;
+    _page = currentPage.value;
     _setWidgetKeys();
 
-    widget.pageListenable.addListener(_handlePageChange);
-    widget.scrollController.addListener(_handleScroll);
+    currentPage.addListener(_handlePageChange);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
 
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
-    widget.pageListenable.removeListener(_handlePageChange);
-    widget.scrollController.removeListener(_handleScroll);
+    final currentPage = widget.readerState.currentPage;
+
+    currentPage.removeListener(_handlePageChange);
+
+    _animatedScrollController.dispose();
+    _scrollController.dispose();
+    _focusNode.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ZoomView(
-      maxScale: 5,
-      minScale: .5,
-      zoomViewController: _zoomViewController,
-      onTap: () => Actions.invoke(context, ShowUIIntent()),
-      onDoubleTap: (details) => _zoomViewGestureHandler.onDoubleTap(details),
-      scrollAxis: widget.direction,
-      controller: widget.scrollController,
-      child: CustomScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        center: _center,
-        controller: widget.scrollController,
-        scrollDirection: widget.direction,
-        slivers: [
-          if (widget.hasPrevChapter)
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => _ChapterNav(
-                  direction: widget.direction,
-                  label: AppLocalizations.of(context)!.mangaPrevItem,
-                  onPressed: () => Actions.invoke(context, PrevChapterIntent()),
+    final direction = widget.readerMode.direction;
+
+    return MangaReaderIteractions(
+      readerMode: widget.readerMode,
+      focusNode: _focusNode,
+      shortcuts: {
+        SingleActivator(LogicalKeyboardKey.arrowLeft): ScrollUpIntent(
+          page: true,
+        ),
+        SingleActivator(LogicalKeyboardKey.arrowRight): ScrollDownIntent(
+          page: true,
+        ),
+        SingleActivator(LogicalKeyboardKey.arrowUp): ScrollUpIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowDown): ScrollDownIntent(),
+      },
+      actions: {
+        ScrollUpIntent: CallbackAction<ScrollUpIntent>(
+          onInvoke: (indent) {
+            if (indent.page) {
+              _animatedScrollController.scrollScrean(context, false);
+            } else {
+              _animatedScrollController.scroll(context, false);
+            }
+            return null;
+          },
+        ),
+        ScrollDownIntent: CallbackAction<ScrollDownIntent>(
+          onInvoke: (indent) {
+            if (indent.page) {
+              _animatedScrollController.scrollScrean(context, true);
+            } else {
+              _animatedScrollController.scroll(context, true);
+            }
+            return null;
+          },
+        ),
+        PrevMediaItemIntent: CallbackAction<PrevMediaItemIntent>(
+          onInvoke: (_) => mangaReaderController(context).prevItem(),
+        ),
+        NextMediaItemIntent: CallbackAction<NextMediaItemIntent>(
+          onInvoke: (_) => mangaReaderController(context).nextItem(),
+        ),
+      },
+      child: Builder(
+        builder: (context) {
+          return ZoomView(
+            maxScale: 5,
+            minScale: .5,
+            zoomViewController: _zoomViewController,
+            onTap: () => Actions.invoke(context, ShowUIIntent()),
+            onDoubleTap: (details) =>
+                _zoomViewGestureHandler.onDoubleTap(details),
+            scrollAxis: direction,
+            controller: _scrollController,
+            child: CustomScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              center: _center,
+              controller: _scrollController,
+              scrollDirection: direction,
+              slivers: [
+                if (widget.readerState.hasPrev)
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => _ChapterNav(
+                        direction: direction,
+                        label: AppLocalizations.of(context)!.mangaPrevItem,
+                        onPressed: () =>
+                            Actions.invoke(context, PrevMediaItemIntent()),
+                      ),
+                      childCount: 1,
+                    ),
+                  ),
+                SliverList(
+                  key: _top,
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => buildImage(_page - index - 1),
+                    childCount: _page,
+                  ),
                 ),
-                childCount: 1,
-              ),
-            ),
-          SliverList(
-            key: _top,
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => buildImage(_page - index - 1),
-              childCount: _page,
-            ),
-          ),
-          SliverList(
-            key: _center,
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => buildImage(_page + index),
-              childCount: 1,
-            ),
-          ),
-          SliverList(
-            key: _bottom,
-            delegate: SliverChildBuilderDelegate(
-              addRepaintBoundaries: true,
-              (context, index) => buildImage(_page + index + 1),
-              childCount: widget.pages.length - _page - 1,
-            ),
-          ),
-          if (widget.hasNextChapter)
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => _ChapterNav(
-                  direction: widget.direction,
-                  label: AppLocalizations.of(context)!.mangaNextItem,
-                  onPressed: () => Actions.invoke(context, NextChapterIntent()),
+                SliverList(
+                  key: _center,
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => buildImage(_page + index),
+                    childCount: 1,
+                  ),
                 ),
-                childCount: 1,
-              ),
+                SliverList(
+                  key: _bottom,
+                  delegate: SliverChildBuilderDelegate(
+                    addRepaintBoundaries: true,
+                    (context, index) => buildImage(_page + index + 1),
+                    childCount: widget.readerState.pages.length - _page - 1,
+                  ),
+                ),
+                if (widget.readerState.hasNext)
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => _ChapterNav(
+                        direction: direction,
+                        label: AppLocalizations.of(context)!.mangaNextItem,
+                        onPressed: () =>
+                            Actions.invoke(context, NextMediaItemIntent()),
+                      ),
+                      childCount: 1,
+                    ),
+                  ),
+              ],
             ),
-        ],
+          );
+        },
       ),
     );
   }
 
   void _handlePageChange() {
-    final page = widget.pageListenable.value;
+    final currentPage = widget.readerState.currentPage;
+
+    final page = currentPage.value;
 
     if (_firstVisiablePage != page) {
       setState(() {
-        widget.scrollController.jumpTo(0);
+        _scrollController.jumpTo(0);
         _page = page;
         _setWidgetKeys();
       });
@@ -176,8 +250,8 @@ class _MangaLongStripViewerState extends State<MangaLongStripViewer> {
         }
       },
       child: MangaPageImage(
-        direction: widget.direction,
-        page: widget.pages[index],
+        direction: widget.readerMode.direction,
+        page: widget.readerState.pages[index],
       ),
     );
   }
@@ -230,11 +304,11 @@ class _MangaLongStripViewerState extends State<MangaLongStripViewer> {
         }
       }
 
-      final currentPage = widget.pageListenable.value;
+      final currentPage = widget.readerState.currentPage.value;
       if (firstPage != currentPage) {
         _firstVisiablePage = firstPage;
 
-        widget.pageListenable.value = firstPage;
+        widget.readerState.currentPage.value = firstPage;
       }
     });
   }
@@ -255,21 +329,25 @@ class _ChapterNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return SizedBox(
-      width: direction == Axis.vertical ? size.width : size.width * 0.5,
-      height: direction == Axis.vertical ? size.height * 0.5 : size.height,
-      child: Align(
-        alignment: AlignmentGeometry.bottomRight,
-        child: Center(
-          child: TextButton(
-            onPressed: onPressed,
-            style: const ButtonStyle(
-              padding: WidgetStatePropertyAll(
-                EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    return Focus(
+      canRequestFocus: false,
+      descendantsAreFocusable: false,
+      child: SizedBox(
+        width: direction == Axis.vertical ? size.width : size.width * 0.5,
+        height: direction == Axis.vertical ? size.height * 0.5 : size.height,
+        child: Align(
+          alignment: AlignmentGeometry.bottomRight,
+          child: Center(
+            child: TextButton(
+              onPressed: onPressed,
+              style: const ButtonStyle(
+                padding: WidgetStatePropertyAll(
+                  EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+                textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 32)),
               ),
-              textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 32)),
+              child: Text(label),
             ),
-            child: Text(label),
           ),
         ),
       ),
@@ -321,5 +399,89 @@ class _RegisterWidgetElement extends ProxyElement {
   void unmount() {
     onMountChange(false, this);
     super.unmount();
+  }
+}
+
+class AnimatedScrollController {
+  final ScrollController _controller;
+  Axis _direction;
+
+  static const animationTime = 200;
+
+  DateTime _lastTimestamp = DateTime.timestamp();
+  Timer? _timer;
+  double _speed = 0;
+  double _distanceLeftToScroll = 0;
+  bool running = false;
+
+  AnimatedScrollController(this._controller, this._direction);
+
+  void scrollScrean(BuildContext context, bool forward) {
+    final size = MediaQuery.of(context).size;
+    final dist = _direction == Axis.vertical ? size.height : size.width;
+
+    _scrollDist(forward, dist);
+  }
+
+  void scroll(BuildContext context, bool forward) {
+    _scrollDist(forward, 200);
+  }
+
+  void _scrollDist(bool forward, double dist) {
+    _distanceLeftToScroll = dist;
+    _speed = _distanceLeftToScroll / animationTime;
+
+    if (!forward) {
+      _speed = -_speed;
+    }
+
+    _startScrolling();
+  }
+
+  void stop() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  set direction(Axis d) {
+    stop();
+    _direction = d;
+  }
+
+  void _startScrolling() {
+    if (_timer != null) {
+      return;
+    }
+
+    _lastTimestamp = DateTime.timestamp();
+    _timer = Timer.periodic(Duration(milliseconds: 16), _scroll);
+  }
+
+  void _scroll(Timer timer) {
+    final timestamp = DateTime.timestamp();
+    final timeElapsed = timestamp.difference(_lastTimestamp).inMilliseconds;
+    _lastTimestamp = timestamp;
+
+    final dist = _speed * timeElapsed;
+    double targetPos = _controller.offset + dist;
+
+    if (targetPos < _controller.position.minScrollExtent) {
+      targetPos = _controller.position.minScrollExtent;
+    } else if (targetPos > _controller.position.maxScrollExtent) {
+      targetPos = _controller.position.maxScrollExtent;
+    }
+
+    _controller.jumpTo(targetPos);
+
+    _distanceLeftToScroll -= dist.abs();
+
+    if (_distanceLeftToScroll <= 0) {
+      stop();
+    }
+  }
+
+  void dispose() {
+    _timer?.cancel();
+    _timer = null;
   }
 }

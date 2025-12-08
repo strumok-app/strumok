@@ -1,6 +1,9 @@
+import 'package:flutter/services.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
+import 'package:strumok/content/manga/manga_reader_controller.dart';
+import 'package:strumok/content/manga/manga_reader_controls.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/download/media_item_download.dart';
@@ -8,7 +11,10 @@ import 'package:strumok/settings/settings_provider.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:strumok/utils/fullscrean.dart';
 import 'package:strumok/utils/nav.dart';
+
+import 'intents.dart';
 
 const mangaPageAspectRatio = 1.42;
 
@@ -205,6 +211,53 @@ class ManagPageAspectContainer extends StatelessWidget {
             : size.width * mangaPageAspectRatio,
       ),
       color: color,
+      child: child,
+    );
+  }
+}
+
+class MangaReaderIteractions extends StatelessWidget {
+  final MangaReaderMode readerMode;
+  final Map<ShortcutActivator, Intent>? shortcuts;
+  final Map<Type, Action<Intent>>? actions;
+  final Widget child;
+  final FocusNode? focusNode;
+
+  const MangaReaderIteractions({
+    super.key,
+    this.shortcuts,
+    this.actions,
+    this.focusNode,
+    required this.readerMode,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FocusableActionDetector(
+      focusNode: focusNode,
+      shortcuts: {
+        SingleActivator(LogicalKeyboardKey.select): ShowUIIntent(),
+        SingleActivator(LogicalKeyboardKey.space): ShowUIIntent(),
+        SingleActivator(LogicalKeyboardKey.enter): ShowUIIntent(),
+        SingleActivator(LogicalKeyboardKey.keyF): ToggleFullscreanIntent(),
+        if (shortcuts != null) ...shortcuts!,
+      },
+      actions: {
+        ShowUIIntent: CallbackAction<ShowUIIntent>(
+          onInvoke: (_) {
+            return Navigator.of(context).push(
+              MangaReaderControlsRoute(
+                mangaReaderController: mangaReaderController(context),
+              ),
+            );
+          },
+        ),
+        ToggleFullscreanIntent: CallbackAction<ToggleFullscreanIntent>(
+          onInvoke: (_) => toggleFullscreen(),
+        ),
+        if (actions != null) ...actions!,
+      },
       child: child,
     );
   }

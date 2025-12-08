@@ -7,6 +7,8 @@ part 'collection_item_model.g.dart';
 
 enum MediaCollectionItemStatus { none, latter, inProgress, complete, onHold }
 
+typedef ChangeCollectionCurrentItemCallback = void Function(int);
+
 DateTime? _dateTimeFormMilli(dynamic value) {
   if (value is int) {
     return DateTime.fromMillisecondsSinceEpoch(value);

@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/content/manga/intents.dart';
 import 'package:strumok/content/manga/manga_page_image.dart';
+import 'package:strumok/content/manga/manga_reader_controller.dart';
 import 'package:strumok/content/manga/model.dart';
+import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/utils/matrix.dart';
+import 'package:strumok/utils/visual.dart';
 
 class MangaPagedViewer extends ConsumerStatefulWidget {
-  final List<MangaPageInfo> pages;
-  final Axis direction;
-  final ValueNotifier<int> pageListenable;
+  final MangaReaderMode readerMode;
+  final MangaReaderState readerState;
 
   const MangaPagedViewer({
     super.key,
-    required this.pages,
-    required this.direction,
-    required this.pageListenable,
+    required this.readerMode,
+    required this.readerState,
   });
 
   @override
@@ -23,44 +25,54 @@ class MangaPagedViewer extends ConsumerStatefulWidget {
 
 class _PagedViewState extends ConsumerState<MangaPagedViewer> {
   final _transformationController = TransformationController();
+  final _focusNode = FocusNode(debugLabel: "manga_paged_viewer");
   late PageController _pageController;
   bool _scaling = false;
 
   @override
   void initState() {
-    _pageController = PageController(initialPage: widget.pageListenable.value);
+    final currentPage = widget.readerState.currentPage;
+
+    _pageController = PageController(initialPage: currentPage.value);
     _pageController.addListener(_hadlePageContoller);
-    widget.pageListenable.addListener(_onPageChanged);
+
+    currentPage.addListener(_onPageChanged);
     _transformationController.addListener(_handleTransformationChange);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
 
     super.initState();
   }
 
-  void _hadlePageContoller() {
-    final page = _pageController.page!;
-
-    if (page.floor() == page && widget.pageListenable.value != page) {
-      widget.pageListenable.value = page.toInt();
-    }
-  }
-
   @override
   void didUpdateWidget(covariant MangaPagedViewer oldWidget) {
-    oldWidget.pageListenable.removeListener(_onPageChanged);
+    final currentPage = widget.readerState.currentPage;
+    currentPage.addListener(_onPageChanged);
 
-    widget.pageListenable.addListener(_onPageChanged);
-    _pageController.jumpToPage(widget.pageListenable.value);
+    _pageController.removeListener(_hadlePageContoller);
+    _pageController.jumpToPage(currentPage.value);
+    _pageController.addListener(_hadlePageContoller);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
 
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
-    widget.pageListenable.removeListener(_onPageChanged);
+    final currentPage = widget.readerState.currentPage;
+
+    currentPage.removeListener(_onPageChanged);
     _transformationController.removeListener(_handleTransformationChange);
 
     _pageController.dispose();
     _transformationController.dispose();
+    _focusNode.dispose();
+
     super.dispose();
   }
 
@@ -75,10 +87,22 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
     }
   }
 
-  void _onPageChanged() {
-    final page = widget.pageListenable.value;
+  void _hadlePageContoller() {
+    final currentPage = widget.readerState.currentPage;
+    final page = _pageController.page!;
 
-    if (page >= widget.pages.length) {
+    if (page.floor() == page && currentPage.value != page) {
+      currentPage.value = page.toInt();
+    }
+  }
+
+  void _onPageChanged() {
+    final currentPage = widget.readerState.currentPage;
+    final pages = widget.readerState.pages;
+
+    final page = currentPage.value;
+
+    if (page >= pages.length) {
       return;
     }
 
@@ -91,28 +115,46 @@ class _PagedViewState extends ConsumerState<MangaPagedViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return _ReaderGestureDetector(
-      direction: widget.direction,
-      transformationController: _transformationController,
-      child: InteractiveViewer(
-        maxScale: 5,
-        minScale: 1,
-        panEnabled: _scaling,
-        scaleEnabled: _scaling,
+    final direction = widget.readerMode.direction;
+    final pages = widget.readerState.pages;
+
+    return MangaReaderIteractions(
+      readerMode: widget.readerMode,
+      focusNode: _focusNode,
+      shortcuts: {
+        SingleActivator(LogicalKeyboardKey.arrowLeft): PrevPageIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowRight): NextPageIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowUp): PrevPageIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowDown): NextPageIntent(),
+      },
+      actions: {
+        PrevPageIntent: CallbackAction<PrevPageIntent>(
+          onInvoke: (_) => mangaReaderController(context).prevPage(),
+        ),
+        NextPageIntent: CallbackAction<NextPageIntent>(
+          onInvoke: (_) => mangaReaderController(context).nextPage(),
+        ),
+      },
+      child: _ReaderGestureDetector(
+        direction: direction,
         transformationController: _transformationController,
-        child: PageView.builder(
-          controller: _pageController,
-          physics: _scaling
-              ? const NeverScrollableScrollPhysics()
-              : const BouncingScrollPhysics(),
-          itemBuilder: (context, index) {
-            return MangaPageImage(
-              direction: widget.direction,
-              page: widget.pages[index],
-            );
-          },
-          itemCount: widget.pages.length,
-          scrollDirection: widget.direction,
+        child: InteractiveViewer(
+          maxScale: 5,
+          minScale: 1,
+          panEnabled: _scaling,
+          scaleEnabled: _scaling,
+          transformationController: _transformationController,
+          child: PageView.builder(
+            controller: _pageController,
+            physics: _scaling
+                ? const NeverScrollableScrollPhysics()
+                : const BouncingScrollPhysics(),
+            itemBuilder: (context, index) {
+              return MangaPageImage(direction: direction, page: pages[index]);
+            },
+            itemCount: pages.length,
+            scrollDirection: direction,
+          ),
         ),
       ),
     );
@@ -178,10 +220,14 @@ class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
       return;
     }
 
-    if (_isInZone(1, 3, _lastTapDetails!.globalPosition)) {
-      Actions.invoke(context, const PrevPageIntent());
-    } else if (_isInZone(3, 3, _lastTapDetails!.globalPosition)) {
-      Actions.invoke(context, const NextPageIntent());
+    if (isMobile(context)) {
+      if (_isInZone(1, 3, _lastTapDetails!.globalPosition)) {
+        Actions.invoke(context, const PrevPageIntent());
+      } else if (_isInZone(3, 3, _lastTapDetails!.globalPosition)) {
+        Actions.invoke(context, const NextPageIntent());
+      } else {
+        _toggleUI();
+      }
     } else {
       _toggleUI();
     }

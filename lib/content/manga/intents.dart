@@ -8,20 +8,22 @@ class PrevPageIntent extends Intent {
   const PrevPageIntent();
 }
 
-class NextChapterIntent extends Intent {
-  const NextChapterIntent();
+class NextMediaItemIntent extends Intent {
+  const NextMediaItemIntent();
 }
 
-class PrevChapterIntent extends Intent {
-  const PrevChapterIntent();
+class PrevMediaItemIntent extends Intent {
+  const PrevMediaItemIntent();
 }
 
-class ScrollDownPageIntent extends Intent {
-  const ScrollDownPageIntent();
+class ScrollDownIntent extends Intent {
+  final bool page;
+  const ScrollDownIntent({this.page = false});
 }
 
-class ScrollUpPageIntent extends Intent {
-  const ScrollUpPageIntent();
+class ScrollUpIntent extends Intent {
+  final bool page;
+  const ScrollUpIntent({this.page = false});
 }
 
 class ShowUIIntent extends Intent {

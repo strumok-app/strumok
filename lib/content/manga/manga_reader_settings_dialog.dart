@@ -1,6 +1,5 @@
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
-import 'package:strumok/content/manga/manga_provider.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/settings/settings_provider.dart';
@@ -104,17 +103,18 @@ class MangaTranslationSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentSource = ref
-        .watch(collectionItemCurrentSourceNameProvider(contentDetails))
-        .value;
+    return SizedBox();
+    // final currentSource = ref
+    //     .watch(collectionItemCurrentSourceNameProvider(contentDetails))
+    //     .value;
 
-    return ref
-            .watch(mangaMediaItemSourcesProvider(contentDetails, mediaItems))
-            .whenOrNull(
-              data: (value) =>
-                  _renderSources(context, ref, value, currentSource),
-            ) ??
-        const SizedBox.shrink();
+    // return ref
+    //         .watch(mangaMediaItemSourcesProvider(contentDetails, mediaItems))
+    //         .whenOrNull(
+    //           data: (value) =>
+    //               _renderSources(context, ref, value, currentSource),
+    //         ) ??
+    //     const SizedBox.shrink();
   }
 
   Widget _renderSources(

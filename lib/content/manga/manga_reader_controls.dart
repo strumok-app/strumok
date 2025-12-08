@@ -1,5 +1,6 @@
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
+import 'package:strumok/content/manga/manga_reader_controller.dart';
 import 'package:strumok/content/manga/manga_reader_settings_dialog.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/utils/fullscrean.dart';
@@ -10,15 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/utils/visual.dart';
 
 class MangaReaderControlsRoute<T> extends PopupRoute<T> {
-  final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
-  final ValueNotifier<int> pagesController;
+  final MangaReaderController mangaReaderController;
 
-  MangaReaderControlsRoute({
-    required this.contentDetails,
-    required this.mediaItems,
-    required this.pagesController,
-  });
+  MangaReaderControlsRoute({required this.mangaReaderController});
 
   @override
   Color? get barrierColor => Colors.transparent;
@@ -38,10 +33,9 @@ class MangaReaderControlsRoute<T> extends PopupRoute<T> {
     return FadeTransition(
       opacity: animation,
       child: SafeArea(
-        child: MangaReaderControls(
-          contentDetails: contentDetails,
-          mediaItems: mediaItems,
-          pagesController: pagesController,
+        child: MangaReaderControllerInheritedWidget(
+          controller: mangaReaderController,
+          child: MangaReaderControls(),
         ),
       ),
     );
@@ -49,16 +43,7 @@ class MangaReaderControlsRoute<T> extends PopupRoute<T> {
 }
 
 class MangaReaderControls extends StatelessWidget {
-  final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
-  final ValueNotifier<int> pagesController;
-
-  const MangaReaderControls({
-    super.key,
-    required this.contentDetails,
-    required this.mediaItems,
-    required this.pagesController,
-  });
+  const MangaReaderControls({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -70,16 +55,9 @@ class MangaReaderControls extends StatelessWidget {
         color: Colors.transparent,
         child: Column(
           children: [
-            MangaReaderControlTopBar(
-              contentDetails: contentDetails,
-              mediaItems: mediaItems,
-            ),
+            MangaReaderControlTopBar(),
             const Spacer(),
-            MangaReaderControlBottomBar(
-              contentDetails: contentDetails,
-              mediaItems: mediaItems,
-              pagesController: pagesController,
-            ),
+            MangaReaderControlBottomBar(),
           ],
         ),
       ),
@@ -88,23 +66,17 @@ class MangaReaderControls extends StatelessWidget {
 }
 
 class MangaReaderControlTopBar extends ConsumerWidget {
-  final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
-
-  const MangaReaderControlTopBar({
-    super.key,
-    required this.contentDetails,
-    required this.mediaItems,
-  });
+  const MangaReaderControlTopBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final mobile = isMobile(context);
 
-    final item = ref
-        .watch(collectionItemCurrentItemProvider(contentDetails))
-        .value;
+    final controller = mangaReaderController(context);
+    final contentDetails = controller.contentDetails;
+    final mediaItems = controller.mediaItems;
+    final currentItem = controller.value.currentItem;
 
     return Container(
       color: Colors.black45,
@@ -131,7 +103,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
               child: Text(
                 [
                   contentDetails.title,
-                  if (item != null) mediaItems[item].title,
+                  if (currentItem != null) mediaItems[currentItem].title,
                 ].join(" - "),
                 style: theme.textTheme.titleMedium!.copyWith(
                   color: Colors.white,
@@ -141,55 +113,38 @@ class MangaReaderControlTopBar extends ConsumerWidget {
               ),
             ),
             const Spacer(),
-            _renderVolumesBotton(context, ref),
+            VolumesButton(
+              contentDetails: contentDetails,
+              mediaItems: mediaItems,
+              onSelect: (item) {
+                ref
+                    .read(collectionItemProvider(contentDetails).notifier)
+                    .setCurrentItem(item.number);
+                Navigator.of(context).pop();
+              },
+              autofocus: true,
+              color: Colors.white,
+            ),
           ],
         ),
       ),
     );
   }
-
-  Widget _renderVolumesBotton(BuildContext context, WidgetRef ref) {
-    return VolumesButton(
-      contentDetails: contentDetails,
-      mediaItems: mediaItems,
-      onSelect: (item) {
-        ref
-            .read(collectionItemProvider(contentDetails).notifier)
-            .setCurrentItem(item.number);
-        Navigator.of(context).pop();
-      },
-      autofocus: true,
-      color: Colors.white,
-    );
-  }
 }
 
 class MangaReaderControlBottomBar extends ConsumerWidget {
-  final List<ContentMediaItem> mediaItems;
-  final ContentDetails contentDetails;
-  final ValueNotifier<int> pagesController;
-
-  const MangaReaderControlBottomBar({
-    super.key,
-    required this.contentDetails,
-    required this.mediaItems,
-    required this.pagesController,
-  });
+  const MangaReaderControlBottomBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    final provider = collectionItemCurrentMediaItemPositionProvider(
-      contentDetails,
-    );
-    final position = ref.watch(provider).value;
+    final controller = mangaReaderController(context);
+    final contentDetails = controller.contentDetails;
+    final mediaItems = controller.mediaItems;
+    final mangaReaderState = controller.value;
 
-    if (position == null) {
-      return const SizedBox.shrink();
-    }
-
-    final pageNumbers = position.length;
+    final pageNumbers = mangaReaderState.pages.length;
 
     return MediaQuery(
       data: MediaQuery.of(
@@ -203,7 +158,7 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               ValueListenableBuilder(
-                valueListenable: pagesController,
+                valueListenable: mangaReaderState.currentPage,
                 builder: (context, pageIndex, child) {
                   final pageNumber = pageIndex + 1;
                   return Text(
@@ -218,7 +173,7 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
                   ? Expanded(
                       child: MangaPagesSlider(
                         pageNumbers: pageNumbers,
-                        pagesController: pagesController,
+                        currentPage: mangaReaderState.currentPage,
                       ),
                     )
                   : Spacer(),
@@ -245,12 +200,12 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
 
 class MangaPagesSlider extends StatefulWidget {
   final int pageNumbers;
-  final ValueNotifier<int> pagesController;
+  final ValueNotifier<int> currentPage;
 
   const MangaPagesSlider({
     super.key,
     required this.pageNumbers,
-    required this.pagesController,
+    required this.currentPage,
   });
 
   @override
@@ -262,7 +217,7 @@ class _MangaPagesSliderState extends State<MangaPagesSlider> {
 
   @override
   Widget build(BuildContext context) {
-    final pageIndex = tragetPage ?? widget.pagesController.value;
+    final pageIndex = tragetPage ?? widget.currentPage.value;
     final pageNumber = pageIndex + 1;
 
     return SliderTheme(
@@ -279,7 +234,7 @@ class _MangaPagesSliderState extends State<MangaPagesSlider> {
           });
         },
         onChangeEnd: (value) {
-          widget.pagesController.value = value.round();
+          widget.currentPage.value = value.round();
           setState(() {
             tragetPage = null;
           });

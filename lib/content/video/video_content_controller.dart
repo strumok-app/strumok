@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
-// import 'package:fvp/fvp.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
@@ -15,8 +14,6 @@ import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/trace.dart';
 import 'package:strumok/video_backend/video_backend.dart';
 import 'package:subtitle/subtitle.dart';
-
-typedef ChangeCollectionCurrentItemCallback = void Function(int);
 
 class VideoContentController {
   static final SimpleCache<SubCacheKey, SubtitleController> _subsCache =
@@ -60,6 +57,16 @@ class VideoContentController {
     required this.mediaItems,
     required this.changeCollectionCurentItem,
   });
+
+  void dispose() {
+    _disposed = true;
+    _subtitleWorker.dispose();
+    _currentVideoBackend?.dispose();
+    _videoBackendStateStreamController.close();
+    videoBackend.dispose();
+    subtitleController.dispose();
+    subtitlePaddings.dispose();
+  }
 
   void playOrPause() {
     if (_disposed) return;
@@ -173,16 +180,6 @@ class VideoContentController {
     if (backend?.value.isInitialized == true) {
       backend!.setEquilizer(bands);
     }
-  }
-
-  void dispose() {
-    _disposed = true;
-    _subtitleWorker.dispose();
-    _currentVideoBackend?.dispose();
-    _videoBackendStateStreamController.close();
-    videoBackend.dispose();
-    subtitleController.dispose();
-    subtitlePaddings.dispose();
   }
 
   Future<void> update(MediaCollectionItem collectionItem) async {
