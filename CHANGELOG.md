@@ -1,9 +1,9 @@
-## [1.24.2](https://github.com/strumok-app/strumok/compare/v1.24.1...v1.24.2) (2025-12-09)
+## [1.24.3](https://github.com/strumok-app/strumok/compare/v1.24.2...v1.24.3) (2025-12-09)
 
 
 ### Bug Fixes
 
-* Rework manga reader. Again... ([d8e0415](https://github.com/strumok-app/strumok/commit/d8e0415818ca215c73a0d237b429ce8750ff4d01))
+* small manga reader fix ([1bf0fa5](https://github.com/strumok-app/strumok/commit/1bf0fa51f5996b51f774babb4dd768363f480a99))
 
 
 
