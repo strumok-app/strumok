@@ -47,18 +47,34 @@ class MangaReaderControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = mangaReaderController(context);
+
     return GestureDetector(
       onTapUp: (details) {
         Navigator.of(context).pop();
       },
       child: Material(
         color: Colors.transparent,
-        child: Column(
-          children: [
-            MangaReaderControlTopBar(),
-            const Spacer(),
-            MangaReaderControlBottomBar(),
-          ],
+        child: ValueListenableBuilder(
+          valueListenable: controller,
+          builder:
+              (BuildContext context, MangaReaderState value, Widget? child) {
+                return Column(
+                  children: [
+                    MangaReaderControlTopBar(
+                      contentDetails: controller.contentDetails,
+                      mediaItems: controller.mediaItems,
+                      mangaReaderState: value,
+                    ),
+                    const Spacer(),
+                    MangaReaderControlBottomBar(
+                      contentDetails: controller.contentDetails,
+                      mediaItems: controller.mediaItems,
+                      mangaReaderState: value,
+                    ),
+                  ],
+                );
+              },
         ),
       ),
     );
@@ -66,17 +82,23 @@ class MangaReaderControls extends StatelessWidget {
 }
 
 class MangaReaderControlTopBar extends ConsumerWidget {
-  const MangaReaderControlTopBar({super.key});
+  final ContentDetails contentDetails;
+  final List<ContentMediaItem> mediaItems;
+  final MangaReaderState mangaReaderState;
+
+  const MangaReaderControlTopBar({
+    super.key,
+    required this.contentDetails,
+    required this.mediaItems,
+    required this.mangaReaderState,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final mobile = isMobile(context);
 
-    final controller = mangaReaderController(context);
-    final contentDetails = controller.contentDetails;
-    final mediaItems = controller.mediaItems;
-    final currentItem = controller.value.currentItem;
+    final currentItem = mangaReaderState.currentItem;
 
     return Container(
       color: Colors.black45,
@@ -133,16 +155,20 @@ class MangaReaderControlTopBar extends ConsumerWidget {
 }
 
 class MangaReaderControlBottomBar extends ConsumerWidget {
-  const MangaReaderControlBottomBar({super.key});
+  final ContentDetails contentDetails;
+  final List<ContentMediaItem> mediaItems;
+  final MangaReaderState mangaReaderState;
+
+  const MangaReaderControlBottomBar({
+    super.key,
+    required this.contentDetails,
+    required this.mediaItems,
+    required this.mangaReaderState,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-
-    final controller = mangaReaderController(context);
-    final contentDetails = controller.contentDetails;
-    final mediaItems = controller.mediaItems;
-    final mangaReaderState = controller.value;
 
     final pageNumbers = mangaReaderState.pages.length;
 
@@ -157,18 +183,19 @@ class MangaReaderControlBottomBar extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              ValueListenableBuilder(
-                valueListenable: mangaReaderState.currentPage,
-                builder: (context, pageIndex, child) {
-                  final pageNumber = pageIndex + 1;
-                  return Text(
-                    "$pageNumber / $pageNumbers",
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                      color: Colors.white,
-                    ),
-                  );
-                },
-              ),
+              if (pageNumbers > 1)
+                ValueListenableBuilder(
+                  valueListenable: mangaReaderState.currentPage,
+                  builder: (context, pageIndex, child) {
+                    final pageNumber = pageIndex + 1;
+                    return Text(
+                      "$pageNumber / $pageNumbers",
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        color: Colors.white,
+                      ),
+                    );
+                  },
+                ),
               pageNumbers > 1
                   ? Expanded(
                       child: MangaPagesSlider(

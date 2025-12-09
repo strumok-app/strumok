@@ -103,24 +103,33 @@ class MangaTranslationSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox();
-    // final currentSource = ref
-    //     .watch(collectionItemCurrentSourceNameProvider(contentDetails))
-    //     .value;
+    final currentItem = ref.watch(collectionItemProvider(contentDetails)).value;
 
-    // return ref
-    //         .watch(mangaMediaItemSourcesProvider(contentDetails, mediaItems))
-    //         .whenOrNull(
-    //           data: (value) =>
-    //               _renderSources(context, ref, value, currentSource),
-    //         ) ??
-    //     const SizedBox.shrink();
+    if (currentItem == null) {
+      return SizedBox.shrink();
+    }
+
+    final mediaItem = mediaItems[currentItem.currentItem];
+
+    return FutureBuilder(
+      future: Future.value(mediaItem.sources),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.hasError) {
+          return SizedBox.shrink();
+        }
+
+        final sources = snapshot.data!;
+        final currentSource = currentItem.currentSourceName;
+
+        return _renderSources(context, ref, sources, currentSource);
+      },
+    );
   }
 
   Widget _renderSources(
     BuildContext context,
     WidgetRef ref,
-    List<MangaMediaItemSource> sources,
+    List<ContentMediaItemSource> sources,
     String? currentSource,
   ) {
     if (sources.isEmpty) {

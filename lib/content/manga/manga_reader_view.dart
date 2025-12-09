@@ -102,7 +102,10 @@ class _MangaReaderViewState extends ConsumerState<MangaReaderView> {
         valueListenable: controller,
         builder: (context, state, _) {
           if (!state.initialized) {
-            return SizedBox.shrink();
+            return _UninitilizedView(
+              readerMode: readerMode,
+              readerState: state,
+            );
           }
 
           return readerMode.scroll
@@ -114,41 +117,47 @@ class _MangaReaderViewState extends ConsumerState<MangaReaderView> {
   }
 }
 
-class _NoPagesView extends StatelessWidget {
-  final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+class _UninitilizedView extends StatefulWidget {
+  final MangaReaderMode readerMode;
+  final MangaReaderState readerState;
 
-  const _NoPagesView({required this.contentDetails, required this.mediaItems});
+  const _UninitilizedView({
+    required this.readerMode,
+    required this.readerState,
+  });
+
+  @override
+  State<_UninitilizedView> createState() => _UninitilizedViewState();
+}
+
+class _UninitilizedViewState extends State<_UninitilizedView> {
+  final _focusNode = FocusNode(debugLabel: "_UninitilizedViewState");
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            AppLocalizations.of(context)!.mangaUnableToLoadPage,
-            style: theme.textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const BackNavButton(),
-              const SizedBox(width: 8),
-              MangaSettingsButton(
-                contentDetails: contentDetails,
-                mediaItems: mediaItems,
-              ),
-              const SizedBox(width: 8),
-              VolumesButton(
-                contentDetails: contentDetails,
-                mediaItems: mediaItems,
-              ),
-            ],
-          ),
-        ],
+    return MangaReaderIteractions(
+      focusNode: _focusNode,
+      readerMode: widget.readerMode,
+      child: Center(
+        child:
+            widget.readerState.error == null || widget.readerState.pages.isEmpty
+            ? CircularProgressIndicator()
+            : Text(AppLocalizations.of(context)!.mangaUnableToLoadPage),
       ),
     );
   }
