@@ -23,7 +23,7 @@ class VideoContentDesktopControls extends StatefulWidget {
 
 class _VideoContentDesktopControlsState
     extends State<VideoContentDesktopControls> {
-  static final controlsHoverDuration = const Duration(seconds: 3);
+  static final controlsHoverDuration = const Duration(seconds: 10);
   static const subtitleVerticalShiftOffset = 96.0;
   static const buttonBarHeight = 56.0;
   static const pointerEventsPad = 100;

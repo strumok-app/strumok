@@ -5,6 +5,7 @@ import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/utils.dart';
 import 'package:strumok/download/manager/manga_pages_download_manager.dart';
+import 'package:strumok/download/offline_storage.dart';
 
 class MangaReaderState {
   bool initialized;
@@ -124,6 +125,7 @@ class MangaReaderController extends ValueNotifier<MangaReaderState> {
       _preloadPages();
     });
 
+    OfflineStorage().storeDetails(contentDetails);
     _preloadPages();
   }
 
