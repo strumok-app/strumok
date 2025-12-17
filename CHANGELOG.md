@@ -1,9 +1,9 @@
-## [1.24.4](https://github.com/strumok-app/strumok/compare/v1.24.3...v1.24.4) (2025-12-16)
+## [1.24.5](https://github.com/strumok-app/strumok/compare/v1.24.4...v1.24.5) (2025-12-17)
 
 
 ### Bug Fixes
 
-* empty downlod items ([286e887](https://github.com/strumok-app/strumok/commit/286e887cad6504ba783f509f42b637b3796fdc54))
+* small ui fix ([b416bff](https://github.com/strumok-app/strumok/commit/b416bff9c6dd9a38f556543c1fd9c286586d7e63))
 
 
 
