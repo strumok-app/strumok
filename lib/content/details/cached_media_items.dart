@@ -47,10 +47,6 @@ class _CachedMediaItemsState extends State<CachedMediaItems> {
       return const SizedBox(height: 40);
     }
 
-    if (mediaItems!.isEmpty) {
-      return const SizedBox(height: 40);
-    }
-
     if (mediaItems == null) {
       return const SizedBox(
         height: 40,
@@ -60,6 +56,10 @@ class _CachedMediaItemsState extends State<CachedMediaItems> {
           child: CircularProgressIndicator(),
         ),
       );
+    }
+
+    if (mediaItems!.isEmpty) {
+      return const SizedBox(height: 40);
     }
 
     return widget.builder(context, mediaItems!);
