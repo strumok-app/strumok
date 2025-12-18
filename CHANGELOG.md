@@ -1,9 +1,9 @@
-## [1.24.5](https://github.com/strumok-app/strumok/compare/v1.24.4...v1.24.5) (2025-12-17)
+## [1.24.6](https://github.com/strumok-app/strumok/compare/v1.24.5...v1.24.6) (2025-12-18)
 
 
 ### Bug Fixes
 
-* small ui fix ([b416bff](https://github.com/strumok-app/strumok/commit/b416bff9c6dd9a38f556543c1fd9c286586d7e63))
+* downsloads queue and manga reader glitch ([66dab68](https://github.com/strumok-app/strumok/commit/66dab68c396b5d46caab0b93297fb45c8084de93))
 
 
 
