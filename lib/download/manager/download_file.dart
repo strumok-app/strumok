@@ -61,6 +61,7 @@ void donwloadFile(
       if (cancelToken.isCanceled) {
         await sink.close();
         await partialFile.delete();
+        onDone(DownloadStatus.canceled);
         return;
       }
 

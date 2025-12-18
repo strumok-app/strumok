@@ -4,8 +4,17 @@ import 'package:strumok/download/manager/manager.dart';
 part 'download_queue_provider.g.dart';
 
 @riverpod
-Stream<DownloadTask> downloadsUpdateStream(Ref ref) {
-  return DownloadManager().downloadsUpdate;
+class DownloadsUpdateStream extends _$DownloadsUpdateStream {
+  @override
+  Stream<DownloadTask> build() => DownloadManager().downloadsUpdate;
+
+  @override
+  bool updateShouldNotify(
+    AsyncValue<DownloadTask> previous,
+    AsyncValue<DownloadTask> next,
+  ) {
+    return true;
+  }
 }
 
 @riverpod

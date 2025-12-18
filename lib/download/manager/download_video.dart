@@ -82,6 +82,7 @@ void downloadVideo(
             await _downloadHLSStream(
               request,
               updateProgress,
+              onDone,
               cancelToken,
               selectedStream,
             );
@@ -99,6 +100,7 @@ void downloadVideo(
         await _downloadStreamSegments(
           request,
           updateProgress,
+          onDone,
           cancelToken,
           master,
         );
@@ -127,6 +129,7 @@ void downloadVideo(
 Future<void> _downloadHLSStream(
   VideoDownloadRequest request,
   DownloadProgressCallback updateProgress,
+  DownloadDoneCallback onDone,
   CancelToken cancelToken,
   HLSStream stream,
 ) async {
@@ -148,6 +151,7 @@ Future<void> _downloadHLSStream(
   await _downloadStreamSegments(
     request,
     updateProgress,
+    onDone,
     cancelToken,
     streamHls,
   );
@@ -156,6 +160,7 @@ Future<void> _downloadHLSStream(
 Future<void> _downloadStreamSegments(
   VideoDownloadRequest request,
   DownloadProgressCallback updateProgress,
+  DownloadDoneCallback onDone,
   CancelToken cancelToken,
   HLSManifest manifest,
 ) async {
@@ -178,6 +183,7 @@ Future<void> _downloadStreamSegments(
     if (cancelToken.isCanceled) {
       await sink.close();
       await partialFile.delete();
+      onDone(DownloadStatus.canceled);
       return;
     }
 

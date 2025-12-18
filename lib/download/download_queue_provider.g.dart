@@ -9,17 +9,11 @@ part of 'download_queue_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(downloadsUpdateStream)
+@ProviderFor(DownloadsUpdateStream)
 const downloadsUpdateStreamProvider = DownloadsUpdateStreamProvider._();
 
 final class DownloadsUpdateStreamProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<DownloadTask>,
-          DownloadTask,
-          Stream<DownloadTask>
-        >
-    with $FutureModifier<DownloadTask>, $StreamProvider<DownloadTask> {
+    extends $StreamNotifierProvider<DownloadsUpdateStream, DownloadTask> {
   const DownloadsUpdateStreamProvider._()
     : super(
         from: null,
@@ -36,18 +30,30 @@ final class DownloadsUpdateStreamProvider
 
   @$internal
   @override
-  $StreamProviderElement<DownloadTask> $createElement(
-    $ProviderPointer pointer,
-  ) => $StreamProviderElement(pointer);
-
-  @override
-  Stream<DownloadTask> create(Ref ref) {
-    return downloadsUpdateStream(ref);
-  }
+  DownloadsUpdateStream create() => DownloadsUpdateStream();
 }
 
 String _$downloadsUpdateStreamHash() =>
-    r'12147d9bff5ba44469762c95043ace37e8b4fa24';
+    r'9eb3fb78d49656d375cc5ca0376cad4c718935e0';
+
+abstract class _$DownloadsUpdateStream extends $StreamNotifier<DownloadTask> {
+  Stream<DownloadTask> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<DownloadTask>, DownloadTask>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<DownloadTask>, DownloadTask>,
+              AsyncValue<DownloadTask>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
 @ProviderFor(downloadTasks)
 const downloadTasksProvider = DownloadTasksProvider._();

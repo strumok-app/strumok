@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:strumok/utils/text.dart';
@@ -56,7 +57,8 @@ class DownloadInfo {
 }
 
 @JsonSerializable(explicitToJson: true)
-class VideoDownloadRequest implements DownloadRequest, ContentDownloadRequest {
+class VideoDownloadRequest extends Equatable
+    implements DownloadRequest, ContentDownloadRequest {
   @override
   final String id;
 
@@ -71,7 +73,7 @@ class VideoDownloadRequest implements DownloadRequest, ContentDownloadRequest {
   @override
   final DownloadType type = DownloadType.video;
 
-  VideoDownloadRequest({
+  const VideoDownloadRequest({
     required this.id,
     required this.url,
     required this.fileSrc,
@@ -88,10 +90,14 @@ class VideoDownloadRequest implements DownloadRequest, ContentDownloadRequest {
 
   @override
   Map<String, dynamic> toJson() => _$VideoDownloadRequestToJson(this);
+
+  @override
+  List<Object?> get props => [id, type];
 }
 
 @JsonSerializable(explicitToJson: true)
-class MangaDownloadRequest implements DownloadRequest, ContentDownloadRequest {
+class MangaDownloadRequest extends Equatable
+    implements DownloadRequest, ContentDownloadRequest {
   @override
   final String id;
 
@@ -105,7 +111,7 @@ class MangaDownloadRequest implements DownloadRequest, ContentDownloadRequest {
   @override
   final DownloadType type = DownloadType.manga;
 
-  MangaDownloadRequest({
+  const MangaDownloadRequest({
     required this.id,
     required this.pages,
     required this.folder,
@@ -121,10 +127,13 @@ class MangaDownloadRequest implements DownloadRequest, ContentDownloadRequest {
 
   @override
   Map<String, dynamic> toJson() => _$MangaDownloadRequestToJson(this);
+
+  @override
+  List<Object?> get props => [id, type];
 }
 
 @JsonSerializable()
-class FileDownloadRequest implements DownloadRequest {
+class FileDownloadRequest extends Equatable implements DownloadRequest {
   final String url;
   final String fileSrc;
   final Map<String, String>? headers;
@@ -136,7 +145,7 @@ class FileDownloadRequest implements DownloadRequest {
   @override
   final String id;
 
-  FileDownloadRequest(this.id, this.url, this.fileSrc, {this.headers});
+  const FileDownloadRequest(this.id, this.url, this.fileSrc, {this.headers});
 
   @override
   String toString() =>
@@ -147,6 +156,9 @@ class FileDownloadRequest implements DownloadRequest {
 
   @override
   Map<String, dynamic> toJson() => _$FileDownloadRequestToJson(this);
+
+  @override
+  List<Object?> get props => [id, type];
 }
 
 abstract interface class CancelToken {

@@ -48,8 +48,7 @@ class DownloadManagerDesktop implements DownloadManager {
     _requests.removeWhere((it) => it.id == id);
     final task = _downloads.remove(id);
     if (task != null) {
-      task.status.value = DownloadStatus.canceled;
-      _downloadsUpdate.sink.add(task);
+      task.cancel();
     }
   }
 
@@ -65,7 +64,9 @@ class DownloadManagerDesktop implements DownloadManager {
 
       void onDone(DownloadStatus status) {
         task.status.value = status;
-        downloadDone(request);
+        _downloadsUpdate.add(task);
+        _runningTasks--;
+        _startExecution();
       }
 
       if (request is FileDownloadRequest) {
@@ -76,15 +77,6 @@ class DownloadManagerDesktop implements DownloadManager {
         downloadManga(request, task.updateProgress, onDone, task);
       }
     }
-  }
-
-  void downloadDone(DownloadRequest request) {
-    _runningTasks--;
-    final task = _downloads.remove(request.id);
-    if (task != null) {
-      _downloadsUpdate.sink.add(task);
-    }
-    _startExecution();
   }
 
   @override

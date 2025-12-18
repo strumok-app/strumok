@@ -12,7 +12,8 @@ class MangaReaderState {
   ValueNotifier<int> currentPage;
   List<MangaPageInfo> pages;
   int? currentItem;
-  MangaMediaItemSource? currentSource;
+  String? currentSourceName;
+  MangaMediaItemSource? selectedSource;
   String? error;
   bool hasNext;
   bool hasPrev;
@@ -24,7 +25,8 @@ class MangaReaderState {
     this.hasNext = false,
     this.hasPrev = false,
     this.currentItem,
-    this.currentSource,
+    this.currentSourceName,
+    this.selectedSource,
     this.error,
   });
 
@@ -56,7 +58,7 @@ class MangaReaderController extends ValueNotifier<MangaReaderState> {
 
   Future<void> update(MediaCollectionItem collectionItem) async {
     if (value.currentItem != collectionItem.currentItem ||
-        value.currentSource?.description != collectionItem.currentSourceName) {
+        value.currentSourceName != collectionItem.currentSourceName) {
       await _loadPages(collectionItem);
     }
   }
@@ -116,7 +118,8 @@ class MangaReaderController extends ValueNotifier<MangaReaderState> {
           )
           .toList(),
       currentItem: currentItemIdx,
-      currentSource: mangaSource,
+      currentSourceName: currentSourceName,
+      selectedSource: mangaSource,
       hasNext: currentItemIdx < mediaItems.length - 1,
       hasPrev: currentItemIdx > 0,
     );

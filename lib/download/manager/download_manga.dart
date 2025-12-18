@@ -19,6 +19,7 @@ void downloadManga(
     var bytesDownloaded = 0;
     for (var i = 0; i < request.pages.length; i++) {
       if (cancelToken.isCanceled) {
+        onDone(DownloadStatus.canceled);
         return;
       }
 
