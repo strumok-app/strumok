@@ -32,6 +32,7 @@ class MangaPagesDownloadManager {
 
   final Map<String, StreamController<MangaPageDownloadEvent>>
   _downloadControllers = {};
+  final Map<String, Stream<MangaPageDownloadEvent>> _downloadStreams = {};
   final Map<String, Future<void>> _ongoingDownloads = {};
 
   /// Start download for a page and return event stream
@@ -41,12 +42,15 @@ class MangaPagesDownloadManager {
     required Map<String, String>? headers,
   }) {
     // Return existing stream if download is already in progress
-    if (_downloadControllers.containsKey(pageUrl)) {
-      return _downloadControllers[pageUrl]!.stream;
+    if (_downloadStreams.containsKey(pageUrl)) {
+      return _downloadStreams[pageUrl]!;
     }
 
     final controller = StreamController<MangaPageDownloadEvent>();
     _downloadControllers[pageUrl] = controller;
+
+    final stream = controller.stream.asBroadcastStream();
+    _downloadStreams[pageUrl] = stream;
 
     _ongoingDownloads[pageUrl] = _performDownload(
       pageUrl: pageUrl,
@@ -55,7 +59,7 @@ class MangaPagesDownloadManager {
       controller: controller,
     );
 
-    return controller.stream;
+    return stream;
   }
 
   Future<void> _performDownload({
@@ -115,6 +119,7 @@ class MangaPagesDownloadManager {
       }
     } finally {
       _downloadControllers.remove(pageUrl);
+      _downloadStreams.remove(pageUrl);
       _ongoingDownloads.remove(pageUrl);
       await controller.close();
     }
@@ -124,6 +129,8 @@ class MangaPagesDownloadManager {
   Future<void> cancelDownload(String pageUrl) async {
     _downloadControllers[pageUrl]?.close();
     _downloadControllers.remove(pageUrl);
+
+    _downloadStreams.remove(pageUrl);
     _ongoingDownloads.remove(pageUrl);
   }
 
