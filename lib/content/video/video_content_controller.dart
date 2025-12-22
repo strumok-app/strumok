@@ -278,6 +278,12 @@ class VideoContentController {
         link,
         headers: video.headers ?? {},
         start: Duration(seconds: start),
+        preferredLanguage: {
+          if (AppPreferences.userLanguage != null) AppPreferences.userLanguage!,
+          if (AppPreferences.selectedContentLanguageCodes != null)
+            ...AppPreferences.selectedContentLanguageCodes!,
+          "en",
+        },
       );
 
       if (_disposed ||

@@ -46,6 +46,7 @@ class MediaKitVideoBackend extends VideoBackend {
     Uri link, {
     Map<String, String>? headers,
     Duration? start,
+    Set<String>? preferredLanguage,
   }) async {
     if (_player != null) {
       throw StateError("Video backend already initialized");
@@ -61,6 +62,12 @@ class MediaKitVideoBackend extends VideoBackend {
 
     final nativePlayer = player.platform as media_kit.NativePlayer;
     nativePlayer.setProperty("force-seekable", "yes");
+
+    // Set preferred audio language
+    if (preferredLanguage != null && preferredLanguage.isNotEmpty) {
+      nativePlayer.setProperty("alang", preferredLanguage.join(","));
+      nativePlayer.setProperty("vlang", preferredLanguage.join(","));
+    }
 
     media_kit_video.VideoController videoController;
     if (Platform.isAndroid) {

@@ -36,6 +36,9 @@ class AppPreferences {
       .nonNulls
       .toSet();
 
+  static Set<String>? get selectedContentLanguageCodes =>
+      instance.getStringList("selected_content_language")?.toSet();
+
   static set selectedContentLanguage(Set<ContentLanguage>? value) =>
       instance.setStringList(
         "selected_content_language",

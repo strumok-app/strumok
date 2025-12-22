@@ -97,6 +97,7 @@ abstract class VideoBackend extends ValueNotifier<VideoBackendState> {
     Uri link, {
     Map<String, String> headers,
     Duration start,
+    Set<String>? preferredLanguage,
   });
   Widget buildVideoWidget();
 
