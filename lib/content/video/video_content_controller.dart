@@ -166,6 +166,22 @@ class VideoContentController {
     }
   }
 
+  Future<void> frameStepForward() async {
+    if (_disposed) return;
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      await backend!.frameStepForward();
+    }
+  }
+
+  Future<void> frameStepBackward() async {
+    if (_disposed) return;
+    final backend = _currentVideoBackend;
+    if (backend?.value.isInitialized == true) {
+      await backend!.frameStepBackward();
+    }
+  }
+
   void setRate(double rate) {
     if (_disposed) return;
 

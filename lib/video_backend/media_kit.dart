@@ -13,18 +13,15 @@ import 'package:strumok/video_backend/video_backend.dart';
 import 'package:strumok/video_backend/tracks.dart';
 
 class MediaKitVideoBackend extends VideoBackend {
-  // The implementation uses [Player.hashCode] as texture ID.
   media_kit.Player? _player;
   media_kit_video.VideoController? _videoController;
   final List<StreamSubscription> _streamSubscriptions = [];
   final List<StreamSubscription> _initializationStreamSubscriptions = [];
 
-  /// Registers this class as the default instance of [VideoPlayerPlatform].
   static void registerWith() {
     media_kit.MediaKit.ensureInitialized();
   }
 
-  /// Clears one video.
   @override
   Future<void> dispose() async {
     await Future.wait(
@@ -346,6 +343,26 @@ class MediaKitVideoBackend extends VideoBackend {
         .join(",");
 
     nativePlayer.setProperty("af", audioFilter);
+  }
+
+  /// Steps forward by one frame.
+  @override
+  Future<void> frameStepForward() async {
+    final player = _player;
+    if (player == null) return;
+
+    final nativePlayer = player.platform as media_kit.NativePlayer;
+    await nativePlayer.command(["frame-step"]);
+  }
+
+  /// Steps backward by one frame.
+  @override
+  Future<void> frameStepBackward() async {
+    final player = _player;
+    if (player == null) return;
+
+    final nativePlayer = player.platform as media_kit.NativePlayer;
+    nativePlayer.command(["frame-back-step"]);
   }
 
   List<VideoTrack> _convertVideoTracks(media_kit.Tracks tracks) {

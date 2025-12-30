@@ -109,6 +109,8 @@ abstract class VideoBackend extends ValueNotifier<VideoBackendState> {
   Future<void> setAudioTrack(String? id);
   Future<void> setVideoTrack(String? id);
   Future<void> setEquilizer(List<double> bands);
+  Future<void> frameStepForward();
+  Future<void> frameStepBackward();
 
   static VideoBackend create() {
     return MediaKitVideoBackend();

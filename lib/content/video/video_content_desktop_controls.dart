@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:strumok/app_localizations.dart';
+import 'package:strumok/collection/collection_item_provider.dart';
+import 'package:strumok/content/media_items_list.dart';
+import 'package:strumok/content/video/content_details_video_actions.dart';
 import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
@@ -11,18 +15,19 @@ import 'package:strumok/content/video/source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/utils/fullscrean.dart';
 import 'package:strumok/utils/text.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class VideoContentDesktopControls extends StatefulWidget {
+class VideoContentDesktopControls extends ConsumerStatefulWidget {
   final VoidCallback onPipEnter;
   const VideoContentDesktopControls({super.key, required this.onPipEnter});
 
   @override
-  State<VideoContentDesktopControls> createState() =>
+  ConsumerState<VideoContentDesktopControls> createState() =>
       _VideoContentDesktopControlsState();
 }
 
 class _VideoContentDesktopControlsState
-    extends State<VideoContentDesktopControls> {
+    extends ConsumerState<VideoContentDesktopControls> {
   static final controlsHoverDuration = const Duration(seconds: 10);
   static const subtitleVerticalShiftOffset = 96.0;
   static const buttonBarHeight = 56.0;
@@ -41,7 +46,7 @@ class _VideoContentDesktopControlsState
     super.didChangeDependencies();
     _subscription ??= videoContentController(context).videoBackendStateStream
         .listen((event) {
-          final newBuffering = event.showBuffering;
+          final newBuffering = event.showBuffering && event.isPlaying;
 
           if (_buffering != newBuffering) {
             setState(() {
@@ -94,6 +99,30 @@ class _VideoContentDesktopControlsState
     }
   }
 
+  void _openPlaylist() {
+    final controller = videoContentController(context);
+    final contentDetails = controller.contentDetails;
+    final mediaItems = controller.mediaItems;
+
+    final collectionItem = ref
+        .read(collectionItemProvider(contentDetails))
+        .value;
+
+    if (mediaItems.length < 2) {
+      return;
+    }
+
+    Navigator.of(context).push(
+      MediaItemsListRoute(
+        title: AppLocalizations.of(context)!.episodesList,
+        mediaItems: mediaItems,
+        contentProgress: collectionItem,
+        onSelect: (item) => controller.changeCollectionCurentItem(item.number),
+        itemBuilder: playlistItemBuilder(contentDetails),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screanSize = MediaQuery.sizeOf(context);
@@ -142,6 +171,18 @@ class _VideoContentDesktopControlsState
               context,
             ).seekForward(const Duration(seconds: 10));
           },
+          const SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true): () {
+            videoContentController(context).frameStepBackward();
+          },
+          const SingleActivator(
+            LogicalKeyboardKey.arrowRight,
+            shift: true,
+          ): () {
+            videoContentController(context).frameStepForward();
+          },
+          const SingleActivator(LogicalKeyboardKey.arrowUp): () {
+            videoContentController(context).volumeUp();
+          },
           const SingleActivator(LogicalKeyboardKey.arrowDown): () {
             videoContentController(context).volumeDown();
           },
@@ -151,6 +192,7 @@ class _VideoContentDesktopControlsState
               enterFullscreen(),
           const SingleActivator(LogicalKeyboardKey.escape): () =>
               exitFullscreen(),
+          const SingleActivator(LogicalKeyboardKey.keyP): () => _openPlaylist(),
         },
 
         /// Add [Directionality] to ltr to avoid wrong animation of sides.
