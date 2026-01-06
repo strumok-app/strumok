@@ -46,7 +46,7 @@ class _VideoContentDesktopControlsState
     super.didChangeDependencies();
     _subscription ??= videoContentController(context).videoBackendStateStream
         .listen((event) {
-          final newBuffering = event.showBuffering && event.isPlaying;
+          final newBuffering = event.showBuffering;
 
           if (_buffering != newBuffering) {
             setState(() {

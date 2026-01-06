@@ -25,7 +25,8 @@ class VideoBackendState {
 
   final double aspectRatio;
 
-  bool get showBuffering => (isBuffering || !isInitialized) && !hasError;
+  bool get showBuffering =>
+      !hasError && (!isInitialized || (isBuffering && isPlaying));
 
   const VideoBackendState({
     this.isBuffering = false,
