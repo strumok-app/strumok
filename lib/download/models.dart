@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:strumok/download/offline_storage.dart';
 
 class OfflineContentDetails implements ContentDetails {

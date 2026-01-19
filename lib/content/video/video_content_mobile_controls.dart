@@ -335,7 +335,10 @@ class _VideoContentMobileControlsState
       await ScreenBrightnessPlatform.instance.setApplicationScreenBrightness(
         value,
       );
-    } catch (_) {}
+    } catch (e) {
+      // ignore: avoid_print
+      print("Fail to set brighnes: $e");
+    }
     setState(() {
       _brightnessIndicator = true;
     });

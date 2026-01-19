@@ -50,21 +50,23 @@ void main() async {
 }
 
 void appRunner() async {
+  await AppPreferences.init();
+  await AppDatabase().init();
+  await TVDetector.detect();
+
   if (isDesktopDevice()) {
     await windowManager.ensureInitialized();
   }
 
+  // init video render library
   initVideoBackend();
-
-  await AppDatabase().init();
-  await AppPreferences.init();
-  await TVDetector.detect();
 
   // init firebase
   await AppInitFirebase().init();
 
-  // Downloaded files
+  // init offline storage
   await OfflineStorage().init();
+
   // load suppliers
   await FFISuppliersBundleStorage().init();
   await ContentSuppliers().load();
