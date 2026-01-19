@@ -9,6 +9,7 @@
             "request": "launch",
             "type": "dart",
             "program": "${workspaceFolder}/lib/main.dart",
+            "flutterMode": "profile",
             "toolArgs": [
                 "--dart-define-from-file",
                 "secrets.env",

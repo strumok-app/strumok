@@ -25,7 +25,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   Logger.root.level = Level.ALL; // defaults to Level.INFO
+
   if (Platform.isAndroid) {
     Logger.root.activateLogcat();
   } else {
@@ -47,8 +50,6 @@ void main() async {
 }
 
 void appRunner() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   if (isDesktopDevice()) {
     await windowManager.ensureInitialized();
   }

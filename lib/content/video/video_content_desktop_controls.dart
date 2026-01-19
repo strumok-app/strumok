@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:strumok/app_localizations.dart';
@@ -817,6 +818,11 @@ class DesktopVideoControlsPositionIndicatorState
               position = event.position;
               duration = event.duration;
             });
+
+            // fix for flutter frame scheduling issue on desktop platfrom
+            // becuase of some starnge optimization logic flutter will ignore rebuild when setState called
+            // so we need to force schedule next frame
+            SchedulerBinding.instance.scheduleFrame();
           }
         });
   }
