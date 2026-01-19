@@ -9,6 +9,7 @@ import 'package:strumok/settings/brightness_switcher.dart';
 import 'package:strumok/settings/color_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/settings/user_language.dart';
+import 'package:strumok/settings/offline_storage_directory.dart';
 import 'package:strumok/widgets/settings_section.dart';
 
 @RoutePage()
@@ -81,6 +82,11 @@ class _SettingsView extends StatelessWidget {
                 const BrightnessSwitcher(),
               ),
               const ColorSwitcher(),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsDownloadsDirectory,
+                const OfflineStorageDirectorySelector(),
+              ),
             ],
           ),
         ),

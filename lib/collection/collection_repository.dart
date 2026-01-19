@@ -135,7 +135,7 @@ class LocalCollectionRepository extends CollectionRepository {
         remote["positions"] = mergeMaps(
           localPositions,
           remotePositions,
-          value: (_, v) => v,
+          value: (_, v) => v != null && v > 0 ? v : 0,
         );
 
         await store.record(itemId).put(tx, remote);

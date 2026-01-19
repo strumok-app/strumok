@@ -240,6 +240,19 @@ class AppLocalizationsUk extends AppLocalizations {
       'Постачальники та Рекомендації';
 
   @override
+  String get settingsDownloadsDirectory => 'Папка завантажень';
+
+  @override
+  String get settingsOfflineStorageDirectoryLabel => 'Каталог для завантажень';
+
+  @override
+  String get settingsOfflineStorageDirectoryNotSelected =>
+      'Не вибрано — використовується стандартна папка завантажень';
+
+  @override
+  String get settingsSelect => 'Вибрати';
+
+  @override
   String get mangaUnableToLoadPage => 'Неможливо відобразити сторінку';
 
   @override

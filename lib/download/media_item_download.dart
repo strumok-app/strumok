@@ -5,7 +5,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/download/manager/manager.dart';
 import 'package:strumok/download/media_item_download_provider.dart';
-import 'package:strumok/download/models.dart';
+import 'package:strumok/download/offline_content_models.dart';
 import 'package:strumok/download/offline_items_screen_provider.dart';
 import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/layouts/app_theme.dart';

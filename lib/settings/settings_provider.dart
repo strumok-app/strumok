@@ -3,6 +3,7 @@ import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/utils/collections.dart';
 import 'dart:io';
 
@@ -127,5 +128,19 @@ class ContentLanguageSettings extends _$ContentLanguageSettings {
     return ContentLanguage.values
         .where((lang) => lang.name == localeLang)
         .firstOrNull;
+  }
+}
+
+@Riverpod(keepAlive: true)
+class OfflineStorageDirectory extends _$OfflineStorageDirectory {
+  @override
+  String? build() {
+    return AppPreferences.offlineDownloadsDirectory;
+  }
+
+  void select(String? path) {
+    AppPreferences.offlineDownloadsDirectory = path;
+    state = path;
+    OfflineStorage().init();
   }
 }

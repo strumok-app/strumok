@@ -444,3 +444,57 @@ abstract class _$ContentLanguageSettings
     element.handleValue(ref, created);
   }
 }
+
+@ProviderFor(OfflineStorageDirectory)
+const offlineStorageDirectoryProvider = OfflineStorageDirectoryProvider._();
+
+final class OfflineStorageDirectoryProvider
+    extends $NotifierProvider<OfflineStorageDirectory, String?> {
+  const OfflineStorageDirectoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'offlineStorageDirectoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$offlineStorageDirectoryHash();
+
+  @$internal
+  @override
+  OfflineStorageDirectory create() => OfflineStorageDirectory();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String?>(value),
+    );
+  }
+}
+
+String _$offlineStorageDirectoryHash() =>
+    r'5841f49691391c08b731a310bd3467bfbe103f78';
+
+abstract class _$OfflineStorageDirectory extends $Notifier<String?> {
+  String? build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String?, String?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String?, String?>,
+              String?,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

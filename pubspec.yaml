@@ -23,6 +23,7 @@ dependencies:
   
   # storage
   path_provider: ^2.1.5
+  file_selector: ^1.1.0
   sembast: ^3.8.5+2
   shared_preferences: ^2.5.3
   
@@ -45,6 +46,7 @@ dependencies:
   # mobile
   flutter_foreground_task: ^9.1.0
   wakelock_plus: ^1.4.0
+  screen_brightness_platform_interface: ^2.1.0
   screen_brightness: ^2.1.7
   volume_controller: ^3.4.0
 

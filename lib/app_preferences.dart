@@ -45,6 +45,7 @@ class AppPreferences {
   static const String _keyVideoPlayerEqualizerBands =
       "video_player_equalizer_bands";
   static const String _keyOfflineMode = "offline_mode";
+  static const String _keyOfflineDownloadsDirectory = "offline_downloads_directory";
   static const String _keyFfiSupplierBundleInfo = "ffi_supplier_bundle_info";
 
   static late final SharedPreferences instance;
@@ -238,6 +239,12 @@ class AppPreferences {
   static bool get offlineMode => instance.getBool(_keyOfflineMode) ?? false;
 
   static set offlineMode(bool mode) => instance.setBool(_keyOfflineMode, mode);
+
+  static String? get offlineDownloadsDirectory => instance.getString(_keyOfflineDownloadsDirectory);
+
+  static set offlineDownloadsDirectory(String? path) => path != null
+      ? instance.setString(_keyOfflineDownloadsDirectory, path)
+      : instance.remove(_keyOfflineDownloadsDirectory);
 
   static set ffiSupplierBundleInfo(FFISupplierBundleInfo? info) {
     if (info == null) {

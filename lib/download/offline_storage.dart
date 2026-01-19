@@ -4,8 +4,9 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:strumok/app_preferences.dart';
 import 'package:strumok/download/manager/manager.dart';
-import 'package:strumok/download/models.dart';
+import 'package:strumok/download/offline_content_models.dart';
 import 'package:strumok/utils/logger.dart';
 
 class OfflineStorage {
@@ -27,8 +28,16 @@ class OfflineStorage {
   OfflineStorage._internal();
 
   Future<void> init() async {
-    _downloadsDir =
-        "${(await getDownloadsDirectory())!.path}${Platform.pathSeparator}strumok";
+    // allow overriding downloads directory from app preferences
+    final downloadDirFromPreferences = AppPreferences.offlineDownloadsDirectory;
+
+    if (downloadDirFromPreferences != null &&
+        downloadDirFromPreferences.isNotEmpty) {
+      _downloadsDir = downloadDirFromPreferences;
+    } else {
+      _downloadsDir =
+          "${(await getDownloadsDirectory())!.path}${Platform.pathSeparator}strumok";
+    }
 
     logger.info("Downloads directory: $_downloadsDir");
   }

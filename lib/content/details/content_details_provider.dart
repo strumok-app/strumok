@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:strumok/download/models.dart';
+import 'package:strumok/download/offline_content_models.dart';
 import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/settings/settings_provider.dart';
 

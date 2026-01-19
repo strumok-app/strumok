@@ -240,6 +240,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Suppliers and  Recommendations';
 
   @override
+  String get settingsDownloadsDirectory => 'Downloads directory';
+
+  @override
+  String get settingsOfflineStorageDirectoryLabel =>
+      'Offline storage directory';
+
+  @override
+  String get settingsOfflineStorageDirectoryNotSelected =>
+      'Not selected — using default downloads location';
+
+  @override
+  String get settingsSelect => 'Select';
+
+  @override
   String get mangaUnableToLoadPage => 'Unable to view page';
 
   @override

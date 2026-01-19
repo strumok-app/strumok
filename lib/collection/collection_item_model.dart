@@ -176,6 +176,7 @@ mixin ContentProgress {
   Map<int, MediaItemPosition> get positions;
 
   int get currentPosition => positions[currentItem]?.position ?? 0;
+
   MediaItemPosition get currentMediaItemPosition =>
       positions[currentItem] ?? MediaItemPosition.zero;
 }

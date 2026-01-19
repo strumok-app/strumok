@@ -49,6 +49,10 @@ class CollectionItem extends _$CollectionItem {
     final value = state.requireValue;
     final currentItemPosition = value.currentMediaItemPosition;
 
+    if (position < 0) {
+      throw ArgumentError("position cant be negative: $position");
+    }
+
     if (value.mediaType == MediaType.video) {
       if (position > 10 &&
           (currentItemPosition.position - position).abs() > 10) {

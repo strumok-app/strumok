@@ -548,6 +548,30 @@ abstract class AppLocalizations {
   /// **'Suppliers and  Recommendations'**
   String get settingsSuppliersAndRecommendations;
 
+  /// No description provided for @settingsDownloadsDirectory.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads directory'**
+  String get settingsDownloadsDirectory;
+
+  /// No description provided for @settingsOfflineStorageDirectoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline storage directory'**
+  String get settingsOfflineStorageDirectoryLabel;
+
+  /// No description provided for @settingsOfflineStorageDirectoryNotSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not selected — using default downloads location'**
+  String get settingsOfflineStorageDirectoryNotSelected;
+
+  /// No description provided for @settingsSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get settingsSelect;
+
   /// No description provided for @mangaUnableToLoadPage.
   ///
   /// In en, this message translates to:

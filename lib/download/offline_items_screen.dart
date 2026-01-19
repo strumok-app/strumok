@@ -7,7 +7,7 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/download/download_queue.dart';
 import 'package:strumok/download/download_queue_provider.dart';
 import 'package:strumok/layouts/general_layout.dart';
-import 'package:strumok/download/models.dart';
+import 'package:strumok/download/offline_content_models.dart';
 import 'package:strumok/download/offline_items_screen_provider.dart';
 import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/utils/nav.dart';
