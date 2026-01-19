@@ -63,6 +63,7 @@ class DownloadManagerDesktop implements DownloadManager {
       _downloadsUpdate.add(task);
 
       void onDone(DownloadStatus status) {
+        _downloads.remove(request.id);
         task.status.value = status;
         _downloadsUpdate.add(task);
         _runningTasks--;

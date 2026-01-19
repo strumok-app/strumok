@@ -102,6 +102,9 @@ class VideoContentController {
     if (backend?.value.isInitialized == true) {
       final currentVolume = backend!.value.volume;
       final newVolume = (currentVolume + delta).clamp(0.0, 1.0);
+
+      AppPreferences.volume = newVolume;
+
       backend.setVolume(newVolume);
     }
   }
@@ -120,6 +123,8 @@ class VideoContentController {
     if (_disposed) return;
     final backend = _currentVideoBackend;
     if (backend?.value.isInitialized == true) {
+      AppPreferences.volume = volume;
+
       await backend!.setVolume(volume);
     }
   }

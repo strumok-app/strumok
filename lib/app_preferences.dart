@@ -20,6 +20,33 @@ class AppConstances {
 }
 
 class AppPreferences {
+  // Preference key constants
+  static const String _keySelectedContentLanguage = "selected_content_language";
+  static const String _keySelectedContentType = "selected_content_type";
+  static const String _keySelectedContentSuppliers =
+      "selected_content_suppliers";
+  static const String _keyUserLanguage = "user_language";
+  static const String _keyThemeBrightness = "theme_brightness";
+  static const String _keyThemeColor = "theme_color";
+  static const String _keyLastSyncTs = "last_sync_ts";
+  static const String _keyVolume = "volume";
+  static const String _keySuppliersOrder = "suppliers_order";
+  static const String _keyMangaReaderBackground = "manga_reader_background";
+  static const String _keyMangaReaderMode = "manga_reader_mode";
+  static const String _keyMangaReaderAutoCrop = "manga_reader_auto_crop";
+  static const String _keyVideoPlayerSettingShuffleMode =
+      "video_player_setting_shuffle_mode";
+  static const String _keyVideoPlayerSettingEndsAction =
+      "video_player_setting_ends_action";
+  static const String _keyVideoPlayerSettingStartFrom =
+      "video_player_setting_start_from";
+  static const String _keyVideoPlayerSettingFixedPosition =
+      "video_player_setting_fixed_position";
+  static const String _keyVideoPlayerEqualizerBands =
+      "video_player_equalizer_bands";
+  static const String _keyOfflineMode = "offline_mode";
+  static const String _keyFfiSupplierBundleInfo = "ffi_supplier_bundle_info";
+
   static late final SharedPreferences instance;
 
   static Future<void> init() async {
@@ -27,7 +54,7 @@ class AppPreferences {
   }
 
   static Set<ContentLanguage>? get selectedContentLanguage => instance
-      .getStringList("selected_content_language")
+      .getStringList(_keySelectedContentLanguage)
       ?.map(
         (value) => ContentLanguage.values.firstWhereOrNull(
           (lang) => lang.name == value,
@@ -37,16 +64,16 @@ class AppPreferences {
       .toSet();
 
   static Set<String>? get selectedContentLanguageCodes =>
-      instance.getStringList("selected_content_language")?.toSet();
+      instance.getStringList(_keySelectedContentLanguage)?.toSet();
 
   static set selectedContentLanguage(Set<ContentLanguage>? value) =>
       instance.setStringList(
-        "selected_content_language",
+        _keySelectedContentLanguage,
         value?.map((lang) => lang.name).toList() ?? List.empty(),
       );
 
   static Set<ContentType>? get searchContentType => instance
-      .getStringList("selected_content_type")
+      .getStringList(_keySelectedContentType)
       ?.map(
         (value) =>
             ContentType.values.firstWhereOrNull((type) => type.name == value),
@@ -56,56 +83,56 @@ class AppPreferences {
 
   static set searchContentType(Set<ContentType>? value) =>
       instance.setStringList(
-        "selected_content_type",
+        _keySelectedContentType,
         value?.map((type) => type.name).toList() ?? List.empty(),
       );
 
   static Set<String>? get searchContentSuppliers =>
-      instance.getStringList("selected_content_suppliers")?.toSet();
+      instance.getStringList(_keySelectedContentSuppliers)?.toSet();
 
   static set searchContentSuppliers(Set<String>? value) =>
       instance.setStringList(
-        "selected_content_suppliers",
+        _keySelectedContentSuppliers,
         value?.toList() ?? List.empty(),
       );
 
   static set userLanguage(String? lang) => lang != null
-      ? instance.setString("user_language", lang)
-      : instance.remove("user_language");
+      ? instance.setString(_keyUserLanguage, lang)
+      : instance.remove(_keyUserLanguage);
 
-  static String? get userLanguage => instance.getString("user_language");
+  static String? get userLanguage => instance.getString(_keyUserLanguage);
 
   static set themeBrightness(Brightness? brightness) => brightness != null
-      ? instance.setString("theme_brightness", brightness.name)
-      : instance.remove("theme_brightness");
+      ? instance.setString(_keyThemeBrightness, brightness.name)
+      : instance.remove(_keyThemeBrightness);
 
   static Brightness? get themeBrightness => Brightness.values
-      .where((type) => type.name == instance.getString("theme_brightness"))
+      .where((type) => type.name == instance.getString(_keyThemeBrightness))
       .firstOrNull;
 
   static set themeColor(Color color) =>
-      instance.setInt("theme_color", color.toARGB32());
+      instance.setInt(_keyThemeColor, color.toARGB32());
 
   static Color get themeColor {
-    final colorValue = instance.getInt("theme_color");
+    final colorValue = instance.getInt(_keyThemeColor);
     // colorValue
     return colorValue != null ? Color(colorValue) : AppConstances.defaultColor;
   }
 
-  static int get lastSyncTimestamp => instance.getInt("last_sync_ts") ?? 0;
+  static int get lastSyncTimestamp => instance.getInt(_keyLastSyncTs) ?? 0;
 
   static set lastSyncTimestamp(int timestamp) =>
-      instance.setInt("last_sync_ts", timestamp);
+      instance.setInt(_keyLastSyncTs, timestamp);
 
-  static double get volume => instance.getDouble("volume") ?? 100.0;
+  static double get volume => instance.getDouble(_keyVolume) ?? 100.0;
 
-  static set volume(double value) => instance.setDouble("volume", value);
+  static set volume(double value) => instance.setDouble(_keyVolume, value);
 
   static List<String>? get suppliersOrder =>
-      instance.getStringList("suppliers_order");
+      instance.getStringList(_keySuppliersOrder);
 
   static set suppliersOrder(List<String>? value) =>
-      instance.setStringList("suppliers_order", value ?? []);
+      instance.setStringList(_keySuppliersOrder, value ?? []);
 
   static void setSupplierEnabled(String supplierName, bool enabled) {
     instance.setBool("suppliers.$supplierName.enabled", enabled);
@@ -125,72 +152,72 @@ class AppPreferences {
       instance.getStringList("suppliers.$supplierName.channels")?.toSet();
 
   static set mangaReaderBackground(MangaReaderBackground background) =>
-      instance.setString("manga_reader_background", background.name);
+      instance.setString(_keyMangaReaderBackground, background.name);
 
   static MangaReaderBackground get mangaReaderBackground =>
       MangaReaderBackground.values
           .where(
             (type) =>
-                type.name == instance.getString("manga_reader_background"),
+                type.name == instance.getString(_keyMangaReaderBackground),
           )
           .firstOrNull ??
       MangaReaderBackground.dark;
 
   static set mangaReaderMode(MangaReaderMode mode) =>
-      instance.setString("manga_reader_mode", mode.name);
+      instance.setString(_keyMangaReaderMode, mode.name);
 
   static MangaReaderMode get mangaReaderMode =>
       MangaReaderMode.values
-          .where((type) => type.name == instance.getString("manga_reader_mode"))
+          .where((type) => type.name == instance.getString(_keyMangaReaderMode))
           .firstOrNull ??
       MangaReaderMode.longStrip;
 
   static bool get mangaReaderAutoCrop =>
-      instance.getBool("manga_reader_auto_crop") ?? true;
+      instance.getBool(_keyMangaReaderAutoCrop) ?? true;
 
   static set mangaReaderAutoCrop(bool enabled) =>
-      instance.setBool("manga_reader_auto_crop", enabled);
+      instance.setBool(_keyMangaReaderAutoCrop, enabled);
 
   static bool get videoPlayerSettingShuffleMode =>
-      instance.getBool("video_player_setting_shuffle_mode") ?? false;
+      instance.getBool(_keyVideoPlayerSettingShuffleMode) ?? false;
 
   static set videoPlayerSettingShuffleMode(bool enabled) =>
-      instance.setBool("video_player_setting_shuffle_mode", enabled);
+      instance.setBool(_keyVideoPlayerSettingShuffleMode, enabled);
 
   static OnVideoEndsAction get videoPlayerSettingEndsAction =>
       OnVideoEndsAction.values
           .where(
             (action) =>
                 action.name ==
-                instance.getString("video_player_setting_ends_action"),
+                instance.getString(_keyVideoPlayerSettingEndsAction),
           )
           .firstOrNull ??
       OnVideoEndsAction.playNext;
 
   static set videoPlayerSettingEndsAction(OnVideoEndsAction action) =>
-      instance.setString("video_player_setting_ends_action", action.name);
+      instance.setString(_keyVideoPlayerSettingEndsAction, action.name);
 
   static StartVideoPosition get videoPlayerSettingStarFrom =>
       StartVideoPosition.values
           .where(
             (startFrom) =>
                 startFrom.name ==
-                instance.getString("video_player_setting_start_from"),
+                instance.getString(_keyVideoPlayerSettingStartFrom),
           )
           .firstOrNull ??
       StartVideoPosition.fromRemembered;
 
   static set videoPlayerSettingStarFrom(StartVideoPosition startFrom) =>
-      instance.setString("video_player_setting_start_from", startFrom.name);
+      instance.setString(_keyVideoPlayerSettingStartFrom, startFrom.name);
 
   static int get videoPlayerSettingFixedPosition =>
-      instance.getInt("video_player_setting_fixed_position") ?? 0;
+      instance.getInt(_keyVideoPlayerSettingFixedPosition) ?? 0;
 
   static set videoPlayerSettingFixedPosition(int pos) =>
-      instance.setInt("video_player_setting_fixed_position", pos);
+      instance.setInt(_keyVideoPlayerSettingFixedPosition, pos);
 
   static List<double> get videoPlayerEqualizerBands {
-    final bandsString = instance.getString("video_player_equalizer_bands");
+    final bandsString = instance.getString(_keyVideoPlayerEqualizerBands);
     if (bandsString == null) {
       return AppConstances.equalizerDefaultBands;
     }
@@ -205,26 +232,26 @@ class AppPreferences {
 
   static set videoPlayerEqualizerBands(List<double> bands) {
     final bandsString = bands.map((e) => e.toString()).join(',');
-    instance.setString("video_player_equalizer_bands", bandsString);
+    instance.setString(_keyVideoPlayerEqualizerBands, bandsString);
   }
 
-  static bool get offlineMode => instance.getBool("offline_mode") ?? false;
+  static bool get offlineMode => instance.getBool(_keyOfflineMode) ?? false;
 
-  static set offlineMode(bool mode) => instance.setBool("offline_mode", mode);
+  static set offlineMode(bool mode) => instance.setBool(_keyOfflineMode, mode);
 
   static set ffiSupplierBundleInfo(FFISupplierBundleInfo? info) {
     if (info == null) {
-      instance.remove("ffi_supplier_bundle_info");
+      instance.remove(_keyFfiSupplierBundleInfo);
       return;
     }
 
     final infoJson = json.encode(info.toJson());
 
-    instance.setString("ffi_supplier_bundle_info", infoJson);
+    instance.setString(_keyFfiSupplierBundleInfo, infoJson);
   }
 
   static FFISupplierBundleInfo? get ffiSupplierBundleInfo {
-    final infoJson = instance.getString("ffi_supplier_bundle_info");
+    final infoJson = instance.getString(_keyFfiSupplierBundleInfo);
 
     if (infoJson == null) {
       return null;

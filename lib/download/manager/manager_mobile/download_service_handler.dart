@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:strumok/download/manager/download_file.dart';
 import 'package:strumok/download/manager/download_manga.dart';
@@ -185,17 +186,20 @@ class DownloadsServiceHandler extends TaskHandler {
     final notificationTitle = "Donloading: $_runningTasks/$total";
 
     final notificationText = _downloads.values
-        .where(
-          (task) =>
-              task.request is ContentDownloadRequest &&
-              task.status == DownloadStatus.started,
-        )
-        .map((task) {
-          final cdr = task.request as ContentDownloadRequest;
+        .where((task) => task.status == DownloadStatus.started)
+        .mapIndexed((idx, task) {
           final speed = formatBytes(task.speed.floor());
           final progress = (task.progress * 100.0).floor();
+          String result = "$progress% ($speed/s)";
 
-          return "${cdr.info.title} $progress% ($speed/s)";
+          if (task.request is ContentDownloadRequest) {
+            final cdr = task.request as ContentDownloadRequest;
+            result = "${cdr.info.title} $result";
+          } else {
+            result = "${idx + 1}. $result";
+          }
+
+          return result;
         })
         .join("\n");
 
