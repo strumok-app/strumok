@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/content/manga/model.dart';
@@ -7,18 +8,19 @@ import 'package:strumok/content/manga/utils.dart';
 import 'package:strumok/download/manager/manga_pages_download_manager.dart';
 import 'package:strumok/download/offline_storage.dart';
 
-class MangaReaderState {
-  bool initialized;
-  ValueNotifier<int> currentPage;
-  List<MangaPageInfo> pages;
-  int? currentItem;
-  String? currentSourceName;
-  MangaMediaItemSource? selectedSource;
-  String? error;
-  bool hasNext;
-  bool hasPrev;
+@immutable
+class MangaReaderState extends Equatable {
+  final bool initialized;
+  final ValueNotifier<int> currentPage;
+  final List<MangaPageInfo> pages;
+  final int? currentItem;
+  final String? currentSourceName;
+  final MangaMediaItemSource? selectedSource;
+  final String? error;
+  final bool hasNext;
+  final bool hasPrev;
 
-  MangaReaderState({
+  const MangaReaderState({
     this.initialized = false,
     required this.currentPage,
     this.pages = const [],
@@ -41,6 +43,22 @@ class MangaReaderState {
       error: error,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    initialized,
+    currentPage.value,
+    pages,
+    currentItem,
+    currentSourceName,
+    selectedSource,
+    error,
+    hasNext,
+    hasPrev,
+  ];
+
+  @override
+  bool? get stringify => true;
 }
 
 const _preloadPagesAhead = 4;
@@ -71,7 +89,9 @@ class MangaReaderController extends ValueNotifier<MangaReaderState> {
     final currentItemIdx = collectionItem.currentItem;
     final currentSourceName = collectionItem.currentSourceName;
 
-    final currentItem = mediaItems[currentItemIdx];
+    final currentItem = mediaItems.firstWhere(
+      (item) => item.number == currentItemIdx,
+    );
     final sources = await currentItem.sources;
 
     if (currentItemIdx != collectionItem.currentItem ||
@@ -91,7 +111,7 @@ class MangaReaderController extends ValueNotifier<MangaReaderState> {
               as MangaMediaItemSource?;
 
     if (mangaSource == null) {
-      value == MangaReaderState.erroneous("No sources found");
+      value = MangaReaderState.erroneous("No sources found");
       return;
     }
 

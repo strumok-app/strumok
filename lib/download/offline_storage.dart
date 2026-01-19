@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:strumok/download/manager/manager.dart';
@@ -107,8 +108,6 @@ class OfflineStorage {
     final contentDetailsDir = Directory(contentDetailsPath);
     final mediaItems = <ContentMediaItem>[];
 
-    int index = 0;
-
     await for (final fsEntry in contentDetailsDir.list()) {
       if (fsEntry is Directory) {
         final fsEntryPath = fsEntry.path;
@@ -120,13 +119,13 @@ class OfflineStorage {
 
         if (num != null) {
           mediaItems.add(
-            OfflineContenMediaItem(supplier, id, "${num + 1}", index, num),
+            OfflineContenMediaItem(supplier, id, "${num + 1}", num),
           );
         }
       }
     }
 
-    return mediaItems;
+    return mediaItems.sortedBy((item) => item.number);
   }
 
   Future<List<ContentMediaItemSource>> getSources(

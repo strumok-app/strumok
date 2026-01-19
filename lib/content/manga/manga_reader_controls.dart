@@ -125,7 +125,10 @@ class MangaReaderControlTopBar extends ConsumerWidget {
               child: Text(
                 [
                   contentDetails.title,
-                  if (currentItem != null) mediaItems[currentItem].title,
+                  if (currentItem != null)
+                    mediaItems
+                        .firstWhere((item) => item.number == currentItem)
+                        .title,
                 ].join(" - "),
                 style: theme.textTheme.titleMedium!.copyWith(
                   color: Colors.white,

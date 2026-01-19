@@ -103,13 +103,17 @@ class MangaTranslationSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentItem = ref.watch(collectionItemProvider(contentDetails)).value;
+    final collectionItem = ref
+        .watch(collectionItemProvider(contentDetails))
+        .value;
 
-    if (currentItem == null) {
+    if (collectionItem == null) {
       return SizedBox.shrink();
     }
 
-    final mediaItem = mediaItems[currentItem.currentItem];
+    final mediaItem = mediaItems.firstWhere(
+      (item) => item.number == collectionItem.currentItem,
+    );
 
     return FutureBuilder(
       future: Future.value(mediaItem.sources),
@@ -119,7 +123,7 @@ class MangaTranslationSelector extends ConsumerWidget {
         }
 
         final sources = snapshot.data!;
-        final currentSource = currentItem.currentSourceName;
+        final currentSource = collectionItem.currentSourceName;
 
         return _renderSources(context, ref, sources, currentSource);
       },

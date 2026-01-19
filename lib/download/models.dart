@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:strumok/download/offline_storage.dart';
 
 class OfflineContentDetails implements ContentDetails {
@@ -67,6 +68,7 @@ class OfflineContentDetails implements ContentDetails {
   List<ContentInfo> get similar => const [];
 }
 
+// ignore: must_be_immutable
 class OfflineContenMediaItem extends Equatable implements ContentMediaItem {
   final String supplier;
   final String id;
@@ -74,16 +76,9 @@ class OfflineContenMediaItem extends Equatable implements ContentMediaItem {
   final String title;
   @override
   final int number;
-  final int _folderNumber;
   List<ContentMediaItemSource>? _sources;
 
-  OfflineContenMediaItem(
-    this.supplier,
-    this.id,
-    this.title,
-    this.number,
-    this._folderNumber,
-  );
+  OfflineContenMediaItem(this.supplier, this.id, this.title, this.number);
 
   @override
   List<Object?> get props => [supplier, id, number];
@@ -96,7 +91,7 @@ class OfflineContenMediaItem extends Equatable implements ContentMediaItem {
 
   @override
   Future<List<ContentMediaItemSource>> get sources async {
-    _sources ??= await OfflineStorage().getSources(supplier, id, _folderNumber);
+    _sources ??= await OfflineStorage().getSources(supplier, id, number);
     return _sources!;
   }
 }

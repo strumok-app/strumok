@@ -3,6 +3,7 @@ import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/manga/manga_long_strip_viewer.dart';
 import 'package:strumok/content/manga/manga_paged_viewer.dart';
 import 'package:strumok/content/manga/manga_reader_controller.dart';
+import 'package:strumok/content/manga/manga_reader_controls.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:strumok/settings/settings_provider.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:strumok/widgets/back_nav_button.dart';
 
 class MangaReaderView extends ConsumerStatefulWidget {
   final ContentDetails contentDetails;
@@ -106,6 +108,10 @@ class _MangaReaderViewState extends ConsumerState<MangaReaderView> {
             );
           }
 
+          if (state.error != null) {
+            return _ErrorView(error: state.error);
+          }
+
           return readerMode.scroll
               ? MangaLongStripViewer(readerMode: readerMode, readerState: state)
               : MangaPagedViewer(readerMode: readerMode, readerState: state);
@@ -151,11 +157,51 @@ class _UninitilizedViewState extends State<_UninitilizedView> {
     return MangaReaderIteractions(
       focusNode: _focusNode,
       readerMode: widget.readerMode,
+      child: Center(child: CircularProgressIndicator()),
+    );
+  }
+}
+
+class _ErrorView extends ConsumerWidget {
+  final String? error;
+  const _ErrorView({this.error});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = mangaReaderController(context);
+    final error =
+        this.error ?? AppLocalizations.of(context)!.mangaUnableToLoadPage;
+    final readerMode = ref.watch(mangaReaderModeSettingsProvider);
+
+    return MangaReaderIteractions(
+      readerMode: readerMode,
       child: Center(
-        child:
-            widget.readerState.error == null || widget.readerState.pages.isEmpty
-            ? CircularProgressIndicator()
-            : Text(AppLocalizations.of(context)!.mangaUnableToLoadPage),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(error, textAlign: TextAlign.center),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: [
+                  BackNavButton(),
+                  MangaSettingsButton(
+                    contentDetails: controller.contentDetails,
+                    mediaItems: controller.mediaItems,
+                  ),
+                  VolumesButton(
+                    contentDetails: controller.contentDetails,
+                    mediaItems: controller.mediaItems,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
