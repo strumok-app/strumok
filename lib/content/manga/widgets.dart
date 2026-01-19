@@ -216,7 +216,7 @@ class ManagPageAspectContainer extends StatelessWidget {
   }
 }
 
-class MangaReaderIteractions extends StatelessWidget {
+class MangaReaderIteractions extends ConsumerWidget {
   final MangaReaderMode readerMode;
   final Map<ShortcutActivator, Intent>? shortcuts;
   final Map<Type, Action<Intent>>? actions;
@@ -233,7 +233,7 @@ class MangaReaderIteractions extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FocusableActionDetector(
       focusNode: focusNode,
       shortcuts: {
@@ -241,6 +241,7 @@ class MangaReaderIteractions extends StatelessWidget {
         SingleActivator(LogicalKeyboardKey.space): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.enter): ShowUIIntent(),
         SingleActivator(LogicalKeyboardKey.keyF): ToggleFullscreanIntent(),
+        SingleActivator(LogicalKeyboardKey.keyP): ShowVolumesIndent(),
         if (shortcuts != null) ...shortcuts!,
       },
       actions: {
@@ -256,9 +257,36 @@ class MangaReaderIteractions extends StatelessWidget {
         ToggleFullscreanIntent: CallbackAction<ToggleFullscreanIntent>(
           onInvoke: (_) => toggleFullscreen(),
         ),
+        ShowVolumesIndent: CallbackAction<ShowVolumesIndent>(
+          onInvoke: (_) => _showVolumes(context, ref),
+        ),
         if (actions != null) ...actions!,
       },
       child: child,
+    );
+  }
+
+  void _showVolumes(BuildContext context, WidgetRef ref) {
+    final controller = mangaReaderController(context);
+    final contentDetails = controller.contentDetails;
+    final mediaItems = controller.mediaItems;
+
+    final collectionItem = ref
+        .read(collectionItemProvider(contentDetails))
+        .value;
+
+    if (mediaItems.length < 2) {
+      return;
+    }
+
+    Navigator.of(context).push(
+      MediaItemsListRoute(
+        title: AppLocalizations.of(context)!.mangaChapter,
+        mediaItems: mediaItems,
+        contentProgress: collectionItem,
+        onSelect: (item) => controller.changeCollectionCurentItem(item.number),
+        itemBuilder: mangaChapterListItemBuilder(contentDetails),
+      ),
     );
   }
 }

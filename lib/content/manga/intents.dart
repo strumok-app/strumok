@@ -33,3 +33,7 @@ class ShowUIIntent extends Intent {
 class ToggleFullscreanIntent extends Intent {
   const ToggleFullscreanIntent();
 }
+
+class ShowVolumesIndent extends Intent {
+  const ShowVolumesIndent();
+}
