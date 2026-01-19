@@ -72,7 +72,13 @@ void appRunner() async {
   await ContentSuppliers().load();
 
   // start ui
-  runApp(ProviderScope(observers: [ErrorProviderObserver()], child: MainApp()));
+  runApp(
+    ProviderScope(
+      retry: (_, _) => null, // disable retry
+      observers: [ErrorProviderObserver()],
+      child: MainApp(),
+    ),
+  );
 }
 
 class MainApp extends ConsumerWidget {
