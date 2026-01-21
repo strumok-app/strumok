@@ -59,7 +59,9 @@ class _MangaReaderViewState extends ConsumerState<MangaReaderView> {
         return;
       }
 
-      notifier.setCurrentLength(mangaReaderState.pages.length);
+      if (mangaReaderState.pages.isNotEmpty) {
+        notifier.setCurrentLength(mangaReaderState.pages.length);
+      }
 
       mangaReaderState.currentPage.addListener(() {
         notifier.setCurrentPosition(mangaReaderState.currentPage.value);

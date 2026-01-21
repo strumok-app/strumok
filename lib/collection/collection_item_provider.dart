@@ -46,12 +46,16 @@ class CollectionItem extends _$CollectionItem {
   }
 
   void setCurrentPosition(int position, [int? length]) async {
-    final value = state.requireValue;
-    final currentItemPosition = value.currentMediaItemPosition;
-
     if (position < 0) {
       throw ArgumentError("position cant be negative: $position");
     }
+
+    if (length != null && length <= 0) {
+      return;
+    }
+
+    final value = state.requireValue;
+    final currentItemPosition = value.currentMediaItemPosition;
 
     if (value.mediaType == MediaType.video) {
       if (position > 10 &&
@@ -92,6 +96,10 @@ class CollectionItem extends _$CollectionItem {
   void setCurrentLength(int length) async {
     final value = state.requireValue;
     final currentItemPosition = value.currentMediaItemPosition;
+
+    if (length <= 0) {
+      return;
+    }
 
     final newValue = value.copyWith(
       positions: {
