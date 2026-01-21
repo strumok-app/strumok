@@ -209,10 +209,8 @@ class VideoContentController {
     }
 
     if (_currentItem != collectionItem.currentItem) {
-      await Future.wait([
-        _playCollectionItem(collectionItem),
-        _loadSubtitles(collectionItem),
-      ]);
+      await _playCollectionItem(collectionItem);
+      await _loadSubtitles(collectionItem);
     } else if (_currentSourceName != collectionItem.currentSourceName) {
       await _playCollectionItem(collectionItem);
     } else if (_currentSubtitleName != collectionItem.currentSubtitleName) {
