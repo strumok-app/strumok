@@ -67,6 +67,7 @@ dependencies:
   url_launcher: ^6.3.2
   collection: ^1.19.1
   http: ^1.6.0
+  path: ^1.9.1
   
   #crypto
   pointycastle: ^4.0.0 

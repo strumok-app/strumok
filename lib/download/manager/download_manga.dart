@@ -44,7 +44,7 @@ void downloadManga(
       );
     }
 
-    final completeFile = File('${request.folder}/complete');
+    final completeFile = File('${request.folder}.manga');
     await completeFile.create(recursive: true);
     await completeFile.writeAsString(
       jsonEncode({
