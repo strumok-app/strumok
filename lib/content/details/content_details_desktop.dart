@@ -3,7 +3,7 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 import 'package:strumok/app_localizations.dart';
-import 'package:strumok/content/details/cached_media_items.dart';
+import 'package:strumok/content/details/media_items_loader.dart';
 import 'package:strumok/content/details/widgets.dart';
 import 'package:strumok/content/manga/content_details_manga_actions.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
@@ -161,14 +161,14 @@ class _ContentActionsButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (contentDetails.mediaType) {
-      MediaType.video => CachedMediaItems(
+      MediaType.video => MediaItemsLoader(
         contentDetails: contentDetails,
         builder: (context, mediaItems) => ContentDetailsVideoActions(
           contentDetails: contentDetails,
           mediaItems: mediaItems,
         ),
       ),
-      MediaType.manga => CachedMediaItems(
+      MediaType.manga => MediaItemsLoader(
         contentDetails: contentDetails,
         builder: (context, mediaItems) => ContentDetailsMangaActions(
           contentDetails: contentDetails,

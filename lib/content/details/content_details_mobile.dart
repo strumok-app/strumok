@@ -3,7 +3,7 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 import 'package:strumok/app_localizations.dart';
-import 'package:strumok/content/details/cached_media_items.dart';
+import 'package:strumok/content/details/media_items_loader.dart';
 import 'package:strumok/content/details/widgets.dart';
 import 'package:strumok/content/manga/content_details_manga_actions.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
@@ -122,14 +122,14 @@ class _MainAccentBlockState extends State<_MainAccentBlock> {
       child: Align(
         alignment: Alignment.bottomLeft,
         child: switch (widget.contentDetails.mediaType) {
-          MediaType.video => CachedMediaItems(
+          MediaType.video => MediaItemsLoader(
             contentDetails: widget.contentDetails,
             builder: (context, mediaItems) => ContentDetailsVideoActions(
               contentDetails: widget.contentDetails,
               mediaItems: mediaItems,
             ),
           ),
-          MediaType.manga => CachedMediaItems(
+          MediaType.manga => MediaItemsLoader(
             contentDetails: widget.contentDetails,
             builder: (context, mediaItems) => ContentDetailsMangaActions(
               contentDetails: widget.contentDetails,
