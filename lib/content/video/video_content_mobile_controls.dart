@@ -464,6 +464,8 @@ class _VideoContentMobileControlsState
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
+                                  const ExitButton(),
+                                  const SizedBox(width: 8),
                                   const MediaTitle(),
                                   const Spacer(),
                                   const PlayerPlaylistButton(),
