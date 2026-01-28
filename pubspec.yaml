@@ -96,6 +96,23 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
 
 
+dependency_overrides: 
+  media_kit: 
+    git: 
+      url: https://github.com/Predidit/media-kit.git
+      path: media_kit
+      ref: upstream-better-linux-render
+  media_kit_video: 
+    git: 
+      url: https://github.com/Predidit/media-kit.git
+      path: media_kit_video
+      ref: upstream-better-linux-render
+  # media_kit_libs_video:
+  #   git: 
+  #     url: https://github.com/Predidit/media-kit.git
+  #     path: libs/universal/media_kit_libs_video
+  #     ref: upstream-better-linux-render
+
 flutter:
   uses-material-design: true
   generate: true

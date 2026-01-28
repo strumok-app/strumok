@@ -862,10 +862,11 @@ packages:
   media_kit:
     dependency: "direct main"
     description:
-      name: media_kit
-      sha256: ae9e79597500c7ad6083a3c7b7b7544ddabfceacce7ae5c9709b0ec16a5d6643
-      url: "https://pub.dev"
-    source: hosted
+      path: media_kit
+      ref: upstream-better-linux-render
+      resolved-ref: "2811a44c34655fdef3dd6554315f5d3a550e5dd7"
+      url: "https://github.com/Predidit/media-kit.git"
+    source: git
     version: "1.2.6"
   media_kit_libs_android_video:
     dependency: transitive
@@ -918,10 +919,11 @@ packages:
   media_kit_video:
     dependency: "direct main"
     description:
-      name: media_kit_video
-      sha256: afaa509e7b7e0bf247557a3a740cde903a52c34ace9810f94500e127bd7b043d
-      url: "https://pub.dev"
-    source: hosted
+      path: media_kit_video
+      ref: upstream-better-linux-render
+      resolved-ref: "2811a44c34655fdef3dd6554315f5d3a550e5dd7"
+      url: "https://github.com/Predidit/media-kit.git"
+    source: git
     version: "2.0.1"
   meta:
     dependency: transitive
