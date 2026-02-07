@@ -117,6 +117,11 @@ class MangaReaderController extends ValueNotifier<MangaReaderState> {
 
     final pages = await mangaSource.pages;
 
+    if (pages.isEmpty) {
+      value = MangaReaderState.erroneous("No pages found");
+      return;
+    }
+
     if (currentItemIdx != collectionItem.currentItem ||
         currentSourceName != collectionItem.currentSourceName) {
       return;
