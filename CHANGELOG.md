@@ -1,9 +1,9 @@
-## [1.24.15](https://github.com/strumok-app/strumok/compare/v1.24.14...v1.24.15) (2026-02-07)
+## [1.24.16](https://github.com/strumok-app/strumok/compare/v1.24.15...v1.24.16) (2026-02-09)
 
 
 ### Bug Fixes
 
-* show error if no manga pages loaded ([403a159](https://github.com/strumok-app/strumok/commit/403a159cf6e2470ab3b4fc5c927d77a627a32864))
+* download dirctory detection ([71d2bd1](https://github.com/strumok-app/strumok/commit/71d2bd1780111d827cc9e4afc79f6dfa6aca9577))
 
 
 
