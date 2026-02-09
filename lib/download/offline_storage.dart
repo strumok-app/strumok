@@ -44,14 +44,25 @@ class OfflineStorage {
   Future<void> init() async {
     final downloadDirFromPreferences = AppPreferences.offlineDownloadsDirectory;
 
+    bool hasCustomPath = false;
     if (downloadDirFromPreferences != null &&
         downloadDirFromPreferences.isNotEmpty) {
       _downloadsDir = downloadDirFromPreferences;
-    } else {
-      _downloadsDir = path.join(
-        (await getDownloadsDirectory())!.path,
-        'strumok',
-      );
+      hasCustomPath = (await Directory(_downloadsDir).exists());
+
+      if (!hasCustomPath) {
+        // reset directory
+        AppPreferences.offlineDownloadsDirectory = null;
+      }
+    }
+
+    // fallback to default values
+    if (!hasCustomPath) {
+      final baseDir =
+          (await getDownloadsDirectory())?.path ??
+          (await getApplicationDocumentsDirectory()).path;
+
+      _downloadsDir = path.join(baseDir, 'strumok');
     }
 
     logger.info("Downloads directory: $_downloadsDir");
