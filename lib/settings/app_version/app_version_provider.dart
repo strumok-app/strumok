@@ -76,7 +76,7 @@ class AppDownload extends _$AppDownload {
     AppVersionDownloadAssets? asset;
 
     if (Platform.isAndroid) {
-      final deviceInfo = await DeviceInfoPlugin().androidInfo;
+      // final deviceInfo = await DeviceInfoPlugin().androidInfo;
 
       // if (deviceInfo.supportedAbis.contains("arm64-v8a")) {
       //   asset = info.assets
