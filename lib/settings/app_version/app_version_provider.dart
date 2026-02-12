@@ -78,19 +78,19 @@ class AppDownload extends _$AppDownload {
     if (Platform.isAndroid) {
       final deviceInfo = await DeviceInfoPlugin().androidInfo;
 
-      if (deviceInfo.supportedAbis.contains("arm64-v8a")) {
-        asset = info.assets
-            .where((a) => a.name.contains("app-arm64-v8a-release.apk"))
-            .firstOrNull;
-      } else if (deviceInfo.supportedAbis.contains("armeabi-v7a")) {
-        asset = info.assets
-            .where((a) => a.name.contains("app-armeabi-v7a-release.apk"))
-            .firstOrNull;
-      } else {
-        asset = info.assets
-            .where((a) => a.name.contains("app-release.apk"))
-            .firstOrNull;
-      }
+      // if (deviceInfo.supportedAbis.contains("arm64-v8a")) {
+      //   asset = info.assets
+      //       .where((a) => a.name.contains("app-arm64-v8a-release.apk"))
+      //       .firstOrNull;
+      // } else if (deviceInfo.supportedAbis.contains("armeabi-v7a")) {
+      //   asset = info.assets
+      //       .where((a) => a.name.contains("app-armeabi-v7a-release.apk"))
+      //       .firstOrNull;
+      // } else {
+      asset = info.assets
+          .where((a) => a.name.contains("app-release.apk"))
+          .firstOrNull;
+      // }
 
       if (asset != null) {
         _downloadAndInstallApk(info, asset);

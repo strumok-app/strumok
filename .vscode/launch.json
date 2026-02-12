@@ -38,7 +38,7 @@
             "env": {
                 "MDK_LOG": "0",
                 "MDK_LOG_STATUS": "0",
-                "RUST_LOG": "error"
+                "RUST_LOG": "info"
             }
         },
     ]

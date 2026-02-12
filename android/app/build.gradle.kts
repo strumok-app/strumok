@@ -32,15 +32,6 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("armeabi-v7a", "arm64-v8a")
-            isUniversalApk = true
-        }
-    }
-
     defaultConfig {
         applicationId = "app.cloud_hook"
         // You can update the following values to match your application needs.
