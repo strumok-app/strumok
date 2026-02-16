@@ -57,7 +57,7 @@ class PlayerPlaylistButton extends ConsumerWidget {
           ),
         );
       },
-      icon: const Icon(Icons.list),
+      icon: const Icon(Icons.playlist_play),
       color: Colors.white,
       disabledColor: Colors.white.withValues(alpha: 0.7),
     );
