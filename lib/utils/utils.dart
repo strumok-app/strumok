@@ -1,3 +1,5 @@
+import 'dart:io';
+
 Future<T> retry<T>(
   Future<T> Function() action,
   int maxRetries,
@@ -25,4 +27,13 @@ double downloadSpeed(DateTime start, int bytes) {
   }
 
   return 0;
+}
+
+class DisableCertVerifyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
 }

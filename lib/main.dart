@@ -14,6 +14,7 @@ import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/layouts/version_guard.dart';
 import 'package:strumok/download/offline_storage.dart';
+import 'package:strumok/utils/utils.dart';
 import 'package:strumok/video_backend/init.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/tv.dart';
@@ -25,6 +26,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
+  // disable ssl cert due to windows issue
+  HttpOverrides.global = DisableCertVerifyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
 
   Logger.root.level = Level.ALL; // defaults to Level.INFO
