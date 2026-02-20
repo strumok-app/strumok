@@ -11,7 +11,7 @@
 
 # Strumok 
 
-Дивись фільми, серіали, аніме та читай мангу у единому додатку на телефоні, телевізорі чи ПК.
+Дивись фільми, серіали, аніме та читай мангу в єдиному застосунку на телефоні, телевізорі чи ПК.
 
 </div>
 
@@ -21,20 +21,20 @@
 
 ## Функції
 * Без реклами
-* Українска озвучка та англомовний контент
+* Українска озвучка й англомовний контент
 * Рекомендації
 * Синхронизація колекції між пристроями
-* Підтримка Android телефонів, Android TV, windows та linux ПК
+* Підтримка Android/Android TV, Windows і Linux
 * Завантаження
 
-## Знімки екрана
+## Скріншоти 
 
-### Гловна
+### Головна
 |||
 |--|--|
 |[![mobile](data/screenshoots/mobile/Home.jpg)](data/screenshoots/mobile/Home.jpg)|[![desktop](data/screenshoots/desktop/Home.png)](data/screenshoots/desktop/Home.png)|
 
-### Коллекція
+### Колекція 
 |||
 |--|--|
 |[![mobile](data/screenshoots/mobile/Collection.jpg)](data/screenshoots/mobile/Collection.jpg)|[![desktop](data/screenshoots/desktop/Collection.png)](data/screenshoots/desktop/Collection.png)|
@@ -44,7 +44,7 @@
 |--|--|
 |[![mobile](data/screenshoots/mobile/Details.jpg)](data/screenshoots/mobile/Details.jpg)|[![desktop](data/screenshoots/desktop/Details.png)](data/screenshoots/desktop/Details.png)|
 
-### Відео плеер
+### Відео плеєр 
 |||
 |--|--|
 |[![mobile](data/screenshoots/mobile/Video.jpg)](data/screenshoots/mobile/Video.jpg)|[![desktop](data/screenshoots/desktop/Video.png)](data/screenshoots/desktop/Video.png)|
@@ -58,18 +58,18 @@
 
 ### Android / Android TV
 
-[Завантажити](https://github.com/strumok-app/strumok/releases/latest/download/app-release.apk) універсальний android apk
+[Завантажити](https://github.com/strumok-app/strumok/releases/latest/download/app-release.apk) універсальний Android APK
 
 ### Windows
 
-[Завантажити](https://github.com/strumok-app/strumok/releases/latest/download/StrumokSetup.exe) windows інсталятор
+[Завантажити](https://github.com/strumok-app/strumok/releases/latest/download/StrumokSetup.exe) Windows інсталятор
 
 ### Linux
 
 Встановити [libmpv](https://mpv.io/installation/)
 
-[Завантажити](https://github.com/strumok-app/strumok/releases/latest/download/strumok-linux.tar.gz) архів та розпакувати
+[Завантажити](https://github.com/strumok-app/strumok/releases/latest/download/strumok-linux.tar.gz) архів і розпакувати
 
 ### Disclaimer
 
-Розробник цієї програми не має жодного відношення до доступних постачальників контенту.
+Розробники цієї програми не має жодного відношення до доступних постачальників контенту.
