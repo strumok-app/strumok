@@ -111,55 +111,27 @@ class _MediaItemsListView extends StatelessWidget {
         ),
       ),
       child: Material(
-        child: Column(
-          children: [
-            _renderTitle(context),
-            Expanded(
-              child: _MediaItemsList(
-                mediaItems: mediaItems,
-                contentProgress: contentProgress,
-                onSelect: onSelect,
-                itemBuilder: itemBuilder,
-              ),
-            ),
-          ],
+        child: _MediaItemsList(
+          title: title,
+          mediaItems: mediaItems,
+          contentProgress: contentProgress,
+          onSelect: onSelect,
+          itemBuilder: itemBuilder,
         ),
       ),
-    );
-  }
-
-  Widget _renderTitle(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Text(title, style: theme.textTheme.headlineMedium),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.close),
-          ),
-        ),
-      ],
     );
   }
 }
 
 class _MediaItemsList extends StatefulWidget {
+  final String title;
   final List<ContentMediaItem> mediaItems;
   final ContentProgress? contentProgress;
   final SelectCallback onSelect;
   final MediaItemsListBuilder itemBuilder;
 
   const _MediaItemsList({
+    required this.title,
     required this.mediaItems,
     required this.contentProgress,
     required this.onSelect,
@@ -182,11 +154,18 @@ class _MediaItemsListState extends State<_MediaItemsList> {
   @override
   Widget build(BuildContext context) {
     if (groups.length == 1) {
-      return _MediaItemsListSection(
-        list: groups.values.first,
-        contentProgress: widget.contentProgress,
-        onSelect: widget.onSelect,
-        itemBuilder: widget.itemBuilder,
+      return Column(
+        children: [
+          _renderTitle(context),
+          Expanded(
+            child: _MediaItemsListSection(
+              list: groups.values.first,
+              contentProgress: widget.contentProgress,
+              onSelect: widget.onSelect,
+              itemBuilder: widget.itemBuilder,
+            ),
+          ),
+        ],
       );
     }
 
@@ -196,9 +175,22 @@ class _MediaItemsListState extends State<_MediaItemsList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TabBar(
-            isScrollable: true,
-            tabs: groups.keys.map((e) => Tab(text: e)).toList(),
+          Row(
+            children: [
+              Expanded(
+                child: TabBar(
+                  isScrollable: true,
+                  tabs: groups.keys.map((e) => Tab(text: e)).toList(),
+                ),
+              ),
+              SizedBox(width: 8),
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(Icons.close),
+              ),
+            ],
           ),
           Expanded(
             child: TabBarView(
@@ -216,6 +208,30 @@ class _MediaItemsListState extends State<_MediaItemsList> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _renderTitle(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Text(widget.title, style: theme.textTheme.headlineMedium),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.close),
+          ),
+        ),
+      ],
     );
   }
 
