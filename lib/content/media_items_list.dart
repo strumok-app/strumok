@@ -236,7 +236,7 @@ class _MediaItemsListState extends State<_MediaItemsList> {
   }
 
   int _currentSectionIndex(Map<String, dynamic> groups) {
-    if (widget.contentProgress == null) {
+    if (widget.contentProgress == null || widget.contentProgress!.currentItem >= widget.mediaItems.length) {
       return 0;
     }
 
