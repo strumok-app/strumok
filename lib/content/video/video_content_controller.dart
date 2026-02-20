@@ -33,22 +33,21 @@ class VideoContentController {
   String? _currentSourceName;
   String? _currentSubtitleName;
 
+  ValueNotifier<AsyncValue<SubtitleController?>> subtitleController =
+      ValueNotifier(AsyncValue.data(null));
+  ValueNotifier<EdgeInsets> subtitlePaddings = ValueNotifier(EdgeInsets.zero);
+
   VideoBackend? _currentVideoBackend;
   ValueNotifier<AsyncValue<VideoBackend>> videoBackend = ValueNotifier(
     AsyncValue.loading(),
   );
+  final StreamController<VideoBackendState> _videoBackendStateStreamController =
+      StreamController.broadcast();
 
   VideoBackendState get videoBackendState =>
       _currentVideoBackend?.value ?? VideoBackendState.uninitialized();
-
-  final StreamController<VideoBackendState> _videoBackendStateStreamController =
-      StreamController.broadcast();
   Stream<VideoBackendState> get videoBackendStateStream =>
       _videoBackendStateStreamController.stream;
-
-  ValueNotifier<AsyncValue<SubtitleController?>> subtitleController =
-      ValueNotifier(AsyncValue.data(null));
-  ValueNotifier<EdgeInsets> subtitlePaddings = ValueNotifier(EdgeInsets.zero);
 
   bool _disposed = false;
 
@@ -63,6 +62,7 @@ class VideoContentController {
     _subtitleWorker.dispose();
     _currentVideoBackend?.dispose();
     _videoBackendStateStreamController.close();
+
     videoBackend.dispose();
     subtitleController.dispose();
     subtitlePaddings.dispose();
@@ -316,6 +316,10 @@ class VideoContentController {
       _videoBackendStateStreamController.add(newVideoBackend.value);
 
       newVideoBackend.addListener(() {
+        if (_disposed) {
+          return;
+        }
+
         final value = newVideoBackend.value;
         _videoBackendStateStreamController.add(value);
         if (value.isEnded) {
