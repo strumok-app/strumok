@@ -41,6 +41,8 @@ void donwloadFile(
       if (bytesDownloaded > 0) {
         headers[HttpHeaders.rangeHeader] = 'bytes=$bytesDownloaded-';
       }
+    } else {
+      await partialFile.create(recursive: true);
     }
 
     // fileExist
@@ -54,7 +56,6 @@ void donwloadFile(
       throw Exception("httpStatus: ${res.statusCode}");
     }
 
-    await partialFile.create(recursive: true);
     final sink = partialFile.openWrite(mode: FileMode.writeOnlyAppend);
 
     await for (var chunk in res.stream) {
