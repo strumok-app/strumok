@@ -1,8 +1,12 @@
 import 'package:content_suppliers_api/model.dart';
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:flutter/material.dart';
 
 typedef Builder =
-    Widget Function(BuildContext context, List<ContentMediaItem> mediaItems);
+    Widget Function(
+      BuildContext context,
+      SegmentedList<ContentMediaItem> mediaItems,
+    );
 
 class MediaItemsLoader extends StatelessWidget {
   final ContentDetails contentDetails;
@@ -16,7 +20,7 @@ class MediaItemsLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Iterable<ContentMediaItem>>(
+    return FutureBuilder<SegmentedList<ContentMediaItem>>(
       future: Future.value(contentDetails.mediaItems),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -39,7 +43,7 @@ class MediaItemsLoader extends StatelessWidget {
           return const SizedBox(height: 40);
         }
 
-        return builder(context, mediaItems.toList());
+        return builder(context, mediaItems);
       },
     );
   }

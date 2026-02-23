@@ -136,7 +136,7 @@ final class AppDownloadProvider
   }
 }
 
-String _$appDownloadHash() => r'fa6a375a08d2219949cfef13d70bdb7fa9e75f98';
+String _$appDownloadHash() => r'61950fd41a9a90a35ce06badc444b8b52065629d';
 
 abstract class _$AppDownload extends $Notifier<DownloadState> {
   DownloadState build();

@@ -1,3 +1,4 @@
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/manga/manga_reader_controller.dart';
@@ -83,7 +84,7 @@ class MangaReaderControls extends StatelessWidget {
 
 class MangaReaderControlTopBar extends ConsumerWidget {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
   final MangaReaderState mangaReaderState;
 
   const MangaReaderControlTopBar({
@@ -159,7 +160,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
 
 class MangaReaderControlBottomBar extends ConsumerWidget {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
   final MangaReaderState mangaReaderState;
 
   const MangaReaderControlBottomBar({
@@ -276,7 +277,7 @@ class _MangaPagesSliderState extends State<MangaPagesSlider> {
 
 class MangaSettingsButton extends StatelessWidget {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
   final Color? color;
 
   const MangaSettingsButton({

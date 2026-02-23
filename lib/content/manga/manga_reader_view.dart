@@ -1,3 +1,4 @@
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/manga/manga_long_strip_viewer.dart';
@@ -18,7 +19,7 @@ import 'package:strumok/widgets/back_nav_button.dart';
 
 class MangaReaderView extends ConsumerStatefulWidget {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
 
   const MangaReaderView({
     super.key,
@@ -49,7 +50,8 @@ class _MangaReaderViewState extends ConsumerState<MangaReaderView> {
     controller = MangaReaderController(
       contentDetails: widget.contentDetails,
       mediaItems: widget.mediaItems,
-      changeCollectionCurentItem: (itemIdx) => notifier.setCurrentItem(itemIdx),
+      changeCollectionCurrentItem: (itemIdx) =>
+          notifier.setCurrentItem(itemIdx),
     );
 
     controller.addListener(() {

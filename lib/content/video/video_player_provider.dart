@@ -1,4 +1,5 @@
 import 'package:content_suppliers_api/model.dart';
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
@@ -100,7 +101,7 @@ class EqualizerBandsSettings extends _$EqualizerBandsSettings {
 Future<SourceSelectorModel> sourceSelector(
   Ref ref,
   ContentDetails contentDetails,
-  List<ContentMediaItem> mediaItems,
+  SegmentedList<ContentMediaItem> mediaItems,
 ) async {
   final (currentItem, currentSource, currentSubtitle) = await ref.watch(
     collectionItemProvider(contentDetails).selectAsync(
@@ -109,7 +110,7 @@ Future<SourceSelectorModel> sourceSelector(
     ),
   );
 
-  final sources = await mediaItems[currentItem].sources;
+  final sources = await mediaItems[currentItem]?.sources ?? [];
 
   return SourceSelectorModel(
     sources: sources,

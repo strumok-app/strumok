@@ -1,3 +1,4 @@
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:flutter/services.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_model.dart';
@@ -20,7 +21,7 @@ const mangaPageAspectRatio = 1.42;
 
 class VolumesButton extends ConsumerWidget {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
   final SelectCallback? onSelect;
   final Color? color;
   final bool autofocus;
@@ -284,7 +285,7 @@ class MangaReaderIteractions extends ConsumerWidget {
         title: AppLocalizations.of(context)!.mangaChapter,
         mediaItems: mediaItems,
         contentProgress: collectionItem,
-        onSelect: (item) => controller.changeCollectionCurentItem(item.number),
+        onSelect: (item) => controller.changeCollectionCurrentItem(item.number),
         itemBuilder: mangaChapterListItemBuilder(contentDetails),
       ),
     );

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_preferences.dart';
@@ -20,7 +21,7 @@ class VideoContentController {
       SimpleCache(10);
 
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
 
   final ChangeCollectionCurrentItemCallback changeCollectionCurentItem;
   final _subtitleWorker = SubtitleWorker();
@@ -231,6 +232,14 @@ class VideoContentController {
       _currentSourceName = collectionItem.currentSourceName;
 
       final item = mediaItems[_currentItem!];
+      if (item == null) {
+        videoBackend.value = AsyncValue.error(
+          "Video not avalaible",
+          StackTrace.current,
+        );
+        return;
+      }
+
       final sources = await item.sources;
 
       if (_disposed ||

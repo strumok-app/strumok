@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -48,7 +49,7 @@ Future<ContentDetails> details(Ref ref, String supplier, String id) async {
 
 class DetailsAndMediaItems {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
 
   DetailsAndMediaItems(this.contentDetails, this.mediaItems);
 }
@@ -62,5 +63,5 @@ Future<DetailsAndMediaItems> detailsAndMedia(
   final contentDetails = await ref.read(detailsProvider(supplier, id).future);
   final mediaItems = await contentDetails.mediaItems;
 
-  return DetailsAndMediaItems(contentDetails, mediaItems.toList());
+  return DetailsAndMediaItems(contentDetails, mediaItems);
 }

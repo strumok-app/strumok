@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/video_content_controller.dart';
 import 'package:strumok/content/video/video_content_desktop_view.dart';
@@ -17,7 +18,7 @@ import 'package:strumok/video_backend/video_backend.dart';
 
 class VideoContentView extends ConsumerStatefulWidget {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
 
   const VideoContentView({
     super.key,

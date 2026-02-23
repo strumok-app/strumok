@@ -350,7 +350,7 @@ final class SourceSelectorProvider
         $FutureProvider<SourceSelectorModel> {
   const SourceSelectorProvider._({
     required SourceSelectorFamily super.from,
-    required (ContentDetails, List<ContentMediaItem>) super.argument,
+    required (ContentDetails, SegmentedList<ContentMediaItem>) super.argument,
   }) : super(
          retry: null,
          name: r'sourceSelectorProvider',
@@ -377,7 +377,8 @@ final class SourceSelectorProvider
 
   @override
   FutureOr<SourceSelectorModel> create(Ref ref) {
-    final argument = this.argument as (ContentDetails, List<ContentMediaItem>);
+    final argument =
+        this.argument as (ContentDetails, SegmentedList<ContentMediaItem>);
     return sourceSelector(ref, argument.$1, argument.$2);
   }
 
@@ -392,13 +393,13 @@ final class SourceSelectorProvider
   }
 }
 
-String _$sourceSelectorHash() => r'b3d9994934390c45715949ca761df1128a31d292';
+String _$sourceSelectorHash() => r'7215f74ed100881a0d1cb0d71e67dfcfb395e397';
 
 final class SourceSelectorFamily extends $Family
     with
         $FunctionalFamilyOverride<
           FutureOr<SourceSelectorModel>,
-          (ContentDetails, List<ContentMediaItem>)
+          (ContentDetails, SegmentedList<ContentMediaItem>)
         > {
   const SourceSelectorFamily._()
     : super(
@@ -411,7 +412,7 @@ final class SourceSelectorFamily extends $Family
 
   SourceSelectorProvider call(
     ContentDetails contentDetails,
-    List<ContentMediaItem> mediaItems,
+    SegmentedList<ContentMediaItem> mediaItems,
   ) => SourceSelectorProvider._(
     argument: (contentDetails, mediaItems),
     from: this,

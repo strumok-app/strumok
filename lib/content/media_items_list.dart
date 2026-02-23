@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
@@ -13,7 +14,7 @@ typedef MediaItemsListBuilder =
 
 class MediaItemsListRoute<T> extends PopupRoute<T> {
   final String title;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
   final ContentProgress? contentProgress;
   final MediaItemsListBuilder itemBuilder;
   final SelectCallback onSelect;
@@ -78,7 +79,7 @@ class MediaItemsListRoute<T> extends PopupRoute<T> {
 
 class _MediaItemsListView extends StatelessWidget {
   final String title;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
   final ContentProgress? contentProgress;
   final SelectCallback onSelect;
   final MediaItemsListBuilder itemBuilder;
@@ -125,7 +126,7 @@ class _MediaItemsListView extends StatelessWidget {
 
 class _MediaItemsList extends StatefulWidget {
   final String title;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
   final ContentProgress? contentProgress;
   final SelectCallback onSelect;
   final MediaItemsListBuilder itemBuilder;
@@ -236,11 +237,16 @@ class _MediaItemsListState extends State<_MediaItemsList> {
   }
 
   int _currentSectionIndex(Map<String, dynamic> groups) {
-    if (widget.contentProgress == null || widget.contentProgress!.currentItem >= widget.mediaItems.length) {
+    if (widget.contentProgress == null ||
+        widget.contentProgress!.currentItem >= widget.mediaItems.length) {
       return 0;
     }
 
     final currentItem = widget.mediaItems[widget.contentProgress!.currentItem];
+    if (currentItem == null) {
+      return 0;
+    }
+
     return groups.keys.toList().indexOf(currentItem.section!);
   }
 }

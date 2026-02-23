@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:content_suppliers_rust/rust/frb_generated.dart';
 import 'package:content_suppliers_rust/rust/frb_generated.io.dart';
 import 'package:content_suppliers_rust/rust/models.dart' as models;
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-const compatibleApiVersoin = 3;
+const compatibleApiVersion = 3;
 
 // ignore_for_file: invalid_use_of_internal_member
 class RustContentSuppliersBundle implements ContentSupplierBundle {
@@ -46,7 +47,7 @@ class RustContentSuppliersBundle implements ContentSupplierBundle {
   }
 
   static bool isCompatible(int apiVersion) {
-    return compatibleApiVersoin == apiVersion;
+    return compatibleApiVersion == apiVersion;
   }
 }
 
@@ -184,7 +185,7 @@ class _RustContentDetails extends AbstractContentDetails {
   final List<String> _params;
   @override
   final MediaType mediaType;
-  Iterable<ContentMediaItem>? _mediaItems;
+  SegmentedList<ContentMediaItem>? _mediaItems;
 
   _RustContentDetails._({
     required super.id,
@@ -197,7 +198,7 @@ class _RustContentDetails extends AbstractContentDetails {
     required super.additionalInfo,
     required super.similar,
     required this.mediaType,
-    Iterable<ContentMediaItem>? mediaItems,
+    SegmentedList<ContentMediaItem>? mediaItems,
     required RustLibApi api,
     required List<String> params,
   }) : _api = api,
@@ -227,28 +228,38 @@ class _RustContentDetails extends AbstractContentDetails {
       similar: result.similar
           .map((info) => ContentSearchResultExt.fromRust(supplier, info))
           .toList(),
-      mediaItems: result.mediaItems?.mapIndexed(
-        (idx, item) =>
-            _RustMediaItem.fromRust(id, supplier, idx, langs, item, api),
-      ),
+      mediaItems: result.mediaItems
+          ?.mapIndexed(
+            (idx, item) =>
+                _RustMediaItem.fromRust(id, supplier, idx, langs, item, api),
+          )
+          .toSegmentedList(),
       params: result.params,
       api: api,
     );
   }
 
   @override
-  FutureOr<Iterable<ContentMediaItem>> get mediaItems async {
+  FutureOr<SegmentedList<ContentMediaItem>> get mediaItems async {
     try {
       return _mediaItems ??=
           (await _api.crateApiLoadMediaItems(
-            supplier: supplier,
-            id: id,
-            langs: langs,
-            params: _params,
-          )).mapIndexed(
-            (idx, item) =>
-                _RustMediaItem.fromRust(id, supplier, idx, langs, item, _api),
-          );
+                supplier: supplier,
+                id: id,
+                langs: langs,
+                params: _params,
+              ))
+              .mapIndexed(
+                (idx, item) => _RustMediaItem.fromRust(
+                  id,
+                  supplier,
+                  idx,
+                  langs,
+                  item,
+                  _api,
+                ),
+              )
+              .toSegmentedList();
     } catch (e) {
       throw ContentSuppliersException(
         "FFI LoadMediaItems Failed [supplier=$supplier id=$id params: $_params] error: $e",

@@ -1,3 +1,4 @@
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/content/manga/widgets.dart';
 import 'package:content_suppliers_api/model.dart';
@@ -6,7 +7,7 @@ import 'package:strumok/utils/nav.dart';
 
 class ContentDetailsMangaActions extends StatelessWidget {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
 
   const ContentDetailsMangaActions({
     super.key,

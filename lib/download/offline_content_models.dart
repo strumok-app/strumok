@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:equatable/equatable.dart';
 import 'package:strumok/download/offline_storage.dart';
 
@@ -23,7 +24,7 @@ class OfflineContentDetails implements ContentDetails {
   @override
   final MediaType mediaType;
 
-  List<ContentMediaItem>? _mediaItems;
+  SegmentedList<ContentMediaItem>? _mediaItems;
 
   OfflineContentDetails._({
     required this.id,
@@ -60,15 +61,16 @@ class OfflineContentDetails implements ContentDetails {
   List<String> get additionalInfo => const [];
 
   @override
-  Future<Iterable<ContentMediaItem>> get mediaItems async =>
-      _mediaItems ??= await OfflineStorage().getMediaItems(supplier, id);
+  Future<SegmentedList<ContentMediaItem>> get mediaItems async {
+    return _mediaItems ??= await OfflineStorage().getMediaItems(supplier, id);
+  }
 
   @override
   List<ContentInfo> get similar => const [];
 }
 
 // ignore: must_be_immutable
-class OfflineContenMediaItem extends Equatable implements ContentMediaItem {
+class OfflineContentMediaItem extends Equatable implements ContentMediaItem {
   final String supplier;
   final String id;
   @override
@@ -77,7 +79,7 @@ class OfflineContenMediaItem extends Equatable implements ContentMediaItem {
   final int number;
   List<ContentMediaItemSource>? _sources;
 
-  OfflineContenMediaItem(this.supplier, this.id, this.title, this.number);
+  OfflineContentMediaItem(this.supplier, this.id, this.title, this.number);
 
   @override
   List<Object?> get props => [supplier, id, number];
@@ -113,14 +115,14 @@ class ContentDetailsWithOffline extends Equatable implements ContentDetails {
   String get image => _actualDetails.image;
 
   @override
-  Future<Iterable<ContentMediaItem>> get mediaItems async {
+  Future<SegmentedList<ContentMediaItem>> get mediaItems async {
     final onlineMediaItems = await _actualDetails.mediaItems;
 
     return onlineMediaItems
         .mapIndexed(
-          (index, it) => ContentMediaItemWithOfflline(supplier, id, it),
+          (index, it) => ContentMediaItemWithOffline(supplier, id, it),
         )
-        .toList();
+        .toSegmentedList();
   }
 
   @override
@@ -142,13 +144,13 @@ class ContentDetailsWithOffline extends Equatable implements ContentDetails {
   List<Object?> get props => [supplier, id];
 }
 
-class ContentMediaItemWithOfflline extends Equatable
+class ContentMediaItemWithOffline extends Equatable
     implements ContentMediaItem {
   final String supplier;
   final String id;
   final ContentMediaItem _actualMediaItem;
 
-  const ContentMediaItemWithOfflline(
+  const ContentMediaItemWithOffline(
     this.supplier,
     this.id,
     this._actualMediaItem,

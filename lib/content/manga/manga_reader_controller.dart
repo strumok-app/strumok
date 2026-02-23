@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:strumok/collection/collection_item_model.dart';
@@ -65,13 +66,13 @@ const _preloadPagesAhead = 4;
 
 class MangaReaderController extends ValueNotifier<MangaReaderState> {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
-  final ChangeCollectionCurrentItemCallback changeCollectionCurentItem;
+  final SegmentedList<ContentMediaItem> mediaItems;
+  final ChangeCollectionCurrentItemCallback changeCollectionCurrentItem;
 
   MangaReaderController({
     required this.contentDetails,
     required this.mediaItems,
-    required this.changeCollectionCurentItem,
+    required this.changeCollectionCurrentItem,
   }) : super(MangaReaderState.uinitialized());
 
   Future<void> update(MediaCollectionItem collectionItem) async {
@@ -84,74 +85,81 @@ class MangaReaderController extends ValueNotifier<MangaReaderState> {
   Future<void> _loadPages(MediaCollectionItem collectionItem) async {
     value.currentPage.dispose();
 
-    value = MangaReaderState.uinitialized();
+    try {
+      value = MangaReaderState.uinitialized();
 
-    final currentItemIdx = collectionItem.currentItem;
-    final currentSourceName = collectionItem.currentSourceName;
+      final currentItemIdx = collectionItem.currentItem;
+      final currentSourceName = collectionItem.currentSourceName;
 
-    final currentItem = mediaItems.firstWhere(
-      (item) => item.number == currentItemIdx,
-    );
-    final sources = await currentItem.sources;
+      final currentItem = mediaItems[currentItemIdx];
+      if (currentItem == null) {
+        value = MangaReaderState.erroneous("No item found");
+        return;
+      }
 
-    if (currentItemIdx != collectionItem.currentItem ||
-        currentSourceName != collectionItem.currentSourceName) {
-      return;
+      final sources = await currentItem.sources;
+
+      if (currentItemIdx != collectionItem.currentItem ||
+          currentSourceName != collectionItem.currentSourceName) {
+        return;
+      }
+
+      final mangaSources = sources
+          .where((s) => s.kind == FileKind.manga)
+          .toList();
+
+      final mangaSource = currentSourceName == null
+          ? mangaSources.firstOrNull as MangaMediaItemSource?
+          : mangaSources.firstWhereOrNull(
+                  (s) => s.description == currentSourceName,
+                )
+                as MangaMediaItemSource?;
+
+      if (mangaSource == null) {
+        value = MangaReaderState.erroneous("No sources found");
+        return;
+      }
+
+      final pages = await mangaSource.pages;
+
+      if (currentItemIdx != collectionItem.currentItem ||
+          currentSourceName != collectionItem.currentSourceName) {
+        return;
+      }
+
+      if (pages.isEmpty) {
+        value = MangaReaderState.erroneous("No pages found");
+        return;
+      }
+
+      value = MangaReaderState(
+        initialized: true,
+        currentPage: ValueNotifier(collectionItem.currentPosition),
+        pages: pages
+            .mapIndexed(
+              (index, url) => MangaPageInfo(
+                supplier: contentDetails.supplier,
+                id: contentDetails.id,
+                itemNum: currentItemIdx,
+                source: mangaSource,
+                pageNum: index,
+                url: url,
+              ),
+            )
+            .toList(),
+        currentItem: currentItemIdx,
+        currentSourceName: currentSourceName,
+        selectedSource: mangaSource,
+        hasNext: currentItemIdx < mediaItems.length - 1,
+        hasPrev: currentItemIdx > 0,
+      );
+
+      value.currentPage.addListener(() {
+        _preloadPages();
+      });
+    } catch (error) {
+      value = MangaReaderState.erroneous(error.toString());
     }
-
-    final mangaSources = sources
-        .where((s) => s.kind == FileKind.manga)
-        .toList();
-
-    final mangaSource = currentSourceName == null
-        ? mangaSources.firstOrNull as MangaMediaItemSource?
-        : mangaSources.firstWhereOrNull(
-                (s) => s.description == currentSourceName,
-              )
-              as MangaMediaItemSource?;
-
-    if (mangaSource == null) {
-      value = MangaReaderState.erroneous("No sources found");
-      return;
-    }
-
-    final pages = await mangaSource.pages;
-
-    if (currentItemIdx != collectionItem.currentItem ||
-        currentSourceName != collectionItem.currentSourceName) {
-      return;
-    }
-
-    if (pages.isEmpty) {
-      value = MangaReaderState.erroneous("No pages found");
-      return;
-    }
-
-    value = MangaReaderState(
-      initialized: true,
-      currentPage: ValueNotifier(collectionItem.currentPosition),
-      pages: pages
-          .mapIndexed(
-            (index, url) => MangaPageInfo(
-              supplier: contentDetails.supplier,
-              id: contentDetails.id,
-              itemNum: currentItemIdx,
-              source: mangaSource,
-              pageNum: index,
-              url: url,
-            ),
-          )
-          .toList(),
-      currentItem: currentItemIdx,
-      currentSourceName: currentSourceName,
-      selectedSource: mangaSource,
-      hasNext: currentItemIdx < mediaItems.length - 1,
-      hasPrev: currentItemIdx > 0,
-    );
-
-    value.currentPage.addListener(() {
-      _preloadPages();
-    });
 
     OfflineStorage().storeDetails(contentDetails);
     _preloadPages();
@@ -201,13 +209,13 @@ class MangaReaderController extends ValueNotifier<MangaReaderState> {
 
   void nextItem() {
     if (value.hasNext) {
-      changeCollectionCurentItem(value.currentItem! + 1);
+      changeCollectionCurrentItem(value.currentItem! + 1);
     }
   }
 
   void prevItem() {
     if (value.hasPrev) {
-      changeCollectionCurentItem(value.currentItem! - 1);
+      changeCollectionCurrentItem(value.currentItem! - 1);
     }
   }
 }

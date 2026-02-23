@@ -31,6 +31,10 @@ class MediaItemDownloadButton extends ConsumerWidget {
     final offlineMode = ref.watch(offlineModeProvider);
     final state = ref.watch(provider).value;
 
+    print(
+      "${contentDetails.supplier}, ${contentDetails.id}, ${item.number}, $provider, $state",
+    );
+
     if (state == null || offlineMode) {
       return const SizedBox.shrink();
     }
@@ -61,7 +65,7 @@ class MediaItemDownloadButton extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) =>
-          MediaItemDownloadDailog(contentDetails: contentDetails, item: item),
+          MediaItemDownloadDialog(contentDetails: contentDetails, item: item),
     );
   }
 }
@@ -106,11 +110,11 @@ class _MediaItemDownloadIndicator extends StatelessWidget {
   }
 }
 
-class MediaItemDownloadDailog extends ConsumerWidget {
+class MediaItemDownloadDialog extends ConsumerWidget {
   final ContentDetails contentDetails;
   final ContentMediaItem item;
 
-  const MediaItemDownloadDailog({
+  const MediaItemDownloadDialog({
     super.key,
     required this.contentDetails,
     required this.item,

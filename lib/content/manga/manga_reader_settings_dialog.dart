@@ -1,3 +1,4 @@
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/manga/model.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MangaReaderSettingsDialog extends ConsumerWidget {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
 
   const MangaReaderSettingsDialog({
     super.key,
@@ -93,7 +94,7 @@ class _MangaReaderBackgroundSelector extends ConsumerWidget {
 
 class MangaTranslationSelector extends ConsumerWidget {
   final ContentDetails contentDetails;
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
 
   const MangaTranslationSelector({
     super.key,

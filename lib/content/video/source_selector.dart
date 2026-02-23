@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
@@ -38,7 +39,7 @@ class SourceSelector extends StatelessWidget {
 }
 
 class _SourceSelectDialog extends ConsumerWidget {
-  final List<ContentMediaItem> mediaItems;
+  final SegmentedList<ContentMediaItem> mediaItems;
   final ContentDetails contentDetails;
 
   const _SourceSelectDialog({

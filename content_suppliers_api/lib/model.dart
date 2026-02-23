@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -45,7 +46,7 @@ abstract interface class ContentInfo {
   String get image;
 }
 
-abstract interface class ContentMediaItem {
+abstract interface class ContentMediaItem implements PositioningItem {
   int get number;
   String get title;
   FutureOr<List<ContentMediaItemSource>> get sources;
@@ -74,7 +75,7 @@ abstract interface class ContentDetails extends ContentInfo {
   MediaType get mediaType;
   List<String> get additionalInfo;
   List<ContentInfo> get similar;
-  FutureOr<Iterable<ContentMediaItem>> get mediaItems;
+  FutureOr<SegmentedList<ContentMediaItem>> get mediaItems;
 }
 
 @immutable
@@ -134,7 +135,8 @@ abstract class AbstractContentDetails extends Equatable
   @override
   MediaType get mediaType => MediaType.video;
   @override
-  FutureOr<Iterable<ContentMediaItem>> get mediaItems => const [];
+  FutureOr<SegmentedList<ContentMediaItem>> get mediaItems =>
+      SegmentedList.empty();
 
   const AbstractContentDetails({
     required this.id,

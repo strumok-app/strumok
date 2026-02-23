@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:path/path.dart' as path;
 import 'package:content_suppliers_api/model.dart';
 import 'package:path_provider/path_provider.dart';
@@ -143,7 +144,7 @@ class OfflineStorage {
   /// Enumerate media items (by index) for the given content.
   ///
   /// Media items are represented by numeric subfolders under the content root.
-  Future<List<ContentMediaItem>> getMediaItems(
+  Future<SegmentedList<ContentMediaItem>> getMediaItems(
     String supplier,
     String id,
   ) async {
@@ -159,14 +160,17 @@ class OfflineStorage {
         final num = int.tryParse(fsEntryName);
 
         if (num != null) {
-          mediaItems.add(
-            OfflineContenMediaItem(supplier, id, "${num + 1}", num),
-          );
+          final exists = await sourceExists(supplier, id, num);
+          if (exists) {
+            mediaItems.add(
+              OfflineContentMediaItem(supplier, id, "${num + 1}", num),
+            );
+          }
         }
       }
     }
 
-    return mediaItems.sortedBy((item) => item.number);
+    return mediaItems.sortedBy((item) => item.number).toSegmentedList();
   }
 
   /// Return list of locally available sources for a media item.
@@ -178,7 +182,6 @@ class OfflineStorage {
     int number,
   ) async {
     final mediaItemPath = _getMediaItemPath(supplier, id, number);
-
     final dir = Directory(mediaItemPath);
 
     if (!(await dir.exists())) {
@@ -187,36 +190,18 @@ class OfflineStorage {
 
     final sources = <ContentMediaItemSource>[];
 
-    await for (final fsEntry in dir.list()) {
-      final fsEntryName = path.basename(fsEntry.path);
-      if (fsEntry is File) {
-        final extIndex = fsEntryName.lastIndexOf(".");
-        if (extIndex != -1) {
-          final name = fsEntryName.substring(0, extIndex);
-          final ext = fsEntryName.substring(extIndex + 1);
-
-          FileKind? kind = switch (ext) {
-            _videoExtension => FileKind.video,
-            _subtitleExtension => FileKind.subtitle,
-            _mangaExtension => FileKind.manga,
-            _ => null,
-          };
-
-          switch (kind) {
-            case FileKind.video:
-            case FileKind.subtitle:
-              sources.add(
-                OfflineContentMediaItemSource(
-                  description: Uri.decodeComponent(name),
-                  link: fsEntry.uri,
-                ),
-              );
-            case FileKind.manga:
-              await _readMangaSource(dir, name, sources);
-            default:
-            // nothing
-          }
-        }
+    await for (final (kind, name, uri) in _iterateSources(dir)) {
+      switch (kind) {
+        case FileKind.video:
+        case FileKind.subtitle:
+          sources.add(
+            OfflineContentMediaItemSource(
+              description: Uri.decodeComponent(name),
+              link: uri,
+            ),
+          );
+        case FileKind.manga:
+          await _readMangaSource(dir, name, sources);
       }
     }
 
@@ -280,8 +265,39 @@ class OfflineStorage {
 
   /// Returns true when at least one source exists for the media item.
   Future<bool> sourceExists(String supplier, String id, int number) async {
-    final sources = await getSources(supplier, id, number);
-    return sources.isNotEmpty;
+    final mediaItemPath = _getMediaItemPath(supplier, id, number);
+    final dir = Directory(mediaItemPath);
+
+    if (!await dir.exists()) {
+      return false;
+    }
+
+    final exits = !(await _iterateSources(dir).isEmpty);
+    return exits;
+  }
+
+  Stream<(FileKind, String, Uri)> _iterateSources(Directory dir) async* {
+    await for (final fsEntry in dir.list()) {
+      final fsEntryName = path.basename(fsEntry.path);
+      if (fsEntry is File) {
+        final extIndex = fsEntryName.lastIndexOf(".");
+        if (extIndex != -1) {
+          final name = fsEntryName.substring(0, extIndex);
+          final ext = fsEntryName.substring(extIndex + 1);
+
+          FileKind? kind = switch (ext) {
+            _videoExtension => FileKind.video,
+            _subtitleExtension => FileKind.subtitle,
+            _mangaExtension => FileKind.manga,
+            _ => null,
+          };
+
+          if (kind != null) {
+            yield (kind, name, fsEntry.uri);
+          }
+        }
+      }
+    }
   }
 
   String _getMediaItemPath(String supplier, String id, int number) =>

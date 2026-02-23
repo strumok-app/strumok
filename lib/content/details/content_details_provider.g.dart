@@ -141,7 +141,7 @@ final class DetailsAndMediaProvider
   }
 }
 
-String _$detailsAndMediaHash() => r'ab4645c5fe8819a10cb5024d67f0ed9e16c14de4';
+String _$detailsAndMediaHash() => r'0ac36dc6e55c77368b654bf3a33386e64bfb6a1a';
 
 final class DetailsAndMediaFamily extends $Family
     with
