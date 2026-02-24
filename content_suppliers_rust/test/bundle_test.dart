@@ -113,7 +113,7 @@ void main() async {
     expect(mediaItems.length, equals(1));
 
     final mediaItem = mediaItems.first;
-    expect(mediaItem.number, equals(42));
+    expect(mediaItem.position, equals(42));
     expect(mediaItem.title, equals(id));
     expect(mediaItem.section, equals("1,2,3"));
     expect(mediaItem.image, equals("dummy_image"));

@@ -170,7 +170,7 @@ class OfflineStorage {
       }
     }
 
-    return mediaItems.sortedBy((item) => item.number).toSegmentedList();
+    return mediaItems.sortedBy((item) => item.position).toSegmentedList();
   }
 
   /// Return list of locally available sources for a media item.

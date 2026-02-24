@@ -1,5 +1,5 @@
 abstract interface class PositioningItem {
-  int get number;
+  int get position;
 }
 
 /// A collection that groups contiguous items and skips gaps during iteration.
@@ -7,12 +7,12 @@ class SegmentedList<T extends PositioningItem> extends Iterable<T> {
   final List<_Segment<T>> _segments;
   final int _maxPosition;
 
-  const SegmentedList(List<_Segment<T>> segments, int maxPosition)
+  const SegmentedList._(List<_Segment<T>> segments, int maxPosition)
     : _segments = segments,
       _maxPosition = maxPosition;
 
   factory SegmentedList.empty() {
-    return SegmentedList(const [], 0);
+    return SegmentedList._(const [], 0);
   }
 
   /// Constructs from an [Iterable] of items that must be sorted by their
@@ -26,26 +26,26 @@ class SegmentedList<T extends PositioningItem> extends Iterable<T> {
 
     // initialize with first element
     final first = iterator.current;
-    int maxPosition = first.number;
+    int maxPosition = first.position;
 
     List<T> currentGroup = [first];
-    int startPos = first.number;
-    int previousPos = first.number;
+    int startPos = first.position;
+    int previousPos = first.position;
 
     List<_Segment<T>> segments = [];
 
     while (iterator.moveNext()) {
       final current = iterator.current;
 
-      if (current.number == previousPos + 1) {
+      if (current.position == previousPos + 1) {
         currentGroup.add(current);
       } else {
         segments.add(_Segment(startPos, List.from(currentGroup)));
         currentGroup = [current];
-        startPos = current.number;
+        startPos = current.position;
       }
 
-      previousPos = current.number;
+      previousPos = current.position;
       if (previousPos > maxPosition) {
         maxPosition = previousPos;
       }
@@ -53,10 +53,11 @@ class SegmentedList<T extends PositioningItem> extends Iterable<T> {
 
     segments.add(_Segment(startPos, currentGroup));
 
-    return SegmentedList(segments, maxPosition);
+    return SegmentedList._(segments, maxPosition);
   }
 
   /// Length is still the max position found in the original list.
+  @override
   int get length => _maxPosition;
 
   /// Returns item at the specific position index, or null if it's a gap.

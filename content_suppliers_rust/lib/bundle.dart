@@ -273,7 +273,7 @@ class _RustMediaItem implements ContentMediaItem {
   final String supplier;
   final List<String> langs;
   @override
-  final int number;
+  final int position;
   @override
   final String title;
   @override
@@ -289,7 +289,7 @@ class _RustMediaItem implements ContentMediaItem {
     required this.id,
     required this.supplier,
     required this.langs,
-    required this.number,
+    required this.position,
     required this.title,
     required this.section,
     required this.image,
@@ -312,7 +312,7 @@ class _RustMediaItem implements ContentMediaItem {
       id: id,
       supplier: supplier,
       langs: langs,
-      number: number,
+      position: number,
       title: item.title,
       section: item.section,
       image: item.image,

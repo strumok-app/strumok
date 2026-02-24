@@ -118,7 +118,8 @@ class _VideoContentDesktopControlsState
         title: AppLocalizations.of(context)!.episodesList,
         mediaItems: mediaItems,
         contentProgress: collectionItem,
-        onSelect: (item) => controller.changeCollectionCurentItem(item.number),
+        onSelect: (item) =>
+            controller.changeCollectionCurentItem(item.position),
         itemBuilder: playlistItemBuilder(contentDetails),
       ),
     );

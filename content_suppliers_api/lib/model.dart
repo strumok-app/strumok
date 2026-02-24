@@ -47,7 +47,6 @@ abstract interface class ContentInfo {
 }
 
 abstract interface class ContentMediaItem implements PositioningItem {
-  int get number;
   String get title;
   FutureOr<List<ContentMediaItemSource>> get sources;
   String? get section;

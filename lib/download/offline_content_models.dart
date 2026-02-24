@@ -76,13 +76,13 @@ class OfflineContentMediaItem extends Equatable implements ContentMediaItem {
   @override
   final String title;
   @override
-  final int number;
+  final int position;
   List<ContentMediaItemSource>? _sources;
 
-  OfflineContentMediaItem(this.supplier, this.id, this.title, this.number);
+  OfflineContentMediaItem(this.supplier, this.id, this.title, this.position);
 
   @override
-  List<Object?> get props => [supplier, id, number];
+  List<Object?> get props => [supplier, id, position];
 
   @override
   String? get image => null;
@@ -92,7 +92,7 @@ class OfflineContentMediaItem extends Equatable implements ContentMediaItem {
 
   @override
   Future<List<ContentMediaItemSource>> get sources async {
-    _sources ??= await OfflineStorage().getSources(supplier, id, number);
+    _sources ??= await OfflineStorage().getSources(supplier, id, position);
     return _sources!;
   }
 }
@@ -163,7 +163,7 @@ class ContentMediaItemWithOffline extends Equatable
   String? get section => _actualMediaItem.section;
 
   @override
-  int get number => _actualMediaItem.number;
+  int get position => _actualMediaItem.position;
 
   @override
   String get title => _actualMediaItem.title;
@@ -173,7 +173,7 @@ class ContentMediaItemWithOffline extends Equatable
     final offlineSources = await OfflineStorage().getSources(
       supplier,
       id,
-      number,
+      position,
     );
 
     final merged = <ContentMediaItemSource>[];
@@ -197,7 +197,7 @@ class ContentMediaItemWithOffline extends Equatable
   }
 
   @override
-  List<Object?> get props => [supplier, id, number];
+  List<Object?> get props => [supplier, id, position];
 }
 
 class OfflineContentInfo implements ContentInfo {

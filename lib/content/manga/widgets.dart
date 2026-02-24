@@ -62,7 +62,7 @@ class VolumesButton extends ConsumerWidget {
             onSelect:
                 onSelect ??
                 (item) {
-                  ref.read(provider.notifier).setCurrentItem(item.number);
+                  ref.read(provider.notifier).setCurrentItem(item.position);
                   navigateToContent(context, contentDetails);
                 },
             itemBuilder: mangaChapterListItemBuilder(contentDetails),
@@ -85,11 +85,11 @@ MediaItemsListBuilder mangaChapterListItemBuilder(
     ContentProgress? contentProgress,
     SelectCallback onSelect,
   ) {
-    final progress = contentProgress?.positions[item.number]?.progress ?? 0;
+    final progress = contentProgress?.positions[item.position]?.progress ?? 0;
 
     return MediaItemsListItem(
       item: item,
-      selected: item.number == contentProgress?.currentItem,
+      selected: item.position == contentProgress?.currentItem,
       selectIcon: Icons.menu_book,
       progress: progress,
       onTap: () {
@@ -285,7 +285,8 @@ class MangaReaderIteractions extends ConsumerWidget {
         title: AppLocalizations.of(context)!.mangaChapter,
         mediaItems: mediaItems,
         contentProgress: collectionItem,
-        onSelect: (item) => controller.changeCollectionCurrentItem(item.number),
+        onSelect: (item) =>
+            controller.changeCollectionCurrentItem(item.position),
         itemBuilder: mangaChapterListItemBuilder(contentDetails),
       ),
     );

@@ -113,7 +113,7 @@ class MangaTranslationSelector extends ConsumerWidget {
     }
 
     final mediaItem = mediaItems.firstWhere(
-      (item) => item.number == collectionItem.currentItem,
+      (item) => item.position == collectionItem.currentItem,
     );
 
     return FutureBuilder(

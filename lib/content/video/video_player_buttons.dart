@@ -52,7 +52,7 @@ class PlayerPlaylistButton extends ConsumerWidget {
             mediaItems: mediaItems,
             contentProgress: collectionItem,
             onSelect: (item) =>
-                controller.changeCollectionCurentItem(item.number),
+                controller.changeCollectionCurentItem(item.position),
             itemBuilder: playlistItemBuilder(contentDetails),
           ),
         );

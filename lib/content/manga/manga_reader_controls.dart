@@ -128,7 +128,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
                   contentDetails.title,
                   if (currentItem != null)
                     mediaItems
-                        .firstWhere((item) => item.number == currentItem)
+                        .firstWhere((item) => item.position == currentItem)
                         .title,
                 ].join(" - "),
                 style: theme.textTheme.titleMedium!.copyWith(
@@ -145,7 +145,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
               onSelect: (item) {
                 ref
                     .read(collectionItemProvider(contentDetails).notifier)
-                    .setCurrentItem(item.number);
+                    .setCurrentItem(item.position);
                 Navigator.of(context).pop();
               },
               autofocus: true,

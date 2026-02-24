@@ -275,7 +275,7 @@ class _MediaItemsListSectionState extends State<_MediaItemsListSection> {
   void initState() {
     final currentItem = widget.contentProgress?.currentItem ?? 0;
     final foundIndex = widget.list.indexWhere(
-      (element) => element.number == currentItem,
+      (element) => element.position == currentItem,
     );
 
     index = foundIndex > 0 ? foundIndex - 1 : 0;

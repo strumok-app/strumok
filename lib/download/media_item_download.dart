@@ -26,7 +26,7 @@ class MediaItemDownloadButton extends ConsumerWidget {
     final provider = mediaItemDownloadProvider(
       contentDetails.supplier,
       contentDetails.id,
-      item.number,
+      item.position,
     );
     final offlineMode = ref.watch(offlineModeProvider);
     final state = ref.watch(provider).value;
@@ -144,7 +144,7 @@ class MediaItemDownloadDialog extends ConsumerWidget {
 
             final supplier = contentDetails.supplier;
             final id = contentDetails.id;
-            final number = item.number;
+            final number = item.position;
 
             return Container(
               width: 320,
