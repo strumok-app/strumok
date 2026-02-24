@@ -31,10 +31,6 @@ class MediaItemDownloadButton extends ConsumerWidget {
     final offlineMode = ref.watch(offlineModeProvider);
     final state = ref.watch(provider).value;
 
-    print(
-      "${contentDetails.supplier}, ${contentDetails.id}, ${item.number}, $provider, $state",
-    );
-
     if (state == null || offlineMode) {
       return const SizedBox.shrink();
     }
