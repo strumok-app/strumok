@@ -28,21 +28,21 @@ class CollectionItem extends _$CollectionItem {
     final value = state.requireValue;
     final newValue = value.copyWith(currentItem: itemIdx);
 
-    state = await AsyncValue.guard(() => _saveNewValue(newValue));
+    _setNewState(newValue);
   }
 
   void setCurrentSource(String? sourceName) async {
     final value = state.requireValue;
     final newValue = value.copyWith(currentSourceName: () => sourceName);
 
-    state = await AsyncValue.guard(() => _saveNewValue(newValue));
+    _setNewState(newValue);
   }
 
   void setCurrentSubtitle(String? subtitleName) async {
     final value = state.requireValue;
     final newValue = value.copyWith(currentSubtitleName: () => subtitleName);
 
-    state = await AsyncValue.guard(() => _saveNewValue(newValue));
+    _setNewState(newValue);
   }
 
   void setCurrentPosition(int position, [int? length]) async {
@@ -71,7 +71,7 @@ class CollectionItem extends _$CollectionItem {
           status: MediaCollectionItemStatus.inProgress,
         );
 
-        state = await AsyncValue.guard(() => _saveNewValue(newValue));
+        _setNewState(newValue);
       }
     } else {
       if (position == value.currentPosition) {
@@ -89,7 +89,7 @@ class CollectionItem extends _$CollectionItem {
         status: MediaCollectionItemStatus.inProgress,
       );
 
-      state = await AsyncValue.guard(() => _saveNewValue(newValue));
+      _setNewState(newValue);
     }
   }
 
@@ -114,14 +114,14 @@ class CollectionItem extends _$CollectionItem {
       status: MediaCollectionItemStatus.inProgress,
     );
 
-    state = await AsyncValue.guard(() => _saveNewValue(newValue));
+    _setNewState(newValue);
   }
 
   void setStatus(MediaCollectionItemStatus status) async {
     final value = state.requireValue;
     final newValue = value.copyWith(status: status);
 
-    state = await AsyncValue.guard(() => _saveNewValue(newValue));
+    _setNewState(newValue);
   }
 
   void setPriority(int priority) async {
@@ -130,7 +130,14 @@ class CollectionItem extends _$CollectionItem {
     if (value.status != MediaCollectionItemStatus.none) {
       final newValue = value.copyWith(priority: priority);
 
-      state = await AsyncValue.guard(() => _saveNewValue(newValue));
+      _setNewState(newValue);
+    }
+  }
+
+  void _setNewState(MediaCollectionItem newValue) async {
+    final newState = await AsyncValue.guard(() => _saveNewValue(newValue));
+    if (ref.mounted) {
+      state = newState;
     }
   }
 
