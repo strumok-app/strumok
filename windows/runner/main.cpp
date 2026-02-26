@@ -9,6 +9,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
                       _In_ wchar_t *command_line, _In_ int show_command) {
 
   HANDLE hMutex = CreateMutex(NULL, TRUE, L"StrumokSingleInstanceMutex");
+  if (hMutex == NULL) {
+      return EXIT_FAILURE;
+  }
+
   if (GetLastError() == ERROR_ALREADY_EXISTS) {
       // Bring the existing window to front (optional)
       HWND hwnd = FindWindow(NULL, L"Strumok");
@@ -16,7 +20,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
           ShowWindow(hwnd, SW_RESTORE);
           SetForegroundWindow(hwnd);
       }
-      return 0; // Exit this instance
+      return EXIT_SUCCESS; // Exit this instance
   }
   
   // Attach to console when present (e.g., 'flutter run') or create a
