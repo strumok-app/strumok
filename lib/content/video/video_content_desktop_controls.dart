@@ -119,7 +119,7 @@ class _VideoContentDesktopControlsState
         mediaItems: mediaItems,
         contentProgress: collectionItem,
         onSelect: (item) =>
-            controller.changeCollectionCurentItem(item.position),
+            controller.changeCollectionCurrentItem(item.position),
         itemBuilder: playlistItemBuilder(contentDetails),
       ),
     );

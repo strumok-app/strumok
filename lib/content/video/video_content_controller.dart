@@ -23,7 +23,7 @@ class VideoContentController {
   final ContentDetails contentDetails;
   final SegmentedList<ContentMediaItem> mediaItems;
 
-  final ChangeCollectionCurrentItemCallback changeCollectionCurentItem;
+  final ChangeCollectionCurrentItemCallback changeCollectionCurrentItem;
   final _subtitleWorker = SubtitleWorker();
 
   List<int> _shuffledPositions = List.empty();
@@ -55,7 +55,7 @@ class VideoContentController {
   VideoContentController({
     required this.contentDetails,
     required this.mediaItems,
-    required this.changeCollectionCurentItem,
+    required this.changeCollectionCurrentItem,
   });
 
   void dispose() {
@@ -234,7 +234,7 @@ class VideoContentController {
       final item = mediaItems[_currentItem!];
       if (item == null) {
         videoBackend.value = AsyncValue.error(
-          "Video not avalaible",
+          "Video not available",
           StackTrace.current,
         );
         return;
@@ -385,7 +385,7 @@ class VideoContentController {
 
     if (AppPreferences.videoPlayerSettingShuffleMode) {
       final shuffledPosition = _getShuffledPosition();
-      changeCollectionCurentItem(shuffledPosition);
+      changeCollectionCurrentItem(shuffledPosition);
       return;
     }
 
@@ -393,7 +393,7 @@ class VideoContentController {
     if (currentIndex >= mediaItems.length - 1) return;
 
     final nextIndex = currentIndex + 1;
-    changeCollectionCurentItem(nextIndex);
+    changeCollectionCurrentItem(nextIndex);
   }
 
   int _getShuffledPosition() {
@@ -423,7 +423,7 @@ class VideoContentController {
     if (currentIndex <= 0) return;
 
     final prevIndex = currentIndex - 1;
-    changeCollectionCurentItem(prevIndex);
+    changeCollectionCurrentItem(prevIndex);
   }
 
   Future<void> _loadSubtitles(MediaCollectionItem collectionItem) async {
@@ -487,6 +487,14 @@ class VideoContentController {
       logger.info("Subtitle loaded successfully");
     } catch (e, stackTrace) {
       logger.severe("Fail to load subtitle", e, stackTrace);
+
+      // do not show error for not currently selected subs
+      if (_disposed ||
+          _currentItem != collectionItem.currentItem ||
+          _currentSubtitleName != collectionItem.currentSubtitleName) {
+        return;
+      }
+
       subtitleController.value = AsyncValue.error(e, stackTrace);
     }
   }

@@ -44,7 +44,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
     _controller = VideoContentController(
       contentDetails: widget.contentDetails,
       mediaItems: widget.mediaItems,
-      changeCollectionCurentItem: (itemIdx) =>
+      changeCollectionCurrentItem: (itemIdx) =>
           ref.read(collectionItemProv.notifier).setCurrentItem(itemIdx),
     );
 

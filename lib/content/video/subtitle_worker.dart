@@ -63,6 +63,7 @@ Future<SubtitleController> _parseSubtitle(
       Uri.parse(uri),
       type: type,
       headers: headers ?? {},
+      connectionTimeout: Duration(seconds: 30),
     ),
   );
 
