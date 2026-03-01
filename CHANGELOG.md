@@ -1,12 +1,10 @@
-## [1.25.2](https://github.com/strumok-app/strumok/compare/v1.25.1...v1.25.2) (2026-02-25)
+## [1.25.3](https://github.com/strumok-app/strumok/compare/v1.25.2...v1.25.3) (2026-03-01)
 
 
 ### Bug Fixes
 
-* check if video content controller is disposed ([a6c0712](https://github.com/strumok-app/strumok/commit/a6c0712a470dd7f247622f2f36510dccc63de31e))
-* firebase sync ([583e0cb](https://github.com/strumok-app/strumok/commit/583e0cb44631db3fe39ac5151a45581ed80621b5))
-* offline items ([54d3990](https://github.com/strumok-app/strumok/commit/54d3990e55f115b55c3428860b50814061e89f62))
-* state update error ([bf80239](https://github.com/strumok-app/strumok/commit/bf802393bdd1db386e504cbb36629b8a46b8e06e))
+* prevent multiple instance to run on desktop ([e2e12c2](https://github.com/strumok-app/strumok/commit/e2e12c2500f49e1a53867413f88fcee3c371a5d2))
+* segmented list length ([550a329](https://github.com/strumok-app/strumok/commit/550a3291d89cce957b11705306f418b7c4a45a3b))
 
 
 
