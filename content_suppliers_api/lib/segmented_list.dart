@@ -5,11 +5,11 @@ abstract interface class PositioningItem {
 /// A collection that groups contiguous items and skips gaps during iteration.
 class SegmentedList<T extends PositioningItem> extends Iterable<T> {
   final List<_Segment<T>> _segments;
-  final int _maxPosition;
+  final int _length;
 
-  const SegmentedList._(List<_Segment<T>> segments, int maxPosition)
+  const SegmentedList._(List<_Segment<T>> segments, int length)
     : _segments = segments,
-      _maxPosition = maxPosition;
+      _length = length;
 
   factory SegmentedList.empty() {
     return SegmentedList._(const [], 0);
@@ -53,17 +53,17 @@ class SegmentedList<T extends PositioningItem> extends Iterable<T> {
 
     segments.add(_Segment(startPos, currentGroup));
 
-    return SegmentedList._(segments, maxPosition);
+    return SegmentedList._(segments, maxPosition + 1);
   }
 
   /// Length is still the max position found in the original list.
   @override
-  int get length => _maxPosition;
+  int get length => _length;
 
   /// Returns item at the specific position index, or null if it's a gap.
   T? operator [](int index) {
     // Basic bounds check
-    if (index < 0 || index > _maxPosition) return null;
+    if (index < 0 || index > _length) return null;
 
     for (var segment in _segments) {
       if (index >= segment.start && index <= segment.end) {
@@ -87,7 +87,7 @@ class SegmentedList<T extends PositioningItem> extends Iterable<T> {
     if (identical(this, other)) return true;
     if (other is! SegmentedList<T>) return false;
 
-    if (_maxPosition != other._maxPosition) return false;
+    if (_length != other._length) return false;
     if (_segments.length != other._segments.length) return false;
 
     for (int i = 0; i < _segments.length; i++) {
@@ -100,7 +100,7 @@ class SegmentedList<T extends PositioningItem> extends Iterable<T> {
   }
 
   @override
-  int get hashCode => Object.hash(_maxPosition, Object.hashAll(_segments));
+  int get hashCode => Object.hash(_length, Object.hashAll(_segments));
 }
 
 class _Segment<T> {
