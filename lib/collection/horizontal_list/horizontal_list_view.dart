@@ -60,7 +60,7 @@ class CollectionHorizontalGroup extends ConsumerWidget {
     }
 
     Widget title = Text(
-      statusLabel(context, status),
+      "${statusLabel(context, status)} - ${groupItems.length}",
       style: Theme.of(context).textTheme.titleMedium,
     );
 

@@ -42,9 +42,9 @@ class VideoContentController {
   ValueNotifier<AsyncValue<VideoBackend>> videoBackend = ValueNotifier(
     AsyncValue.loading(),
   );
+
   final StreamController<VideoBackendState> _videoBackendStateStreamController =
       StreamController.broadcast();
-
   VideoBackendState get videoBackendState =>
       _currentVideoBackend?.value ?? VideoBackendState.uninitialized();
   Stream<VideoBackendState> get videoBackendStateStream =>
