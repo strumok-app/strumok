@@ -5,7 +5,7 @@ homepage:
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
-  flutter: "3.32.6"
+  flutter: "3.41.0"
 
 publish_to: none
 
@@ -22,7 +22,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints:
   build_runner: 
   freezed: ^3.2.3
   test: ^1.25.0

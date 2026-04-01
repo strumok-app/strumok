@@ -59,7 +59,7 @@ dependencies:
   cached_network_image: ^3.4.1
 
   # state managment
-  flutter_riverpod: ^3.0.3
+  flutter_riverpod: ^3.3.1
   riverpod_annotation: ^4.0.0
 
   # utillity
@@ -88,8 +88,6 @@ dependencies:
 dev_dependencies:
   analyzer:
   build_runner:
-  flutter_lints:
-  custom_lint:
   riverpod_lint: ^3.0.3
   riverpod_generator: ^4.0.0+1
   auto_route_generator: ^10.2.6
