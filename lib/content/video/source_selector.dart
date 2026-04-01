@@ -244,7 +244,7 @@ class _SourcesList extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (leading != null) leading!,
+          ?leading,
           ...sources.mapIndexed(
             (idx, source) => ListTile(
               visualDensity: VisualDensity.compact,
