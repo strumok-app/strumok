@@ -10,12 +10,12 @@ part of 'collection_item_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(hasCollectionItem)
-const hasCollectionItemProvider = HasCollectionItemFamily._();
+final hasCollectionItemProvider = HasCollectionItemFamily._();
 
 final class HasCollectionItemProvider
     extends $FunctionalProvider<AsyncValue<bool>, bool, FutureOr<bool>>
     with $FutureModifier<bool>, $FutureProvider<bool> {
-  const HasCollectionItemProvider._({
+  HasCollectionItemProvider._({
     required HasCollectionItemFamily super.from,
     required (String, String) super.argument,
   }) : super(
@@ -62,7 +62,7 @@ String _$hasCollectionItemHash() => r'cb87bbcc1a4e3853e921c74c29bf26c862efbcd4';
 
 final class HasCollectionItemFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<bool>, (String, String)> {
-  const HasCollectionItemFamily._()
+  HasCollectionItemFamily._()
     : super(
         retry: null,
         name: r'hasCollectionItemProvider',
@@ -79,11 +79,11 @@ final class HasCollectionItemFamily extends $Family
 }
 
 @ProviderFor(CollectionItem)
-const collectionItemProvider = CollectionItemFamily._();
+final collectionItemProvider = CollectionItemFamily._();
 
 final class CollectionItemProvider
     extends $AsyncNotifierProvider<CollectionItem, MediaCollectionItem> {
-  const CollectionItemProvider._({
+  CollectionItemProvider._({
     required CollectionItemFamily super.from,
     required ContentDetails super.argument,
   }) : super(
@@ -119,7 +119,7 @@ final class CollectionItemProvider
   }
 }
 
-String _$collectionItemHash() => r'3282756e5149d9ffb8ca376eb60f454112d06f0c';
+String _$collectionItemHash() => r'283d3aef78e590211b4ec74e223cb3123ef1539e';
 
 final class CollectionItemFamily extends $Family
     with
@@ -130,7 +130,7 @@ final class CollectionItemFamily extends $Family
           FutureOr<MediaCollectionItem>,
           ContentDetails
         > {
-  const CollectionItemFamily._()
+  CollectionItemFamily._()
     : super(
         retry: null,
         name: r'collectionItemProvider',
@@ -154,7 +154,6 @@ abstract class _$CollectionItem extends $AsyncNotifier<MediaCollectionItem> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref =
         this.ref as $Ref<AsyncValue<MediaCollectionItem>, MediaCollectionItem>;
     final element =
@@ -165,17 +164,17 @@ abstract class _$CollectionItem extends $AsyncNotifier<MediaCollectionItem> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
 @ProviderFor(collectionItemCurrentItem)
-const collectionItemCurrentItemProvider = CollectionItemCurrentItemFamily._();
+final collectionItemCurrentItemProvider = CollectionItemCurrentItemFamily._();
 
 final class CollectionItemCurrentItemProvider
     extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
-  const CollectionItemCurrentItemProvider._({
+  CollectionItemCurrentItemProvider._({
     required CollectionItemCurrentItemFamily super.from,
     required ContentDetails super.argument,
   }) : super(
@@ -224,7 +223,7 @@ String _$collectionItemCurrentItemHash() =>
 
 final class CollectionItemCurrentItemFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<int>, ContentDetails> {
-  const CollectionItemCurrentItemFamily._()
+  CollectionItemCurrentItemFamily._()
     : super(
         retry: null,
         name: r'collectionItemCurrentItemProvider',
@@ -241,13 +240,13 @@ final class CollectionItemCurrentItemFamily extends $Family
 }
 
 @ProviderFor(collectionItemCurrentSourceName)
-const collectionItemCurrentSourceNameProvider =
+final collectionItemCurrentSourceNameProvider =
     CollectionItemCurrentSourceNameFamily._();
 
 final class CollectionItemCurrentSourceNameProvider
     extends $FunctionalProvider<AsyncValue<String?>, String?, FutureOr<String?>>
     with $FutureModifier<String?>, $FutureProvider<String?> {
-  const CollectionItemCurrentSourceNameProvider._({
+  CollectionItemCurrentSourceNameProvider._({
     required CollectionItemCurrentSourceNameFamily super.from,
     required ContentDetails super.argument,
   }) : super(
@@ -296,7 +295,7 @@ String _$collectionItemCurrentSourceNameHash() =>
 
 final class CollectionItemCurrentSourceNameFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<String?>, ContentDetails> {
-  const CollectionItemCurrentSourceNameFamily._()
+  CollectionItemCurrentSourceNameFamily._()
     : super(
         retry: null,
         name: r'collectionItemCurrentSourceNameProvider',
@@ -316,13 +315,13 @@ final class CollectionItemCurrentSourceNameFamily extends $Family
 }
 
 @ProviderFor(collectionItemCurrentSubtitleName)
-const collectionItemCurrentSubtitleNameProvider =
+final collectionItemCurrentSubtitleNameProvider =
     CollectionItemCurrentSubtitleNameFamily._();
 
 final class CollectionItemCurrentSubtitleNameProvider
     extends $FunctionalProvider<AsyncValue<String?>, String?, FutureOr<String?>>
     with $FutureModifier<String?>, $FutureProvider<String?> {
-  const CollectionItemCurrentSubtitleNameProvider._({
+  CollectionItemCurrentSubtitleNameProvider._({
     required CollectionItemCurrentSubtitleNameFamily super.from,
     required ContentDetails super.argument,
   }) : super(
@@ -372,7 +371,7 @@ String _$collectionItemCurrentSubtitleNameHash() =>
 
 final class CollectionItemCurrentSubtitleNameFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<String?>, ContentDetails> {
-  const CollectionItemCurrentSubtitleNameFamily._()
+  CollectionItemCurrentSubtitleNameFamily._()
     : super(
         retry: null,
         name: r'collectionItemCurrentSubtitleNameProvider',
@@ -393,13 +392,13 @@ final class CollectionItemCurrentSubtitleNameFamily extends $Family
 }
 
 @ProviderFor(collectionItemCurrentPosition)
-const collectionItemCurrentPositionProvider =
+final collectionItemCurrentPositionProvider =
     CollectionItemCurrentPositionFamily._();
 
 final class CollectionItemCurrentPositionProvider
     extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
-  const CollectionItemCurrentPositionProvider._({
+  CollectionItemCurrentPositionProvider._({
     required CollectionItemCurrentPositionFamily super.from,
     required ContentDetails super.argument,
   }) : super(
@@ -448,7 +447,7 @@ String _$collectionItemCurrentPositionHash() =>
 
 final class CollectionItemCurrentPositionFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<int>, ContentDetails> {
-  const CollectionItemCurrentPositionFamily._()
+  CollectionItemCurrentPositionFamily._()
     : super(
         retry: null,
         name: r'collectionItemCurrentPositionProvider',
@@ -468,7 +467,7 @@ final class CollectionItemCurrentPositionFamily extends $Family
 }
 
 @ProviderFor(collectionItemCurrentMediaItemPosition)
-const collectionItemCurrentMediaItemPositionProvider =
+final collectionItemCurrentMediaItemPositionProvider =
     CollectionItemCurrentMediaItemPositionFamily._();
 
 final class CollectionItemCurrentMediaItemPositionProvider
@@ -481,7 +480,7 @@ final class CollectionItemCurrentMediaItemPositionProvider
     with
         $FutureModifier<MediaItemPosition>,
         $FutureProvider<MediaItemPosition> {
-  const CollectionItemCurrentMediaItemPositionProvider._({
+  CollectionItemCurrentMediaItemPositionProvider._({
     required CollectionItemCurrentMediaItemPositionFamily super.from,
     required ContentDetails super.argument,
   }) : super(
@@ -533,7 +532,7 @@ String _$collectionItemCurrentMediaItemPositionHash() =>
 final class CollectionItemCurrentMediaItemPositionFamily extends $Family
     with
         $FunctionalFamilyOverride<FutureOr<MediaItemPosition>, ContentDetails> {
-  const CollectionItemCurrentMediaItemPositionFamily._()
+  CollectionItemCurrentMediaItemPositionFamily._()
     : super(
         retry: null,
         name: r'collectionItemCurrentMediaItemPositionProvider',

@@ -10,13 +10,13 @@ part of 'search_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(enabledSearchSuppliersNames)
-const enabledSearchSuppliersNamesProvider =
+final enabledSearchSuppliersNamesProvider =
     EnabledSearchSuppliersNamesProvider._();
 
 final class EnabledSearchSuppliersNamesProvider
     extends $FunctionalProvider<Set<String>, Set<String>, Set<String>>
     with $Provider<Set<String>> {
-  const EnabledSearchSuppliersNamesProvider._()
+  EnabledSearchSuppliersNamesProvider._()
     : super(
         from: null,
         argument: null,
@@ -53,10 +53,10 @@ String _$enabledSearchSuppliersNamesHash() =>
     r'385e38a8ebd0db0c12576729777096508c4e19b9';
 
 @ProviderFor(Search)
-const searchProvider = SearchProvider._();
+final searchProvider = SearchProvider._();
 
 final class SearchProvider extends $NotifierProvider<Search, SearchState> {
-  const SearchProvider._()
+  SearchProvider._()
     : super(
         from: null,
         argument: null,
@@ -90,7 +90,6 @@ abstract class _$Search extends $Notifier<SearchState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<SearchState, SearchState>;
     final element =
         ref.element
@@ -100,16 +99,16 @@ abstract class _$Search extends $Notifier<SearchState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(SupplierSearch)
-const supplierSearchProvider = SupplierSearchFamily._();
+final supplierSearchProvider = SupplierSearchFamily._();
 
 final class SupplierSearchProvider
     extends $NotifierProvider<SupplierSearch, SuppliersSearchResults> {
-  const SupplierSearchProvider._({
+  SupplierSearchProvider._({
     required SupplierSearchFamily super.from,
     required String super.argument,
   }) : super(
@@ -164,7 +163,7 @@ final class SupplierSearchFamily extends $Family
           SuppliersSearchResults,
           String
         > {
-  const SupplierSearchFamily._()
+  SupplierSearchFamily._()
     : super(
         retry: null,
         name: r'supplierSearchProvider',
@@ -188,7 +187,6 @@ abstract class _$SupplierSearch extends $Notifier<SuppliersSearchResults> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref =
         this.ref as $Ref<SuppliersSearchResults, SuppliersSearchResults>;
     final element =
@@ -199,16 +197,16 @@ abstract class _$SupplierSearch extends $Notifier<SuppliersSearchResults> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
 @ProviderFor(SearchSettings)
-const searchSettingsProvider = SearchSettingsProvider._();
+final searchSettingsProvider = SearchSettingsProvider._();
 
 final class SearchSettingsProvider
     extends $NotifierProvider<SearchSettings, SearchSettingsModel> {
-  const SearchSettingsProvider._()
+  SearchSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -242,7 +240,6 @@ abstract class _$SearchSettings extends $Notifier<SearchSettingsModel> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<SearchSettingsModel, SearchSettingsModel>;
     final element =
         ref.element
@@ -252,6 +249,6 @@ abstract class _$SearchSettings extends $Notifier<SearchSettingsModel> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

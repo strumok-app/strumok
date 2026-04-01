@@ -10,7 +10,7 @@ part of 'suppliers_bundle_version_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(installedSupplierBundleInfo)
-const installedSupplierBundleInfoProvider =
+final installedSupplierBundleInfoProvider =
     InstalledSupplierBundleInfoProvider._();
 
 final class InstalledSupplierBundleInfoProvider
@@ -23,7 +23,7 @@ final class InstalledSupplierBundleInfoProvider
     with
         $FutureModifier<FFISupplierBundleInfo?>,
         $FutureProvider<FFISupplierBundleInfo?> {
-  const InstalledSupplierBundleInfoProvider._()
+  InstalledSupplierBundleInfoProvider._()
     : super(
         from: null,
         argument: null,
@@ -53,7 +53,7 @@ String _$installedSupplierBundleInfoHash() =>
     r'b7378bcf1fe611ff83ec4c8662f80a3777377c9b';
 
 @ProviderFor(latestSupplierBundleInfo)
-const latestSupplierBundleInfoProvider = LatestSupplierBundleInfoProvider._();
+final latestSupplierBundleInfoProvider = LatestSupplierBundleInfoProvider._();
 
 final class LatestSupplierBundleInfoProvider
     extends
@@ -65,7 +65,7 @@ final class LatestSupplierBundleInfoProvider
     with
         $FutureModifier<FFISupplierBundleInfo?>,
         $FutureProvider<FFISupplierBundleInfo?> {
-  const LatestSupplierBundleInfoProvider._()
+  LatestSupplierBundleInfoProvider._()
     : super(
         from: null,
         argument: null,
@@ -95,11 +95,11 @@ String _$latestSupplierBundleInfoHash() =>
     r'b99b01b7a7f96a4e5f93f2f149d54951d393da78';
 
 @ProviderFor(SuppliersBundleDownload)
-const suppliersBundleDownloadProvider = SuppliersBundleDownloadProvider._();
+final suppliersBundleDownloadProvider = SuppliersBundleDownloadProvider._();
 
 final class SuppliersBundleDownloadProvider
     extends $NotifierProvider<SuppliersBundleDownload, DownloadState> {
-  const SuppliersBundleDownloadProvider._()
+  SuppliersBundleDownloadProvider._()
     : super(
         from: null,
         argument: null,
@@ -134,7 +134,6 @@ abstract class _$SuppliersBundleDownload extends $Notifier<DownloadState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<DownloadState, DownloadState>;
     final element =
         ref.element
@@ -144,6 +143,6 @@ abstract class _$SuppliersBundleDownload extends $Notifier<DownloadState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

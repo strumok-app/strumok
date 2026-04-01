@@ -10,11 +10,11 @@ part of 'download_queue_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(DownloadsUpdateStream)
-const downloadsUpdateStreamProvider = DownloadsUpdateStreamProvider._();
+final downloadsUpdateStreamProvider = DownloadsUpdateStreamProvider._();
 
 final class DownloadsUpdateStreamProvider
     extends $StreamNotifierProvider<DownloadsUpdateStream, DownloadTask> {
-  const DownloadsUpdateStreamProvider._()
+  DownloadsUpdateStreamProvider._()
     : super(
         from: null,
         argument: null,
@@ -41,7 +41,6 @@ abstract class _$DownloadsUpdateStream extends $StreamNotifier<DownloadTask> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<DownloadTask>, DownloadTask>;
     final element =
         ref.element
@@ -51,12 +50,12 @@ abstract class _$DownloadsUpdateStream extends $StreamNotifier<DownloadTask> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(downloadTasks)
-const downloadTasksProvider = DownloadTasksProvider._();
+final downloadTasksProvider = DownloadTasksProvider._();
 
 final class DownloadTasksProvider
     extends
@@ -66,7 +65,7 @@ final class DownloadTasksProvider
           List<DownloadTask>
         >
     with $Provider<List<DownloadTask>> {
-  const DownloadTasksProvider._()
+  DownloadTasksProvider._()
     : super(
         from: null,
         argument: null,

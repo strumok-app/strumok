@@ -10,11 +10,11 @@ part of 'search_suggestion_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Suggestions)
-const suggestionsProvider = SuggestionsProvider._();
+final suggestionsProvider = SuggestionsProvider._();
 
 final class SuggestionsProvider
     extends $AsyncNotifierProvider<Suggestions, List<SearchSuggestion>> {
-  const SuggestionsProvider._()
+  SuggestionsProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,7 +40,6 @@ abstract class _$Suggestions extends $AsyncNotifier<List<SearchSuggestion>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref
             as $Ref<AsyncValue<List<SearchSuggestion>>, List<SearchSuggestion>>;
@@ -55,6 +54,6 @@ abstract class _$Suggestions extends $AsyncNotifier<List<SearchSuggestion>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

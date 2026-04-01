@@ -10,11 +10,11 @@ part of 'video_player_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(SubtitlesOffset)
-const subtitlesOffsetProvider = SubtitlesOffsetProvider._();
+final subtitlesOffsetProvider = SubtitlesOffsetProvider._();
 
 final class SubtitlesOffsetProvider
     extends $NotifierProvider<SubtitlesOffset, Duration> {
-  const SubtitlesOffsetProvider._()
+  SubtitlesOffsetProvider._()
     : super(
         from: null,
         argument: null,
@@ -48,7 +48,6 @@ abstract class _$SubtitlesOffset extends $Notifier<Duration> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<Duration, Duration>;
     final element =
         ref.element
@@ -58,16 +57,16 @@ abstract class _$SubtitlesOffset extends $Notifier<Duration> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(ShuffleModeSettings)
-const shuffleModeSettingsProvider = ShuffleModeSettingsProvider._();
+final shuffleModeSettingsProvider = ShuffleModeSettingsProvider._();
 
 final class ShuffleModeSettingsProvider
     extends $NotifierProvider<ShuffleModeSettings, bool> {
-  const ShuffleModeSettingsProvider._()
+  ShuffleModeSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -102,7 +101,6 @@ abstract class _$ShuffleModeSettings extends $Notifier<bool> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -112,16 +110,16 @@ abstract class _$ShuffleModeSettings extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(OnVideoEndsActionSettings)
-const onVideoEndsActionSettingsProvider = OnVideoEndsActionSettingsProvider._();
+final onVideoEndsActionSettingsProvider = OnVideoEndsActionSettingsProvider._();
 
 final class OnVideoEndsActionSettingsProvider
     extends $NotifierProvider<OnVideoEndsActionSettings, OnVideoEndsAction> {
-  const OnVideoEndsActionSettingsProvider._()
+  OnVideoEndsActionSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -157,7 +155,6 @@ abstract class _$OnVideoEndsActionSettings
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<OnVideoEndsAction, OnVideoEndsAction>;
     final element =
         ref.element
@@ -167,17 +164,17 @@ abstract class _$OnVideoEndsActionSettings
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(StartVideoPositionSettings)
-const startVideoPositionSettingsProvider =
+final startVideoPositionSettingsProvider =
     StartVideoPositionSettingsProvider._();
 
 final class StartVideoPositionSettingsProvider
     extends $NotifierProvider<StartVideoPositionSettings, StartVideoPosition> {
-  const StartVideoPositionSettingsProvider._()
+  StartVideoPositionSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -213,7 +210,6 @@ abstract class _$StartVideoPositionSettings
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<StartVideoPosition, StartVideoPosition>;
     final element =
         ref.element
@@ -223,16 +219,16 @@ abstract class _$StartVideoPositionSettings
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(FixedPositionSettings)
-const fixedPositionSettingsProvider = FixedPositionSettingsProvider._();
+final fixedPositionSettingsProvider = FixedPositionSettingsProvider._();
 
 final class FixedPositionSettingsProvider
     extends $NotifierProvider<FixedPositionSettings, int> {
-  const FixedPositionSettingsProvider._()
+  FixedPositionSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -267,7 +263,6 @@ abstract class _$FixedPositionSettings extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -277,16 +272,16 @@ abstract class _$FixedPositionSettings extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(EqualizerBandsSettings)
-const equalizerBandsSettingsProvider = EqualizerBandsSettingsProvider._();
+final equalizerBandsSettingsProvider = EqualizerBandsSettingsProvider._();
 
 final class EqualizerBandsSettingsProvider
     extends $NotifierProvider<EqualizerBandsSettings, List<double>> {
-  const EqualizerBandsSettingsProvider._()
+  EqualizerBandsSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -321,7 +316,6 @@ abstract class _$EqualizerBandsSettings extends $Notifier<List<double>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<List<double>, List<double>>;
     final element =
         ref.element
@@ -331,12 +325,12 @@ abstract class _$EqualizerBandsSettings extends $Notifier<List<double>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(sourceSelector)
-const sourceSelectorProvider = SourceSelectorFamily._();
+final sourceSelectorProvider = SourceSelectorFamily._();
 
 final class SourceSelectorProvider
     extends
@@ -348,7 +342,7 @@ final class SourceSelectorProvider
     with
         $FutureModifier<SourceSelectorModel>,
         $FutureProvider<SourceSelectorModel> {
-  const SourceSelectorProvider._({
+  SourceSelectorProvider._({
     required SourceSelectorFamily super.from,
     required (ContentDetails, SegmentedList<ContentMediaItem>) super.argument,
   }) : super(
@@ -401,7 +395,7 @@ final class SourceSelectorFamily extends $Family
           FutureOr<SourceSelectorModel>,
           (ContentDetails, SegmentedList<ContentMediaItem>)
         > {
-  const SourceSelectorFamily._()
+  SourceSelectorFamily._()
     : super(
         retry: null,
         name: r'sourceSelectorProvider',

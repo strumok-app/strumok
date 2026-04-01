@@ -10,7 +10,7 @@ part of 'offline_items_screen_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(offlineContent)
-const offlineContentProvider = OfflineContentProvider._();
+final offlineContentProvider = OfflineContentProvider._();
 
 final class OfflineContentProvider
     extends
@@ -22,7 +22,7 @@ final class OfflineContentProvider
     with
         $FutureModifier<List<OfflineContentInfo>>,
         $FutureProvider<List<OfflineContentInfo>> {
-  const OfflineContentProvider._()
+  OfflineContentProvider._()
     : super(
         from: null,
         argument: null,
