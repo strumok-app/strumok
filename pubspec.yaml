@@ -41,6 +41,7 @@ dependencies:
   # platform
   device_info_plus: ^12.2.0
   package_info_plus: ^9.0.0
+  permission_handler: ^11.3.1
   # desktop
   window_manager: ^0.5.1
   # mobile

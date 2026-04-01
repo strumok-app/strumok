@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:content_suppliers_api/model.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
@@ -152,14 +156,32 @@ class MediaItemDownloadDialog extends ConsumerWidget {
               child: _SourceList(
                 sources: sources,
                 onDownload: (source) async {
+                  final hasPermission = await OfflineStorage()
+                      .requestStoragePermission();
+
+                  if (!hasPermission) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Storage permission is required to download',
+                          ),
+                        ),
+                      );
+                    }
+                    return;
+                  }
+
                   await OfflineStorage().storeSource(
                     contentDetails,
                     number,
                     source,
                   );
+
                   ref.invalidate(
                     mediaItemDownloadProvider(supplier, id, number),
                   );
+
                   if (context.mounted) {
                     Navigator.of(context).pop();
                   }

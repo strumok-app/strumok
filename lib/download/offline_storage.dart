@@ -6,6 +6,7 @@ import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:path/path.dart' as path;
 import 'package:content_suppliers_api/model.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/download/manager/manager.dart';
 import 'package:strumok/download/offline_content_models.dart';
@@ -433,6 +434,24 @@ class OfflineStorage {
         ),
       );
     }
+  }
+
+  Future<bool> hasStoragePermission() async {
+    if (Platform.isAndroid) {
+      final status = await Permission.storage.status;
+      return status.isGranted;
+    }
+
+    return true;
+  }
+
+  Future<bool> requestStoragePermission() async {
+    if (Platform.isAndroid) {
+      final status = await Permission.storage.request();
+      return status.isGranted;
+    }
+
+    return true;
   }
 }
 
