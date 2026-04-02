@@ -17,7 +17,8 @@
                 "FORCE_TV_MODE=false",
             ],
             "env": {
-                "RUST_LOG": "error"
+                "RUST_LOG": "error",
+                "LIBVA_DRIVER_NAME": "nvidia"
             }
         },
         {

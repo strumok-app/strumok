@@ -54,7 +54,7 @@ final class CollectionServiceProvider
   }
 }
 
-String _$collectionServiceHash() => r'4511383fa598b1ef78ed7c5268f9415b7dff04ff';
+String _$collectionServiceHash() => r'84321ee9837f0c3e0bfbf8906b1ddd1b14ee78d2';
 
 @ProviderFor(collectionChanges)
 const collectionChangesProvider = CollectionChangesProvider._();

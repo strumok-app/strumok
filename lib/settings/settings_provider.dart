@@ -132,6 +132,19 @@ class ContentLanguageSettings extends _$ContentLanguageSettings {
 }
 
 @Riverpod(keepAlive: true)
+class FloatingVideoPlayerEnabled extends _$FloatingVideoPlayerEnabled {
+  @override
+  bool build() {
+    return AppPreferences.floatingVideoPlayerEnabled;
+  }
+
+  void toggle(bool enabled) {
+    AppPreferences.floatingVideoPlayerEnabled = enabled;
+    state = enabled;
+  }
+}
+
+@Riverpod(keepAlive: true)
 class OfflineStorageDirectory extends _$OfflineStorageDirectory {
   @override
   String? build() {

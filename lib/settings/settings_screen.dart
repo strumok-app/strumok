@@ -4,6 +4,7 @@ import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/settings/app_version/app_version_settings.dart';
 import 'package:strumok/settings/content_language.dart';
+import 'package:strumok/settings/floating_video_switcher.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_settings.dart';
 import 'package:strumok/settings/brightness_switcher.dart';
 import 'package:strumok/settings/color_switcher.dart';
@@ -62,6 +63,11 @@ class _SettingsView extends StatelessWidget {
                 context,
                 AppLocalizations.of(context)!.contentLanguage,
                 const ContentLanguageSelector(),
+              ),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsFloatingVideoPlayer,
+                const FloatingVideoSwitcher(),
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,

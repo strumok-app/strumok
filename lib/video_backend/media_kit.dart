@@ -24,6 +24,11 @@ class MediaKitVideoBackend extends VideoBackend {
 
   @override
   Future<void> dispose() async {
+    if (_player == null) {
+      return;
+    }
+
+    super.dispose();
     await Future.wait(
       _initializationStreamSubscriptions.map((e) => e.cancel()),
     );
@@ -34,8 +39,6 @@ class MediaKitVideoBackend extends VideoBackend {
     _videoController = null;
     _streamSubscriptions.clear();
     _initializationStreamSubscriptions.clear();
-
-    super.dispose();
   }
 
   @override

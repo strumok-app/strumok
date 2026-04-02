@@ -122,6 +122,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settingsSuppliersVersion => 'Версія постачальників';
 
   @override
+  String get settingsFloatingVideoPlayer => 'Плаваючий плеєр';
+
+  @override
   String get signIn => 'Авторизуватись';
 
   @override

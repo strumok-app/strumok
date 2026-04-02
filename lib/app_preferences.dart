@@ -45,8 +45,11 @@ class AppPreferences {
   static const String _keyVideoPlayerEqualizerBands =
       "video_player_equalizer_bands";
   static const String _keyOfflineMode = "offline_mode";
-  static const String _keyOfflineDownloadsDirectory = "offline_downloads_directory";
+  static const String _keyOfflineDownloadsDirectory =
+      "offline_downloads_directory";
   static const String _keyFfiSupplierBundleInfo = "ffi_supplier_bundle_info";
+  static const String _keyFloatingVideoPlayerEnabled =
+      "floating_video_player_enabled";
 
   static late final SharedPreferences instance;
 
@@ -240,7 +243,8 @@ class AppPreferences {
 
   static set offlineMode(bool mode) => instance.setBool(_keyOfflineMode, mode);
 
-  static String? get offlineDownloadsDirectory => instance.getString(_keyOfflineDownloadsDirectory);
+  static String? get offlineDownloadsDirectory =>
+      instance.getString(_keyOfflineDownloadsDirectory);
 
   static set offlineDownloadsDirectory(String? path) => path != null
       ? instance.setString(_keyOfflineDownloadsDirectory, path)
@@ -266,4 +270,10 @@ class AppPreferences {
 
     return FFISupplierBundleInfo.fromJson(json.decode(infoJson));
   }
+
+  static set floatingVideoPlayerEnabled(bool enabled) =>
+      instance.setBool(_keyFloatingVideoPlayerEnabled, enabled);
+
+  static bool get floatingVideoPlayerEnabled =>
+      instance.getBool(_keyFloatingVideoPlayerEnabled) ?? true;
 }

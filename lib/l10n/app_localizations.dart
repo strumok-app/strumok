@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'Suppliers version'**
   String get settingsSuppliersVersion;
 
+  /// No description provided for @settingsFloatingVideoPlayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Floating video player'**
+  String get settingsFloatingVideoPlayer;
+
   /// No description provided for @signIn.
   ///
   /// In en, this message translates to:

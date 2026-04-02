@@ -122,6 +122,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSuppliersVersion => 'Suppliers version';
 
   @override
+  String get settingsFloatingVideoPlayer => 'Floating video player';
+
+  @override
   String get signIn => 'Sign In';
 
   @override

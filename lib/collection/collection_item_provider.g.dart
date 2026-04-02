@@ -119,7 +119,7 @@ final class CollectionItemProvider
   }
 }
 
-String _$collectionItemHash() => r'3282756e5149d9ffb8ca376eb60f454112d06f0c';
+String _$collectionItemHash() => r'283d3aef78e590211b4ec74e223cb3123ef1539e';
 
 final class CollectionItemFamily extends $Family
     with

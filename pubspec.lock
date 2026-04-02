@@ -864,7 +864,7 @@ packages:
     description:
       path: media_kit
       ref: upstream-better-linux-render
-      resolved-ref: "2811a44c34655fdef3dd6554315f5d3a550e5dd7"
+      resolved-ref: cb869258576f9925d7cc0feebaa961b4c49bd3e1
       url: "https://github.com/Predidit/media-kit.git"
     source: git
     version: "1.2.6"
@@ -921,7 +921,7 @@ packages:
     description:
       path: media_kit_video
       ref: upstream-better-linux-render
-      resolved-ref: "2811a44c34655fdef3dd6554315f5d3a550e5dd7"
+      resolved-ref: cb869258576f9925d7cc0feebaa961b4c49bd3e1
       url: "https://github.com/Predidit/media-kit.git"
     source: git
     version: "2.0.1"

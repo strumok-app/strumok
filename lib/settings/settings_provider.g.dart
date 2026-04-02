@@ -445,6 +445,61 @@ abstract class _$ContentLanguageSettings
   }
 }
 
+@ProviderFor(FloatingVideoPlayerEnabled)
+const floatingVideoPlayerEnabledProvider =
+    FloatingVideoPlayerEnabledProvider._();
+
+final class FloatingVideoPlayerEnabledProvider
+    extends $NotifierProvider<FloatingVideoPlayerEnabled, bool> {
+  const FloatingVideoPlayerEnabledProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'floatingVideoPlayerEnabledProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$floatingVideoPlayerEnabledHash();
+
+  @$internal
+  @override
+  FloatingVideoPlayerEnabled create() => FloatingVideoPlayerEnabled();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$floatingVideoPlayerEnabledHash() =>
+    r'99959ceae95ff84cefb3666a17b21f4bcc4534ba';
+
+abstract class _$FloatingVideoPlayerEnabled extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
 @ProviderFor(OfflineStorageDirectory)
 const offlineStorageDirectoryProvider = OfflineStorageDirectoryProvider._();
 
