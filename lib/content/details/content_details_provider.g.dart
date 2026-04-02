@@ -10,7 +10,7 @@ part of 'content_details_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(details)
-const detailsProvider = DetailsFamily._();
+final detailsProvider = DetailsFamily._();
 
 final class DetailsProvider
     extends
@@ -20,7 +20,7 @@ final class DetailsProvider
           FutureOr<ContentDetails>
         >
     with $FutureModifier<ContentDetails>, $FutureProvider<ContentDetails> {
-  const DetailsProvider._({
+  DetailsProvider._({
     required DetailsFamily super.from,
     required (String, String) super.argument,
   }) : super(
@@ -68,7 +68,7 @@ String _$detailsHash() => r'2823e9708423ac995a0885c9052c225d823f5f12';
 
 final class DetailsFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<ContentDetails>, (String, String)> {
-  const DetailsFamily._()
+  DetailsFamily._()
     : super(
         retry: null,
         name: r'detailsProvider',
@@ -85,7 +85,7 @@ final class DetailsFamily extends $Family
 }
 
 @ProviderFor(detailsAndMedia)
-const detailsAndMediaProvider = DetailsAndMediaFamily._();
+final detailsAndMediaProvider = DetailsAndMediaFamily._();
 
 final class DetailsAndMediaProvider
     extends
@@ -97,7 +97,7 @@ final class DetailsAndMediaProvider
     with
         $FutureModifier<DetailsAndMediaItems>,
         $FutureProvider<DetailsAndMediaItems> {
-  const DetailsAndMediaProvider._({
+  DetailsAndMediaProvider._({
     required DetailsAndMediaFamily super.from,
     required (String, String) super.argument,
   }) : super(
@@ -149,7 +149,7 @@ final class DetailsAndMediaFamily extends $Family
           FutureOr<DetailsAndMediaItems>,
           (String, String)
         > {
-  const DetailsAndMediaFamily._()
+  DetailsAndMediaFamily._()
     : super(
         retry: null,
         name: r'detailsAndMediaProvider',

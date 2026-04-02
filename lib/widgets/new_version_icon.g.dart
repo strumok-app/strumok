@@ -10,11 +10,11 @@ part of 'new_version_icon.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(hasNewVersion)
-const hasNewVersionProvider = HasNewVersionProvider._();
+final hasNewVersionProvider = HasNewVersionProvider._();
 
 final class HasNewVersionProvider extends $FunctionalProvider<bool, bool, bool>
     with $Provider<bool> {
-  const HasNewVersionProvider._()
+  HasNewVersionProvider._()
     : super(
         from: null,
         argument: null,

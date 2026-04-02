@@ -10,11 +10,11 @@ part of 'media_item_download_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(MediaItemDownload)
-const mediaItemDownloadProvider = MediaItemDownloadFamily._();
+final mediaItemDownloadProvider = MediaItemDownloadFamily._();
 
 final class MediaItemDownloadProvider
     extends $AsyncNotifierProvider<MediaItemDownload, MediaItemDownloadState> {
-  const MediaItemDownloadProvider._({
+  MediaItemDownloadProvider._({
     required MediaItemDownloadFamily super.from,
     required (String, String, int) super.argument,
   }) : super(
@@ -61,7 +61,7 @@ final class MediaItemDownloadFamily extends $Family
           FutureOr<MediaItemDownloadState>,
           (String, String, int)
         > {
-  const MediaItemDownloadFamily._()
+  MediaItemDownloadFamily._()
     : super(
         retry: null,
         name: r'mediaItemDownloadProvider',
@@ -92,7 +92,6 @@ abstract class _$MediaItemDownload
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args.$1, _$args.$2, _$args.$3);
     final ref =
         this.ref
             as $Ref<AsyncValue<MediaItemDownloadState>, MediaItemDownloadState>;
@@ -107,6 +106,6 @@ abstract class _$MediaItemDownload
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args.$1, _$args.$2, _$args.$3));
   }
 }

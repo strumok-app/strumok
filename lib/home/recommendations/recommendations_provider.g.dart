@@ -10,7 +10,7 @@ part of 'recommendations_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(RecommendationChannel)
-const recommendationChannelProvider = RecommendationChannelFamily._();
+final recommendationChannelProvider = RecommendationChannelFamily._();
 
 final class RecommendationChannelProvider
     extends
@@ -18,7 +18,7 @@ final class RecommendationChannelProvider
           RecommendationChannel,
           RecommendationChannelState
         > {
-  const RecommendationChannelProvider._({
+  RecommendationChannelProvider._({
     required RecommendationChannelFamily super.from,
     required (String, String) super.argument,
   }) : super(
@@ -66,7 +66,7 @@ final class RecommendationChannelFamily extends $Family
           FutureOr<RecommendationChannelState>,
           (String, String)
         > {
-  const RecommendationChannelFamily._()
+  RecommendationChannelFamily._()
     : super(
         retry: null,
         name: r'recommendationChannelProvider',
@@ -98,7 +98,6 @@ abstract class _$RecommendationChannel
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args.$1, _$args.$2);
     final ref =
         this.ref
             as $Ref<
@@ -116,6 +115,6 @@ abstract class _$RecommendationChannel
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
   }
 }

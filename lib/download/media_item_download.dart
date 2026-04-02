@@ -157,9 +157,11 @@ class MediaItemDownloadDialog extends ConsumerWidget {
                     number,
                     source,
                   );
+
                   ref.invalidate(
                     mediaItemDownloadProvider(supplier, id, number),
                   );
+
                   if (context.mounted) {
                     Navigator.of(context).pop();
                   }

@@ -10,11 +10,11 @@ part of 'suppliers_settings_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(SuppliersSettings)
-const suppliersSettingsProvider = SuppliersSettingsProvider._();
+final suppliersSettingsProvider = SuppliersSettingsProvider._();
 
 final class SuppliersSettingsProvider
     extends $NotifierProvider<SuppliersSettings, SuppliersSettingsModel> {
-  const SuppliersSettingsProvider._()
+  SuppliersSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -48,7 +48,6 @@ abstract class _$SuppliersSettings extends $Notifier<SuppliersSettingsModel> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref as $Ref<SuppliersSettingsModel, SuppliersSettingsModel>;
     final element =
@@ -59,17 +58,17 @@ abstract class _$SuppliersSettings extends $Notifier<SuppliersSettingsModel> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(enabledSuppliers)
-const enabledSuppliersProvider = EnabledSuppliersProvider._();
+final enabledSuppliersProvider = EnabledSuppliersProvider._();
 
 final class EnabledSuppliersProvider
     extends $FunctionalProvider<Set<String>, Set<String>, Set<String>>
     with $Provider<Set<String>> {
-  const EnabledSuppliersProvider._()
+  EnabledSuppliersProvider._()
     : super(
         from: null,
         argument: null,

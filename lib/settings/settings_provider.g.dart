@@ -10,10 +10,10 @@ part of 'settings_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(OfflineMode)
-const offlineModeProvider = OfflineModeProvider._();
+final offlineModeProvider = OfflineModeProvider._();
 
 final class OfflineModeProvider extends $NotifierProvider<OfflineMode, bool> {
-  const OfflineModeProvider._()
+  OfflineModeProvider._()
     : super(
         from: null,
         argument: null,
@@ -47,7 +47,6 @@ abstract class _$OfflineMode extends $Notifier<bool> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -57,16 +56,16 @@ abstract class _$OfflineMode extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(BrightnessSetting)
-const brightnessSettingProvider = BrightnessSettingProvider._();
+final brightnessSettingProvider = BrightnessSettingProvider._();
 
 final class BrightnessSettingProvider
     extends $NotifierProvider<BrightnessSetting, Brightness?> {
-  const BrightnessSettingProvider._()
+  BrightnessSettingProvider._()
     : super(
         from: null,
         argument: null,
@@ -100,7 +99,6 @@ abstract class _$BrightnessSetting extends $Notifier<Brightness?> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<Brightness?, Brightness?>;
     final element =
         ref.element
@@ -110,16 +108,16 @@ abstract class _$BrightnessSetting extends $Notifier<Brightness?> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(ColorSettings)
-const colorSettingsProvider = ColorSettingsProvider._();
+final colorSettingsProvider = ColorSettingsProvider._();
 
 final class ColorSettingsProvider
     extends $NotifierProvider<ColorSettings, Color> {
-  const ColorSettingsProvider._()
+  ColorSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -153,7 +151,6 @@ abstract class _$ColorSettings extends $Notifier<Color> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<Color, Color>;
     final element =
         ref.element
@@ -163,16 +160,16 @@ abstract class _$ColorSettings extends $Notifier<Color> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(UserLanguageSetting)
-const userLanguageSettingProvider = UserLanguageSettingProvider._();
+final userLanguageSettingProvider = UserLanguageSettingProvider._();
 
 final class UserLanguageSettingProvider
     extends $NotifierProvider<UserLanguageSetting, String> {
-  const UserLanguageSettingProvider._()
+  UserLanguageSettingProvider._()
     : super(
         from: null,
         argument: null,
@@ -207,7 +204,6 @@ abstract class _$UserLanguageSetting extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -217,12 +213,12 @@ abstract class _$UserLanguageSetting extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(MangaReaderBackgroundSettings)
-const mangaReaderBackgroundSettingsProvider =
+final mangaReaderBackgroundSettingsProvider =
     MangaReaderBackgroundSettingsProvider._();
 
 final class MangaReaderBackgroundSettingsProvider
@@ -231,7 +227,7 @@ final class MangaReaderBackgroundSettingsProvider
           MangaReaderBackgroundSettings,
           MangaReaderBackground
         > {
-  const MangaReaderBackgroundSettingsProvider._()
+  MangaReaderBackgroundSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -267,7 +263,6 @@ abstract class _$MangaReaderBackgroundSettings
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<MangaReaderBackground, MangaReaderBackground>;
     final element =
         ref.element
@@ -277,16 +272,16 @@ abstract class _$MangaReaderBackgroundSettings
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(MangaReaderModeSettings)
-const mangaReaderModeSettingsProvider = MangaReaderModeSettingsProvider._();
+final mangaReaderModeSettingsProvider = MangaReaderModeSettingsProvider._();
 
 final class MangaReaderModeSettingsProvider
     extends $NotifierProvider<MangaReaderModeSettings, MangaReaderMode> {
-  const MangaReaderModeSettingsProvider._()
+  MangaReaderModeSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -321,7 +316,6 @@ abstract class _$MangaReaderModeSettings extends $Notifier<MangaReaderMode> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<MangaReaderMode, MangaReaderMode>;
     final element =
         ref.element
@@ -331,17 +325,17 @@ abstract class _$MangaReaderModeSettings extends $Notifier<MangaReaderMode> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(MangaReaderAutoCropSettings)
-const mangaReaderAutoCropSettingsProvider =
+final mangaReaderAutoCropSettingsProvider =
     MangaReaderAutoCropSettingsProvider._();
 
 final class MangaReaderAutoCropSettingsProvider
     extends $NotifierProvider<MangaReaderAutoCropSettings, bool> {
-  const MangaReaderAutoCropSettingsProvider._()
+  MangaReaderAutoCropSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -376,7 +370,6 @@ abstract class _$MangaReaderAutoCropSettings extends $Notifier<bool> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -386,16 +379,16 @@ abstract class _$MangaReaderAutoCropSettings extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(ContentLanguageSettings)
-const contentLanguageSettingsProvider = ContentLanguageSettingsProvider._();
+final contentLanguageSettingsProvider = ContentLanguageSettingsProvider._();
 
 final class ContentLanguageSettingsProvider
     extends $NotifierProvider<ContentLanguageSettings, Set<ContentLanguage>> {
-  const ContentLanguageSettingsProvider._()
+  ContentLanguageSettingsProvider._()
     : super(
         from: null,
         argument: null,
@@ -431,7 +424,6 @@ abstract class _$ContentLanguageSettings
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<Set<ContentLanguage>, Set<ContentLanguage>>;
     final element =
         ref.element
@@ -441,7 +433,7 @@ abstract class _$ContentLanguageSettings
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -501,11 +493,11 @@ abstract class _$FloatingVideoPlayerEnabled extends $Notifier<bool> {
 }
 
 @ProviderFor(OfflineStorageDirectory)
-const offlineStorageDirectoryProvider = OfflineStorageDirectoryProvider._();
+final offlineStorageDirectoryProvider = OfflineStorageDirectoryProvider._();
 
 final class OfflineStorageDirectoryProvider
     extends $NotifierProvider<OfflineStorageDirectory, String?> {
-  const OfflineStorageDirectoryProvider._()
+  OfflineStorageDirectoryProvider._()
     : super(
         from: null,
         argument: null,
@@ -540,7 +532,6 @@ abstract class _$OfflineStorageDirectory extends $Notifier<String?> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String?, String?>;
     final element =
         ref.element
@@ -550,6 +541,6 @@ abstract class _$OfflineStorageDirectory extends $Notifier<String?> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

@@ -30,12 +30,12 @@ LatestAppVersionInfo _$LatestAppVersionInfoFromJson(
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(currentAppVersion)
-const currentAppVersionProvider = CurrentAppVersionProvider._();
+final currentAppVersionProvider = CurrentAppVersionProvider._();
 
 final class CurrentAppVersionProvider
     extends $FunctionalProvider<AsyncValue<SemVer>, SemVer, FutureOr<SemVer>>
     with $FutureModifier<SemVer>, $FutureProvider<SemVer> {
-  const CurrentAppVersionProvider._()
+  CurrentAppVersionProvider._()
     : super(
         from: null,
         argument: null,
@@ -63,7 +63,7 @@ final class CurrentAppVersionProvider
 String _$currentAppVersionHash() => r'1b8be778347ea0923da209174409af1bdd9b6add';
 
 @ProviderFor(latestAppVersionInfo)
-const latestAppVersionInfoProvider = LatestAppVersionInfoProvider._();
+final latestAppVersionInfoProvider = LatestAppVersionInfoProvider._();
 
 final class LatestAppVersionInfoProvider
     extends
@@ -75,7 +75,7 @@ final class LatestAppVersionInfoProvider
     with
         $FutureModifier<LatestAppVersionInfo?>,
         $FutureProvider<LatestAppVersionInfo?> {
-  const LatestAppVersionInfoProvider._()
+  LatestAppVersionInfoProvider._()
     : super(
         from: null,
         argument: null,
@@ -105,11 +105,11 @@ String _$latestAppVersionInfoHash() =>
     r'e75cffaac55d5f35152d7cbfc17417f0a7e415dc';
 
 @ProviderFor(AppDownload)
-const appDownloadProvider = AppDownloadProvider._();
+final appDownloadProvider = AppDownloadProvider._();
 
 final class AppDownloadProvider
     extends $NotifierProvider<AppDownload, DownloadState> {
-  const AppDownloadProvider._()
+  AppDownloadProvider._()
     : super(
         from: null,
         argument: null,
@@ -143,7 +143,6 @@ abstract class _$AppDownload extends $Notifier<DownloadState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<DownloadState, DownloadState>;
     final element =
         ref.element
@@ -153,6 +152,6 @@ abstract class _$AppDownload extends $Notifier<DownloadState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

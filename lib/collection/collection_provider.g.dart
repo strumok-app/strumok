@@ -10,7 +10,7 @@ part of 'collection_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(collectionService)
-const collectionServiceProvider = CollectionServiceProvider._();
+final collectionServiceProvider = CollectionServiceProvider._();
 
 final class CollectionServiceProvider
     extends
@@ -20,7 +20,7 @@ final class CollectionServiceProvider
           CollectionService
         >
     with $Provider<CollectionService> {
-  const CollectionServiceProvider._()
+  CollectionServiceProvider._()
     : super(
         from: null,
         argument: null,
@@ -57,12 +57,12 @@ final class CollectionServiceProvider
 String _$collectionServiceHash() => r'84321ee9837f0c3e0bfbf8906b1ddd1b14ee78d2';
 
 @ProviderFor(collectionChanges)
-const collectionChangesProvider = CollectionChangesProvider._();
+final collectionChangesProvider = CollectionChangesProvider._();
 
 final class CollectionChangesProvider
     extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
-  const CollectionChangesProvider._()
+  CollectionChangesProvider._()
     : super(
         from: null,
         argument: null,
@@ -90,11 +90,11 @@ final class CollectionChangesProvider
 String _$collectionChangesHash() => r'0f8683a1d3a68b5c375db0b94fdb336ae790f9bb';
 
 @ProviderFor(CollectionFilterQuery)
-const collectionFilterQueryProvider = CollectionFilterQueryProvider._();
+final collectionFilterQueryProvider = CollectionFilterQueryProvider._();
 
 final class CollectionFilterQueryProvider
     extends $NotifierProvider<CollectionFilterQuery, String> {
-  const CollectionFilterQueryProvider._()
+  CollectionFilterQueryProvider._()
     : super(
         from: null,
         argument: null,
@@ -129,7 +129,6 @@ abstract class _$CollectionFilterQuery extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -139,12 +138,12 @@ abstract class _$CollectionFilterQuery extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(collectionItems)
-const collectionItemsProvider = CollectionItemsProvider._();
+final collectionItemsProvider = CollectionItemsProvider._();
 
 final class CollectionItemsProvider
     extends
@@ -156,7 +155,7 @@ final class CollectionItemsProvider
     with
         $FutureModifier<List<MediaCollectionItem>>,
         $FutureProvider<List<MediaCollectionItem>> {
-  const CollectionItemsProvider._()
+  CollectionItemsProvider._()
     : super(
         from: null,
         argument: null,
@@ -185,7 +184,7 @@ final class CollectionItemsProvider
 String _$collectionItemsHash() => r'7f061ed51578f3d6a84966ab98d145a95f417e43';
 
 @ProviderFor(collectionItemsByStatus)
-const collectionItemsByStatusProvider = CollectionItemsByStatusProvider._();
+final collectionItemsByStatusProvider = CollectionItemsByStatusProvider._();
 
 final class CollectionItemsByStatusProvider
     extends
@@ -201,7 +200,7 @@ final class CollectionItemsByStatusProvider
         $FutureProvider<
           Map<MediaCollectionItemStatus, List<MediaCollectionItem>>
         > {
-  const CollectionItemsByStatusProvider._()
+  CollectionItemsByStatusProvider._()
     : super(
         from: null,
         argument: null,
@@ -234,7 +233,7 @@ String _$collectionItemsByStatusHash() =>
     r'dc82a46ec5fb8bed38679bd19199935373aea07e';
 
 @ProviderFor(collectionItemsSuppliers)
-const collectionItemsSuppliersProvider = CollectionItemsSuppliersProvider._();
+final collectionItemsSuppliersProvider = CollectionItemsSuppliersProvider._();
 
 final class CollectionItemsSuppliersProvider
     extends
@@ -244,7 +243,7 @@ final class CollectionItemsSuppliersProvider
           FutureOr<Set<String>>
         >
     with $FutureModifier<Set<String>>, $FutureProvider<Set<String>> {
-  const CollectionItemsSuppliersProvider._()
+  CollectionItemsSuppliersProvider._()
     : super(
         from: null,
         argument: null,
@@ -274,7 +273,7 @@ String _$collectionItemsSuppliersHash() =>
     r'7734ea3459e39c871ec144acafb49a78ad880c00';
 
 @ProviderFor(collectionActiveItems)
-const collectionActiveItemsProvider = CollectionActiveItemsProvider._();
+final collectionActiveItemsProvider = CollectionActiveItemsProvider._();
 
 final class CollectionActiveItemsProvider
     extends
@@ -286,7 +285,7 @@ final class CollectionActiveItemsProvider
     with
         $FutureModifier<List<MediaCollectionItem>>,
         $FutureProvider<List<MediaCollectionItem>> {
-  const CollectionActiveItemsProvider._()
+  CollectionActiveItemsProvider._()
     : super(
         from: null,
         argument: null,
@@ -316,11 +315,11 @@ String _$collectionActiveItemsHash() =>
     r'2ec5e9a6b349760f852d5f61f05a102591b58baa';
 
 @ProviderFor(CollectionFilter)
-const collectionFilterProvider = CollectionFilterProvider._();
+final collectionFilterProvider = CollectionFilterProvider._();
 
 final class CollectionFilterProvider
     extends $NotifierProvider<CollectionFilter, CollectionFilterModel> {
-  const CollectionFilterProvider._()
+  CollectionFilterProvider._()
     : super(
         from: null,
         argument: null,
@@ -354,7 +353,6 @@ abstract class _$CollectionFilter extends $Notifier<CollectionFilterModel> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<CollectionFilterModel, CollectionFilterModel>;
     final element =
         ref.element
@@ -364,6 +362,6 @@ abstract class _$CollectionFilter extends $Notifier<CollectionFilterModel> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

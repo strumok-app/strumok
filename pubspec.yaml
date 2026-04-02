@@ -1,6 +1,6 @@
 name: strumok
 description: "Strumok"
-publish_to: 'none'
+publish_to: "none"
 version: 1.25.3
 
 environment:
@@ -14,19 +14,19 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   # routing
-  auto_route: ^10.2.3
+  auto_route: ^11.1.0
 
   # auth + firebase
   googleapis_auth: ^2.0.0
   google_sign_in: ^7.2.0
   firebase_dart: ^1.5.3
-  
+
   # storage
   path_provider: ^2.1.5
   file_selector: ^1.1.0
   sembast: ^3.8.5+2
   shared_preferences: ^2.5.3
-  
+
   # video_player
   # video_player: ^2.10.0
   # video_player_platform_interface: ^6.6.0
@@ -58,8 +58,8 @@ dependencies:
   cached_network_image: ^3.4.1
 
   # state managment
-  flutter_riverpod: ^3.0.3
-  riverpod_annotation: ^3.0.3
+  flutter_riverpod: ^3.3.1
+  riverpod_annotation: ^4.0.0
 
   # utillity
   equatable: ^2.0.7
@@ -68,15 +68,15 @@ dependencies:
   collection: ^1.19.1
   http: ^1.6.0
   path: ^1.9.1
-  
+
   # crypto
-  pointycastle: ^4.0.0 
-  
+  pointycastle: ^4.0.0
+
   # tracing
   logging: ^1.3.0
   logging_to_logcat: ^1.0.5
   sentry_flutter: ^9.8.0
-  
+
   # isolate management
   content_suppliers_api:
     path: content_suppliers_api
@@ -87,28 +87,25 @@ dependencies:
 dev_dependencies:
   analyzer:
   build_runner:
-  flutter_lints:
-  custom_lint:
   riverpod_lint: ^3.0.3
-  riverpod_generator: ^3.0.3
+  riverpod_generator: ^4.0.0+1
   auto_route_generator: ^10.2.6
   json_serializable: ^6.11.2
   flutter_launcher_icons: ^0.14.4
 
-
-dependency_overrides: 
-  media_kit: 
-    git: 
+dependency_overrides:
+  media_kit:
+    git:
       url: https://github.com/Predidit/media-kit.git
       path: media_kit
       ref: upstream-better-linux-render
-  media_kit_video: 
-    git: 
+  media_kit_video:
+    git:
       url: https://github.com/Predidit/media-kit.git
       path: media_kit_video
       ref: upstream-better-linux-render
   # media_kit_libs_video:
-  #   git: 
+  #   git:
   #     url: https://github.com/Predidit/media-kit.git
   #     path: libs/universal/media_kit_libs_video
   #     ref: upstream-better-linux-render
@@ -120,7 +117,7 @@ flutter:
     - secrets.env
 
 flutter_launcher_icons:
-  android: true 
+  android: true
   image_path: "data/icons/strumok.png"
   adaptive_icon_background: "#ffffff"
   adaptive_icon_foreground: "data/icons/strumok.png"
