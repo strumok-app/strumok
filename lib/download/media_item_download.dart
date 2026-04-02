@@ -152,22 +152,6 @@ class MediaItemDownloadDialog extends ConsumerWidget {
               child: _SourceList(
                 sources: sources,
                 onDownload: (source) async {
-                  final hasPermission = await OfflineStorage()
-                      .requestStoragePermission();
-
-                  if (!hasPermission) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Storage permission is required to download',
-                          ),
-                        ),
-                      );
-                    }
-                    return;
-                  }
-
                   await OfflineStorage().storeSource(
                     contentDetails,
                     number,

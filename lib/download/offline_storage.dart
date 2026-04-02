@@ -435,24 +435,6 @@ class OfflineStorage {
       );
     }
   }
-
-  Future<bool> hasStoragePermission() async {
-    if (Platform.isAndroid) {
-      final status = await Permission.storage.status;
-      return status.isGranted;
-    }
-
-    return true;
-  }
-
-  Future<bool> requestStoragePermission() async {
-    if (Platform.isAndroid) {
-      final status = await Permission.storage.request();
-      return status.isGranted;
-    }
-
-    return true;
-  }
 }
 
 /// Returns true when there are active download tasks for the content.

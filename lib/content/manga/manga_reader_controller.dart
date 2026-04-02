@@ -86,13 +86,6 @@ class MangaReaderController extends ValueNotifier<MangaReaderState> {
     value.currentPage.dispose();
 
     try {
-      final hasPermission = await OfflineStorage().requestStoragePermission();
-
-      if (!hasPermission) {
-        value = MangaReaderState.erroneous("Storage permission is required");
-        return;
-      }
-
       value = MangaReaderState.uinitialized();
 
       final currentItemIdx = collectionItem.currentItem;

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
@@ -10,6 +12,7 @@ import 'package:strumok/settings/color_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/settings/user_language.dart';
 import 'package:strumok/settings/offline_storage_directory.dart';
+import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/settings_section.dart';
 
 @RoutePage()
@@ -82,11 +85,12 @@ class _SettingsView extends StatelessWidget {
                 const BrightnessSwitcher(),
               ),
               const ColorSwitcher(),
-              _renderSection(
-                context,
-                AppLocalizations.of(context)!.settingsDownloadsDirectory,
-                const OfflineStorageDirectorySelector(),
-              ),
+              if (!Platform.isAndroid) // beacuse fuck android
+                _renderSection(
+                  context,
+                  AppLocalizations.of(context)!.settingsDownloadsDirectory,
+                  const OfflineStorageDirectorySelector(),
+                ),
             ],
           ),
         ),
