@@ -43,17 +43,20 @@ class OfflineStorage {
   /// be used; otherwise the platform downloads directory with a `strumok`
   /// subfolder is used.
   Future<void> init() async {
-    final downloadDirFromPreferences = AppPreferences.offlineDownloadsDirectory;
-
     bool hasCustomPath = false;
-    if (downloadDirFromPreferences != null &&
-        downloadDirFromPreferences.isNotEmpty) {
-      _downloadsDir = downloadDirFromPreferences;
-      hasCustomPath = (await Directory(_downloadsDir).exists());
 
-      if (!hasCustomPath) {
-        // reset directory
-        AppPreferences.offlineDownloadsDirectory = null;
+    if (!Platform.isAndroid) {
+      final downloadDirFromPreferences =
+          AppPreferences.offlineDownloadsDirectory;
+      if (downloadDirFromPreferences != null &&
+          downloadDirFromPreferences.isNotEmpty) {
+        _downloadsDir = downloadDirFromPreferences;
+        hasCustomPath = (await Directory(_downloadsDir).exists());
+
+        if (!hasCustomPath) {
+          // reset directory
+          AppPreferences.offlineDownloadsDirectory = null;
+        }
       }
     }
 
