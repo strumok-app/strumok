@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/track_selector.dart';
-import 'package:strumok/content/video/video_content_controller.dart';
-import 'package:strumok/content/video/video_content_desktop_controls.dart';
+import 'package:strumok/content/video/video_player_controller.dart';
+import 'package:strumok/content/video/video_player_desktop_controls.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/source_selector.dart';
@@ -15,14 +15,14 @@ import 'package:strumok/utils/text.dart';
 
 const seekTransitionDuration = Duration(milliseconds: 500);
 
-class VideoContentTVControls extends StatefulWidget {
-  const VideoContentTVControls({super.key});
+class VideoPlayerTVControls extends StatefulWidget {
+  const VideoPlayerTVControls({super.key});
 
   @override
-  State<VideoContentTVControls> createState() => _VideoContentTVControlsState();
+  State<VideoPlayerTVControls> createState() => _VideoPlayerTVControlsState();
 }
 
-class _VideoContentTVControlsState extends State<VideoContentTVControls> {
+class _VideoPlayerTVControlsState extends State<VideoPlayerTVControls> {
   late bool _uiShown = false;
   late bool _visible = false;
 

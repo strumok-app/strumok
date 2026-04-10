@@ -1,26 +1,25 @@
-import 'package:strumok/content/video/video_content_controller.dart';
-import 'package:strumok/content/video/video_content_desktop_controls.dart';
+import 'package:strumok/content/video/video_player_controller.dart';
+import 'package:strumok/content/video/video_player_desktop_controls.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:window_manager/window_manager.dart';
 
-class VideoContentDesktopView extends StatefulWidget {
-  const VideoContentDesktopView({super.key});
+class VideoPlayerDesktopView extends StatefulWidget {
+  const VideoPlayerDesktopView({super.key});
 
   @override
-  State<VideoContentDesktopView> createState() =>
-      _VideoContentDesktopViewState();
+  State<VideoPlayerDesktopView> createState() => _VideoPlayerDesktopViewState();
 }
 
-class _VideoContentDesktopViewState extends State<VideoContentDesktopView> {
+class _VideoPlayerDesktopViewState extends State<VideoPlayerDesktopView> {
   bool pipMode = false;
 
   @override
   Widget build(BuildContext context) {
     return pipMode
         ? PipVideoControls(onPipExit: _switchToPipMode)
-        : VideoContentDesktopControls(onPipEnter: _switchToPipMode);
+        : VideoPlayerDesktopControls(onPipEnter: _switchToPipMode);
   }
 
   @override

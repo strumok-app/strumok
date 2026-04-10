@@ -3,9 +3,53 @@ import 'package:content_suppliers_api/segmented_list.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
+import 'package:strumok/content/details/content_details_provider.dart';
 import 'package:strumok/content/video/model.dart';
+import 'package:strumok/content/video/video_player_controller.dart';
 
 part 'video_player_provider.g.dart';
+
+@Riverpod(keepAlive: true)
+class VideoPlayer extends _$VideoPlayer {
+  @override
+  FutureOr<VideoPlayerController?> build() async {
+    return null;
+  }
+
+  void load(String supplier, String id) async {
+    final currentController = state.value;
+    if (currentController != null) {
+      if (currentController.contentDetails.supplier == supplier &&
+          currentController.contentDetails.id == id) {
+        return;
+      }
+      currentController.dispose();
+    }
+
+    state = AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async {
+      final data = await ref.read(detailsAndMediaProvider(supplier, id).future);
+
+      final collectionItemProv = collectionItemProvider(data.contentDetails);
+      final collectionItemNotifier = ref.read(collectionItemProv.notifier);
+
+      final controller = VideoPlayerController(
+        contentDetails: data.contentDetails,
+        mediaItems: data.mediaItems,
+        changeCollectionCurrentItem: (itemIdx) =>
+            collectionItemNotifier.setCurrentItem(itemIdx),
+      );
+
+      return controller;
+    });
+  }
+
+  void dispose() {
+    state.value?.dispose();
+    state = AsyncValue.data(null);
+  }
+}
 
 @riverpod
 class SubtitlesOffset extends _$SubtitlesOffset {

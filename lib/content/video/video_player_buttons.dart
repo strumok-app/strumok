@@ -6,7 +6,7 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
-import 'package:strumok/content/video/video_content_controller.dart';
+import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 
 class ExitButton extends StatelessWidget {

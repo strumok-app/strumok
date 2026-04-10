@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:strumok/content/video/track_selector.dart';
-import 'package:strumok/content/video/video_content_controller.dart';
+import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
@@ -12,17 +12,16 @@ import 'package:strumok/utils/text.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 /// {@macro material_video_controls}
-class VideoContentMobileControls extends StatefulWidget {
-  const VideoContentMobileControls({super.key});
+class VideoPlayerMobileControls extends StatefulWidget {
+  const VideoPlayerMobileControls({super.key});
 
   @override
-  State<VideoContentMobileControls> createState() =>
-      _VideoContentMobileControlsState();
+  State<VideoPlayerMobileControls> createState() =>
+      _VideoPlayerMobileControlsState();
 }
 
 /// {@macro material_video_controls}
-class _VideoContentMobileControlsState
-    extends State<VideoContentMobileControls> {
+class _VideoPlayerMobileControlsState extends State<VideoPlayerMobileControls> {
   static final controlsHoverDuration = const Duration(seconds: 3);
   static final controlsTransitionDuration = const Duration(milliseconds: 300);
 

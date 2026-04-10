@@ -1,15 +1,15 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:strumok/content/video/video_content_mobile_controls.dart';
+import 'package:strumok/content/video/video_player_mobile_controls.dart';
 
-class VideoContentMobileView extends StatefulWidget {
-  const VideoContentMobileView({super.key});
+class VideoPlayerMobileView extends StatefulWidget {
+  const VideoPlayerMobileView({super.key});
 
   @override
-  State<VideoContentMobileView> createState() => _VideoContentMobileViewState();
+  State<VideoPlayerMobileView> createState() => _VideoPlayerMobileViewState();
 }
 
-class _VideoContentMobileViewState extends State<VideoContentMobileView> {
+class _VideoPlayerMobileViewState extends State<VideoPlayerMobileView> {
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -36,6 +36,6 @@ class _VideoContentMobileViewState extends State<VideoContentMobileView> {
 
   @override
   Widget build(BuildContext context) {
-    return VideoContentMobileControls();
+    return VideoPlayerMobileControls();
   }
 }

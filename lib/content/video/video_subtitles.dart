@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
-import 'package:strumok/content/video/video_content_controller.dart';
+import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/video_backend/video_backend.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:strumok/content/video/video_content_controller.dart';
+import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/video_backend/video_backend.dart';

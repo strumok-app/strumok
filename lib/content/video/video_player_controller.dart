@@ -16,7 +16,7 @@ import 'package:strumok/utils/trace.dart';
 import 'package:strumok/video_backend/video_backend.dart';
 import 'package:subtitle/subtitle.dart';
 
-class VideoContentController {
+class VideoPlayerController {
   static final SimpleCache<SubCacheKey, SubtitleController> _subsCache =
       SimpleCache(10);
 
@@ -52,7 +52,7 @@ class VideoContentController {
 
   bool _disposed = false;
 
-  VideoContentController({
+  VideoPlayerController({
     required this.contentDetails,
     required this.mediaItems,
     required this.changeCollectionCurrentItem,
@@ -501,7 +501,7 @@ class VideoContentController {
 }
 
 class VideoContentControllerInheritedWidget extends InheritedWidget {
-  final VideoContentController controller;
+  final VideoPlayerController controller;
 
   const VideoContentControllerInheritedWidget({
     super.key,
@@ -530,5 +530,5 @@ class VideoContentControllerInheritedWidget extends InheritedWidget {
       controller != oldWidget.controller;
 }
 
-VideoContentController videoContentController(BuildContext context) =>
+VideoPlayerController videoContentController(BuildContext context) =>
     VideoContentControllerInheritedWidget.of(context).controller;

@@ -9,7 +9,7 @@ import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
 import 'package:strumok/content/video/content_details_video_actions.dart';
 import 'package:strumok/content/video/track_selector.dart';
-import 'package:strumok/content/video/video_content_controller.dart';
+import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/source_selector.dart';
@@ -18,17 +18,17 @@ import 'package:strumok/utils/fullscrean.dart';
 import 'package:strumok/utils/text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class VideoContentDesktopControls extends ConsumerStatefulWidget {
+class VideoPlayerDesktopControls extends ConsumerStatefulWidget {
   final VoidCallback onPipEnter;
-  const VideoContentDesktopControls({super.key, required this.onPipEnter});
+  const VideoPlayerDesktopControls({super.key, required this.onPipEnter});
 
   @override
-  ConsumerState<VideoContentDesktopControls> createState() =>
+  ConsumerState<VideoPlayerDesktopControls> createState() =>
       _VideoContentDesktopControlsState();
 }
 
 class _VideoContentDesktopControlsState
-    extends ConsumerState<VideoContentDesktopControls> {
+    extends ConsumerState<VideoPlayerDesktopControls> {
   static final controlsHoverDuration = const Duration(seconds: 10);
   static const subtitleVerticalShiftOffset = 96.0;
   static const buttonBarHeight = 56.0;

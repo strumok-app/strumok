@@ -9,6 +9,55 @@ part of 'video_player_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(VideoPlayer)
+final videoPlayerProvider = VideoPlayerProvider._();
+
+final class VideoPlayerProvider
+    extends $AsyncNotifierProvider<VideoPlayer, VideoPlayerController?> {
+  VideoPlayerProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'videoPlayerProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$videoPlayerHash();
+
+  @$internal
+  @override
+  VideoPlayer create() => VideoPlayer();
+}
+
+String _$videoPlayerHash() => r'8b39c07a78488fd3a02dccf37c67aa08dc9f4931';
+
+abstract class _$VideoPlayer extends $AsyncNotifier<VideoPlayerController?> {
+  FutureOr<VideoPlayerController?> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<VideoPlayerController?>, VideoPlayerController?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<VideoPlayerController?>,
+                VideoPlayerController?
+              >,
+              AsyncValue<VideoPlayerController?>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
 @ProviderFor(SubtitlesOffset)
 final subtitlesOffsetProvider = SubtitlesOffsetProvider._();
 

@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/details/content_details_provider.dart';
-import 'package:strumok/content/video/video_content_view.dart';
+import 'package:strumok/content/video/video_player_provider.dart';
+import 'package:strumok/content/video/video_player_view.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,27 +24,50 @@ class VideoContentScreen extends ConsumerStatefulWidget {
 
 class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
   @override
-  Widget build(BuildContext context) {
-    final result = ref.watch(
-      detailsAndMediaProvider(widget.supplier, widget.id),
-    );
+  void initState() {
+    super.initState();
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: result.when(
-        skipLoadingOnRefresh: false,
-        data: (data) => VideoContentView(
-          contentDetails: data.contentDetails,
-          mediaItems: data.mediaItems,
-        ),
-        error: (error, stackTrace) => DisplayError(
-          error: error,
-          onRefresh: () =>
-              ref.refresh(detailsProvider(widget.supplier, widget.id).future),
-        ),
-        loading: () => const Material(
-          color: Colors.black,
-          child: Center(child: CircularProgressIndicator(color: Colors.white)),
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(videoPlayerProvider.notifier).load(widget.supplier, widget.id);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final videoPlayer = ref.watch(videoPlayerProvider);
+
+    return PopScope(
+      // canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (AppPreferences.floatingVideoPlayerEnabled) {
+          return;
+        }
+
+        ref.read(videoPlayerProvider.notifier).dispose();
+        // context.router.back();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: videoPlayer.when(
+          skipLoadingOnRefresh: false,
+          data: (controller) {
+            if (controller != null) {
+              return VideoPlayerView(controller: controller);
+            }
+
+            return SizedBox.shrink();
+          },
+          error: (error, stackTrace) => DisplayError(
+            error: error,
+            onRefresh: () =>
+                ref.refresh(detailsProvider(widget.supplier, widget.id).future),
+          ),
+          loading: () => const Material(
+            color: Colors.black,
+            child: Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+          ),
         ),
       ),
     );
