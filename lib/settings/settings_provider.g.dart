@@ -438,12 +438,12 @@ abstract class _$ContentLanguageSettings
 }
 
 @ProviderFor(FloatingVideoPlayerEnabled)
-const floatingVideoPlayerEnabledProvider =
+final floatingVideoPlayerEnabledProvider =
     FloatingVideoPlayerEnabledProvider._();
 
 final class FloatingVideoPlayerEnabledProvider
     extends $NotifierProvider<FloatingVideoPlayerEnabled, bool> {
-  const FloatingVideoPlayerEnabledProvider._()
+  FloatingVideoPlayerEnabledProvider._()
     : super(
         from: null,
         argument: null,
@@ -478,7 +478,6 @@ abstract class _$FloatingVideoPlayerEnabled extends $Notifier<bool> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -488,7 +487,7 @@ abstract class _$FloatingVideoPlayerEnabled extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 

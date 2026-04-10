@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
-class VideoContentScreen extends ConsumerWidget {
+class VideoContentScreen extends ConsumerStatefulWidget {
   const VideoContentScreen({
     super.key,
     required this.supplier,
@@ -17,8 +17,15 @@ class VideoContentScreen extends ConsumerWidget {
   final String id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final result = ref.watch(detailsAndMediaProvider(supplier, id));
+  ConsumerState<VideoContentScreen> createState() => _VideoContentScreenState();
+}
+
+class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final result = ref.watch(
+      detailsAndMediaProvider(widget.supplier, widget.id),
+    );
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -30,7 +37,8 @@ class VideoContentScreen extends ConsumerWidget {
         ),
         error: (error, stackTrace) => DisplayError(
           error: error,
-          onRefresh: () => ref.refresh(detailsProvider(supplier, id).future),
+          onRefresh: () =>
+              ref.refresh(detailsProvider(widget.supplier, widget.id).future),
         ),
         loading: () => const Material(
           color: Colors.black,

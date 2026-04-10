@@ -16,8 +16,6 @@ import 'package:strumok/utils/trace.dart';
 import 'package:strumok/video_backend/video_backend.dart';
 import 'package:subtitle/subtitle.dart';
 
-VideoContentController? globalVideoContentController;
-
 class VideoContentController {
   static final SimpleCache<SubCacheKey, SubtitleController> _subsCache =
       SimpleCache(10);

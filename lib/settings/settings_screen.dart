@@ -13,7 +13,6 @@ import 'package:strumok/settings/color_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/settings/user_language.dart';
 import 'package:strumok/settings/offline_storage_directory.dart';
-import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/settings_section.dart';
 
 @RoutePage()

@@ -42,7 +42,7 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
     final collectionItemProv = collectionItemProvider(widget.contentDetails);
     final collectionItemNotifier = ref.read(collectionItemProv.notifier);
 
-    globalVideoContentController = _controller = VideoContentController(
+    _controller = VideoContentController(
       contentDetails: widget.contentDetails,
       mediaItems: widget.mediaItems,
       changeCollectionCurrentItem: (itemIdx) =>
@@ -92,7 +92,6 @@ class VideoContentViewState extends ConsumerState<VideoContentView> {
       sub.close();
     }
 
-    _controller.dispose();
     super.dispose();
   }
 
