@@ -23,6 +23,7 @@ import 'package:strumok/utils/visual.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:strumok/content/video/floating_video_player.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -112,8 +113,13 @@ class MainApp extends ConsumerWidget {
         routerConfig: _appRouter.config(
           navigatorObservers: () => [SentryNavigatorObserver()],
         ),
-        builder: (context, child) =>
-            AppTheme(child: VersionGuard(child: child!)),
+        builder: (context, child) => AppTheme(
+          child: VersionGuard(
+            child: Stack(
+              children: [child!, FloatingVideoPlayerOverlay(_appRouter)],
+            ),
+          ),
+        ),
       ),
     );
   }

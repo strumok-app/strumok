@@ -9,6 +9,59 @@ part of 'video_player_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(FloatingVideoPlayer)
+final floatingVideoPlayerProvider = FloatingVideoPlayerProvider._();
+
+final class FloatingVideoPlayerProvider
+    extends $NotifierProvider<FloatingVideoPlayer, bool> {
+  FloatingVideoPlayerProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'floatingVideoPlayerProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$floatingVideoPlayerHash();
+
+  @$internal
+  @override
+  FloatingVideoPlayer create() => FloatingVideoPlayer();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$floatingVideoPlayerHash() =>
+    r'e8f9c95c3bb3b8c3b4d62a68287298c370966b9d';
+
+abstract class _$FloatingVideoPlayer extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
 @ProviderFor(VideoPlayer)
 final videoPlayerProvider = VideoPlayerProvider._();
 
@@ -33,7 +86,7 @@ final class VideoPlayerProvider
   VideoPlayer create() => VideoPlayer();
 }
 
-String _$videoPlayerHash() => r'8b39c07a78488fd3a02dccf37c67aa08dc9f4931';
+String _$videoPlayerHash() => r'ec27e40c632e9be1c6e8aca864bf5675b4799c4e';
 
 abstract class _$VideoPlayer extends $AsyncNotifier<VideoPlayerController?> {
   FutureOr<VideoPlayerController?> build();

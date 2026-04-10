@@ -10,6 +10,22 @@ import 'package:strumok/content/video/video_player_controller.dart';
 part 'video_player_provider.g.dart';
 
 @Riverpod(keepAlive: true)
+class FloatingVideoPlayer extends _$FloatingVideoPlayer {
+  @override
+  bool build() {
+    return true;
+  }
+
+  void show() {
+    state = true;
+  }
+
+  void hide() {
+    state = false;
+  }
+}
+
+@Riverpod(keepAlive: true)
 class VideoPlayer extends _$VideoPlayer {
   @override
   FutureOr<VideoPlayerController?> build() async {

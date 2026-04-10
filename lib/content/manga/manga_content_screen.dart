@@ -2,12 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:strumok/content/details/content_details_provider.dart';
 import 'package:strumok/content/manga/manga_reader.dart';
 import 'package:strumok/content/manga/widgets.dart';
+import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
-class MangaContentScreen extends ConsumerWidget {
+class MangaContentScreen extends ConsumerStatefulWidget {
   const MangaContentScreen({
     super.key,
     required this.supplier,
@@ -18,8 +19,25 @@ class MangaContentScreen extends ConsumerWidget {
   final String id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final result = ref.watch(detailsAndMediaProvider(supplier, id));
+  ConsumerState<MangaContentScreen> createState() => _MangaContentScreenState();
+}
+
+class _MangaContentScreenState extends ConsumerState<MangaContentScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(videoPlayerProvider.notifier).load(widget.supplier, widget.id);
+      ref.read(floatingVideoPlayerProvider.notifier).hide();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final result = ref.watch(
+      detailsAndMediaProvider(widget.supplier, widget.id),
+    );
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -33,8 +51,9 @@ class MangaContentScreen extends ConsumerWidget {
               ),
               error: (error, stackTrace) => DisplayError(
                 error: error,
-                onRefresh: () =>
-                    ref.refresh(detailsProvider(supplier, id).future),
+                onRefresh: () => ref.refresh(
+                  detailsProvider(widget.supplier, widget.id).future,
+                ),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
             ),

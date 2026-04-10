@@ -23,12 +23,20 @@ class VideoContentScreen extends ConsumerStatefulWidget {
 }
 
 class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
+  late final videoPlayerProviderNotifier = ref.read(
+    videoPlayerProvider.notifier,
+  );
+  late final floatingVideoPlayerProviderNotifier = ref.read(
+    floatingVideoPlayerProvider.notifier,
+  );
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(videoPlayerProvider.notifier).load(widget.supplier, widget.id);
+      videoPlayerProviderNotifier.load(widget.supplier, widget.id);
+      floatingVideoPlayerProviderNotifier.hide();
     });
   }
 
@@ -37,14 +45,13 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
     final videoPlayer = ref.watch(videoPlayerProvider);
 
     return PopScope(
-      // canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        if (AppPreferences.floatingVideoPlayerEnabled) {
-          return;
+        if (videoPlayer.value?.videoBackendState.isPlaying == true &&
+            AppPreferences.floatingVideoPlayerEnabled) {
+          floatingVideoPlayerProviderNotifier.show();
+        } else {
+          videoPlayerProviderNotifier.dispose();
         }
-
-        ref.read(videoPlayerProvider.notifier).dispose();
-        // context.router.back();
       },
       child: Scaffold(
         backgroundColor: Colors.black,
