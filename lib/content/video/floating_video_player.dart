@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -18,9 +20,12 @@ class FloatingVideoPlayerOverlay extends ConsumerStatefulWidget {
       _FloatingVideoPlayerOverlayState();
 }
 
+enum FloatingPlayerCorner { topLeft, topRight, bottomLeft, bottomRight }
+
 class _FloatingVideoPlayerOverlayState
     extends ConsumerState<FloatingVideoPlayerOverlay> {
-  Offset? position;
+  FloatingPlayerCorner currentCorner = FloatingPlayerCorner.bottomRight;
+  Offset? dragPosition;
   bool isHovering = false;
 
   @override
@@ -32,33 +37,86 @@ class _FloatingVideoPlayerOverlayState
         controllerAsync.value != null && showFloating && !TVDetector.isTV;
 
     if (!showOverlay) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     const width = 320.0;
     const height = 180.0; // 16:9 approx
     final screenSize = MediaQuery.of(context).size;
-    final maxx = screenSize.width - width - 10;
-    final maxy = screenSize.height - height - 10;
+    const minx = 10.0;
+    const miny = 10.0;
+    final maxx = math.max(minx, screenSize.width - width - minx);
+    final maxy = math.max(miny, screenSize.height - height - miny);
 
-    if (position == null) {
-      position = Offset(maxx, maxy);
-    } else {
-      position = Offset(
-        position!.dx.clamp(10, maxx),
-        position!.dy.clamp(10, maxy),
-      );
+    Offset getCornerPosition(FloatingPlayerCorner corner) {
+      switch (corner) {
+        case FloatingPlayerCorner.topLeft:
+          return const Offset(minx, miny);
+        case FloatingPlayerCorner.topRight:
+          return Offset(maxx, miny);
+        case FloatingPlayerCorner.bottomLeft:
+          return Offset(minx, maxy);
+        case FloatingPlayerCorner.bottomRight:
+          return Offset(maxx, maxy);
+      }
     }
+
+    final currentPosition = dragPosition != null
+        ? Offset(
+            dragPosition!.dx.clamp(minx, maxx),
+            dragPosition!.dy.clamp(miny, maxy),
+          )
+        : getCornerPosition(currentCorner);
 
     final controller = controllerAsync.value!;
 
-    return Positioned(
-      top: position!.dy,
-      left: position!.dx,
+    return AnimatedPositioned(
+      duration: dragPosition != null
+          ? Duration.zero
+          : const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+      top: currentPosition.dy,
+      left: currentPosition.dx,
       child: GestureDetector(
+        onPanStart: (details) {
+          setState(() {
+            dragPosition = getCornerPosition(currentCorner);
+          });
+        },
         onPanUpdate: (details) {
           setState(() {
-            position = position! + details.delta;
+            dragPosition = dragPosition! + details.delta;
+          });
+        },
+        onPanEnd: (details) {
+          final center = Offset(
+            currentPosition.dx + width / 2,
+            currentPosition.dy + height / 2,
+          );
+          final screenCenter = Offset(
+            screenSize.width / 2,
+            screenSize.height / 2,
+          );
+
+          FloatingPlayerCorner newCorner;
+          if (center.dx < screenCenter.dx) {
+            newCorner = center.dy < screenCenter.dy
+                ? FloatingPlayerCorner.topLeft
+                : FloatingPlayerCorner.bottomLeft;
+          } else {
+            newCorner = center.dy < screenCenter.dy
+                ? FloatingPlayerCorner.topRight
+                : FloatingPlayerCorner.bottomRight;
+          }
+
+          setState(() {
+            currentCorner = newCorner;
+            dragPosition = null;
+          });
+        },
+        onPanCancel: () {
+          setState(() {
+            dragPosition = null;
           });
         },
         onTap: () {
@@ -80,10 +138,10 @@ class _FloatingVideoPlayerOverlayState
                 child: Stack(
                   children: [
                     const VideoView(),
-                    // if (isHovering || Platform.isAndroid || Platform.isIOS)
-                    Positioned.fill(
-                      child: FloatingVideoPlayerControls(widget.appRouter),
-                    ),
+                    if (isHovering || Platform.isAndroid || Platform.isIOS)
+                      Positioned.fill(
+                        child: FloatingVideoPlayerControls(widget.appRouter),
+                      ),
                   ],
                 ),
               ),

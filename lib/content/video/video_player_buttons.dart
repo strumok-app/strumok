@@ -148,10 +148,10 @@ class PlayOrPauseButton extends StatefulWidget {
   });
 
   @override
-  PlayOrPauseButtonState createState() => PlayOrPauseButtonState();
+  _PlayOrPauseButtonState createState() => _PlayOrPauseButtonState();
 }
 
-class PlayOrPauseButtonState extends State<PlayOrPauseButton>
+class _PlayOrPauseButtonState extends State<PlayOrPauseButton>
     with SingleTickerProviderStateMixin {
   late bool isPlaying = videoContentController(
     context,
@@ -207,6 +207,46 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
         icon: AnimatedIcons.play_pause,
         size: widget.iconSize,
       ),
+    );
+  }
+}
+
+class SeekBackwardButton extends StatelessWidget {
+  final double? iconSize;
+
+  const SeekBackwardButton({super.key, this.iconSize});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      color: Colors.white,
+      icon: Icon(
+        Icons.replay_10,
+        color: Colors.white,
+        size: iconSize ?? 32,
+      ),
+      onPressed: () =>
+          videoContentController(context).seekBackward(const Duration(seconds: 10)),
+    );
+  }
+}
+
+class SeekForwardButton extends StatelessWidget {
+  final double? iconSize;
+
+  const SeekForwardButton({super.key, this.iconSize});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      color: Colors.white,
+      icon: Icon(
+        Icons.forward_10,
+        color: Colors.white,
+        size: iconSize ?? 32,
+      ),
+      onPressed: () =>
+          videoContentController(context).seekForward(const Duration(seconds: 10)),
     );
   }
 }

@@ -41,40 +41,40 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
   }
 
   @override
+  void dispose() {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (AppPreferences.floatingVideoPlayerEnabled) {
+        floatingVideoPlayerProviderNotifier.show();
+      } else {
+        videoPlayerProviderNotifier.dispose();
+      }
+    });
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final videoPlayer = ref.watch(videoPlayerProvider);
 
-    return PopScope(
-      onPopInvokedWithResult: (didPop, result) {
-        if (videoPlayer.value?.videoBackendState.isPlaying == true &&
-            AppPreferences.floatingVideoPlayerEnabled) {
-          floatingVideoPlayerProviderNotifier.show();
-        } else {
-          videoPlayerProviderNotifier.dispose();
-        }
-      },
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: videoPlayer.when(
-          skipLoadingOnRefresh: false,
-          data: (controller) {
-            if (controller != null) {
-              return VideoPlayerView(controller: controller);
-            }
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: videoPlayer.when(
+        skipLoadingOnRefresh: false,
+        data: (controller) {
+          if (controller != null) {
+            return VideoPlayerView(controller: controller);
+          }
 
-            return SizedBox.shrink();
-          },
-          error: (error, stackTrace) => DisplayError(
-            error: error,
-            onRefresh: () =>
-                ref.refresh(detailsProvider(widget.supplier, widget.id).future),
-          ),
-          loading: () => const Material(
-            color: Colors.black,
-            child: Center(
-              child: CircularProgressIndicator(color: Colors.white),
-            ),
-          ),
+          return SizedBox.shrink();
+        },
+        error: (error, stackTrace) => DisplayError(
+          error: error,
+          onRefresh: () =>
+              ref.refresh(detailsProvider(widget.supplier, widget.id).future),
+        ),
+        loading: () => const Material(
+          color: Colors.black,
+          child: Center(child: CircularProgressIndicator(color: Colors.white)),
         ),
       ),
     );

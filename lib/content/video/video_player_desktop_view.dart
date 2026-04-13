@@ -109,8 +109,17 @@ class _PipVideoControlsState extends State<PipVideoControls> {
                   ),
                 ),
               ),
-              const Positioned.fill(
-                child: Center(child: PlayOrPauseButton(iconSize: 48)),
+              Positioned.fill(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SeekBackwardButton(),
+                    const SizedBox(width: 16),
+                    const PlayOrPauseButton(iconSize: 48),
+                    const SizedBox(width: 16),
+                    const SeekForwardButton(),
+                  ],
+                ),
               ),
             ],
           ],

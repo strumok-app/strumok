@@ -7,6 +7,7 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:strumok/utils/trace.dart';
 
 part 'search_provider.g.dart';
 
@@ -41,33 +42,35 @@ class SupplierSearch extends _$SupplierSearch {
   Future<List<ContentInfo>> search(String query) async {
     state = state.loadingNew(query);
 
-    final page = 1;
-    final supplierResults = await ContentSuppliers().search(
-      state.supplierName,
-      query,
-      page,
-    );
-
-    state = state.addPage(supplierResults, page);
-
-    return supplierResults;
+    return loadNext();
   }
 
-  void loadNext() async {
+  Future<List<ContentInfo>> loadNext() async {
     if (!state.hasMore || state.isLoading || state.query == null) {
-      return;
+      return [];
     }
 
     state = state.copyWith(isLoading: true);
 
     final page = state.page + 1;
-    final supplierResults = await ContentSuppliers().search(
-      state.supplierName,
-      state.query!,
-      page,
-    );
+    List<ContentInfo> supplierResults;
+    try {
+      supplierResults = await ContentSuppliers().search(
+        state.supplierName,
+        state.query!,
+        page,
+      );
+    } catch (e, stackTrace) {
+      final msg =
+          "Failed to load search results: ${state.supplierName} ${state.query}";
+      traceError(error: e, stackTrace: stackTrace, message: msg);
+      state = state.copyWith(isLoading: false, hasMore: false);
+      return [];
+    }
 
     state = state.addPage(supplierResults, page);
+
+    return supplierResults;
   }
 }
 
