@@ -43,6 +43,11 @@ class _FloatingVideoPlayerOverlayState
 
     if (position == null) {
       position = Offset(maxx, maxy);
+    } else {
+      position = Offset(
+        position!.dx.clamp(10, maxx),
+        position!.dy.clamp(10, maxy),
+      );
     }
 
     final controller = controllerAsync.value!;
@@ -53,12 +58,7 @@ class _FloatingVideoPlayerOverlayState
       child: GestureDetector(
         onPanUpdate: (details) {
           setState(() {
-            final newPosition = position! + details.delta;
-
-            position = Offset(
-              newPosition.dx.clamp(10, maxx),
-              newPosition.dy.clamp(10, maxy),
-            );
+            position = position! + details.delta;
           });
         },
         onTap: () {
