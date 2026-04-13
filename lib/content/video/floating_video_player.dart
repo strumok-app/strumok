@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:strumok/app_router.dart';
 import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/content/video/video_player_controller.dart';
@@ -36,14 +35,35 @@ class _FloatingVideoPlayerOverlayState
       return SizedBox.shrink();
     }
 
-    // final screenSize = MediaQuery.of(context).size;
     const width = 320.0;
     const height = 180.0; // 16:9 approx
+    final screenSize = MediaQuery.of(context).size;
+    final maxx = screenSize.width - width - 10;
+    final maxy = screenSize.height - height - 10;
+
+    if (position == null) {
+      position = Offset(maxx, maxy);
+    }
+
+    final controller = controllerAsync.value!;
 
     return Positioned(
-      right: 10,
-      bottom: 10,
+      top: position!.dy,
+      left: position!.dx,
       child: GestureDetector(
+        onPanUpdate: (details) {
+          setState(() {
+            final newPosition = position! + details.delta;
+
+            position = Offset(
+              newPosition.dx.clamp(10, maxx),
+              newPosition.dy.clamp(10, maxy),
+            );
+          });
+        },
+        onTap: () {
+          controller.playOrPause();
+        },
         child: MouseRegion(
           onEnter: (_) => setState(() => isHovering = true),
           onExit: (_) => setState(() => isHovering = false),
@@ -56,14 +76,14 @@ class _FloatingVideoPlayerOverlayState
               width: width,
               height: height,
               child: VideoContentControllerInheritedWidget(
-                controller: controllerAsync.value!,
+                controller: controller,
                 child: Stack(
                   children: [
                     const VideoView(),
-                    if (isHovering || Platform.isAndroid || Platform.isIOS)
-                      Positioned.fill(
-                        child: FloatingVideoPlayerControls(widget.appRouter),
-                      ),
+                    // if (isHovering || Platform.isAndroid || Platform.isIOS)
+                    Positioned.fill(
+                      child: FloatingVideoPlayerControls(widget.appRouter),
+                    ),
                   ],
                 ),
               ),
@@ -86,41 +106,36 @@ class FloatingVideoPlayerControls extends ConsumerWidget {
 
     return Stack(
       children: [
-        Positioned.fill(child: Container(color: Colors.black38)),
         Center(
           child: StreamBuilder(
             stream: controller.videoBackendStateStream,
             initialData: controller.videoBackendState,
             builder: (context, snapshot) {
               final isPlaying = snapshot.data?.isPlaying ?? false;
-              return IconButton(
-                icon: Icon(
-                  isPlaying ? Icons.pause : Icons.play_arrow,
-                  color: Colors.white,
-                  size: 48,
-                ),
-                onPressed: () {
-                  controller.playOrPause();
-                },
-              );
+
+              if (!isPlaying) {
+                return Icon(Icons.play_arrow, color: Colors.white, size: 48);
+              } else {
+                return SizedBox.shrink();
+              }
             },
           ),
         ),
         Positioned(
           top: 0,
-          right: 0,
+          left: 0,
           child: IconButton(
             onPressed: () {
               final supplier = controller.contentDetails.supplier;
               final id = controller.contentDetails.id;
               appRouter.push(VideoContentRoute(supplier: supplier, id: id));
             },
-            icon: const Icon(Icons.open_in_full, color: Colors.white, size: 24),
+            icon: const Icon(Symbols.pip_exit, color: Colors.white, size: 24),
           ),
         ),
         Positioned(
           top: 0,
-          left: 0,
+          right: 0,
           child: IconButton(
             icon: const Icon(Icons.close, color: Colors.white, size: 24),
             onPressed: () {

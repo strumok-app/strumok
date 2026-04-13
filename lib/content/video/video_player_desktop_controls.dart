@@ -37,7 +37,7 @@ class _VideoContentDesktopControlsState
   late bool _mount = true;
   late bool _visible = true;
 
-  late bool _buffering = true;
+  late bool _buffering;
   TapDownDetails? _lastTapDetails;
   StreamSubscription? _subscription;
   Timer? _timer;
@@ -45,6 +45,9 @@ class _VideoContentDesktopControlsState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _buffering = videoContentController(
+      context,
+    ).videoBackendState.showBuffering;
     _subscription ??= videoContentController(context).videoBackendStateStream
         .listen((event) {
           final newBuffering = event.showBuffering;
