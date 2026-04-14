@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +8,7 @@ import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_view.dart';
 import 'package:strumok/utils/tv.dart';
+import 'package:strumok/utils/visual.dart';
 
 class FloatingVideoPlayerOverlay extends ConsumerStatefulWidget {
   const FloatingVideoPlayerOverlay(this.appRouter, {super.key});
@@ -40,8 +40,9 @@ class _FloatingVideoPlayerOverlayState
       return const SizedBox.shrink();
     }
 
-    const width = 320.0;
-    const height = 180.0; // 16:9 approx
+    final mobile = isMobile(context);
+    final width = mobile ? 220.0 : (isDesktopDevice() ? 480.0 : 240.0);
+    final height = width * 9 / 16;
     final screenSize = MediaQuery.of(context).size;
     const minx = 10.0;
     const miny = 10.0;
@@ -138,7 +139,7 @@ class _FloatingVideoPlayerOverlayState
                 child: Stack(
                   children: [
                     const VideoView(),
-                    if (isHovering || Platform.isAndroid || Platform.isIOS)
+                    if (isHovering || mobile)
                       Positioned.fill(
                         child: FloatingVideoPlayerControls(widget.appRouter),
                       ),
