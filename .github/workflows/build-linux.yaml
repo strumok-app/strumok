@@ -27,23 +27,17 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('**/package-list.txt') }}
+          key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/linux-package-list.txt') }}
           restore-keys: |
             ${{ runner.os }}-apt-
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y \
-            clang cmake \
-            libgtk-3-dev \
-            ninja-build \
-            libstdc++-12-dev \
-            liblzma-dev \
-            unzip \
-            libcurl4-openssl-dev \
-            libasound2-dev \
-            libmpv-dev \
-            mpv
+          sudo apt-get install --no-install-recommends -y $(cat .github/workflows/linux-package-list.txt)
+          # Fix permissions and remove lock files for the cache step
+          sudo rm -rf /var/cache/apt/archives/lock
+          sudo rm -rf /var/cache/apt/archives/partial
+          sudo chown -R runner:runner /var/cache/apt/archives
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:

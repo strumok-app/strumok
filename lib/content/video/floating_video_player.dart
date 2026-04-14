@@ -51,9 +51,13 @@ class FloatingVideoPlayer extends StatefulWidget {
 
 const mobilePlayerWidth = 220.0;
 const desktopPlayerWidth = 420.0;
-const hPadding = 16.0;
-const vPadding = 16.0;
 const mobileControlsHeight = 24.0;
+
+const hPaddingDesktop = 10.0;
+const hPaddingMobile = 16.0;
+
+const vPaddingDesktop = 10.0;
+const vPaddingMobile = 32.0;
 
 class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
   FloatingPlayerCorner currentCorner = FloatingPlayerCorner.bottomRight;
@@ -64,6 +68,8 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
   late final double width;
   late final double videoHeight;
   late final double totalHeight;
+  late final double hPadding;
+  late final double vPadding;
 
   @override
   void initState() {
@@ -73,14 +79,16 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
     width = mobile ? mobilePlayerWidth : desktopPlayerWidth;
     videoHeight = width * 9 / 16;
     totalHeight = videoHeight + (mobile ? mobileControlsHeight : 0);
+    vPadding = mobile ? vPaddingMobile : vPaddingDesktop;
+    hPadding = mobile ? hPaddingMobile : hPaddingDesktop;
   }
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    const minx = hPadding;
-    const miny = vPadding;
+    final minx = hPadding;
+    final miny = vPadding;
 
     final maxx = math.max(minx, screenSize.width - width - hPadding);
     final maxy = math.max(miny, screenSize.height - totalHeight - vPadding);
@@ -88,7 +96,7 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
     Offset getCornerPosition(FloatingPlayerCorner corner) {
       switch (corner) {
         case FloatingPlayerCorner.topLeft:
-          return const Offset(minx, miny);
+          return Offset(minx, miny);
         case FloatingPlayerCorner.topRight:
           return Offset(maxx, miny);
         case FloatingPlayerCorner.bottomLeft:
