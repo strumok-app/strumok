@@ -25,7 +25,7 @@ class FloatingVideoPlayerOverlay extends ConsumerWidget {
     final showFloating = ref.watch(floatingVideoPlayerProvider);
 
     final controller = controllerAsync.value;
-    final showOverlay = controller != null && showFloating && !TVDetector.isTV;
+    final showOverlay = controller != null && showFloating;
 
     if (!showOverlay) {
       return const SizedBox.shrink();

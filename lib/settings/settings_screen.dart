@@ -13,6 +13,7 @@ import 'package:strumok/settings/color_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/settings/user_language.dart';
 import 'package:strumok/settings/offline_storage_directory.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/widgets/settings_section.dart';
 
 @RoutePage()
@@ -66,11 +67,12 @@ class _SettingsView extends StatelessWidget {
                 AppLocalizations.of(context)!.contentLanguage,
                 const ContentLanguageSelector(),
               ),
-              _renderSection(
-                context,
-                AppLocalizations.of(context)!.settingsFloatingVideoPlayer,
-                const FloatingVideoSwitcher(),
-              ),
+              if (!TVDetector.isTV)
+                _renderSection(
+                  context,
+                  AppLocalizations.of(context)!.settingsFloatingVideoPlayer,
+                  const FloatingVideoSwitcher(),
+                ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.chevron_right),

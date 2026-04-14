@@ -3,6 +3,7 @@ import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/details/content_details_provider.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_player_view.dart';
+import 'package:strumok/utils/tv.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,6 +43,10 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
 
   @override
   void dispose() {
+    if (TVDetector.isTV) {
+      videoPlayerProviderNotifier.dispose();
+    }
+
     Future.delayed(const Duration(milliseconds: 300), () {
       if (AppPreferences.floatingVideoPlayerEnabled) {
         floatingVideoPlayerProviderNotifier.show();
