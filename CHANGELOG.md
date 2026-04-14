@@ -1,10 +1,9 @@
-## [1.25.3](https://github.com/strumok-app/strumok/compare/v1.25.2...v1.25.3) (2026-03-01)
+# [1.26.0](https://github.com/strumok-app/strumok/compare/v1.25.3...v1.26.0) (2026-04-14)
 
 
-### Bug Fixes
+### Features
 
-* prevent multiple instance to run on desktop ([e2e12c2](https://github.com/strumok-app/strumok/commit/e2e12c2500f49e1a53867413f88fcee3c371a5d2))
-* segmented list length ([550a329](https://github.com/strumok-app/strumok/commit/550a3291d89cce957b11705306f418b7c4a45a3b))
+* add desktop window management, improve floating player drag-to-corner behavior, and enhance search error handling. ([df4d25d](https://github.com/strumok-app/strumok/commit/df4d25d1f0c466f681f5028d9bf040c6348462a6))
 
 
 
