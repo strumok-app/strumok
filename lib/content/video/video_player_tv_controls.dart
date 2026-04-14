@@ -166,7 +166,7 @@ class _VideoPlayerTVControlsState extends State<VideoPlayerTVControls> {
                         )
                       : const SizedBox.shrink(),
                 ),
-                Positioned.fill(child: _TVVideoBufferingIndicator()),
+                Positioned.fill(child: const BufferingIndicator()),
                 Positioned.fill(child: _renderSeekPosition()),
               ],
             ),
@@ -247,58 +247,6 @@ class _AndroidTVTopBar extends StatelessWidget {
   }
 }
 
-class _TVVideoBufferingIndicator extends StatefulWidget {
-  @override
-  State<_TVVideoBufferingIndicator> createState() =>
-      _TVVideoBufferingIndicatorState();
-}
-
-class _TVVideoBufferingIndicatorState
-    extends State<_TVVideoBufferingIndicator> {
-  late bool _buffering = true;
-
-  StreamSubscription? _subscription;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _subscription = videoContentController(context).videoBackendStateStream
-        .listen((event) {
-          final newBuffering = event.showBuffering;
-
-          if (_buffering != newBuffering) {
-            setState(() {
-              _buffering = newBuffering;
-            });
-          }
-        });
-  }
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: TweenAnimationBuilder<double>(
-        tween: Tween<double>(begin: 0.0, end: _buffering ? 1.0 : 0.0),
-        duration: const Duration(milliseconds: 150),
-        builder: (context, value, child) {
-          // Only mount the buffering indicator if the opacity is greater than 0.0.
-          // This has been done to prevent redundant resource usage in [CircularProgressIndicator].
-          if (value > 0.0) {
-            return Opacity(opacity: value, child: child!);
-          }
-          return const SizedBox.shrink();
-        },
-        child: const CircularProgressIndicator(color: Colors.white),
-      ),
-    );
-  }
-}
 
 class _AndroidTVBottomBar extends ConsumerWidget {
   final FocusNode playPauseFocusNode;

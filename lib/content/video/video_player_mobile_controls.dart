@@ -65,7 +65,6 @@ class _VideoPlayerMobileControlsState extends State<VideoPlayerMobileControls> {
   bool showSwipeDuration = false; // Whether to show the seek duration overlay
 
   bool _speedUpIndicator = false;
-  late bool _buffering = true;
   final VolumeController _volumeController = VolumeController.instance;
 
   bool _mountSeekBackwardButton = false;
@@ -107,16 +106,6 @@ class _VideoPlayerMobileControlsState extends State<VideoPlayerMobileControls> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _subscription ??= videoContentController(context).videoBackendStateStream
-        .listen((event) {
-          final newBuffering = event.showBuffering;
-
-          if (_buffering != newBuffering) {
-            setState(() {
-              _buffering = newBuffering;
-            });
-          }
-        });
 
     _timer = Timer(controlsHoverDuration, () {
       if (mounted) {
@@ -482,13 +471,8 @@ class _VideoPlayerMobileControlsState extends State<VideoPlayerMobileControls> {
                                     const Spacer(flex: 2),
                                     const SkipPrevButton(iconSize: 36.0),
                                     const Spacer(),
-                                    AnimatedOpacity(
-                                      curve: Curves.easeInOut,
-                                      opacity: _buffering ? 0.0 : 1.0,
-                                      duration: controlsTransitionDuration,
-                                      child: const PlayOrPauseButton(
-                                        iconSize: 48.0,
-                                      ),
+                                    const PlayOrPauseButton(
+                                      iconSize: 48.0,
                                     ),
                                     const Spacer(),
                                     const SkipNextButton(iconSize: 36.0),
@@ -562,27 +546,8 @@ class _VideoPlayerMobileControlsState extends State<VideoPlayerMobileControls> {
                       ],
                     ),
                 // Buffering Indicator.
-                IgnorePointer(
-                  child: Center(
-                    child: TweenAnimationBuilder<double>(
-                      tween: Tween<double>(
-                        begin: 0.0,
-                        end: _buffering ? 1.0 : 0.0,
-                      ),
-                      duration: controlsTransitionDuration,
-                      builder: (context, value, child) {
-                        // Only mount the buffering indicator if the opacity is greater than 0.0.
-                        // This has been done to prevent redundant resource usage in [CircularProgressIndicator].
-                        if (value > 0.0) {
-                          return Opacity(opacity: value, child: child!);
-                        }
-                        return const SizedBox.shrink();
-                      },
-                      child: const CircularProgressIndicator(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                const IgnorePointer(
+                  child: BufferingIndicator(),
                 ),
                 // Volume Indicator.
                 IgnorePointer(

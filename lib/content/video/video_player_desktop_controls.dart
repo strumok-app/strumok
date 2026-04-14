@@ -37,35 +37,18 @@ class _VideoContentDesktopControlsState
   late bool _mount = true;
   late bool _visible = true;
 
-  late bool _buffering;
   TapDownDetails? _lastTapDetails;
-  StreamSubscription? _subscription;
   Timer? _timer;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _buffering = videoContentController(
-      context,
-    ).videoBackendState.showBuffering;
-    _subscription ??= videoContentController(context).videoBackendStateStream
-        .listen((event) {
-          final newBuffering = event.showBuffering;
-
-          if (_buffering != newBuffering) {
-            setState(() {
-              _buffering = newBuffering;
-            });
-          }
-        });
-
     _timer = Timer(controlsHoverDuration, _hideUI);
   }
 
   @override
   void dispose() {
     _timer?.cancel();
-    _subscription?.cancel();
     super.dispose();
   }
 
@@ -366,30 +349,8 @@ class _VideoContentDesktopControlsState
                               height: buttonBarHeight,
                               margin: const EdgeInsets.all(8),
                             ),
-                            Expanded(
-                              child: Center(
-                                child: TweenAnimationBuilder<double>(
-                                  tween: Tween<double>(
-                                    begin: 0.0,
-                                    end: _buffering ? 1.0 : 0.0,
-                                  ),
-                                  duration: const Duration(milliseconds: 150),
-                                  builder: (context, value, child) {
-                                    // Only mount the buffering indicator if the opacity is greater than 0.0.
-                                    // This has been done to prevent redundant resource usage in [CircularProgressIndicator].
-                                    if (value > 0.0) {
-                                      return Opacity(
-                                        opacity: value,
-                                        child: child!,
-                                      );
-                                    }
-                                    return const SizedBox.shrink();
-                                  },
-                                  child: const CircularProgressIndicator(
-                                    color: Color(0xFFFFFFFF),
-                                  ),
-                                ),
-                              ),
+                            const Expanded(
+                              child: BufferingIndicator(),
                             ),
                             Container(
                               height: buttonBarHeight,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +39,64 @@ class MediaTitle extends ConsumerWidget {
         ),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
+class BufferingIndicator extends StatefulWidget {
+  const BufferingIndicator({super.key});
+
+  @override
+  State<BufferingIndicator> createState() => _BufferingIndicatorState();
+}
+
+class _BufferingIndicatorState extends State<BufferingIndicator> {
+  late bool _buffering = false;
+  StreamSubscription? _subscription;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final controller = videoContentController(context);
+    _buffering = controller.videoBackendState.showBuffering;
+    _subscription?.cancel();
+    _subscription = controller.videoBackendStateStream.listen((event) {
+      if (_buffering != event.showBuffering) {
+        setState(() {
+          _buffering = event.showBuffering;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: TweenAnimationBuilder<double>(
+        tween: Tween<double>(
+          begin: 0.0,
+          end: _buffering ? 1.0 : 0.0,
+        ),
+        duration: const Duration(milliseconds: 150),
+        builder: (context, value, child) {
+          if (value > 0.0) {
+            return Opacity(
+              opacity: value,
+              child: child!,
+            );
+          }
+          return const SizedBox.shrink();
+        },
+        child: const CircularProgressIndicator(
+          color: Colors.white,
+        ),
       ),
     );
   }

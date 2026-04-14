@@ -7,39 +7,52 @@ import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_view.dart';
+import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 
-class FloatingVideoPlayerOverlay extends ConsumerStatefulWidget {
+class FloatingVideoPlayerOverlay extends ConsumerWidget {
   const FloatingVideoPlayerOverlay(this.appRouter, {super.key});
 
   final AppRouter appRouter;
 
   @override
-  ConsumerState<FloatingVideoPlayerOverlay> createState() =>
-      _FloatingVideoPlayerOverlayState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controllerAsync = ref.watch(videoPlayerProvider);
+    final showFloating = ref.watch(floatingVideoPlayerProvider);
+
+    final controller = controllerAsync.value;
+    final showOverlay = controller != null && showFloating && !TVDetector.isTV;
+
+    if (!showOverlay) {
+      return const SizedBox.shrink();
+    }
+
+    return FloatingVideoPlayer(controller: controller, appRouter: appRouter);
+  }
 }
 
-enum FloatingPlayerCorner { topLeft, topRight, bottomLeft, bottomRight }
+class FloatingVideoPlayer extends StatefulWidget {
+  const FloatingVideoPlayer({
+    super.key,
+    required this.controller,
+    required this.appRouter,
+  });
 
-class _FloatingVideoPlayerOverlayState
-    extends ConsumerState<FloatingVideoPlayerOverlay> {
+  final VideoPlayerController controller;
+  final AppRouter appRouter;
+
+  @override
+  State<FloatingVideoPlayer> createState() => _FloatingVideoPlayerState();
+}
+
+class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
   FloatingPlayerCorner currentCorner = FloatingPlayerCorner.bottomRight;
   Offset? dragPosition;
   bool isHovering = false;
 
   @override
   Widget build(BuildContext context) {
-    final controllerAsync = ref.watch(videoPlayerProvider);
-    final showFloating = ref.watch(floatingVideoPlayerProvider);
-
-    final showOverlay =
-        controllerAsync.value != null && showFloating && !TVDetector.isTV;
-
-    if (!showOverlay) {
-      return const SizedBox.shrink();
-    }
-
     final mobile = isMobile(context);
     final width = mobile ? 220.0 : (isDesktopDevice() ? 480.0 : 240.0);
     final height = width * 9 / 16;
@@ -68,8 +81,6 @@ class _FloatingVideoPlayerOverlayState
             dragPosition!.dy.clamp(miny, maxy),
           )
         : getCornerPosition(currentCorner);
-
-    final controller = controllerAsync.value!;
 
     return AnimatedPositioned(
       duration: dragPosition != null
@@ -121,7 +132,7 @@ class _FloatingVideoPlayerOverlayState
           });
         },
         onTap: () {
-          controller.playOrPause();
+          widget.controller.playOrPause();
         },
         child: MouseRegion(
           onEnter: (_) => setState(() => isHovering = true),
@@ -135,10 +146,11 @@ class _FloatingVideoPlayerOverlayState
               width: width,
               height: height,
               child: VideoContentControllerInheritedWidget(
-                controller: controller,
+                controller: widget.controller,
                 child: Stack(
                   children: [
                     const VideoView(),
+                    const Positioned.fill(child: BufferingIndicator()),
                     if (isHovering || mobile)
                       Positioned.fill(
                         child: FloatingVideoPlayerControls(widget.appRouter),
@@ -153,6 +165,8 @@ class _FloatingVideoPlayerOverlayState
     );
   }
 }
+
+enum FloatingPlayerCorner { topLeft, topRight, bottomLeft, bottomRight }
 
 class FloatingVideoPlayerControls extends ConsumerWidget {
   const FloatingVideoPlayerControls(this.appRouter, {super.key});
@@ -173,9 +187,13 @@ class FloatingVideoPlayerControls extends ConsumerWidget {
               final isPlaying = snapshot.data?.isPlaying ?? false;
 
               if (!isPlaying) {
-                return Icon(Icons.play_arrow, color: Colors.white, size: 48);
+                return const Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 48,
+                );
               } else {
-                return SizedBox.shrink();
+                return const SizedBox.shrink();
               }
             },
           ),

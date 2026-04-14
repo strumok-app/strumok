@@ -3,6 +3,7 @@ import 'package:strumok/content/video/video_player_desktop_controls.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:strumok/content/video/widgets.dart';
 import 'package:window_manager/window_manager.dart';
 
 class VideoPlayerDesktopView extends StatefulWidget {
@@ -95,6 +96,7 @@ class _PipVideoControlsState extends State<PipVideoControls> {
                 );
               },
             ),
+            const Positioned.fill(child: BufferingIndicator()),
             if (uiVisible) ...[
               Positioned.fill(
                 child: Align(
