@@ -45,15 +45,15 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
   void dispose() {
     if (TVDetector.isTV) {
       videoPlayerProviderNotifier.dispose();
+    } else {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (AppPreferences.floatingVideoPlayerEnabled) {
+          floatingVideoPlayerProviderNotifier.show();
+        } else {
+          videoPlayerProviderNotifier.dispose();
+        }
+      });
     }
-
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (AppPreferences.floatingVideoPlayerEnabled) {
-        floatingVideoPlayerProviderNotifier.show();
-      } else {
-        videoPlayerProviderNotifier.dispose();
-      }
-    });
     super.dispose();
   }
 
