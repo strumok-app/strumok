@@ -220,13 +220,10 @@ class SeekBackwardButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       color: Colors.white,
-      icon: Icon(
-        Icons.replay_10,
-        color: Colors.white,
-        size: iconSize ?? 32,
-      ),
-      onPressed: () =>
-          videoContentController(context).seekBackward(const Duration(seconds: 10)),
+      icon: Icon(Icons.replay_10, color: Colors.white, size: iconSize ?? 32),
+      onPressed: () => videoContentController(
+        context,
+      ).seekBackward(const Duration(seconds: 10)),
     );
   }
 }
@@ -240,13 +237,10 @@ class SeekForwardButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       color: Colors.white,
-      icon: Icon(
-        Icons.forward_10,
-        color: Colors.white,
-        size: iconSize ?? 32,
-      ),
-      onPressed: () =>
-          videoContentController(context).seekForward(const Duration(seconds: 10)),
+      icon: Icon(Icons.forward_10, color: Colors.white, size: iconSize ?? 32),
+      onPressed: () => videoContentController(
+        context,
+      ).seekForward(const Duration(seconds: 10)),
     );
   }
 }
