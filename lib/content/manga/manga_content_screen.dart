@@ -38,23 +38,26 @@ class _MangaContentScreenState extends ConsumerState<MangaContentScreen> {
     final result = ref.watch(
       detailsAndMediaProvider(widget.supplier, widget.id),
     );
-    return Stack(
-      children: [
-        const MangaBackground(),
-        result.when(
-          skipLoadingOnRefresh: false,
-          data: (data) => MangaReader(
-            contentDetails: data.contentDetails,
-            mediaItems: data.mediaItems,
+    return SafeArea(
+      child: Stack(
+        children: [
+          const MangaBackground(),
+          result.when(
+            skipLoadingOnRefresh: false,
+            data: (data) => MangaReader(
+              contentDetails: data.contentDetails,
+              mediaItems: data.mediaItems,
+            ),
+            error: (error, stackTrace) => DisplayError(
+              error: error,
+              onRefresh: () => ref.refresh(
+                detailsProvider(widget.supplier, widget.id).future,
+              ),
+            ),
+            loading: () => const Center(child: CircularProgressIndicator()),
           ),
-          error: (error, stackTrace) => DisplayError(
-            error: error,
-            onRefresh: () =>
-                ref.refresh(detailsProvider(widget.supplier, widget.id).future),
-          ),
-          loading: () => const Center(child: CircularProgressIndicator()),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

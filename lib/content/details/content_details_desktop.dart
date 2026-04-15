@@ -41,13 +41,6 @@ class ContentDetailsDesktopView extends StatelessWidget {
                 errorBuilder: (context, url, error) =>
                     Center(child: NothingToShow()),
               ),
-              // child: CachedNetworkImage(
-              //   imageUrl: contentDetails.image,
-              //   height: screanHeight,
-              //   fit: BoxFit.fitHeight,
-              //   errorWidget:
-              //       (context, url, error) => Center(child: NothingToShow()),
-              // ),
             ),
           ),
       ],
