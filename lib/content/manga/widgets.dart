@@ -54,19 +54,18 @@ class VolumesButton extends ConsumerWidget {
   ) {
     return IconButton(
       onPressed: () {
-        Navigator.of(context).push(
-          MediaItemsListRoute(
-            title: AppLocalizations.of(context)!.mangaChapter,
-            mediaItems: mediaItems,
-            contentProgress: collectionItem,
-            onSelect:
-                onSelect ??
-                (item) {
-                  ref.read(provider.notifier).setCurrentItem(item.position);
-                  navigateToContent(context, contentDetails);
-                },
-            itemBuilder: mangaChapterListItemBuilder(contentDetails),
-          ),
+        openMediaItemsList(
+          context,
+          title: AppLocalizations.of(context)!.mangaChapter,
+          mediaItems: mediaItems,
+          contentProgress: collectionItem,
+          onSelect:
+              onSelect ??
+              (item) {
+                ref.read(provider.notifier).setCurrentItem(item.position);
+                navigateToContent(context, contentDetails);
+              },
+          itemBuilder: mangaChapterListItemBuilder(contentDetails),
         );
       },
       icon: const Icon(Icons.list),
@@ -280,15 +279,13 @@ class MangaReaderIteractions extends ConsumerWidget {
       return;
     }
 
-    Navigator.of(context).push(
-      MediaItemsListRoute(
-        title: AppLocalizations.of(context)!.mangaChapter,
-        mediaItems: mediaItems,
-        contentProgress: collectionItem,
-        onSelect: (item) =>
-            controller.changeCollectionCurrentItem(item.position),
-        itemBuilder: mangaChapterListItemBuilder(contentDetails),
-      ),
+    openMediaItemsList(
+      context,
+      title: AppLocalizations.of(context)!.mangaChapter,
+      mediaItems: mediaItems,
+      contentProgress: collectionItem,
+      onSelect: (item) => controller.changeCollectionCurrentItem(item.position),
+      itemBuilder: mangaChapterListItemBuilder(contentDetails),
     );
   }
 }

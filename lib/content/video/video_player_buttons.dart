@@ -46,15 +46,14 @@ class PlayerPlaylistButton extends ConsumerWidget {
 
     return IconButton(
       onPressed: () {
-        Navigator.of(context).push(
-          MediaItemsListRoute(
-            title: AppLocalizations.of(context)!.episodesList,
-            mediaItems: mediaItems,
-            contentProgress: collectionItem,
-            onSelect: (item) =>
-                controller.changeCollectionCurrentItem(item.position),
-            itemBuilder: playlistItemBuilder(contentDetails),
-          ),
+        openMediaItemsList(
+          context,
+          title: AppLocalizations.of(context)!.episodesList,
+          mediaItems: mediaItems,
+          contentProgress: collectionItem,
+          onSelect: (item) =>
+              controller.changeCollectionCurrentItem(item.position),
+          itemBuilder: playlistItemBuilder(contentDetails),
         );
       },
       icon: const Icon(Icons.playlist_play),

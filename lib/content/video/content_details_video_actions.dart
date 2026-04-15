@@ -80,17 +80,16 @@ class _ContentPlaylistButton extends ConsumerWidget {
   ) {
     return IconButton(
       onPressed: () {
-        Navigator.of(context).push(
-          MediaItemsListRoute(
-            title: AppLocalizations.of(context)!.episodesList,
-            mediaItems: mediaItems,
-            contentProgress: collectionItem,
-            onSelect: (item) {
-              ref.read(provider.notifier).setCurrentItem(item.position);
-              navigateToContent(context, contentDetails);
-            },
-            itemBuilder: playlistItemBuilder(contentDetails),
-          ),
+        openMediaItemsList(
+          context,
+          title: AppLocalizations.of(context)!.episodesList,
+          mediaItems: mediaItems,
+          contentProgress: collectionItem,
+          onSelect: (item) {
+            ref.read(provider.notifier).setCurrentItem(item.position);
+            navigateToContent(context, contentDetails);
+          },
+          itemBuilder: playlistItemBuilder(contentDetails),
         );
       },
       icon: const Icon(Icons.list),

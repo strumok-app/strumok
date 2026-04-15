@@ -12,69 +12,42 @@ typedef SelectCallback = void Function(ContentMediaItem);
 typedef MediaItemsListBuilder =
     Widget Function(ContentMediaItem, ContentProgress?, SelectCallback);
 
-class MediaItemsListRoute<T> extends PopupRoute<T> {
-  final String title;
-  final SegmentedList<ContentMediaItem> mediaItems;
-  final ContentProgress? contentProgress;
-  final MediaItemsListBuilder itemBuilder;
-  final SelectCallback onSelect;
-
-  MediaItemsListRoute({
-    super.settings,
-    super.filter,
-    super.traversalEdgeBehavior,
-    required this.title,
-    required this.mediaItems,
-    this.contentProgress,
-    required this.onSelect,
-    required this.itemBuilder,
-  });
-
-  @override
-  Color? get barrierColor => null;
-  @override
-  bool get barrierDismissible => true;
-  @override
-  String? get barrierLabel => 'Dissmiss';
-  @override
-  Duration get transitionDuration => const Duration(milliseconds: 500);
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    const begin = Offset(1.0, 0.0);
-    const end = Offset.zero;
-    const curve = Curves.ease;
-    final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-    return SlideTransition(
-      position: animation.drive(tween),
-      child: BackButtonListener(
-        onBackButtonPressed: () async {
-          Navigator.of(context).maybePop();
-          return true;
+void openMediaItemsList(
+  BuildContext context, {
+  required String title,
+  required SegmentedList<ContentMediaItem> mediaItems,
+  required ContentProgress? contentProgress,
+  required MediaItemsListBuilder itemBuilder,
+  required SelectCallback onSelect,
+}) {
+  showGeneralDialog(
+    context: context,
+    pageBuilder: (context, animation, secondaryAnimation) => Align(
+      alignment: Alignment.centerRight,
+      child: _MediaItemsListView(
+        title: title,
+        mediaItems: mediaItems,
+        contentProgress: contentProgress,
+        onSelect: (item) {
+          Navigator.of(context).pop();
+          onSelect(item);
         },
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: SafeArea(
-            child: _MediaItemsListView(
-              title: title,
-              mediaItems: mediaItems,
-              contentProgress: contentProgress,
-              onSelect: (item) {
-                Navigator.of(context).pop();
-                onSelect(item);
-              },
-              itemBuilder: itemBuilder,
-            ),
-          ),
-        ),
+        itemBuilder: itemBuilder,
       ),
-    );
-  }
+    ),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+      final tween = Tween(
+        begin: begin,
+        end: end,
+      ).chain(CurveTween(curve: curve));
+      return SlideTransition(position: animation.drive(tween), child: child);
+    },
+    transitionDuration: Duration(milliseconds: 500),
+    barrierColor: Colors.transparent,
+  );
 }
 
 class _MediaItemsListView extends StatelessWidget {

@@ -112,7 +112,7 @@ class MangaReaderControlTopBar extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            if (!TVDetector.isTV && !mobile) ...[
+            if (!TVDetector.isTV) ...[
               BackButton(
                 onPressed: () {
                   Navigator.of(context).pop();

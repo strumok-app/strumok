@@ -99,15 +99,13 @@ class _VideoContentDesktopControlsState
       return;
     }
 
-    Navigator.of(context).push(
-      MediaItemsListRoute(
-        title: AppLocalizations.of(context)!.episodesList,
-        mediaItems: mediaItems,
-        contentProgress: collectionItem,
-        onSelect: (item) =>
-            controller.changeCollectionCurrentItem(item.position),
-        itemBuilder: playlistItemBuilder(contentDetails),
-      ),
+    openMediaItemsList(
+      context,
+      title: AppLocalizations.of(context)!.episodesList,
+      mediaItems: mediaItems,
+      contentProgress: collectionItem,
+      onSelect: (item) => controller.changeCollectionCurrentItem(item.position),
+      itemBuilder: playlistItemBuilder(contentDetails),
     );
   }
 
@@ -349,9 +347,7 @@ class _VideoContentDesktopControlsState
                               height: buttonBarHeight,
                               margin: const EdgeInsets.all(8),
                             ),
-                            const Expanded(
-                              child: BufferingIndicator(),
-                            ),
+                            const Expanded(child: BufferingIndicator()),
                             Container(
                               height: buttonBarHeight,
                               margin: const EdgeInsets.all(8),
