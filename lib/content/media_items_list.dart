@@ -48,6 +48,8 @@ void openMediaItemsList(
       return SlideTransition(position: animation.drive(tween), child: child);
     },
     transitionDuration: Duration(milliseconds: 500),
+    barrierLabel: "media_items_list",
+    barrierDismissible: true,
     barrierColor: Colors.transparent,
   );
 }
@@ -69,18 +71,17 @@ class _MediaItemsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     final theme = Theme.of(context);
     final mobile = isMobile(context);
 
-    const radius = Radius.circular(10);
+    const radius = Radius.circular(16);
 
     return Container(
       padding: const EdgeInsets.all(8.0),
-      width: mobileWidth * 0.7,
-      height: size.height,
+      width: 320,
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
+        border: Border.all(color: theme.colorScheme.outline),
         borderRadius: BorderRadius.only(
           topLeft: mobile ? Radius.zero : radius,
           bottomLeft: mobile ? Radius.zero : radius,
