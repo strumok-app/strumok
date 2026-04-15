@@ -63,7 +63,7 @@ void appRunner() async {
 
     WindowOptions windowOptions = const WindowOptions(
       size: Size(1280, 720),
-      // minimumSize: Size(800, 450),
+      minimumSize: Size(800, 450),
       center: true,
     );
 
