@@ -1,9 +1,9 @@
-## [1.26.1](https://github.com/strumok-app/strumok/compare/v1.26.0...v1.26.1) (2026-04-14)
+## [1.26.2](https://github.com/strumok-app/strumok/compare/v1.26.1...v1.26.2) (2026-04-15)
 
 
 ### Bug Fixes
 
-* disable floating video player on tv ([971a3b3](https://github.com/strumok-app/strumok/commit/971a3b3caa6d24fb31227208ecb4eebd58e82098))
+* layout issues and video player state ([91b0328](https://github.com/strumok-app/strumok/commit/91b032886d9b4d7056bb4d43d1dc5a2a7c6b25e7))
 
 
 
