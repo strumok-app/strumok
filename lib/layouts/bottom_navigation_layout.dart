@@ -18,25 +18,28 @@ class BottomNavigationLayout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      body: child,
-      bottomNavigationBar: BottomAppBar(
-        height: 48,
-        padding: EdgeInsets.zero,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ...NavigationBarData.routes.mapIndexed(
-              (idx, r) => NavigationButton(
-                onPressed: () => context.navigateTo(r.routeBuilder()),
-                icon: r.icon,
-                isSelected: idx == selectedIndex,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: Material(child: child)),
+        BottomAppBar(
+          height: 48,
+          padding: EdgeInsets.zero,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ...NavigationBarData.routes.mapIndexed(
+                (idx, r) => NavigationButton(
+                  onPressed: () => context.navigateTo(r.routeBuilder()),
+                  icon: r.icon,
+                  isSelected: idx == selectedIndex,
+                ),
               ),
-            ),
-            const AccountMenuIcon(),
-          ],
+              const AccountMenuIcon(),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

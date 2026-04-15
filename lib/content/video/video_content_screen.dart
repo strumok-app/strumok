@@ -61,9 +61,9 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
   Widget build(BuildContext context) {
     final videoPlayer = ref.watch(videoPlayerProvider);
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: videoPlayer.when(
+    return Material(
+      color: Colors.black,
+      child: videoPlayer.when(
         skipLoadingOnRefresh: false,
         data: (controller) {
           if (controller != null) {

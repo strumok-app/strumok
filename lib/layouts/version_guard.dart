@@ -15,18 +15,16 @@ class VersionGuard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final installedBundle = ref.watch(installedSupplierBundleInfoProvider);
 
-    return Scaffold(
-      body: installedBundle.when(
-        data: (info) {
-          return _isRequireToUpdate(info) ? _InstallSuppliersBundler() : child;
-        },
-        error: (error, stackTrace) {
-          return _Error(
-            error: AppLocalizations.of(context)!.ffiLibInstallationFailed,
-          );
-        },
-        loading: () => _Loader(),
-      ),
+    return installedBundle.when(
+      data: (info) {
+        return _isRequireToUpdate(info) ? _InstallSuppliersBundler() : child;
+      },
+      error: (error, stackTrace) {
+        return _Error(
+          error: AppLocalizations.of(context)!.ffiLibInstallationFailed,
+        );
+      },
+      loading: () => _Loader(),
     );
   }
 

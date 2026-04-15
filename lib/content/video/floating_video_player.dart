@@ -9,7 +9,6 @@ import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_view.dart';
 import 'package:strumok/content/video/widgets.dart';
-import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 
 enum FloatingPlayerCorner { topLeft, topRight, bottomLeft, bottomRight }
@@ -28,7 +27,7 @@ class FloatingVideoPlayerOverlay extends ConsumerWidget {
     final showOverlay = controller != null && showFloating;
 
     if (!showOverlay) {
-      return const SizedBox.shrink();
+      return const Positioned.fill(child: SizedBox.shrink());
     }
 
     return FloatingVideoPlayer(controller: controller, appRouter: appRouter);

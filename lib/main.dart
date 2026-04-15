@@ -63,7 +63,7 @@ void appRunner() async {
 
     WindowOptions windowOptions = const WindowOptions(
       size: Size(1280, 720),
-      minimumSize: Size(800, 450),
+      // minimumSize: Size(800, 450),
       center: true,
     );
 
@@ -125,9 +125,14 @@ class MainApp extends ConsumerWidget {
           navigatorObservers: () => [SentryNavigatorObserver()],
         ),
         builder: (context, child) => AppTheme(
-          child: VersionGuard(
-            child: Stack(
-              children: [child!, FloatingVideoPlayerOverlay(_appRouter)],
+          child: Scaffold(
+            body: VersionGuard(
+              child: Stack(
+                children: [
+                  Positioned.fill(child: child!),
+                  FloatingVideoPlayerOverlay(_appRouter),
+                ],
+              ),
             ),
           ),
         ),

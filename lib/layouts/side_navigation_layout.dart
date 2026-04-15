@@ -21,38 +21,36 @@ class SideNavigationLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox.square(
-                  dimension: 40,
-                  child: showBackButton ? const BackNavButton() : null,
-                ),
-                ...NavigationBarData.routes.mapIndexed(
-                  (idx, r) => Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: NavigationButton(
-                      onPressed: () => context.navigateTo(r.routeBuilder()),
-                      icon: r.icon,
-                      isSelected: idx == selectedIndex,
-                    ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox.square(
+                dimension: 40,
+                child: showBackButton ? const BackNavButton() : null,
+              ),
+              ...NavigationBarData.routes.mapIndexed(
+                (idx, r) => Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: NavigationButton(
+                    onPressed: () => context.navigateTo(r.routeBuilder()),
+                    icon: r.icon,
+                    isSelected: idx == selectedIndex,
                   ),
                 ),
-                const AccountMenuIcon(),
-                const Spacer(),
-                const DownloadingQueue(),
-              ],
-            ),
+              ),
+              const AccountMenuIcon(),
+              const Spacer(),
+              const DownloadingQueue(),
+            ],
           ),
-          Expanded(child: child),
-        ],
-      ),
+        ),
+        Expanded(child: Material(child: child)),
+      ],
     );
   }
 }
