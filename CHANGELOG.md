@@ -1,9 +1,9 @@
-## [1.26.2](https://github.com/strumok-app/strumok/compare/v1.26.1...v1.26.2) (2026-04-15)
+## [1.26.3](https://github.com/strumok-app/strumok/compare/v1.26.2...v1.26.3) (2026-04-16)
 
 
 ### Bug Fixes
 
-* layout issues and video player state ([91b0328](https://github.com/strumok-app/strumok/commit/91b032886d9b4d7056bb4d43d1dc5a2a7c6b25e7))
+*  android layout safe zones ([2e2e862](https://github.com/strumok-app/strumok/commit/2e2e86292f338d944acb0d3eb03ab95be90960a3))
 
 
 
