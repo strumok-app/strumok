@@ -99,11 +99,6 @@ dependency_overrides:
       url: https://github.com/Predidit/media-kit.git
       path: media_kit_video
       ref: upstream-better-linux-render
-  # media_kit_libs_video:
-  #   git:
-  #     url: https://github.com/Predidit/media-kit.git
-  #     path: libs/universal/media_kit_libs_video
-  #     ref: upstream-better-linux-render
 
 flutter:
   uses-material-design: true
