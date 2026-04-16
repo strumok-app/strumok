@@ -22,17 +22,19 @@ void openMediaItemsList(
 }) {
   showGeneralDialog(
     context: context,
-    pageBuilder: (context, animation, secondaryAnimation) => Align(
-      alignment: Alignment.centerRight,
-      child: _MediaItemsListView(
-        title: title,
-        mediaItems: mediaItems,
-        contentProgress: contentProgress,
-        onSelect: (item) {
-          Navigator.of(context).pop();
-          onSelect(item);
-        },
-        itemBuilder: itemBuilder,
+    pageBuilder: (context, animation, secondaryAnimation) => SafeArea(
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: _MediaItemsListView(
+          title: title,
+          mediaItems: mediaItems,
+          contentProgress: contentProgress,
+          onSelect: (item) {
+            Navigator.of(context).pop();
+            onSelect(item);
+          },
+          itemBuilder: itemBuilder,
+        ),
       ),
     ),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
