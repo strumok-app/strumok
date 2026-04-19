@@ -21,7 +21,7 @@ class SuppliersSearchResults {
 
   SuppliersSearchResults loadingNew(String query) {
     return copyWith(
-      isLoading: true,
+      isLoading: false,
       query: query,
       hasMore: true,
       results: [],
