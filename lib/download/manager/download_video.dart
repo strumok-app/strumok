@@ -249,7 +249,7 @@ Future<HLSManifest> _parseHLSManifest(Uri uri, String content) async {
 
     if (line.startsWith('#')) {
       if (line.startsWith("#EXT-X-KEY:")) {
-        encryptionKey = await _parseHLSKey(line);
+        encryptionKey = await _parseHLSKey(uri, line);
       } else if (line.startsWith("#EXT-X-STREAM-INF:")) {
         final attrs = line.split(':').last.split(',');
         int? bandwidth;
@@ -291,16 +291,16 @@ Future<HLSManifest> _parseHLSManifest(Uri uri, String content) async {
   );
 }
 
-Uri _relativeUri(Uri masterUri, String url) {
+Uri _relativeUri(Uri baseUri, String url) {
   final streamUri = Uri.parse(url);
   if (streamUri.isAbsolute) {
     return streamUri;
   }
 
-  return masterUri.resolve(url);
+  return baseUri.resolve(url);
 }
 
-Future<Uint8List?> _parseHLSKey(String keyLine) async {
+Future<Uint8List?> _parseHLSKey(Uri masterUri, String keyLine) async {
   if (!keyLine.startsWith('#EXT-X-KEY:')) return null;
 
   final attrs = keyLine.substring(11).split(',');
@@ -324,7 +324,7 @@ Future<Uint8List?> _parseHLSKey(String keyLine) async {
   if (method != 'AES-128' || uri == null) return null;
 
   try {
-    final response = await get(Uri.parse(uri));
+    final response = await get(_relativeUri(masterUri, uri));
     if (response.statusCode == HttpStatus.ok) {
       return response.bodyBytes;
     }
