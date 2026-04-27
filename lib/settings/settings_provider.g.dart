@@ -543,3 +543,107 @@ abstract class _$OfflineStorageDirectory extends $Notifier<String?> {
     element.handleCreate(ref, build);
   }
 }
+
+@ProviderFor(GeminiApiToken)
+final geminiApiTokenProvider = GeminiApiTokenProvider._();
+
+final class GeminiApiTokenProvider
+    extends $NotifierProvider<GeminiApiToken, String?> {
+  GeminiApiTokenProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'geminiApiTokenProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$geminiApiTokenHash();
+
+  @$internal
+  @override
+  GeminiApiToken create() => GeminiApiToken();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String?>(value),
+    );
+  }
+}
+
+String _$geminiApiTokenHash() => r'68c43a0c7f72943999be88d39d9cd46b058afbc7';
+
+abstract class _$GeminiApiToken extends $Notifier<String?> {
+  String? build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<String?, String?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String?, String?>,
+              String?,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(AiSearchEnabled)
+final aiSearchEnabledProvider = AiSearchEnabledProvider._();
+
+final class AiSearchEnabledProvider
+    extends $NotifierProvider<AiSearchEnabled, bool> {
+  AiSearchEnabledProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'aiSearchEnabledProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$aiSearchEnabledHash();
+
+  @$internal
+  @override
+  AiSearchEnabled create() => AiSearchEnabled();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$aiSearchEnabledHash() => r'1d576214e22269db098b6d89c96be7baf8daca4f';
+
+abstract class _$AiSearchEnabled extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

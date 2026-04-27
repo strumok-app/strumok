@@ -50,6 +50,8 @@ class AppPreferences {
   static const String _keyFfiSupplierBundleInfo = "ffi_supplier_bundle_info";
   static const String _keyFloatingVideoPlayerEnabled =
       "floating_video_player_enabled";
+  static const String _keyGeminiApiToken = "gemini_api_token";
+  static const String _keyAiSearchEnabled = "ai_search_enabled";
 
   static late final SharedPreferences instance;
 
@@ -276,4 +278,17 @@ class AppPreferences {
 
   static bool get floatingVideoPlayerEnabled =>
       instance.getBool(_keyFloatingVideoPlayerEnabled) ?? true;
+
+  static set geminiApiToken(String? token) => token != null
+      ? instance.setString(_keyGeminiApiToken, token)
+      : instance.remove(_keyGeminiApiToken);
+
+  static String? get geminiApiToken =>
+      instance.getString(_keyGeminiApiToken);
+
+  static set aiSearchEnabled(bool enabled) =>
+      instance.setBool(_keyAiSearchEnabled, enabled);
+
+  static bool get aiSearchEnabled =>
+      instance.getBool(_keyAiSearchEnabled) ?? false;
 }

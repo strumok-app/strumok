@@ -55,7 +55,7 @@ final class RecommendationChannelProvider
 }
 
 String _$recommendationChannelHash() =>
-    r'5373945d9ae3f854ea36a1939eae566fb732db8e';
+    r'854fec05da3aad9d93758cc9fb2742df40ef01ac';
 
 final class RecommendationChannelFamily extends $Family
     with

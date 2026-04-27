@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:strumok/utils/visual.dart';
 
 void openAISearchPanel(BuildContext context) {
@@ -46,7 +47,56 @@ class _AISearchPanel extends StatelessWidget {
           bottomLeft: mobile ? Radius.zero : radius,
         ),
       ),
-      child: Material(child: SizedBox.shrink()),
+      child: Material(
+        child: Column(
+          children: [
+            _renderTitle(theme, context),
+            Expanded(child: Placeholder()),
+            SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Ask about movies, series, actors",
+                border: OutlineInputBorder(),
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(right: 4.0),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.send_rounded),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Row _renderTitle(ThemeData theme, BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Text("AI Search", style: theme.textTheme.headlineMedium),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(Symbols.delete_history),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(Icons.close),
+          ),
+        ),
+      ],
     );
   }
 }

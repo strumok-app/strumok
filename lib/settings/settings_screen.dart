@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
@@ -7,6 +5,7 @@ import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/settings/app_version/app_version_settings.dart';
 import 'package:strumok/settings/content_language.dart';
 import 'package:strumok/settings/floating_video_switcher.dart';
+import 'package:strumok/settings/ai_search.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_settings.dart';
 import 'package:strumok/settings/brightness_switcher.dart';
 import 'package:strumok/settings/color_switcher.dart';
@@ -67,12 +66,12 @@ class _SettingsView extends StatelessWidget {
                 AppLocalizations.of(context)!.contentLanguage,
                 const ContentLanguageSelector(),
               ),
-              if (!TVDetector.isTV)
-                _renderSection(
-                  context,
-                  AppLocalizations.of(context)!.settingsFloatingVideoPlayer,
-                  const FloatingVideoSwitcher(),
-                ),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsTheme,
+                const BrightnessSwitcher(),
+              ),
+              const ColorSwitcher(),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.chevron_right),
@@ -86,18 +85,14 @@ class _SettingsView extends StatelessWidget {
                   context.navigateTo(const SuppliersSettingsRoute());
                 },
               ),
-              _renderSection(
-                context,
-                AppLocalizations.of(context)!.settingsTheme,
-                const BrightnessSwitcher(),
-              ),
-              const ColorSwitcher(),
-              if (!Platform.isAndroid) // beacuse fuck android
+              const OfflineStorageDirectorySelector(),
+              if (!TVDetector.isTV)
                 _renderSection(
                   context,
-                  AppLocalizations.of(context)!.settingsDownloadsDirectory,
-                  const OfflineStorageDirectorySelector(),
+                  AppLocalizations.of(context)!.settingsFloatingVideoPlayer,
+                  const FloatingVideoSwitcher(),
                 ),
+              if (!TVDetector.isTV) AISearchSettings(),
             ],
           ),
         ),

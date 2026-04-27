@@ -2,7 +2,6 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/app_localizations.dart';
-import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/search/search_provider.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/utils/visual.dart';

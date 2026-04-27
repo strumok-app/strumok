@@ -54,7 +54,10 @@ dependencies:
 
   # state managment
   flutter_riverpod: ^3.3.1
-  riverpod_annotation: ^4.0.0
+  riverpod_annotation: ^4.0.2
+
+  # ai slop
+  googleai_dart: ^6.1.0
 
   # utillity
   equatable: ^2.0.7
@@ -64,15 +67,11 @@ dependencies:
   http: ^1.6.0
   path: ^1.9.1
 
-  # crypto
-  pointycastle: ^4.0.0
-
   # tracing
   logging: ^1.3.0
   logging_to_logcat: ^1.0.5
   sentry_flutter: ^9.8.0
 
-  # isolate management
   content_suppliers_api:
     path: content_suppliers_api
 
@@ -80,10 +79,8 @@ dependencies:
     path: content_suppliers_rust
 
 dev_dependencies:
-  analyzer:
-  build_runner:
-  riverpod_lint: ^3.0.3
-  riverpod_generator: ^4.0.0+1
+  build_runner: ^2.13.1
+  riverpod_generator: ^4.0.3
   auto_route_generator: ^10.2.6
   json_serializable: ^6.11.2
   flutter_launcher_icons: ^0.14.4

@@ -157,3 +157,29 @@ class OfflineStorageDirectory extends _$OfflineStorageDirectory {
     OfflineStorage().init();
   }
 }
+
+@Riverpod(keepAlive: true)
+class GeminiApiToken extends _$GeminiApiToken {
+  @override
+  String? build() {
+    return AppPreferences.geminiApiToken;
+  }
+
+  void set(String? token) {
+    AppPreferences.geminiApiToken = token;
+    state = token;
+  }
+}
+
+@Riverpod(keepAlive: true)
+class AiSearchEnabled extends _$AiSearchEnabled {
+  @override
+  bool build() {
+    return AppPreferences.aiSearchEnabled;
+  }
+
+  void toggle(bool enabled) {
+    AppPreferences.aiSearchEnabled = enabled;
+    state = enabled;
+  }
+}
