@@ -72,7 +72,7 @@ class SuppliersSettings extends _$SuppliersSettings {
       suppliersOrder = supplierNames;
     }
 
-    final langs = ref.watch(contentLanguageSettingsProvider);
+    final userLanguage = ref.read(userLanguageSettingProvider);
 
     return SuppliersSettingsModel(
       suppliersOrder: suppliersOrder.toList(),
@@ -81,7 +81,7 @@ class SuppliersSettings extends _$SuppliersSettings {
           supplierName: _buildSuppliersConfig(
             supplierName,
             contentSuppliers,
-            langs,
+            userLanguage,
           ),
       },
     );
@@ -90,7 +90,7 @@ class SuppliersSettings extends _$SuppliersSettings {
   SuppliersConfig _buildSuppliersConfig(
     String supplierName,
     ContentSuppliers contentSuppliers,
-    Set<ContentLanguage> langs,
+    String userLanguage,
   ) {
     final supplier = contentSuppliers.getSupplier(supplierName);
     final suppliersChannels = supplier!.channels;
@@ -104,7 +104,9 @@ class SuppliersSettings extends _$SuppliersSettings {
     return SuppliersConfig(
       enabled:
           AppPreferences.getSupplierEnabled(supplierName) ??
-          supplier.supportedLanguages.intersection(langs).isNotEmpty,
+          supplier.supportedLanguages
+              .where((element) => element.name == userLanguage)
+              .isNotEmpty,
       channels: savedChannels ?? defaultChannels,
     );
   }

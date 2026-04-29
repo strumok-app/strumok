@@ -86,7 +86,7 @@ void main() async {
     const id = "dummy_id";
 
     final supplier = suppliers.first;
-    final details = await supplier.detailsById(id, {ContentLanguage.en});
+    final details = await supplier.detailsById(id);
 
     expect(details, isNotNull);
     expect(details!.id, equals(id));
@@ -113,7 +113,7 @@ void main() async {
     expect(mediaItems.length, equals(1));
 
     final mediaItem = mediaItems.first;
-    expect(mediaItem.position, equals(42));
+    expect(mediaItem.position, equals(0));
     expect(mediaItem.title, equals(id));
     expect(mediaItem.section, equals("1,2,3"));
     expect(mediaItem.image, equals("dummy_image"));
@@ -121,16 +121,16 @@ void main() async {
     final sources = await mediaItem.sources;
     expect(sources.length, equals(3));
 
-    expect(sources[0], isA<MediaFileItemSource>());
-    final videoSource = sources[0] as MediaFileItemSource;
+    expect(sources[0], isA<VideoMediaItemSource>());
+    final videoSource = sources[0] as VideoMediaItemSource;
 
     expect(await videoSource.link, equals(Uri.parse("http://dummy_link")));
     expect(videoSource.kind, equals(FileKind.video));
     expect(videoSource.description, equals("$id 1,2,3"));
     expect(videoSource.headers, equals({"User-Agent": "dummy"}));
 
-    expect(sources[1], isA<MediaFileItemSource>());
-    final subtitleSource = sources[1] as MediaFileItemSource;
+    expect(sources[1], isA<FileMediaItemSource>());
+    final subtitleSource = sources[1] as FileMediaItemSource;
 
     expect(await subtitleSource.link, equals(Uri.parse("http://dummy_link")));
     expect(subtitleSource.kind, equals(FileKind.subtitle));
@@ -150,7 +150,7 @@ void main() async {
     const id = "async_manga";
 
     final supplier = suppliers.first;
-    final details = await supplier.detailsById(id, {ContentLanguage.en});
+    final details = await supplier.detailsById(id);
 
     expect(details, isNotNull);
 
@@ -174,7 +174,7 @@ void main() async {
     const id = "eager_sources";
 
     final supplier = suppliers.first;
-    final details = await supplier.detailsById(id, {ContentLanguage.en});
+    final details = await supplier.detailsById(id);
 
     expect(details, isNotNull);
 
@@ -187,6 +187,6 @@ void main() async {
     expect(sources.length, equals(1));
 
     final source = sources[0];
-    expect(source, isA<MediaFileItemSource>());
+    expect(source, isA<FileMediaItemSource>());
   });
 }

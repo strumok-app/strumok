@@ -18,19 +18,17 @@ pub trait ContentSupplier {
     fn get_default_channels(&self) -> Vec<String>;
     fn get_supported_types(&self) -> Vec<ContentType>;
     fn get_supported_languages(&self) -> Vec<String>;
-    async fn search(&self, query: String, page: u16) -> anyhow::Result<Vec<ContentInfo>>;
-    async fn load_channel(&self, channel: String, page: u16) -> anyhow::Result<Vec<ContentInfo>>;
-    async fn get_content_details(&self, id: String, langs: Vec<String>) -> anyhow::Result<Option<ContentDetails>>;
+    async fn search(&self, query: &str, page: u16) -> anyhow::Result<Vec<ContentInfo>>;
+    async fn load_channel(&self, channel: &str, page: u16) -> anyhow::Result<Vec<ContentInfo>>;
+    async fn get_content_details(&self, id: &str) -> anyhow::Result<Option<ContentDetails>>;
     async fn load_media_items(
         &self,
-        id: String,
-        langs: Vec<String>,
+        id: &str,
         params: Vec<String>,
     ) -> anyhow::Result<Vec<ContentMediaItem>>;
     async fn load_media_item_sources(
         &self,
-        id: String,
-        langs: Vec<String>,
+        id: &str,
         params: Vec<String>,
     ) -> anyhow::Result<Vec<ContentMediaItemSource>>;
 }

@@ -37,8 +37,8 @@ class _DownloadingQueueState extends ConsumerState<DownloadingQueue> {
         child: IconButton(
           onPressed: () {
             if (controller.isOpen) {
-              controller.close();
               focusNode.previousFocus();
+              controller.close();
             } else {
               focusNode.requestFocus();
               controller.open();

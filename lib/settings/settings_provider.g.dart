@@ -383,60 +383,6 @@ abstract class _$MangaReaderAutoCropSettings extends $Notifier<bool> {
   }
 }
 
-@ProviderFor(ContentLanguageSettings)
-final contentLanguageSettingsProvider = ContentLanguageSettingsProvider._();
-
-final class ContentLanguageSettingsProvider
-    extends $NotifierProvider<ContentLanguageSettings, Set<ContentLanguage>> {
-  ContentLanguageSettingsProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'contentLanguageSettingsProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$contentLanguageSettingsHash();
-
-  @$internal
-  @override
-  ContentLanguageSettings create() => ContentLanguageSettings();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Set<ContentLanguage> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Set<ContentLanguage>>(value),
-    );
-  }
-}
-
-String _$contentLanguageSettingsHash() =>
-    r'd17ebea44c40c66ee4f193315902bd1ecc658e2f';
-
-abstract class _$ContentLanguageSettings
-    extends $Notifier<Set<ContentLanguage>> {
-  Set<ContentLanguage> build();
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final ref = this.ref as $Ref<Set<ContentLanguage>, Set<ContentLanguage>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<Set<ContentLanguage>, Set<ContentLanguage>>,
-              Set<ContentLanguage>,
-              Object?,
-              Object?
-            >;
-    element.handleCreate(ref, build);
-  }
-}
-
 @ProviderFor(FloatingVideoPlayerEnabled)
 final floatingVideoPlayerEnabledProvider =
     FloatingVideoPlayerEnabledProvider._();

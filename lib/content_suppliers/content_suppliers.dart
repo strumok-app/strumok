@@ -82,11 +82,7 @@ class ContentSuppliers {
     return supplier.loadChannel(channel, page: page);
   }
 
-  Future<ContentDetails> detailsById(
-    String supplierName,
-    String id,
-    Set<ContentLanguage> langs,
-  ) async {
+  Future<ContentDetails> detailsById(String supplierName, String id) async {
     logger.info("Load content details supplier: $supplierName id: $id");
 
     final supplier = _suppliers
@@ -99,7 +95,7 @@ class ContentSuppliers {
 
     ContentDetails? details;
     try {
-      details = await supplier.detailsById(id, langs);
+      details = await supplier.detailsById(id);
     } catch (error, stackTrace) {
       traceError(
         error: error,

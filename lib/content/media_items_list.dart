@@ -49,6 +49,8 @@ void openMediaItemsList(
     },
     transitionDuration: Duration(milliseconds: 500),
     barrierColor: Colors.transparent,
+    barrierDismissible: true,
+    barrierLabel: "MediaItemsList",
   );
 }
 

@@ -37,8 +37,12 @@ void main() async {
     Logger.root.activateLogcat();
   } else {
     Logger.root.onRecord.listen((record) {
+      var msg = "${record.level.name}: ${record.time}: ${record.message}";
+      if (record.error != null) {
+        msg += "\n${record.error}\n${record.stackTrace}";
+      }
       // ignore: avoid_print
-      print('${record.level.name}: ${record.time}: ${record.message}');
+      print(msg);
     });
   }
 

@@ -86,7 +86,7 @@ final class VideoPlayerProvider
   VideoPlayer create() => VideoPlayer();
 }
 
-String _$videoPlayerHash() => r'ec27e40c632e9be1c6e8aca864bf5675b4799c4e';
+String _$videoPlayerHash() => r'bd9617fe9b3f51906d0a13334e2769f3ee4f8f76';
 
 abstract class _$VideoPlayer extends $AsyncNotifier<VideoPlayerController?> {
   FutureOr<VideoPlayerController?> build();

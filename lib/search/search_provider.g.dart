@@ -152,7 +152,7 @@ final class SupplierSearchProvider
   }
 }
 
-String _$supplierSearchHash() => r'cd16397459d17cc4fbd66e69f3daaa39f19c4e3a';
+String _$supplierSearchHash() => r'25f3d612921e9a0e411e79b50e6d2666fcb4fbef';
 
 final class SupplierSearchFamily extends $Family
     with

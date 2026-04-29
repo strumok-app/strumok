@@ -1,42 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
-import 'package:pointycastle/export.dart';
 import 'package:strumok/download/manager/download_file.dart';
 import 'package:strumok/download/manager/models.dart';
+import 'package:strumok/utils/hls.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/utils.dart';
-
-class HLSStream {
-  final Uri uri;
-  final int bandwidth;
-  final int? width;
-  final int? height;
-
-  HLSStream({
-    required this.uri,
-    required this.bandwidth,
-    this.width,
-    this.height,
-  });
-}
-
-class HLSManifest {
-  final Uri uri;
-  final Uint8List? encryptionKey;
-  final List<HLSStream> streams;
-  final List<Uri> segments;
-
-  HLSManifest({
-    required this.uri,
-    this.encryptionKey,
-    required this.streams,
-    required this.segments,
-  });
-}
 
 void downloadVideo(
   VideoDownloadRequest request,
@@ -59,18 +29,21 @@ void downloadVideo(
     final httpReq = Request('GET', uri);
 
     httpReq.headers.addAll(headers);
+    logger.info("downloading HLS master playlist for request: $request");
     final res = await Client().send(httpReq).timeout(httpTimeout);
-
-    if (res.statusCode != HttpStatus.ok) {
-      throw Exception("httpStatus: ${res.statusCode}");
-    }
 
     if (request.url.endsWith(".m3u8") ||
         res.headers['content-type'] == 'application/vnd.apple.mpegurl') {
+      if (res.statusCode != HttpStatus.ok) {
+        throw Exception("httpStatus: ${res.statusCode}");
+      }
+
       final bytes = await res.stream.toBytes();
       final hls = utf8.decode(bytes);
 
-      final master = await _parseHLSManifest(uri, hls);
+      final master = await parseHLSManifest(uri, hls);
+
+      logger.info("hls master playlist: $master");
 
       if (master.streams.isNotEmpty) {
         final sortedStreams = master.streams.sorted(
@@ -139,6 +112,7 @@ Future<void> _downloadHLSStream(
     req.headers.addAll(request.headers!);
   }
 
+  logger.info("downloading HLS stream: $stream");
   final res = await Client().send(req).timeout(httpTimeout);
 
   if (res.statusCode != HttpStatus.ok) {
@@ -146,7 +120,9 @@ Future<void> _downloadHLSStream(
   }
 
   final hls = await res.stream.bytesToString();
-  final streamHls = await _parseHLSManifest(stream.uri, hls);
+  final streamHls = await parseHLSManifest(stream.uri, hls);
+
+  logger.info("hls stream playlist: $streamHls");
 
   await _downloadStreamSegments(
     request,
@@ -164,10 +140,6 @@ Future<void> _downloadStreamSegments(
   CancelToken cancelToken,
   HLSManifest manifest,
 ) async {
-  final decrypter = manifest.encryptionKey != null
-      ? _Decryptor(manifest.encryptionKey!)
-      : null;
-
   final client = Client();
 
   final partialFilePath = request.fileSrc + partialExtension;
@@ -178,8 +150,15 @@ Future<void> _downloadStreamSegments(
   final sink = partialFile.openWrite(mode: FileMode.write);
 
   final startTs = DateTime.now();
-  var bytesDownloaded = 0;
+
+  HLSDecryptor? decrypter;
+  int bytesDownloaded = 0;
+
   for (var i = 0; i < manifest.segments.length; i++) {
+    logger.info(
+      "downloading HLS segment for request: $request, segment index: $i of ${manifest.segments.length}",
+    );
+
     if (cancelToken.isCanceled) {
       await sink.close();
       await partialFile.delete();
@@ -188,7 +167,7 @@ Future<void> _downloadStreamSegments(
     }
 
     final segment = manifest.segments[i];
-    final segmentReq = Request('GET', segment);
+    final segmentReq = Request('GET', segment.uri);
 
     if (request.headers != null) {
       segmentReq.headers.addAll(request.headers!);
@@ -205,6 +184,19 @@ Future<void> _downloadStreamSegments(
       throw Exception("segment: $segment httpStatus: ${res.statusCode}");
     }
 
+    if (segment.encryptionKey != null) {
+      final key = segment.encryptionKey!;
+
+      logger.info("downloading HLS key for key: $key");
+      final response = await get(key.uri);
+
+      if (response.statusCode != HttpStatus.ok) {
+        throw Exception("Failed to download HLS key: ${response.statusCode}");
+      }
+
+      decrypter = HLSDecryptor(response.bodyBytes, key.iv);
+    }
+
     if (decrypter != null) {
       var bytes = await res.stream.toBytes();
       bytes = decrypter.decrypt(bytes);
@@ -217,13 +209,26 @@ Future<void> _downloadStreamSegments(
         downloadSpeed(startTs, bytesDownloaded),
       );
     } else {
-      await for (var chunk in res.stream) {
-        sink.add(chunk);
+      final filter = TSJunkFilter();
 
-        bytesDownloaded += chunk.length;
-        updateProgress(
-          i / manifest.segments.length,
-          downloadSpeed(startTs, bytesDownloaded),
+      await for (var chunk in res.stream) {
+        final filtered = filter.feed(chunk);
+        if (filtered != null) {
+          sink.add(filtered);
+
+          bytesDownloaded += filtered.length;
+          updateProgress(
+            i / manifest.segments.length,
+            downloadSpeed(startTs, bytesDownloaded),
+          );
+        }
+      }
+
+      if (!filter.syncFound) {
+        throw Exception('No MPEG-TS sync found in segment: ${segment.uri}');
+      } else if (filter.filteredBytes > 0) {
+        logger.info(
+          '[HLSProxyServer] Stripped ${filter.filteredBytes} leading junk bytes from segment: ${segment.uri}',
         );
       }
     }
@@ -232,123 +237,4 @@ Future<void> _downloadStreamSegments(
   await sink.close();
 
   await partialFile.rename(request.fileSrc);
-}
-
-Future<HLSManifest> _parseHLSManifest(Uri uri, String content) async {
-  final List<HLSStream> streams = [];
-  final List<Uri> segments = [];
-  Uint8List? encryptionKey;
-  final lines = content.split('\n');
-
-  for (var i = 0; i < lines.length; i++) {
-    final line = lines[i].trim();
-
-    if (line.isEmpty) {
-      continue;
-    }
-
-    if (line.startsWith('#')) {
-      if (line.startsWith("#EXT-X-KEY:")) {
-        encryptionKey = await _parseHLSKey(uri, line);
-      } else if (line.startsWith("#EXT-X-STREAM-INF:")) {
-        final attrs = line.split(':').last.split(',');
-        int? bandwidth;
-        int? width;
-        int? height;
-
-        for (final attr in attrs) {
-          final parts = attr.split('=');
-          if (parts[0] == 'BANDWIDTH') {
-            bandwidth = int.parse(parts[1]);
-          } else if (parts[0] == 'RESOLUTION') {
-            final res = parts[1].split('x');
-            width = int.parse(res[0]);
-            height = int.parse(res[1]);
-          }
-        }
-
-        if (bandwidth != null && i < lines.length - 1) {
-          streams.add(
-            HLSStream(
-              uri: _relativeUri(uri, lines[++i]),
-              bandwidth: bandwidth,
-              width: width,
-              height: height,
-            ),
-          );
-        }
-      }
-    } else {
-      segments.add(_relativeUri(uri, line));
-    }
-  }
-
-  return HLSManifest(
-    uri: uri,
-    encryptionKey: encryptionKey,
-    streams: streams,
-    segments: segments,
-  );
-}
-
-Uri _relativeUri(Uri baseUri, String url) {
-  final streamUri = Uri.parse(url);
-  if (streamUri.isAbsolute) {
-    return streamUri;
-  }
-
-  return baseUri.resolve(url);
-}
-
-Future<Uint8List?> _parseHLSKey(Uri masterUri, String keyLine) async {
-  if (!keyLine.startsWith('#EXT-X-KEY:')) return null;
-
-  final attrs = keyLine.substring(11).split(',');
-  String? method;
-  String? uri;
-
-  for (final attr in attrs) {
-    final parts = attr.split('=');
-    if (parts.length != 2) continue;
-
-    final key = parts[0].trim();
-    final value = parts[1].replaceAll('"', '').trim();
-
-    if (key == 'METHOD') {
-      method = value;
-    } else if (key == 'URI') {
-      uri = value;
-    }
-  }
-
-  if (method != 'AES-128' || uri == null) return null;
-
-  try {
-    final response = await get(_relativeUri(masterUri, uri));
-    if (response.statusCode == HttpStatus.ok) {
-      return response.bodyBytes;
-    }
-  } catch (e) {
-    logger.warning('Failed to download HLS key: $e');
-  }
-
-  return null;
-}
-
-class _Decryptor {
-  final BlockCipher cipher;
-
-  _Decryptor(Uint8List key)
-    : cipher = PaddedBlockCipher("AES/CBC/PKCS7")
-        ..init(
-          false,
-          PaddedBlockCipherParameters(
-            ParametersWithIV(KeyParameter(key), Uint8List(16)),
-            null,
-          ),
-        );
-
-  Uint8List decrypt(Uint8List data) {
-    return cipher.process(data);
-  }
 }

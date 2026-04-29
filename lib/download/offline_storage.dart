@@ -196,15 +196,15 @@ class OfflineStorage {
     await for (final (kind, name, uri) in _iterateSources(dir)) {
       switch (kind) {
         case FileKind.video:
-        case FileKind.subtitle:
           sources.add(
-            OfflineContentMediaItemSource(
+            OfflineVideoMediaItemSource(
               description: Uri.decodeComponent(name),
               link: uri,
             ),
           );
         case FileKind.manga:
           await _readMangaSource(dir, name, sources);
+        default: //noop
       }
     }
 
@@ -380,7 +380,7 @@ class OfflineStorage {
     );
 
     if (source.kind == FileKind.video) {
-      final mediaSource = source as MediaFileItemSource;
+      final mediaSource = source as VideoMediaItemSource;
       final link = await mediaSource.link;
       final sourcePath = getMediaItemSourcePath(supplier, id, number, source);
 

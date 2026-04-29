@@ -13,7 +13,6 @@ part 'content_details_provider.g.dart';
 @riverpod
 Future<ContentDetails> details(Ref ref, String supplier, String id) async {
   final offlineMode = ref.watch(offlineModeProvider);
-  final langs = ref.watch(contentLanguageSettingsProvider);
   final link = ref.keepAlive();
 
   Timer? timer;
@@ -37,7 +36,7 @@ Future<ContentDetails> details(Ref ref, String supplier, String id) async {
   }
 
   final details = await ContentSuppliers()
-      .detailsById(supplier, id, langs)
+      .detailsById(supplier, id)
       .then((d) => ContentDetailsWithOffline(d) as ContentDetails)
       .timeout(
         Duration(seconds: 30),

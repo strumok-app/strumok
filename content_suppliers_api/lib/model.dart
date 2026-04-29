@@ -32,10 +32,7 @@ abstract class ContentSupplier {
 
   Future<List<ContentInfo>> loadChannel(String channel, {int page = 0}) async =>
       const [];
-  Future<ContentDetails?> detailsById(
-    String id,
-    Set<ContentLanguage> langs,
-  ) async => null;
+  Future<ContentDetails?> detailsById(String id) async => null;
 }
 
 abstract interface class ContentInfo {
@@ -61,8 +58,59 @@ abstract interface class ContentMediaItemSource {
   Map<String, String>? get headers;
 }
 
-abstract interface class MediaFileItemSource extends ContentMediaItemSource {
+abstract interface class VideoMediaItemSource extends ContentMediaItemSource {
   FutureOr<Uri> get link;
+  bool get hlsProxy;
+}
+
+class SimpleVideoMediaItemSource implements VideoMediaItemSource {
+  @override
+  final FileKind kind;
+
+  @override
+  final String description;
+
+  @override
+  final Uri link;
+
+  @override
+  final Map<String, String>? headers;
+
+  @override
+  final bool hlsProxy;
+
+  SimpleVideoMediaItemSource({
+    required this.kind,
+    required this.description,
+    required this.link,
+    this.headers,
+    this.hlsProxy = false,
+  });
+}
+
+abstract interface class FileMediaItemSource extends ContentMediaItemSource {
+  FutureOr<Uri> get link;
+}
+
+class SimpleFileMediaItemSource implements FileMediaItemSource {
+  @override
+  final FileKind kind;
+
+  @override
+  final String description;
+
+  @override
+  final Uri link;
+
+  @override
+  final Map<String, String>? headers;
+
+  SimpleFileMediaItemSource({
+    required this.kind,
+    required this.description,
+    required this.link,
+    this.headers,
+  });
 }
 
 abstract interface class MangaMediaItemSource extends ContentMediaItemSource {
@@ -159,29 +207,6 @@ abstract class AbstractContentDetails extends Equatable
     additionalInfo,
     similar,
   ];
-}
-
-@immutable
-class SimpleContentMediaItemSource extends Equatable
-    implements MediaFileItemSource {
-  @override
-  final FileKind kind;
-  @override
-  final String description;
-  @override
-  final Uri link;
-  @override
-  final Map<String, String>? headers;
-
-  const SimpleContentMediaItemSource({
-    required this.description,
-    required this.link,
-    this.kind = FileKind.video,
-    this.headers,
-  });
-
-  @override
-  List<Object?> get props => [link, headers];
 }
 
 abstract class ContentSupplierBundle {
