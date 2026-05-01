@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:strumok/utils/hls.dart';
@@ -80,6 +79,10 @@ class HLSProxyServer {
 
   /// Stops the HTTP server and closes the HTTP client.
   Future<void> stop() async {
+    if (!isRunning) {
+      return;
+    }
+
     await _server?.close(force: true);
     _server = null;
     _httpClient.close();
@@ -218,7 +221,7 @@ class HLSProxyServer {
       if (!filter.syncFound) {
         throw Exception('No MPEG-TS sync found in segment');
       } else if (filter.filteredBytes > 0) {
-        logger.info(
+        logger.fine(
           '[HLSProxyServer] Stripped ${filter.filteredBytes} leading junk bytes from $upstreamUri',
         );
       }
@@ -226,9 +229,7 @@ class HLSProxyServer {
       await req.response.close();
     } catch (error, stack) {
       if (error is http.ClientException &&
-          error.message.startsWith(
-            'ClientException: Connection closed while receiving data',
-          )) {
+          error.message.startsWith('Connection closed')) {
       } else {
         logger.severe(
           '[HLSProxyServer] Segment passthrough failed for $upstreamUri',
@@ -322,7 +323,7 @@ class HLSProxyServer {
         }
       });
 
-      logger.info(
+      logger.fine(
         '[HLSProxyServer] Fetching $upstreamUri with headers: ${upstreamReq.headers}',
       );
 
