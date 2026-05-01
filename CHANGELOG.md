@@ -1,9 +1,9 @@
-## [1.26.6](https://github.com/strumok-app/strumok/compare/v1.26.5...v1.26.6) (2026-04-19)
+# [1.28.0](https://github.com/strumok-app/strumok/compare/v1.26.6...v1.28.0) (2026-05-01)
 
 
-### Bug Fixes
+### Features
 
-* reset search page index to 0 and add logging to search provider methods ([5dd1c29](https://github.com/strumok-app/strumok/commit/5dd1c29676b3f1e5dfa9176ff7ab9936a5a412a6))
+* refactor suppliers api, hls stream junk stiping logic ([cfe09a7](https://github.com/strumok-app/strumok/commit/cfe09a7d572c1140d1dbc166663b1ff2976d4a8f))
 
 
 
