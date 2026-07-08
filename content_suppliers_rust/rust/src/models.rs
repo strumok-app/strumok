@@ -52,6 +52,7 @@ pub enum ContentMediaItemSource {
         link: String,
         description: String,
         headers: Option<HashMap<String, String>>,
+        hls_proxy: bool,
     },
     Subtitle {
         link: String,

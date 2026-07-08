@@ -242,12 +242,26 @@ class OfflineContentInfo implements ContentInfo {
 // marker interface
 interface class OfflineContenItemSource {}
 
-class OfflineContentMediaItemSource extends SimpleContentMediaItemSource
-    implements OfflineContenItemSource {
-  const OfflineContentMediaItemSource({
-    required super.description,
-    required super.link,
+class OfflineVideoMediaItemSource extends Equatable
+    implements VideoMediaItemSource, OfflineContenItemSource {
+  @override
+  final String description;
+  @override
+  final Uri link;
+
+  const OfflineVideoMediaItemSource({
+    required this.description,
+    required this.link,
   });
+
+  FileKind get kind => FileKind.video;
+
+  Map<String, String>? get headers => null;
+
+  bool get hlsProxy => false;
+
+  @override
+  List<Object?> get props => [link];
 }
 
 class OfflineMangaMediaItemSource

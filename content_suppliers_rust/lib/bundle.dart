@@ -8,7 +8,7 @@ import 'package:content_suppliers_rust/rust/frb_generated.io.dart';
 import 'package:content_suppliers_rust/rust/models.dart' as models;
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-const compatibleApiVersion = 3;
+const compatibleApiVersion = 4;
 
 // ignore_for_file: invalid_use_of_internal_member
 class RustContentSuppliersBundle implements ContentSupplierBundle {
@@ -73,24 +73,18 @@ class _RustContentSupplier implements ContentSupplier {
   }
 
   @override
-  Future<ContentDetails?> detailsById(
-    String id,
-    Set<ContentLanguage> langs,
-  ) async {
+  Future<ContentDetails?> detailsById(String id) async {
     try {
-      final langsCodes = langs.map((lang) => lang.name).toList();
-
       final result = await _api.crateApiGetContentDetails(
         supplier: name,
         id: id,
-        langs: langsCodes,
       );
 
       if (result == null) {
         return null;
       }
 
-      return _RustContentDetails.fromRust(id, name, langsCodes, result, _api);
+      return _RustContentDetails.fromRust(id, name, result, _api);
     } catch (e) {
       throw ContentSuppliersException(
         "FFI GetContentDetails Failed [suppier=$name id=$id] error: $e",
@@ -181,7 +175,6 @@ extension ContentSearchResultExt on ContentSearchResult {
 // ignore: must_be_immutable
 class _RustContentDetails extends AbstractContentDetails {
   final RustLibApi _api;
-  final List<String> langs;
   final List<String> _params;
   @override
   final MediaType mediaType;
@@ -190,7 +183,6 @@ class _RustContentDetails extends AbstractContentDetails {
   _RustContentDetails._({
     required super.id,
     required super.supplier,
-    required this.langs,
     required super.title,
     required super.secondaryTitle,
     required super.image,
@@ -208,14 +200,12 @@ class _RustContentDetails extends AbstractContentDetails {
   factory _RustContentDetails.fromRust(
     String id,
     String supplier,
-    List<String> langs,
     models.ContentDetails result,
     RustLibApi api,
   ) {
     return _RustContentDetails._(
       id: id,
       supplier: supplier,
-      langs: langs,
       mediaType: MediaType.values.firstWhere(
         (v) => v.name == result.mediaType.name,
         orElse: () => MediaType.video,
@@ -231,7 +221,7 @@ class _RustContentDetails extends AbstractContentDetails {
       mediaItems: result.mediaItems
           ?.mapIndexed(
             (idx, item) =>
-                _RustMediaItem.fromRust(id, supplier, idx, langs, item, api),
+                _RustMediaItem.fromRust(id, supplier, idx, item, api),
           )
           .toSegmentedList(),
       params: result.params,
@@ -246,18 +236,11 @@ class _RustContentDetails extends AbstractContentDetails {
           (await _api.crateApiLoadMediaItems(
                 supplier: supplier,
                 id: id,
-                langs: langs,
                 params: _params,
               ))
               .mapIndexed(
-                (idx, item) => _RustMediaItem.fromRust(
-                  id,
-                  supplier,
-                  idx,
-                  langs,
-                  item,
-                  _api,
-                ),
+                (idx, item) =>
+                    _RustMediaItem.fromRust(id, supplier, idx, item, _api),
               )
               .toSegmentedList();
     } catch (e) {
@@ -271,7 +254,6 @@ class _RustContentDetails extends AbstractContentDetails {
 class _RustMediaItem implements ContentMediaItem {
   final String id;
   final String supplier;
-  final List<String> langs;
   @override
   final int position;
   @override
@@ -288,7 +270,6 @@ class _RustMediaItem implements ContentMediaItem {
   _RustMediaItem._({
     required this.id,
     required this.supplier,
-    required this.langs,
     required this.position,
     required this.title,
     required this.section,
@@ -304,14 +285,12 @@ class _RustMediaItem implements ContentMediaItem {
     String id,
     String supplier,
     int number,
-    List<String> langs,
     models.ContentMediaItem item,
     RustLibApi api,
   ) {
     return _RustMediaItem._(
       id: id,
       supplier: supplier,
-      langs: langs,
       position: number,
       title: item.title,
       section: item.section,
@@ -330,7 +309,6 @@ class _RustMediaItem implements ContentMediaItem {
       return _sources ??= (await _api.crateApiLoadMediaItemSources(
         supplier: supplier,
         id: id,
-        langs: langs,
         params: _params,
       )).map((item) => mapMediaItemSource(id, supplier, item, _api)).toList();
     } catch (e) {
@@ -346,13 +324,14 @@ class _RustMediaItem implements ContentMediaItem {
     models.ContentMediaItemSource item,
     RustLibApi api,
   ) => switch (item) {
-    models.ContentMediaItemSource_Video() => SimpleContentMediaItemSource(
+    models.ContentMediaItemSource_Video() => SimpleVideoMediaItemSource(
       kind: FileKind.video,
       description: item.description,
       link: Uri.parse(item.link),
       headers: item.headers,
+      hlsProxy: item.hlsProxy,
     ),
-    models.ContentMediaItemSource_Subtitle() => SimpleContentMediaItemSource(
+    models.ContentMediaItemSource_Subtitle() => SimpleFileMediaItemSource(
       kind: FileKind.subtitle,
       description: item.description,
       link: Uri.parse(item.link),
@@ -434,7 +413,12 @@ class _CustomRustLib
       defaultExternalLibraryLoaderConfig,
     );
 
-    return initImpl(api: null, handler: null, externalLibrary: externalLibrary);
+    return initImpl(
+      api: null,
+      handler: null,
+      externalLibrary: externalLibrary,
+      forceSameCodegenVersion: false,
+    );
   }
 
   @override

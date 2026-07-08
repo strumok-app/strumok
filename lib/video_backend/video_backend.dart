@@ -99,6 +99,7 @@ abstract class VideoBackend extends ValueNotifier<VideoBackendState> {
     Map<String, String> headers,
     Duration start,
     Set<String>? preferredLanguage,
+    bool hlsProxy = false,
   });
   Widget buildVideoWidget();
 

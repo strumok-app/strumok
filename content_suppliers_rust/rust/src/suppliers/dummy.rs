@@ -28,16 +28,16 @@ impl ContentSupplier for DummyContentSupplier {
         vec!["en".to_owned(), "uk".to_owned()]
     }
 
-    async fn search(&self, query: String, page: u16) -> anyhow::Result<Vec<ContentInfo>> {
+    async fn search(&self, query: &str, page: u16) -> anyhow::Result<Vec<ContentInfo>> {
         Ok(vec![ContentInfo {
-            id: query.clone(),
-            title: query.clone(),
+            id: query.to_string(),
+            title: query.to_string(),
             secondary_title: Some("secondary_dummy_title".to_owned()),
             image: "dummy_image".to_owned(),
         }])
     }
 
-    async fn load_channel(&self, channel: String, page: u16) -> anyhow::Result<Vec<ContentInfo>> {
+    async fn load_channel(&self, channel: &str, page: u16) -> anyhow::Result<Vec<ContentInfo>> {
         Ok(vec![ContentInfo {
             id: format!("{} {}", channel, page),
             title: "dummy_title".to_owned(),
@@ -48,8 +48,7 @@ impl ContentSupplier for DummyContentSupplier {
 
     async fn get_content_details(
         &self,
-        id: String,
-        langs: Vec<String>,
+        id: &str,
     ) -> anyhow::Result<Option<ContentDetails>> {
         if id == "eager_sources" {
             return Ok(Some(ContentDetails {
@@ -71,7 +70,7 @@ impl ContentSupplier for DummyContentSupplier {
                     }]),
                     params: vec![],
                 }]),
-                params: langs,
+                params: vec![id.to_string()],
             }));
         }
 
@@ -98,15 +97,14 @@ impl ContentSupplier for DummyContentSupplier {
 
     async fn load_media_items(
         &self,
-        id: String,
-        _langs: Vec<String>,
+        id: &str,
         params: Vec<String>,
     ) -> anyhow::Result<Vec<ContentMediaItem>> {
         let mut new_params = params;
         new_params.push(String::from("3"));
 
         Ok(vec![ContentMediaItem {
-            title: id,
+            title: id.to_string(),
             section: Some(new_params.join(",")),
             image: Some("dummy_image".to_owned()),
             sources: None,
@@ -116,20 +114,18 @@ impl ContentSupplier for DummyContentSupplier {
 
     async fn load_media_item_sources(
         &self,
-        id: String,
-        _langs: Vec<String>,
+        id: &str,
         params: Vec<String>,
     ) -> Result<Vec<ContentMediaItemSource>, anyhow::Error> {
         if id == "async_manga" {
             return Ok(vec![ContentMediaItemSource::Manga {
-                description: id.clone(),
+                description: id.to_string(),
                 headers: Some(HashMap::from([(
                     "User-Agent".to_owned(),
                     "dummy".to_owned(),
                 )])),
-                page_numbers: 2,
                 pages: None,
-                params: vec![id.clone()],
+                params: vec![id.to_string()],
             }]);
         }
 
@@ -141,6 +137,7 @@ impl ContentSupplier for DummyContentSupplier {
                     "User-Agent".to_owned(),
                     "dummy".to_owned(),
                 )])),
+                hls_proxy: false,
             },
             ContentMediaItemSource::Subtitle {
                 link: "http://dummy_link".to_owned(),
@@ -156,7 +153,6 @@ impl ContentSupplier for DummyContentSupplier {
                     "User-Agent".to_owned(),
                     "dummy".to_owned(),
                 )])),
-                page_numbers: 2,
                 pages: Some(vec!["http://page1".to_owned(), "http://page2".to_owned()]),
                 params: vec![],
             },

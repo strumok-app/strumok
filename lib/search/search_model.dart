@@ -16,16 +16,16 @@ class SuppliersSearchResults {
     this.hasMore = false,
     this.isLoading = false,
     this.results = const [],
-    this.page = 1,
+    this.page = 0,
   });
 
   SuppliersSearchResults loadingNew(String query) {
     return copyWith(
-      isLoading: true,
+      isLoading: false,
       query: query,
       hasMore: true,
       results: [],
-      page: 1,
+      page: 0,
     );
   }
 

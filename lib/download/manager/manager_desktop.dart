@@ -36,7 +36,7 @@ class DownloadManagerDesktop implements DownloadManager {
     final task = DownloadTask(req);
     _requests.add(req);
     _downloads[req.id] = task;
-    _downloadsUpdate.sink.add(task);
+    _downloadsUpdate.add(task);
 
     _startExecution();
 
@@ -47,7 +47,9 @@ class DownloadManagerDesktop implements DownloadManager {
   void cancel(String id) {
     _requests.removeWhere((it) => it.id == id);
     final task = _downloads.remove(id);
+
     if (task != null) {
+      _downloadsUpdate.add(task);
       task.cancel();
     }
   }

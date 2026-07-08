@@ -10,7 +10,7 @@ crate-type = ["cdylib", "staticlib"]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
 
 [dependencies]
-flutter_rust_bridge = "=2.10.0"
+flutter_rust_bridge = "=2.12.0"
 anyhow = "1.0.102"
 enum_dispatch = "0.3.13"
 strum = { version = "0.28.0", features = ["strum_macros"] }

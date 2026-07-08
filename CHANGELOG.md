@@ -1,10 +1,9 @@
-## [1.26.4](https://github.com/strumok-app/strumok/compare/v1.26.2...v1.26.4) (2026-04-16)
+# [1.28.0](https://github.com/strumok-app/strumok/compare/v1.26.6...v1.28.0) (2026-05-01)
 
 
-### Bug Fixes
+### Features
 
-*  android layout safe zones ([2e2e862](https://github.com/strumok-app/strumok/commit/2e2e86292f338d944acb0d3eb03ab95be90960a3))
-* media item list safe zone ([cc6e681](https://github.com/strumok-app/strumok/commit/cc6e681205141fef0b0d787c82f6fb30f632a3e0))
+* refactor suppliers api, hls stream junk stiping logic ([cfe09a7](https://github.com/strumok-app/strumok/commit/cfe09a7d572c1140d1dbc166663b1ff2976d4a8f))
 
 
 

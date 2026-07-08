@@ -7,6 +7,7 @@ import 'package:content_suppliers_api/model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/trace.dart';
 
 part 'search_provider.g.dart';
@@ -50,6 +51,8 @@ class SupplierSearch extends _$SupplierSearch {
       return [];
     }
 
+    logger.info("Loading search results: ${state.supplierName} ${state.query}");
+
     state = state.copyWith(isLoading: true);
 
     final page = state.page + 1;
@@ -68,6 +71,9 @@ class SupplierSearch extends _$SupplierSearch {
       return [];
     }
 
+    logger.info(
+      "Loaded search results: ${supplierResults.length} for ${state.supplierName} ${state.query}",
+    );
     state = state.addPage(supplierResults, page);
 
     return supplierResults;

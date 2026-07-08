@@ -49,6 +49,7 @@ void donwloadFile(
     final httpReq = Request('GET', Uri.parse(request.url));
     httpReq.headers.addAll(headers);
 
+    logger.info("downloading file for request: $request");
     final res = await Client().send(httpReq).timeout(httpTimeout);
 
     if (res.statusCode != HttpStatus.partialContent &&

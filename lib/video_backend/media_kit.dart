@@ -9,6 +9,7 @@ import 'package:media_kit_video/media_kit_video_controls/media_kit_video_control
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/text.dart';
+import 'package:strumok/video_backend/hls_proxy_server.dart';
 import 'package:strumok/video_backend/video_backend.dart';
 import 'package:strumok/video_backend/tracks.dart';
 
@@ -18,12 +19,16 @@ class MediaKitVideoBackend extends VideoBackend {
   final List<StreamSubscription> _streamSubscriptions = [];
   final List<StreamSubscription> _initializationStreamSubscriptions = [];
 
+  final HLSProxyServer _hlsProxyServer = HLSProxyServer(port: 16888);
+
   static void registerWith() {
     media_kit.MediaKit.ensureInitialized();
   }
 
   @override
   Future<void> dispose() async {
+    _hlsProxyServer.stop();
+
     if (_player == null) {
       return;
     }
@@ -47,9 +52,15 @@ class MediaKitVideoBackend extends VideoBackend {
     Map<String, String>? headers,
     Duration? start,
     Set<String>? preferredLanguage,
+    bool hlsProxy = false,
   }) async {
     if (_player != null) {
       throw StateError("Video backend already initialized");
+    }
+
+    if (hlsProxy) {
+      link = _hlsProxyServer.masterUrl(link);
+      await _hlsProxyServer.start();
     }
 
     final player = media_kit.Player(

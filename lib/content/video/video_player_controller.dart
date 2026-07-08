@@ -253,12 +253,12 @@ class VideoPlayerController {
       final videos = sources.where((s) => s.kind == FileKind.video).toList();
 
       var video = _currentSourceName == null
-          ? videos.firstOrNull as MediaFileItemSource?
+          ? videos.firstOrNull as VideoMediaItemSource?
           : videos.firstWhereOrNull((s) => s.description == _currentSourceName)
-                as MediaFileItemSource?;
+                as VideoMediaItemSource?;
 
       if (video == null && _currentSourceName != null) {
-        video = videos.firstOrNull as MediaFileItemSource?;
+        video = videos.firstOrNull as VideoMediaItemSource?;
       }
 
       if (video == null) {
@@ -308,10 +308,9 @@ class VideoPlayerController {
         start: Duration(seconds: start),
         preferredLanguage: {
           if (AppPreferences.userLanguage != null) AppPreferences.userLanguage!,
-          if (AppPreferences.selectedContentLanguageCodes != null)
-            ...AppPreferences.selectedContentLanguageCodes!,
           "en",
         },
+        hlsProxy: video.hlsProxy,
       );
 
       if (_disposed ||
@@ -457,7 +456,7 @@ class VideoPlayerController {
 
     final subtitle =
         subtitles.firstWhereOrNull((s) => s.description == _currentSubtitleName)
-            as MediaFileItemSource?;
+            as FileMediaItemSource?;
 
     if (subtitle == null) {
       subtitleController.value = AsyncValue.data(null);
