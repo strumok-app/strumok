@@ -396,4 +396,17 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get equalizerBandTreble => 'Високі';
+
+  @override
+  String get aiSearchTitle => 'Пошук AI';
+
+  @override
+  String get aiSearchClearChat => 'Очистити чат';
+
+  @override
+  String get aiSearchHint =>
+      'Запитайте про фільми, телепередачі, аніме та мангу';
+
+  @override
+  String get aiSearchEmpty => 'Почніть розмову';
 }

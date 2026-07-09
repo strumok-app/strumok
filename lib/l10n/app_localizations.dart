@@ -847,6 +847,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Treble'**
   String get equalizerBandTreble;
+
+  /// No description provided for @aiSearchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Search'**
+  String get aiSearchTitle;
+
+  /// No description provided for @aiSearchClearChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Chat'**
+  String get aiSearchClearChat;
+
+  /// No description provided for @aiSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask about movies, TV Shows, Anime and manga'**
+  String get aiSearchHint;
+
+  /// No description provided for @aiSearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a conversation'**
+  String get aiSearchEmpty;
 }
 
 class _AppLocalizationsDelegate

@@ -397,4 +397,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get equalizerBandTreble => 'Treble';
+
+  @override
+  String get aiSearchTitle => 'AI Search';
+
+  @override
+  String get aiSearchClearChat => 'Clear Chat';
+
+  @override
+  String get aiSearchHint => 'Ask about movies, TV Shows, Anime and manga';
+
+  @override
+  String get aiSearchEmpty => 'Start a conversation';
 }
