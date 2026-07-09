@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/text.dart';
 import 'package:strumok/utils/trace.dart';
 
 part 'search_provider.g.dart';
@@ -24,59 +25,102 @@ class Search extends _$Search {
   @override
   SearchState build() => SearchState.empty;
 
-  void loading(Set<String> suppliers) {
-    state = SearchState.loading(suppliers);
-  }
+  Future<void> search(String query) async {
+    query = cleanupQuery(query);
 
-  void done(bool hasResults) {
+    if (query.isEmpty) {
+      return;
+    }
+
+    final contentSuppliers = ref.read(enabledSearchSuppliersNamesProvider);
+
+    state = SearchState.loading(query, contentSuppliers);
+
+    final futures = contentSuppliers
+        .map((suppliersName) => _searchSupplierInitial(suppliersName, query))
+        .toList();
+
+    final results = await Future.wait(futures);
+
+    final hasResults = results.any((r) => r.hasResults);
+
     state = state.done(hasResults);
   }
-}
 
-@Riverpod(keepAlive: true)
-class SupplierSearch extends _$SupplierSearch {
-  @override
-  SuppliersSearchResults build(String suppliersName) {
-    return SuppliersSearchResults(supplierName: suppliersName);
+  Future<SuppliersSearchResults> _searchSupplierInitial(
+    String supplierName,
+    String query,
+  ) async {
+    final init = SuppliersSearchResults.loadingNew();
+    state = state.setSupplierResults(supplierName, init);
+
+    try {
+      final supplierResults = await ContentSuppliers().search(
+        supplierName,
+        query,
+        1,
+      );
+
+      final updated = init.addPage(supplierResults, 1);
+      state = state.setSupplierResults(supplierName, updated);
+      return updated;
+    } catch (e, stackTrace) {
+      traceError(
+        error: e,
+        stackTrace: stackTrace,
+        message: "Failed to load search results: $supplierName $query",
+      );
+      final updated = init.copyWith(isLoading: false, hasMore: false);
+      state = state.setSupplierResults(supplierName, updated);
+      return updated;
+    }
   }
 
-  Future<List<ContentInfo>> search(String query) async {
-    state = state.loadingNew(query);
+  Future<List<ContentInfo>> loadNext(String supplierName) async {
+    final current =
+        state.supplierResults[supplierName] ??
+        SuppliersSearchResults.loadingNew();
 
-    return loadNext();
-  }
-
-  Future<List<ContentInfo>> loadNext() async {
-    if (!state.hasMore || state.isLoading || state.query == null) {
+    if (!current.hasMore || current.isLoading || state.query == null) {
       return [];
     }
 
-    logger.info("Loading search results: ${state.supplierName} ${state.query}");
+    logger.info("Loading search results: ${supplierName} ${state.query}");
 
-    state = state.copyWith(isLoading: true);
+    state = state.setSupplierResults(
+      supplierName,
+      current.copyWith(isLoading: true),
+    );
 
-    final page = state.page + 1;
-    List<ContentInfo> supplierResults;
+    final page = current.page + 1;
     try {
-      supplierResults = await ContentSuppliers().search(
-        state.supplierName,
+      final supplierResults = await ContentSuppliers().search(
+        supplierName,
         state.query!,
         page,
       );
+
+      logger.info(
+        "Loaded search results: ${supplierResults.length} for ${supplierName} ${state.query}",
+      );
+
+      final updated = current.addPage(supplierResults, page);
+      state = state.setSupplierResults(supplierName, updated);
+
+      return supplierResults;
     } catch (e, stackTrace) {
-      final msg =
-          "Failed to load search results: ${state.supplierName} ${state.query}";
-      traceError(error: e, stackTrace: stackTrace, message: msg);
-      state = state.copyWith(isLoading: false, hasMore: false);
+      traceError(
+        error: e,
+        stackTrace: stackTrace,
+        message:
+            "Failed to load search results: ${supplierName} ${state.query}",
+      );
+      state = state.setSupplierResults(
+        supplierName,
+        current.copyWith(isLoading: false, hasMore: false),
+      );
       return [];
     }
-
-    logger.info(
-      "Loaded search results: ${supplierResults.length} for ${state.supplierName} ${state.query}",
-    );
-    state = state.addPage(supplierResults, page);
-
-    return supplierResults;
   }
 }
 

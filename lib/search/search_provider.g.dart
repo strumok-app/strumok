@@ -83,7 +83,7 @@ final class SearchProvider extends $NotifierProvider<Search, SearchState> {
   }
 }
 
-String _$searchHash() => r'41470ba87684667f9dd8198e4f0b27f2ba57364f';
+String _$searchHash() => r'501adde69d1c03461f83c24ad49a523ddd219337';
 
 abstract class _$Search extends $Notifier<SearchState> {
   SearchState build();
@@ -100,104 +100,6 @@ abstract class _$Search extends $Notifier<SearchState> {
               Object?
             >;
     element.handleCreate(ref, build);
-  }
-}
-
-@ProviderFor(SupplierSearch)
-final supplierSearchProvider = SupplierSearchFamily._();
-
-final class SupplierSearchProvider
-    extends $NotifierProvider<SupplierSearch, SuppliersSearchResults> {
-  SupplierSearchProvider._({
-    required SupplierSearchFamily super.from,
-    required String super.argument,
-  }) : super(
-         retry: null,
-         name: r'supplierSearchProvider',
-         isAutoDispose: false,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
-
-  @override
-  String debugGetCreateSourceHash() => _$supplierSearchHash();
-
-  @override
-  String toString() {
-    return r'supplierSearchProvider'
-        ''
-        '($argument)';
-  }
-
-  @$internal
-  @override
-  SupplierSearch create() => SupplierSearch();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(SuppliersSearchResults value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<SuppliersSearchResults>(value),
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is SupplierSearchProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
-}
-
-String _$supplierSearchHash() => r'25f3d612921e9a0e411e79b50e6d2666fcb4fbef';
-
-final class SupplierSearchFamily extends $Family
-    with
-        $ClassFamilyOverride<
-          SupplierSearch,
-          SuppliersSearchResults,
-          SuppliersSearchResults,
-          SuppliersSearchResults,
-          String
-        > {
-  SupplierSearchFamily._()
-    : super(
-        retry: null,
-        name: r'supplierSearchProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: false,
-      );
-
-  SupplierSearchProvider call(String suppliersName) =>
-      SupplierSearchProvider._(argument: suppliersName, from: this);
-
-  @override
-  String toString() => r'supplierSearchProvider';
-}
-
-abstract class _$SupplierSearch extends $Notifier<SuppliersSearchResults> {
-  late final _$args = ref.$arg as String;
-  String get suppliersName => _$args;
-
-  SuppliersSearchResults build(String suppliersName);
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final ref =
-        this.ref as $Ref<SuppliersSearchResults, SuppliersSearchResults>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<SuppliersSearchResults, SuppliersSearchResults>,
-              SuppliersSearchResults,
-              Object?,
-              Object?
-            >;
-    element.handleCreate(ref, () => build(_$args));
   }
 }
 

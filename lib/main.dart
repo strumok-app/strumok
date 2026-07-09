@@ -37,6 +37,10 @@ void main() async {
     Logger.root.activateLogcat();
   } else {
     Logger.root.onRecord.listen((record) {
+      if (record.loggerName.startsWith('GoogleAI')) {
+        return; // Skip logging for GoogleAI spam
+      }
+
       var msg = "${record.level.name}: ${record.time}: ${record.message}";
       if (record.error != null) {
         msg += "\n${record.error}\n${record.stackTrace}";

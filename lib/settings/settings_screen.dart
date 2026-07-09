@@ -6,8 +6,6 @@ import 'package:strumok/settings/app_version/app_version_settings.dart';
 import 'package:strumok/settings/floating_video_switcher.dart';
 import 'package:strumok/settings/ai_search.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_settings.dart';
-import 'package:strumok/settings/brightness_switcher.dart';
-import 'package:strumok/settings/color_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:strumok/settings/user_language.dart';
 import 'package:strumok/settings/offline_storage_directory.dart';

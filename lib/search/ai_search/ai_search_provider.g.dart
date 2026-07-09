@@ -82,7 +82,7 @@ final class AIChatProvider extends $NotifierProvider<AIChat, AIChatState> {
   }
 }
 
-String _$aIChatHash() => r'264ce318c8cb209d47462dadd9fd0deea8f5d0f8';
+String _$aIChatHash() => r'f473b7964f501dc7f240f09e0dacdb23e7179104';
 
 abstract class _$AIChat extends $Notifier<AIChatState> {
   AIChatState build();

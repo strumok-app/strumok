@@ -42,9 +42,14 @@ class SupplierSearchResultsItems extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchResults = ref.watch(supplierSearchProvider(supplier));
-    final results = searchResults.results;
+    final searchState = ref.watch(
+      searchProvider.select((state) => state.supplierResults[supplier]),
+    );
+    if (searchState == null) {
+      return SizedBox.shrink();
+    }
 
+    final results = searchState.results;
     if (results.isEmpty) {
       return SizedBox.shrink();
     }
@@ -57,13 +62,11 @@ class SupplierSearchResultsItems extends ConsumerWidget {
         return ContentInfoCard(contentInfo: item, showSupplier: false);
       },
       itemCount: results.length,
-      trailing: searchResults.hasMore
+      trailing: searchState.hasMore
           ? LoadMoreItems(
               label: AppLocalizations.of(context)!.searchMore,
-              onTap: () => ref
-                  .read(supplierSearchProvider(supplier).notifier)
-                  .loadNext(),
-              loading: searchResults.isLoading,
+              onTap: () => ref.read(searchProvider.notifier).loadNext(supplier),
+              loading: searchState.isLoading,
             )
           : null,
     );

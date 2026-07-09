@@ -41,7 +41,7 @@ final class SuppliersSettingsProvider
   }
 }
 
-String _$suppliersSettingsHash() => r'11b82c203b8f917db0e2d695af61416fb450cd4e';
+String _$suppliersSettingsHash() => r'5b2bdac0e64b08b9349d0c0d6f91ed64fa1d0ef7';
 
 abstract class _$SuppliersSettings extends $Notifier<SuppliersSettingsModel> {
   SuppliersSettingsModel build();

@@ -22,6 +22,7 @@ class _AISearchSettingsState extends ConsumerState<AISearchSettings> {
 
   @override
   Widget build(BuildContext context) {
+    final currentToken = ref.watch(geminiApiTokenProvider) ?? "";
     final aiSearchEnabled = ref.watch(aiSearchEnabledProvider);
 
     return Column(
@@ -61,44 +62,67 @@ class _AISearchSettingsState extends ConsumerState<AISearchSettings> {
                 ),
               ],
             ),
-            section: TextField(
-              controller: _textController,
-              onSubmitted: (value) {
-                value = value.trim();
-                ref
-                    .read(geminiApiTokenProvider.notifier)
-                    .set(value.isEmpty ? null : value);
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.only(right: 4.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          _textController.clear();
-                          ref.read(geminiApiTokenProvider.notifier).set(null);
-                        },
-                        icon: Icon(Icons.delete),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          final value = _textController.text.trim();
-                          ref
-                              .read(geminiApiTokenProvider.notifier)
-                              .set(value.isEmpty ? null : value);
-                        },
-                        icon: Icon(Icons.check),
-                      ),
-                    ],
+            section: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _textController,
+                    onSubmitted: (value) {
+                      value = value.trim();
+                      ref
+                          .read(geminiApiTokenProvider.notifier)
+                          .set(value.isEmpty ? null : value);
+                    },
                   ),
                 ),
-              ),
+                ValueListenableBuilder(
+                  valueListenable: _textController,
+                  builder: (context, value, child) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: _getEditButtons(value.text, currentToken),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
       ],
     );
+  }
+
+  List<Widget> _getEditButtons(String editingToken, String currentToken) {
+    if (editingToken != currentToken)
+      return [
+        IconButton(
+          onPressed: () {
+            _textController.value = TextEditingValue(text: currentToken);
+          },
+          icon: Icon(Icons.close),
+        ),
+        IconButton(
+          onPressed: () {
+            final value = _textController.text.trim();
+            ref
+                .read(geminiApiTokenProvider.notifier)
+                .set(value.isEmpty ? null : value);
+          },
+          icon: Icon(Icons.check),
+        ),
+      ];
+
+    if (editingToken.isNotEmpty)
+      return [
+        IconButton(
+          onPressed: () {
+            _textController.clear();
+            ref.read(geminiApiTokenProvider.notifier).set(null);
+          },
+          icon: Icon(Icons.delete),
+        ),
+      ];
+
+    return [];
   }
 }

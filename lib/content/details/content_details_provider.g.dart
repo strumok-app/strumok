@@ -64,7 +64,7 @@ final class DetailsProvider
   }
 }
 
-String _$detailsHash() => r'2823e9708423ac995a0885c9052c225d823f5f12';
+String _$detailsHash() => r'1a379dce24bd0f5c04eb3bfa3598dc3319d70e9c';
 
 final class DetailsFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<ContentDetails>, (String, String)> {

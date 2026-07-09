@@ -124,5 +124,9 @@
     "equalizerBandLowMid": "Low Mid",
     "equalizerBandMid": "Mid",
     "equalizerBandHighMid": "High Mid",
-    "equalizerBandTreble": "Treble"
+    "equalizerBandTreble": "Treble",
+    "aiSearchTitle": "AI Search",
+    "aiSearchClearChat": "Clear Chat",
+    "aiSearchHint": "Ask about movies, TV Shows, Anime and manga",
+    "aiSearchEmpty": "Start a conversation"
 }

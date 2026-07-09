@@ -51,8 +51,6 @@ void openMediaItemsList(
     barrierLabel: "media_items_list",
     barrierDismissible: true,
     barrierColor: Colors.transparent,
-    barrierDismissible: true,
-    barrierLabel: "MediaItemsList",
   );
 }
 

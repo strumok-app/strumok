@@ -124,5 +124,9 @@
     "equalizerBandLowMid": "Низькі середні",
     "equalizerBandMid": "Середні",
     "equalizerBandHighMid": "Високі середні",
-    "equalizerBandTreble": "Високі"
+    "equalizerBandTreble": "Високі",
+    "aiSearchTitle": "Пошук AI",
+    "aiSearchClearChat": "Очистити чат",
+    "aiSearchHint": "Запитайте про фільми, телепередачі, аніме та мангу",
+    "aiSearchEmpty": "Почніть розмову"
 }

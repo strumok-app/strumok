@@ -3,26 +3,21 @@ import 'package:flutter/material.dart';
 
 @immutable
 class SuppliersSearchResults {
-  final String supplierName;
-  final String? query;
   final bool hasMore;
   final bool isLoading;
   final List<ContentInfo> results;
   final int page;
 
   const SuppliersSearchResults({
-    required this.supplierName,
-    this.query,
     this.hasMore = false,
     this.isLoading = false,
     this.results = const [],
     this.page = 0,
   });
 
-  SuppliersSearchResults loadingNew(String query) {
-    return copyWith(
+  factory SuppliersSearchResults.loadingNew() {
+    return SuppliersSearchResults(
       isLoading: false,
-      query: query,
       hasMore: true,
       results: [],
       page: 0,
@@ -43,14 +38,11 @@ class SuppliersSearchResults {
 
   SuppliersSearchResults copyWith({
     bool? hasMore,
-    String? query,
     bool? isLoading,
     List<ContentInfo>? results,
     int? page,
   }) {
     return SuppliersSearchResults(
-      supplierName: supplierName,
-      query: query ?? this.query,
       hasMore: hasMore ?? this.hasMore,
       isLoading: isLoading ?? this.isLoading,
       results: results ?? this.results,
@@ -63,31 +55,55 @@ class SuppliersSearchResults {
 
 @immutable
 class SearchState {
+  final String? query;
   final bool isLoading;
   final bool isDone;
   final Set<String> suppliers;
   final bool hasResults;
+  final Map<String, SuppliersSearchResults> supplierResults;
 
   const SearchState({
+    this.query,
     this.isLoading = false,
     this.isDone = false,
     this.suppliers = const {},
     this.hasResults = false,
+    this.supplierResults = const {},
   });
 
   static const SearchState empty = SearchState();
 
-  const SearchState.loading(this.suppliers)
+  const SearchState.loading(this.query, this.suppliers)
     : isLoading = true,
       hasResults = true,
-      isDone = false;
+      isDone = false,
+      supplierResults = const {};
 
   SearchState done(bool hasResults) {
+    return copyWith(isLoading: false, isDone: true, hasResults: hasResults);
+  }
+
+  SearchState copyWith({
+    String? query,
+    bool? isLoading,
+    bool? isDone,
+    Set<String>? suppliers,
+    bool? hasResults,
+    Map<String, SuppliersSearchResults>? supplierResults,
+  }) {
     return SearchState(
-      isLoading: false,
-      hasResults: hasResults,
-      isDone: true,
-      suppliers: suppliers,
+      query: query ?? this.query,
+      isLoading: isLoading ?? this.isLoading,
+      isDone: isDone ?? this.isDone,
+      suppliers: suppliers ?? this.suppliers,
+      hasResults: hasResults ?? this.hasResults,
+      supplierResults: supplierResults ?? this.supplierResults,
     );
+  }
+
+  SearchState setSupplierResults(String name, SuppliersSearchResults value) {
+    final newMap = Map<String, SuppliersSearchResults>.from(supplierResults);
+    newMap[name] = value;
+    return copyWith(supplierResults: newMap);
   }
 }
