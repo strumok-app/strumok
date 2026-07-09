@@ -24,7 +24,6 @@ void openAISearchPanel(BuildContext context) {
     transitionDuration: Duration(milliseconds: 500),
     barrierLabel: "ai_search_panel",
     barrierDismissible: true,
-    barrierColor: Colors.transparent,
   );
 }
 
@@ -40,12 +39,13 @@ class _AISearchPanel extends ConsumerWidget {
     const radius = Radius.circular(16);
 
     return Container(
-      padding: mobile ? EdgeInsets.zero : const EdgeInsets.all(8.0),
+      padding: mobile
+          ? EdgeInsets.zero
+          : const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       width: mobile ? double.infinity : 460,
       height: size.height,
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        border: Border.all(color: theme.colorScheme.outline),
         borderRadius: BorderRadius.only(
           topLeft: mobile ? Radius.zero : radius,
           bottomLeft: mobile ? Radius.zero : radius,
