@@ -408,4 +408,13 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get aiSearchEmpty => 'Почніть розмову';
+
+  @override
+  String get settingsAiSearchGeminiApiToken => 'Gemini API Token';
+
+  @override
+  String get settingsAiSearchGet => 'Отримати';
+
+  @override
+  String get settingsAiSearchTokenHint => 'Введіть ваш API token';
 }

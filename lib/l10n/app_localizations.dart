@@ -871,6 +871,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start a conversation'**
   String get aiSearchEmpty;
+
+  /// No description provided for @settingsAiSearchGeminiApiToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Gemini API Token'**
+  String get settingsAiSearchGeminiApiToken;
+
+  /// No description provided for @settingsAiSearchGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Get'**
+  String get settingsAiSearchGet;
+
+  /// No description provided for @settingsAiSearchTokenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your API token'**
+  String get settingsAiSearchTokenHint;
 }
 
 class _AppLocalizationsDelegate

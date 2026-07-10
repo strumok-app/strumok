@@ -409,4 +409,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiSearchEmpty => 'Start a conversation';
+
+  @override
+  String get settingsAiSearchGeminiApiToken => 'Gemini API Token';
+
+  @override
+  String get settingsAiSearchGet => 'Get';
+
+  @override
+  String get settingsAiSearchTokenHint => 'Enter your API token';
 }

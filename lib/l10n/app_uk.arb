@@ -128,5 +128,8 @@
     "aiSearchTitle": "Пошук AI",
     "aiSearchClearChat": "Очистити чат",
     "aiSearchHint": "Запитайте про фільми, серфіли та аніме",
-    "aiSearchEmpty": "Почніть розмову"
+    "aiSearchEmpty": "Почніть розмову",
+    "settingsAiSearchGeminiApiToken": "Gemini API Token",
+    "settingsAiSearchGet": "Отримати",
+    "settingsAiSearchTokenHint": "Введіть ваш API token"
 }

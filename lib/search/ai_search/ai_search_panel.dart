@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:strumok/app_localizations.dart';
@@ -109,12 +110,28 @@ class _AIPanelInput extends ConsumerStatefulWidget {
   ConsumerState<_AIPanelInput> createState() => _AIPanelInputState();
 }
 
+class _SubmitMessageIntent extends Intent {
+  const _SubmitMessageIntent();
+}
+
 class _AIPanelInputState extends ConsumerState<_AIPanelInput> {
   final _textController = TextEditingController();
+  final _focusNode = FocusNode();
+
+  void _submitMessage() {
+    final text = _textController.text.trim();
+    if (text.isEmpty) {
+      return;
+    }
+
+    ref.read(aIChatProvider.notifier).sendMessage(text);
+    _textController.clear();
+  }
 
   @override
   void dispose() {
     _textController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -125,56 +142,68 @@ class _AIPanelInputState extends ConsumerState<_AIPanelInput> {
       aIChatProvider.select((state) => state.isLoading),
     );
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.outlineVariant),
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              keyboardType: TextInputType.multiline,
-              minLines: 1,
-              maxLines: null,
-              controller: _textController,
-              decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.aiSearchHint,
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-              ),
-              onSubmitted: (value) {
-                if (isLoading) return;
-                ref
-                    .read(aIChatProvider.notifier)
-                    .sendMessage(_textController.text);
-                _textController.clear();
-              },
-            ),
+    return Shortcuts(
+      shortcuts: {
+        const SingleActivator(LogicalKeyboardKey.enter, shift: true):
+            const _SubmitMessageIntent(),
+      },
+      child: Actions(
+        actions: {
+          _SubmitMessageIntent: CallbackAction<_SubmitMessageIntent>(
+            onInvoke: (_) {
+              if (!isLoading) {
+                _submitMessage();
+              }
+              return null;
+            },
           ),
-
-          const SizedBox(width: 12.0),
-
-          isLoading
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(),
-                )
-              : IconButton(
-                  onPressed: () {
-                    ref
-                        .read(aIChatProvider.notifier)
-                        .sendMessage(_textController.text);
-                    _textController.clear();
-                  },
-                  icon: const Icon(Icons.send_rounded),
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          decoration: BoxDecoration(
+            border: Border.all(color: theme.colorScheme.outlineVariant),
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  focusNode: _focusNode,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
+                  minLines: 1,
+                  maxLines: null,
+                  controller: _textController,
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.aiSearchHint,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                  ),
                 ),
-        ],
+              ),
+
+              const SizedBox(width: 12.0),
+
+              isLoading
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(),
+                    )
+                  : IconButton(
+                      onPressed: () {
+                        if (!isLoading) {
+                          _submitMessage();
+                        }
+                      },
+                      icon: const Icon(Icons.send_rounded),
+                    ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -352,7 +381,7 @@ class _ModelMessageBubble extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (message.description.isNotEmpty)
-                Text(
+                SelectableText(
                   message.description,
                   style: TextStyle(
                     color: theme.colorScheme.onSurface,

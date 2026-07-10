@@ -128,5 +128,8 @@
     "aiSearchTitle": "AI Search",
     "aiSearchClearChat": "Clear Chat",
     "aiSearchHint": "Ask about Movies and Anime",
-    "aiSearchEmpty": "Start a conversation"
+    "aiSearchEmpty": "Start a conversation",
+    "settingsAiSearchGeminiApiToken": "Gemini API Token",
+    "settingsAiSearchGet": "Get",
+    "settingsAiSearchTokenHint": "Enter your API token"
 }
