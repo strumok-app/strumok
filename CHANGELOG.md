@@ -1,9 +1,9 @@
-# [1.28.0](https://github.com/strumok-app/strumok/compare/v1.26.6...v1.28.0) (2026-05-01)
+# [1.29.0](https://github.com/strumok-app/strumok/compare/v1.28.0...v1.29.0) (2026-07-10)
 
 
 ### Features
 
-* refactor suppliers api, hls stream junk stiping logic ([cfe09a7](https://github.com/strumok-app/strumok/commit/cfe09a7d572c1140d1dbc166663b1ff2976d4a8f))
+* ai search panel ([512c11c](https://github.com/strumok-app/strumok/commit/512c11c9bcca5bbcfd7db695db703837130ace78))
 
 
 
