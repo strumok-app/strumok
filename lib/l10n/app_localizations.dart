@@ -889,6 +889,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter your API token'**
   String get settingsAiSearchTokenHint;
+
+  /// No description provided for @aiSearchUnavailableTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your Gemini API token in settings to enable AI Search'**
+  String get aiSearchUnavailableTooltip;
 }
 
 class _AppLocalizationsDelegate

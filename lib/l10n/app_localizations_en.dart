@@ -418,4 +418,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAiSearchTokenHint => 'Enter your API token';
+
+  @override
+  String get aiSearchUnavailableTooltip =>
+      'Set your Gemini API token in settings to enable AI Search';
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:strumok/app_localizations.dart';
 import 'package:strumok/search/ai_search/ai_search_panel.dart';
 import 'package:strumok/search/ai_search/ai_search_provider.dart';
 
@@ -10,9 +11,13 @@ class AISearchButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final aiSearchAvaliable = ref.watch(isAISearchAvaliableProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     if (!aiSearchAvaliable) {
-      return const SizedBox.shrink();
+      return Tooltip(
+        message: l10n.aiSearchUnavailableTooltip,
+        child: IconButton(onPressed: null, icon: Icon(Symbols.chat_bubble)),
+      );
     }
 
     return IconButton(

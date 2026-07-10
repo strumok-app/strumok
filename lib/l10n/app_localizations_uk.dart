@@ -417,4 +417,8 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settingsAiSearchTokenHint => 'Введіть ваш API token';
+
+  @override
+  String get aiSearchUnavailableTooltip =>
+      'Встановіть свій Gemini API token у налаштуваннях, щоб увімкнути AI Search';
 }
