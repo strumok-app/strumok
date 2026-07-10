@@ -9,8 +9,9 @@ import 'package:strumok/utils/visual.dart';
 void openAISearchPanel(BuildContext context) {
   showGeneralDialog(
     context: context,
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        Align(alignment: Alignment.centerRight, child: _AISearchPanel()),
+    pageBuilder: (context, animation, secondaryAnimation) => SafeArea(
+      child: Align(alignment: Alignment.centerRight, child: _AISearchPanel()),
+    ),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(1.0, 0.0);
       const end = Offset.zero;
