@@ -127,7 +127,7 @@
     "equalizerBandTreble": "Високі",
     "aiSearchTitle": "Пошук AI",
     "aiSearchClearChat": "Очистити чат",
-    "aiSearchHint": "Запитайте про фільми, серфіли та аніме",
+    "aiSearchHint": "Запитайте про фільми або аніме",
     "aiSearchEmpty": "Почніть розмову",
     "settingsAiSearchGeminiApiToken": "Gemini API Token",
     "settingsAiSearchGet": "Отримати",
