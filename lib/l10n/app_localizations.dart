@@ -863,7 +863,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiSearchHint.
   ///
   /// In en, this message translates to:
-  /// **'Ask about movies, TV Shows, Anime and manga'**
+  /// **'Ask about Movies and Anime'**
   String get aiSearchHint;
 
   /// No description provided for @aiSearchEmpty.

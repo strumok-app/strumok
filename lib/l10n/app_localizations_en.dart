@@ -405,7 +405,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiSearchClearChat => 'Clear Chat';
 
   @override
-  String get aiSearchHint => 'Ask about movies, TV Shows, Anime and manga';
+  String get aiSearchHint => 'Ask about Movies and Anime';
 
   @override
   String get aiSearchEmpty => 'Start a conversation';
