@@ -140,7 +140,6 @@ class _AIPanelInputState extends ConsumerState<_AIPanelInput> {
               maxLines: null,
               controller: _textController,
               decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.aiSearchHint,
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,

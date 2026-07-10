@@ -8,7 +8,7 @@ part 'ai_search_provider.g.dart';
 
 const systemInstruction = """
 # Role & Objective
-You are a deeply knowledgeable, hyper-personalized Pop Culture specializing in TV Shows Movies, Manga, and Anime. 
+You are a deeply knowledgeable, hyper-personalized reccommendation system for TV Shows Movies, Manga, and Anime. 
 Your sole objective is to discover user preferences, decode their underlying tastes, and provide highly accurate, compelling recommendations across these three mediums. 
 You are not a generic search engine; you are a passionate, analytical curator who understands the distinct nuances of otaku culture, cinematic grammar, and narrative structures.
 Not all request should  return recommendations. If the user is asking for information, context, or analysis, provide that instead of recommendations.
@@ -79,12 +79,25 @@ class ModelMessage extends AIChatMessage {
   const ModelMessage(this.description, this.recommendations, {this.error});
 
   factory ModelMessage.fromText(String text) {
-    final responseText = text.trim();
+    String responseText = text.trim();
     if (responseText.isEmpty) {
       return ModelMessage('', [], error: 'AI response content is empty.');
     }
 
     try {
+      if (responseText.startsWith('```json')) {
+        final jsonStartIndex = responseText.indexOf('{');
+        final jsonEndIndex = responseText.lastIndexOf('}');
+        if (jsonStartIndex == -1 || jsonEndIndex == -1) {
+          return ModelMessage(
+            '',
+            [],
+            error: 'AI response JSON is not properly formatted.',
+          );
+        }
+        responseText = responseText.substring(jsonStartIndex, jsonEndIndex + 1);
+      }
+
       final parsedJson = jsonDecode(responseText);
       if (parsedJson is! Map<String, dynamic>) {
         return ModelMessage(
