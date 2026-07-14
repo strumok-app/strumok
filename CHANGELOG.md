@@ -1,9 +1,9 @@
-## [1.29.1](https://github.com/strumok-app/strumok/compare/v1.29.0...v1.29.1) (2026-07-10)
+## [1.29.2](https://github.com/strumok-app/strumok/compare/v1.29.1...v1.29.2) (2026-07-14)
 
 
 ### Bug Fixes
 
-* typo ([8c7bc91](https://github.com/strumok-app/strumok/commit/8c7bc91355d83167ef1bee060980918fae7cd879))
+* ui fix ([15d17d1](https://github.com/strumok-app/strumok/commit/15d17d1c5f2f64b3a7bd83b7ad4ad7ddaa0d1efa))
 
 
 
