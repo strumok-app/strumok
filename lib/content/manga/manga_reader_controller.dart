@@ -166,6 +166,10 @@ class MangaReaderController extends ValueNotifier<MangaReaderState> {
   }
 
   void _preloadPages() {
+    if (value.pages.isEmpty) {
+      return;
+    }
+
     final currentPageIndex = value.currentPage.value;
 
     final manager = MangaPagesDownloadManager();

@@ -404,7 +404,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get aiSearchClearChat => 'Очистити чат';
 
   @override
-  String get aiSearchHint => 'Запитайте про фільми, серфіли та аніме';
+  String get aiSearchHint => 'Запитайте про фільми або аніме';
 
   @override
   String get aiSearchEmpty => 'Почніть розмову';
