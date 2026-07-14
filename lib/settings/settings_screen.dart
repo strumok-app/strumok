@@ -78,12 +78,6 @@ class _SettingsView extends StatelessWidget {
                 },
               ),
               const OfflineStorageDirectorySelector(),
-              if (!TVDetector.isTV)
-                _renderSection(
-                  context,
-                  AppLocalizations.of(context)!.settingsFloatingVideoPlayer,
-                  const FloatingVideoSwitcher(),
-                ),
               if (!TVDetector.isTV) AISearchSettings(),
             ],
           ),
