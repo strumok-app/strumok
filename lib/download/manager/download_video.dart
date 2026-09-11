@@ -111,13 +111,11 @@ Future<void> _downloadHLSStream(
   HLSStream stream,
 ) async {
   final req = Request('GET', stream.uri);
-
+  req.headers["Accept"] = "*";
+  req.headers["User-Agent"] = userAgent;
   if (request.headers != null) {
     req.headers.addAll(request.headers!);
   }
-
-  req.headers["Accept"] = "*";
-  req.headers["User-Agent"] = userAgent;
 
   logger.info("downloading HLS stream: $stream");
   final res = await Client().send(req).timeout(httpTimeout);
@@ -175,13 +173,12 @@ Future<void> _downloadStreamSegments(
 
     final segment = manifest.segments[i];
     final segmentReq = Request('GET', segment.uri);
+    segmentReq.headers["Accept"] = "*";
+    segmentReq.headers["User-Agent"] = userAgent;
 
     if (request.headers != null) {
       segmentReq.headers.addAll(request.headers!);
     }
-
-    segmentReq.headers["Accept"] = "*";
-    segmentReq.headers["User-Agent"] = userAgent;
 
     final res = await retry(
       () => client.send(segmentReq).timeout(httpTimeout),
