@@ -83,7 +83,7 @@ class VideoDownloadRequest extends Equatable
 
   @override
   String toString() =>
-      "VideoDownloadRequest[id: $id, url: $url, fileSrc: $fileSrc]";
+      "VideoDownloadRequest[id: $id, url: $url, fileSrc: $fileSrc, headers: $headers, info: $info]";
 
   factory VideoDownloadRequest.fromJson(Map<String, dynamic> json) =>
       _$VideoDownloadRequestFromJson(json);

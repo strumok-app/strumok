@@ -8,6 +8,7 @@ import 'package:strumok/content/content_info_card.dart';
 import 'package:strumok/widgets/focus_indicator.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
+import 'package:strumok/widgets/pick_random_button.dart';
 import 'package:strumok/widgets/use_search_hint.dart';
 import 'package:flutter/material.dart';
 
@@ -55,11 +56,17 @@ class _ActiveCollectionItems extends ConsumerWidget {
     }
 
     return HorizontalList(
-      title: FocusIndicator(
-        child: Text(
-          AppLocalizations.of(context)!.collectionContinue,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+      title: Row(
+        children: [
+          FocusIndicator(
+            child: Text(
+              AppLocalizations.of(context)!.collectionContinue,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          Spacer(),
+          PickRandomButton(contentList: items),
+        ],
       ),
       itemBuilder: (context, index) {
         final item = items[index];

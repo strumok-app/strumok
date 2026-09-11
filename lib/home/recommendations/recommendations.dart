@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/widgets/horizontal_list_card.dart';
 import 'package:strumok/widgets/nothing_to_show.dart';
+import 'package:strumok/widgets/pick_random_button.dart';
 import 'package:strumok/widgets/set_recommendations_hint.dart';
 
 class Recommendations extends ConsumerWidget {
@@ -87,7 +88,29 @@ class _RecommendationChannel extends ConsumerWidget {
     final res = asyncState.when(
       skipLoadingOnRefresh: false,
       data: (state) => HorizontalList(
-        title: _renderChannelTitle(false, provider, context, ref),
+        title: Row(
+          children: [
+            SizedBox(
+              height: 48,
+              child: Center(
+                child: Text(
+                  channel,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+            ),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: IconButton(
+                constraints: BoxConstraints(),
+                onPressed: () => ref.refresh(provider.future),
+                icon: Icon(Icons.refresh),
+              ),
+            ),
+            PickRandomButton(contentList: state.recommendations),
+          ],
+        ),
         itemBuilder: (context, index) {
           final item = state.recommendations[index];
 
@@ -107,7 +130,15 @@ class _RecommendationChannel extends ConsumerWidget {
             : null,
       ),
       loading: () => HorizontalList(
-        title: _renderChannelTitle(true, provider, context, ref),
+        title: SizedBox(
+          height: 48,
+          child: Center(
+            child: Text(
+              channel,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+        ),
         itemBuilder: (context, index) => HorizontalListCard(
           key: Key("loading"),
           onTap: () {},
@@ -116,7 +147,15 @@ class _RecommendationChannel extends ConsumerWidget {
         itemCount: 1,
       ),
       error: (e, s) => HorizontalList(
-        title: _renderChannelTitle(false, provider, context, ref),
+        title: SizedBox(
+          height: 48,
+          child: Center(
+            child: Text(
+              channel,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+        ),
         itemBuilder: (context, index) => HorizontalListCard(
           key: Key("error"),
           onTap: () {},
@@ -142,36 +181,5 @@ class _RecommendationChannel extends ConsumerWidget {
     }
 
     return res;
-  }
-
-  Widget _renderChannelTitle(
-    bool loading,
-    RecommendationChannelProvider provider,
-    BuildContext context,
-    WidgetRef ref,
-  ) {
-    return Row(
-      children: [
-        SizedBox(
-          height: 48,
-          child: Center(
-            child: Text(
-              channel,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ),
-        ),
-        Spacer(),
-        if (!loading)
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: IconButton(
-              constraints: BoxConstraints(),
-              onPressed: () => ref.refresh(provider.future),
-              icon: Icon(Icons.refresh),
-            ),
-          ),
-      ],
-    );
   }
 }

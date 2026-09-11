@@ -7,6 +7,7 @@ import 'package:strumok/collection/collection_provider.dart';
 import 'package:strumok/collection/horizontal_list/horizontal_list_item.dart';
 import 'package:strumok/widgets/focus_indicator.dart';
 import 'package:strumok/widgets/horizontal_list.dart';
+import 'package:strumok/widgets/pick_random_button.dart';
 import 'package:strumok/widgets/use_search_hint.dart';
 
 const groupsOrder = [
@@ -69,7 +70,14 @@ class CollectionHorizontalGroup extends ConsumerWidget {
     }
 
     return HorizontalList(
-      title: title,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          title,
+          Spacer(),
+          PickRandomButton(contentList: groupItems),
+        ],
+      ),
       itemBuilder: (context, index) {
         final item = groupItems[index];
         return CollectionHorizontalListItem(
