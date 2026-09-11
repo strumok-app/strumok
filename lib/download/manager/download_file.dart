@@ -48,6 +48,9 @@ void donwloadFile(
     // fileExist
     final httpReq = Request('GET', Uri.parse(request.url));
     httpReq.headers.addAll(headers);
+    httpReq.headers["Range"] = "0-";
+    httpReq.headers["Accept"] = "*";
+    httpReq.headers["User-Agent"] = userAgent;
 
     logger.info("downloading file for request: $request");
     final res = await Client().send(httpReq).timeout(httpTimeout);

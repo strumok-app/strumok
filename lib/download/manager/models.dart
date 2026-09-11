@@ -8,6 +8,7 @@ import 'package:strumok/utils/text.dart';
 part 'models.g.dart';
 
 const httpTimeout = Duration(seconds: 30);
+const userAgent = "StrumokDownloader/1.0";
 
 enum DownloadStatus {
   queued(false),

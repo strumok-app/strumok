@@ -29,6 +29,10 @@ void downloadVideo(
     final httpReq = Request('GET', uri);
 
     httpReq.headers.addAll(headers);
+    httpReq.headers["Accept"] = "*";
+    httpReq.headers["Range"] = "0-";
+    httpReq.headers["User-Agent"] = userAgent;
+
     logger.info("downloading HLS master playlist for request: $request");
     final res = await Client().send(httpReq).timeout(httpTimeout);
 
@@ -112,6 +116,9 @@ Future<void> _downloadHLSStream(
     req.headers.addAll(request.headers!);
   }
 
+  req.headers["Accept"] = "*";
+  req.headers["User-Agent"] = userAgent;
+
   logger.info("downloading HLS stream: $stream");
   final res = await Client().send(req).timeout(httpTimeout);
 
@@ -172,6 +179,9 @@ Future<void> _downloadStreamSegments(
     if (request.headers != null) {
       segmentReq.headers.addAll(request.headers!);
     }
+
+    segmentReq.headers["Accept"] = "*";
+    segmentReq.headers["User-Agent"] = userAgent;
 
     final res = await retry(
       () => client.send(segmentReq).timeout(httpTimeout),

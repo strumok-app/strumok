@@ -78,6 +78,9 @@ Future<void> downloadPageToFile({
       httpReq.headers.addAll(headers);
     }
 
+    httpReq.headers["Accept"] = "*";
+    httpReq.headers["User-Agent"] = userAgent;
+
     final httpRes = await retry(
       () => Client().send(httpReq).timeout(httpTimeout),
       3,
