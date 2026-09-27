@@ -47,8 +47,7 @@ void donwloadFile(
 
     // fileExist
     final httpReq = Request('GET', Uri.parse(request.url));
-    httpReq.headers["Range"] = "0-";
-    httpReq.headers["Accept"] = "*";
+    httpReq.headers["Accept"] = "*/*";
     httpReq.headers["User-Agent"] = userAgent;
     httpReq.headers.addAll(headers);
 

@@ -29,8 +29,8 @@ void downloadVideo(
     final httpReq = Request('GET', uri);
 
     httpReq.headers.addAll(headers);
-    httpReq.headers["Accept"] = "*";
     httpReq.headers["Range"] = "0-";
+    httpReq.headers["Accept"] = "*/*";
     httpReq.headers["User-Agent"] = userAgent;
 
     logger.info("downloading HLS master playlist for request: $request");
@@ -90,7 +90,9 @@ void downloadVideo(
           request.url,
           request.url,
           request.fileSrc,
-          headers: request.headers,
+          // some video hosts require the "Range" header to start from 0
+          // mb this should be supplier specific
+          headers: {"Range": "0-", ...request.headers ?? {}},
         ),
         updateProgress,
         onDone,

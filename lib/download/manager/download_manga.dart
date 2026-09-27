@@ -73,7 +73,7 @@ Future<void> downloadPageToFile({
   try {
     final httpReq = Request('GET', Uri.parse(pageUrl));
     httpReq.followRedirects = true;
-    httpReq.headers["Accept"] = "*";
+    httpReq.headers["Accept"] = "*/*";
     httpReq.headers["User-Agent"] = userAgent;
 
     if (headers != null) {
