@@ -72,12 +72,25 @@ class MediaKitVideoBackend extends VideoBackend {
     _player = player;
 
     final nativePlayer = player.platform as media_kit.NativePlayer;
-    nativePlayer.setProperty("force-seekable", "yes");
+    await nativePlayer.setProperty("force-seekable", "yes");
+
+    // optimization for smoother playback and avoid frame drops
+    await nativePlayer.setProperty("framedrop", "no");
+    await nativePlayer.setProperty('video-sync', 'audio');
+    await nativePlayer.setProperty('cache', 'yes');
+    await nativePlayer.setProperty(
+      'demuxer-max-bytes',
+      '33554432',
+    ); // 32 MB buffer limit
+    await nativePlayer.setProperty(
+      'demuxer-max-back-bytes',
+      '16777216',
+    ); // 16 MB back-buffer
 
     // Set preferred audio language
     if (preferredLanguage != null && preferredLanguage.isNotEmpty) {
-      nativePlayer.setProperty("alang", preferredLanguage.join(","));
-      nativePlayer.setProperty("vlang", preferredLanguage.join(","));
+      await nativePlayer.setProperty("alang", preferredLanguage.join(","));
+      await nativePlayer.setProperty("vlang", preferredLanguage.join(","));
     }
 
     media_kit_video.VideoController videoController;
