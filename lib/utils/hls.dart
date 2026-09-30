@@ -191,9 +191,10 @@ class TSJunkFilter {
   /// [_kTsPacketSize] bytes apart, which virtually eliminates the chance of
   /// a false positive from random data.
   int _findTsSyncOffset(Uint8List bytes) {
-    for (int i = 0; i + _kTsPacketSize < bytes.length; i++) {
+    for (int i = 0; i + 2 * _kTsPacketSize < bytes.length; i++) {
       if (bytes[i] == _kTsSyncByte &&
-          bytes[i + _kTsPacketSize] == _kTsSyncByte) {
+          bytes[i + _kTsPacketSize] == _kTsSyncByte &&
+          bytes[i + 2 * _kTsPacketSize] == _kTsSyncByte) {
         return i;
       }
     }
@@ -214,18 +215,17 @@ class TSJunkFilter {
     pending.add(chunk);
 
     // Wait until we have enough data to confirm a sync at position 0.
-    if (pending.length <= _kTsPacketSize) return null;
+    if (pending.length < 3 * _kTsPacketSize) return null;
 
     final bytes = pending.toBytes();
     final syncOffset = _findTsSyncOffset(bytes);
 
     if (syncOffset >= 0) {
       syncFound = true;
-      if (syncOffset > 0) {
-        filteredBytes = syncOffset;
-      }
-
-      return syncOffset == 0 ? chunk : chunk.sublist(syncOffset);
+      filteredBytes = syncOffset;
+      // Use the accumulated buffer, not just the latest chunk, since the
+      // sync offset is relative to all bytes buffered so far.
+      return bytes.sublist(syncOffset);
     }
 
     // else: keep buffering until the next chunk arrives.
