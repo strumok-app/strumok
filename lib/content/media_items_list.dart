@@ -328,7 +328,7 @@ class _MediaItemsListItemState extends State<MediaItemsListItem> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (image != null)
+              if (image != null && image.isNotEmpty)
                 GestureDetector(
                   onTap: widget.onTap,
                   child: SizedBox(
