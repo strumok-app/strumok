@@ -64,14 +64,17 @@ class _MainAccentBlockState extends State<_MainAccentBlock> {
                 showPoster = !showPoster;
               });
             },
-            child: CachedNetworkImage(
-              imageUrl: widget.contentDetails.image,
-              fit: BoxFit.fitWidth,
-              width: screenWidth,
-              placeholder: (context, url) =>
-                  _buildImagePlaceholder(screenWidth),
-              errorWidget: (context, url, error) =>
-                  Center(child: NothingToShow()),
+            child: Container(
+              constraints: BoxConstraints(minHeight: 300),
+              child: CachedNetworkImage(
+                imageUrl: widget.contentDetails.image,
+                fit: BoxFit.fitWidth,
+                width: screenWidth,
+                placeholder: (context, url) =>
+                    _buildImagePlaceholder(screenWidth),
+                errorWidget: (context, url, error) =>
+                    Center(child: NothingToShow()),
+              ),
             ),
           ),
         ),
