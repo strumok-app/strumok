@@ -661,7 +661,7 @@ class _SeekBarState extends State<_SeekBar> {
                       color: primary,
                     ),
                     Positioned(
-                      left: (width - _thumbSize / 2) * value,
+                      left: width * value - _thumbSize / 2,
                       bottom: _barHeight / 2 - _thumbSize / 2,
                       child: Container(
                         width: _thumbSize,

@@ -119,6 +119,12 @@ class MediaKitVideoBackend extends VideoBackend {
     _player = player;
 
     final nativePlayer = player.platform as media_kit.NativePlayer;
+    // Forces mpv to seek strictly to keyframe/segment boundaries instead of mid-fragment
+    await nativePlayer.setProperty('hr-seek', 'no');
+    // Set demuxer readahead to 30 seconds for smoother playback
+    await nativePlayer.setProperty('demuxer-readahead-secs', '30');
+
+    // Force seekable
     await nativePlayer.setProperty("force-seekable", "yes");
 
     // optimization for smoother playback and avoid frame drops
