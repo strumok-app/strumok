@@ -807,9 +807,9 @@ packages:
     dependency: "direct main"
     description:
       path: media_kit
-      ref: upstream-better-linux-render
-      resolved-ref: cb869258576f9925d7cc0feebaa961b4c49bd3e1
-      url: "https://github.com/Predidit/media-kit.git"
+      ref: HEAD
+      resolved-ref: c533e446755f51cf53c7e57aea873f2aa5355f81
+      url: "https://github.com/media-kit/media-kit"
     source: git
     version: "1.2.6"
   media_kit_libs_android_video:
@@ -864,9 +864,9 @@ packages:
     dependency: "direct main"
     description:
       path: media_kit_video
-      ref: upstream-better-linux-render
-      resolved-ref: cb869258576f9925d7cc0feebaa961b4c49bd3e1
-      url: "https://github.com/Predidit/media-kit.git"
+      ref: HEAD
+      resolved-ref: c533e446755f51cf53c7e57aea873f2aa5355f81
+      url: "https://github.com/media-kit/media-kit"
     source: git
     version: "2.0.1"
   meta:
