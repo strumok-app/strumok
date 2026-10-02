@@ -21,33 +21,75 @@ class MediaKitVideoBackend extends VideoBackend {
 
   final HLSProxyServer _hlsProxyServer = HLSProxyServer(port: 16888);
 
+  static const _eofTolerance = Duration(seconds: 5);
+  String? _lastError;
+
+  bool _disposed = false;
+  Completer? _initCompleter;
+
   static void registerWith() {
     media_kit.MediaKit.ensureInitialized();
   }
 
   @override
   Future<void> dispose() async {
-    _hlsProxyServer.stop();
-
-    if (_player == null) {
+    if (_disposed) {
       return;
+    }
+    _disposed = true;
+
+    final subscriptions = [
+      ..._initializationStreamSubscriptions,
+      ..._streamSubscriptions,
+    ];
+    _initializationStreamSubscriptions.clear();
+    _streamSubscriptions.clear();
+
+    if (_initCompleter?.isCompleted == false) {
+      _initCompleter!.completeError(StateError("Video backend disposed"));
     }
 
     super.dispose();
-    await Future.wait(
-      _initializationStreamSubscriptions.map((e) => e.cancel()),
-    );
-    await Future.wait(_streamSubscriptions.map((e) => e.cancel()));
+
+    await Future.wait(subscriptions.map((e) => e.cancel()));
+    await _hlsProxyServer.stop();
     await _player?.dispose();
 
     _player = null;
     _videoController = null;
-    _streamSubscriptions.clear();
-    _initializationStreamSubscriptions.clear();
   }
 
+  /// Completes normally if the backend gets disposed before initialization finishes.
   @override
   Future<void> initialize(
+    Uri link, {
+    Map<String, String>? headers,
+    Duration? start,
+    Set<String>? preferredLanguage,
+    bool hlsProxy = false,
+  }) async {
+    if (_disposed) {
+      return;
+    }
+
+    try {
+      await _initialize(
+        link,
+        headers: headers,
+        start: start,
+        preferredLanguage: preferredLanguage,
+        hlsProxy: hlsProxy,
+      );
+    } catch (_) {
+      // pending player calls fail once dispose() runs mid-initialization
+      if (_disposed) {
+        return;
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> _initialize(
     Uri link, {
     Map<String, String>? headers,
     Duration? start,
@@ -61,6 +103,11 @@ class MediaKitVideoBackend extends VideoBackend {
     if (hlsProxy) {
       link = _hlsProxyServer.masterUrl(link);
       await _hlsProxyServer.start();
+
+      if (_disposed) {
+        await _hlsProxyServer.stop();
+        return;
+      }
     }
 
     final player = media_kit.Player(
@@ -137,6 +184,10 @@ class MediaKitVideoBackend extends VideoBackend {
 
     await completer.future;
 
+    if (_disposed) {
+      return;
+    }
+
     // --------------------------------------------------
     // subscribe on updates
 
@@ -192,8 +243,34 @@ class MediaKitVideoBackend extends VideoBackend {
     );
 
     _streamSubscriptions.add(
-      player.stream.completed.listen((event) {
-        value = value.copyWith(isEnded: event);
+      player.stream.error.listen((event) {
+        logger.warning("[media_kit] $event");
+        _lastError = event;
+      }),
+    );
+
+    _streamSubscriptions.add(
+      player.stream.completed.listen((completed) {
+        if (!completed) {
+          value = value.copyWith(isEnded: false);
+          return;
+        }
+
+        // mpv sets eof-reached also when a segment/stream fails to load
+        final duration = value.duration;
+        final unexpectedEof =
+            duration > Duration.zero &&
+            duration - value.position > _eofTolerance;
+
+        if (unexpectedEof) {
+          value = value.copyWith(
+            isPlaying: false,
+            hasError: true,
+            error: _lastError ?? "Playback stopped unexpectedly",
+          );
+        } else {
+          value = value.copyWith(isEnded: true);
+        }
       }),
     );
   }
@@ -205,6 +282,7 @@ class MediaKitVideoBackend extends VideoBackend {
     media_kit.Tracks? tracks;
 
     final completer = Completer();
+    _initCompleter = completer;
 
     void notify() {
       if (!completer.isCompleted) {
@@ -224,7 +302,9 @@ class MediaKitVideoBackend extends VideoBackend {
             aspectRatio: width!.toDouble() / height!.toDouble(),
           );
 
-          _initializationStreamSubscriptions.map((e) => e.cancel());
+          for (final s in _initializationStreamSubscriptions) {
+            s.cancel();
+          }
           _initializationStreamSubscriptions.clear();
 
           completer.complete();
@@ -236,7 +316,9 @@ class MediaKitVideoBackend extends VideoBackend {
       player.stream.error.listen((event) async {
         logger.warning("[media_kit] $event");
         if (!completer.isCompleted) {
-          _initializationStreamSubscriptions.map((e) => e.cancel());
+          for (final s in _initializationStreamSubscriptions) {
+            s.cancel();
+          }
           _initializationStreamSubscriptions.clear();
 
           completer.completeError(event);
@@ -389,7 +471,7 @@ class MediaKitVideoBackend extends VideoBackend {
     if (player == null) return;
 
     final nativePlayer = player.platform as media_kit.NativePlayer;
-    nativePlayer.command(["frame-back-step"]);
+    await nativePlayer.command(["frame-back-step"]);
   }
 
   List<VideoTrack> _convertVideoTracks(media_kit.Tracks tracks) {
@@ -409,11 +491,11 @@ class MediaKitVideoBackend extends VideoBackend {
       String name = t.id;
 
       if (t.title != null) {
-        name = t.language!;
+        name = t.title!;
       } else if (t.language != null) {
         name = t.language!;
-      } else if (t.samplerate != null) {
-        final formatBitrate = formatBytes(t.samplerate!);
+      } else if (t.bitrate != null) {
+        final formatBitrate = formatBytes(t.bitrate!);
         name = "${t.id}. ${formatBitrate}it/s";
       }
 

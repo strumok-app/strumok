@@ -314,25 +314,39 @@ class VideoPlayerController {
       );
 
       if (_disposed ||
+          _currentVideoBackend != newVideoBackend ||
           _currentItem != collectionItem.currentItem ||
           _currentSourceName != collectionItem.currentSourceName) {
-        videoBackend.dispose();
+        newVideoBackend.dispose();
         return;
       }
 
       videoBackend.value = AsyncValue.data(newVideoBackend);
       _videoBackendStateStreamController.add(newVideoBackend.value);
 
+      var wasEnded = false;
       newVideoBackend.addListener(() {
-        if (_disposed) {
+        if (_disposed || _currentVideoBackend != newVideoBackend) {
           return;
         }
 
         final value = newVideoBackend.value;
         _videoBackendStateStreamController.add(value);
-        if (value.isEnded) {
+
+        if (value.hasError) {
+          if (videoBackend.value is! AsyncError) {
+            videoBackend.value = AsyncValue.error(
+              value.error ?? "Playback error",
+              StackTrace.current,
+            );
+          }
+          return;
+        }
+
+        if (value.isEnded && !wasEnded) {
           _onVideoEnds();
         }
+        wasEnded = value.isEnded;
       });
 
       // set equalizer
