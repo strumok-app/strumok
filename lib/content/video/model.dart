@@ -6,13 +6,15 @@ enum OnVideoEndsAction { playNext, playAgain, doNothing }
 enum StartVideoPosition { fromBeginning, fromRemembered, fromFixedPosition }
 
 class SubCacheKey extends Equatable {
+  final String supplier;
+  final String contentId;
   final int itemIdx;
   final String name;
 
-  const SubCacheKey(this.itemIdx, this.name);
+  const SubCacheKey(this.supplier, this.contentId, this.itemIdx, this.name);
 
   @override
-  List<Object?> get props => [itemIdx, name];
+  List<Object?> get props => [supplier, contentId, itemIdx, name];
 }
 
 class SourceSelectorModel {

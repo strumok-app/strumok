@@ -27,7 +27,7 @@ class VideoPlayerController {
   final _subtitleWorker = SubtitleWorker();
 
   List<int> _shuffledPositions = List.empty();
-  List<ContentMediaItemSource>? _currentSources;
+  Future<List<ContentMediaItemSource>>? _currentSources;
 
   int? _currentItem;
 
@@ -61,7 +61,7 @@ class VideoPlayerController {
   void dispose() {
     _disposed = true;
     _subtitleWorker.dispose();
-    _currentVideoBackend?.dispose();
+    _disposeCurrentVideoBackend();
     _videoBackendStateStreamController.close();
 
     videoBackend.dispose();
@@ -209,21 +209,29 @@ class VideoPlayerController {
       return;
     }
 
-    if (_currentItem != collectionItem.currentItem) {
-      await _playCollectionItem(collectionItem);
-      await _loadSubtitles(collectionItem);
-    } else if (_currentSourceName != collectionItem.currentSourceName) {
-      await _playCollectionItem(collectionItem);
-    } else if (_currentSubtitleName != collectionItem.currentSubtitleName) {
-      await _loadSubtitles(collectionItem);
-    }
+    final itemChanged = _currentItem != collectionItem.currentItem;
+    final sourceChanged =
+        _currentSourceName != collectionItem.currentSourceName;
+    final subtitleChanged =
+        _currentSubtitleName != collectionItem.currentSubtitleName;
+
+    // Both start synchronously in call order, so the latest update always owns the state.
+    await Future.wait([
+      if (itemChanged || sourceChanged) _playCollectionItem(collectionItem),
+      if (itemChanged || subtitleChanged) _loadSubtitles(collectionItem),
+    ]);
+  }
+
+  void _disposeCurrentVideoBackend() {
+    _currentVideoBackend?.dispose();
+    _currentVideoBackend = null;
   }
 
   Future<void> _playCollectionItem(MediaCollectionItem collectionItem) async {
     try {
       // reset state
       _currentSources = null;
-      _currentVideoBackend?.dispose();
+      _disposeCurrentVideoBackend();
       videoBackend.value = AsyncValue.loading();
       _videoBackendStateStreamController.add(VideoBackendState.uninitialized());
 
@@ -240,15 +248,15 @@ class VideoPlayerController {
         return;
       }
 
-      final sources = await item.sources;
+      final sourcesFuture = Future.value(item.sources);
+      _currentSources = sourcesFuture;
+      final sources = await sourcesFuture;
 
       if (_disposed ||
           _currentItem != collectionItem.currentItem ||
           _currentSourceName != collectionItem.currentSourceName) {
         return;
       }
-
-      _currentSources = sources;
 
       final videos = sources.where((s) => s.kind == FileKind.video).toList();
 
@@ -291,9 +299,8 @@ class VideoPlayerController {
       if (currentItemPosition.length > 0 &&
           start > currentItemPosition.length - 60) {
         start = start - 60;
-      } else if (start < 0) {
-        start = 0;
       }
+      start = max(0, start);
 
       logger.info(
         "Starting video: $link, headers: ${video.headers}, startPos: $start",
@@ -317,7 +324,10 @@ class VideoPlayerController {
           _currentVideoBackend != newVideoBackend ||
           _currentItem != collectionItem.currentItem ||
           _currentSourceName != collectionItem.currentSourceName) {
-        newVideoBackend.dispose();
+        // Otherwise it was already disposed by dispose() or a newer request.
+        if (_currentVideoBackend == newVideoBackend) {
+          _disposeCurrentVideoBackend();
+        }
         return;
       }
 
@@ -371,7 +381,7 @@ class VideoPlayerController {
         return;
       }
 
-      _currentVideoBackend?.dispose();
+      _disposeCurrentVideoBackend();
       videoBackend.value = AsyncValue.error(e, stackTrace);
       _videoBackendStateStreamController.add(
         VideoBackendState.erroneous(e.toString()),
@@ -440,44 +450,57 @@ class VideoPlayerController {
   }
 
   Future<void> _loadSubtitles(MediaCollectionItem collectionItem) async {
-    if (_currentSources == null) {
+    if (_disposed || _currentItem != collectionItem.currentItem) {
       return;
     }
 
-    final currentSources = _currentSources!;
-
-    subtitleController.value = AsyncValue.loading();
-
     final itemIdx = collectionItem.currentItem;
-    _currentSubtitleName = collectionItem.currentSubtitleName;
+    final subtitleName = collectionItem.currentSubtitleName;
+    final sourcesFuture = _currentSources;
+    _currentSubtitleName = subtitleName;
 
-    if (_currentSubtitleName == null) {
+    bool isStale() =>
+        _disposed ||
+        _currentItem != itemIdx ||
+        _currentSubtitleName != subtitleName;
+
+    if (subtitleName == null || sourcesFuture == null) {
       subtitleController.value = AsyncValue.data(null);
       return;
     }
 
-    final cachedSub = _subsCache.get(
-      SubCacheKey(itemIdx, _currentSubtitleName!),
+    final cacheKey = SubCacheKey(
+      contentDetails.supplier,
+      contentDetails.id,
+      itemIdx,
+      subtitleName,
     );
+
+    final cachedSub = _subsCache.get(cacheKey);
     if (cachedSub != null) {
       subtitleController.value = AsyncValue.data(cachedSub);
       return;
     }
 
-    final subtitles = currentSources
-        .where((s) => s.kind == FileKind.subtitle)
-        .toList();
-
-    final subtitle =
-        subtitles.firstWhereOrNull((s) => s.description == _currentSubtitleName)
-            as FileMediaItemSource?;
-
-    if (subtitle == null) {
-      subtitleController.value = AsyncValue.data(null);
-      return;
-    }
+    subtitleController.value = AsyncValue.loading();
 
     try {
+      final sources = await sourcesFuture;
+      if (isStale()) {
+        return;
+      }
+
+      final subtitle =
+          sources
+                  .where((s) => s.kind == FileKind.subtitle)
+                  .firstWhereOrNull((s) => s.description == subtitleName)
+              as FileMediaItemSource?;
+
+      if (subtitle == null) {
+        subtitleController.value = AsyncValue.data(null);
+        return;
+      }
+
       logger.info("Loading subtitle: $subtitle");
 
       // Use the subtitle worker to parse subtitle in isolate
@@ -487,14 +510,11 @@ class VideoPlayerController {
         subtitle.headers,
       );
 
-      // Check if the request is still valid
-      if (_disposed ||
-          _currentItem != collectionItem.currentItem ||
-          _currentSubtitleName != collectionItem.currentSubtitleName) {
+      if (isStale()) {
         return;
       }
 
-      _subsCache.put(SubCacheKey(itemIdx, _currentSubtitleName!), controller);
+      _subsCache.put(cacheKey, controller);
       subtitleController.value = AsyncValue.data(controller);
 
       logger.info("Subtitle loaded successfully");
@@ -502,9 +522,7 @@ class VideoPlayerController {
       logger.severe("Fail to load subtitle", e, stackTrace);
 
       // do not show error for not currently selected subs
-      if (_disposed ||
-          _currentItem != collectionItem.currentItem ||
-          _currentSubtitleName != collectionItem.currentSubtitleName) {
+      if (isStale()) {
         return;
       }
 
