@@ -121,9 +121,6 @@ class MediaKitVideoBackend extends VideoBackend {
     final nativePlayer = player.platform as media_kit.NativePlayer;
     // Forces mpv to seek strictly to keyframe/segment boundaries instead of mid-fragment
     await nativePlayer.setProperty('hr-seek', 'no');
-    // Set demuxer readahead to 30 seconds for smoother playback
-    await nativePlayer.setProperty('demuxer-readahead-secs', '30');
-
     // Force seekable
     await nativePlayer.setProperty("force-seekable", "yes");
 
@@ -250,7 +247,7 @@ class MediaKitVideoBackend extends VideoBackend {
 
     _streamSubscriptions.add(
       player.stream.error.listen((event) {
-        logger.warning("[media_kit] $event");
+        logger.warning("[media_kit] error: $event");
         _lastError = event;
       }),
     );

@@ -34,6 +34,10 @@ class VideoPlayerController {
   String? _currentSourceName;
   String? _currentSubtitleName;
 
+  MediaCollectionItem? _lastCollectionItem;
+  Duration? _resumePosition;
+  double _playbackSpeed = 1.0;
+
   ValueNotifier<AsyncValue<SubtitleController?>> subtitleController =
       ValueNotifier(AsyncValue.data(null));
   ValueNotifier<EdgeInsets> subtitlePaddings = ValueNotifier(EdgeInsets.zero);
@@ -45,8 +49,9 @@ class VideoPlayerController {
 
   final StreamController<VideoBackendState> _videoBackendStateStreamController =
       StreamController.broadcast();
+  VideoBackendState _lastState = VideoBackendState.uninitialized();
   VideoBackendState get videoBackendState =>
-      _currentVideoBackend?.value ?? VideoBackendState.uninitialized();
+      _currentVideoBackend?.value ?? _lastState;
   Stream<VideoBackendState> get videoBackendStateStream =>
       _videoBackendStateStreamController.stream;
 
@@ -69,8 +74,34 @@ class VideoPlayerController {
     subtitlePaddings.dispose();
   }
 
+  bool get canRetry =>
+      !_disposed &&
+      videoBackend.value is AsyncError &&
+      _lastCollectionItem != null;
+
+  void retry() {
+    if (!canRetry) return;
+
+    final collectionItem = _lastCollectionItem!;
+    final resumePosition =
+        _resumePosition ??
+        (collectionItem.currentPosition > 0
+            ? Duration(seconds: collectionItem.currentPosition)
+            : null);
+
+    Future.wait([
+      _playCollectionItem(collectionItem, startOverride: resumePosition),
+      if (subtitleController.value is AsyncError)
+        _loadSubtitles(collectionItem),
+    ]);
+  }
+
   void playOrPause() {
     if (_disposed) return;
+    if (canRetry) {
+      retry();
+      return;
+    }
     final backend = _currentVideoBackend;
     if (backend?.value.isInitialized == true) {
       if (backend!.value.isPlaying) {
@@ -83,6 +114,10 @@ class VideoPlayerController {
 
   void play() {
     if (_disposed) return;
+    if (canRetry) {
+      retry();
+      return;
+    }
     final backend = _currentVideoBackend;
     if (backend?.value.isInitialized == true) {
       backend!.play();
@@ -100,14 +135,11 @@ class VideoPlayerController {
   void volumeChangeBy(double delta) {
     if (_disposed) return;
     final backend = _currentVideoBackend;
-    if (backend?.value.isInitialized == true) {
-      final currentVolume = backend!.value.volume;
-      final newVolume = (currentVolume + delta).clamp(0.0, 1.0);
+    final currentVolume = backend?.value.isInitialized == true
+        ? backend!.value.volume
+        : AppPreferences.volume;
 
-      AppPreferences.volume = newVolume;
-
-      backend.setVolume(newVolume);
-    }
+    setVolume((currentVolume + delta).clamp(0.0, 1.0));
   }
 
   void volumeUp() {
@@ -122,11 +154,13 @@ class VideoPlayerController {
 
   Future<void> setVolume(double volume) async {
     if (_disposed) return;
-    final backend = _currentVideoBackend;
-    if (backend?.value.isInitialized == true) {
-      AppPreferences.volume = volume;
+    AppPreferences.volume = volume;
 
-      await backend!.setVolume(volume);
+    final backend = _currentVideoBackend;
+    if (backend == null) {
+      _emitState(_lastState.copyWith(volume: volume));
+    } else if (backend.value.isInitialized) {
+      await backend.setVolume(volume);
     }
   }
 
@@ -134,17 +168,36 @@ class VideoPlayerController {
     if (_disposed) return;
 
     final backend = _currentVideoBackend;
-    if (backend?.value.isInitialized == true) {
-      backend!.seekTo(position);
+    if (backend == null) {
+      _seekWhileFailed(position);
+    } else if (backend.value.isInitialized) {
+      backend.seekTo(position);
     }
+  }
+
+  void _seekWhileFailed(Duration position) {
+    if (!canRetry) return;
+
+    final duration = _lastState.duration;
+    var clamped = position < Duration.zero ? Duration.zero : position;
+    if (duration > Duration.zero && clamped > duration) {
+      clamped = duration;
+    }
+
+    _resumePosition = clamped;
+    _emitState(_lastState.copyWith(position: clamped));
   }
 
   void seekForward(Duration duration) {
     if (_disposed) return;
 
     final backend = _currentVideoBackend;
-    if (backend?.value.isInitialized == true) {
-      final currentPosition = backend!.value.position;
+    if (backend == null) {
+      _seekWhileFailed((_resumePosition ?? _lastState.position) + duration);
+      return;
+    }
+    if (backend.value.isInitialized) {
+      final currentPosition = backend.value.position;
       final newPosition = currentPosition + duration;
 
       // Clamp to video duration if seeking beyond end
@@ -159,8 +212,12 @@ class VideoPlayerController {
   void seekBackward(Duration duration) {
     if (_disposed) return;
     final backend = _currentVideoBackend;
-    if (backend?.value.isInitialized == true) {
-      final currentPosition = backend!.value.position;
+    if (backend == null) {
+      _seekWhileFailed((_resumePosition ?? _lastState.position) - duration);
+      return;
+    }
+    if (backend.value.isInitialized) {
+      final currentPosition = backend.value.position;
       final newPosition = currentPosition - duration;
 
       // Clamp to zero if seeking before start
@@ -190,14 +247,18 @@ class VideoPlayerController {
 
   void setRate(double rate) {
     if (_disposed) return;
+    _playbackSpeed = rate;
 
     final backend = _currentVideoBackend;
-    if (backend?.value.isInitialized == true) {
-      backend?.setPlaybackSpeed(rate);
+    if (backend == null) {
+      _emitState(_lastState.copyWith(playbackSpeed: rate));
+    } else if (backend.value.isInitialized) {
+      backend.setPlaybackSpeed(rate);
     }
   }
 
   void setEquilizer(List<double> bands) {
+    if (_disposed) return;
     final backend = _currentVideoBackend;
     if (backend?.value.isInitialized == true) {
       backend!.setEquilizer(bands);
@@ -208,6 +269,8 @@ class VideoPlayerController {
     if (_disposed) {
       return;
     }
+
+    _lastCollectionItem = collectionItem;
 
     final itemChanged = _currentItem != collectionItem.currentItem;
     final sourceChanged =
@@ -227,13 +290,44 @@ class VideoPlayerController {
     _currentVideoBackend = null;
   }
 
-  Future<void> _playCollectionItem(MediaCollectionItem collectionItem) async {
+  void _emitState(VideoBackendState state) {
+    _lastState = state;
+    if (!_disposed) {
+      _videoBackendStateStreamController.add(state);
+    }
+  }
+
+  void _failPlayback(Object error, StackTrace stackTrace) {
+    final position = _currentVideoBackend?.value.position ?? Duration.zero;
+    if (position > Duration.zero) {
+      _resumePosition = position;
+    }
+
+    _disposeCurrentVideoBackend();
+    videoBackend.value = AsyncValue.error(error, stackTrace);
+    _emitState(
+      _lastState.copyWith(
+        hasError: true,
+        isPlaying: false,
+        isBuffering: false,
+        error: error.toString(),
+      ),
+    );
+  }
+
+  Future<void> _playCollectionItem(
+    MediaCollectionItem collectionItem, {
+    Duration? startOverride,
+  }) async {
     try {
       // reset state
       _currentSources = null;
+      if (startOverride == null) {
+        _resumePosition = null;
+      }
       _disposeCurrentVideoBackend();
       videoBackend.value = AsyncValue.loading();
-      _videoBackendStateStreamController.add(VideoBackendState.uninitialized());
+      _emitState(VideoBackendState.uninitialized());
 
       // select source
       _currentItem = collectionItem.currentItem;
@@ -241,10 +335,7 @@ class VideoPlayerController {
 
       final item = mediaItems[_currentItem!];
       if (item == null) {
-        videoBackend.value = AsyncValue.error(
-          "Video not available",
-          StackTrace.current,
-        );
+        _failPlayback("Video not available", StackTrace.current);
         return;
       }
 
@@ -270,7 +361,7 @@ class VideoPlayerController {
       }
 
       if (video == null) {
-        videoBackend.value = AsyncValue.error(
+        _failPlayback(
           "Video source $_currentSourceName not avalaible",
           StackTrace.current,
         );
@@ -285,20 +376,22 @@ class VideoPlayerController {
         return;
       }
 
-      // select start position
-      final startPosition = AppPreferences.videoPlayerSettingStarFrom;
+      int start;
+      if (startOverride != null) {
+        start = startOverride.inSeconds;
+      } else {
+        start = switch (AppPreferences.videoPlayerSettingStarFrom) {
+          StartVideoPosition.fromBeginning => 0,
+          StartVideoPosition.fromRemembered => collectionItem.currentPosition,
+          StartVideoPosition.fromFixedPosition =>
+            AppPreferences.videoPlayerSettingFixedPosition,
+        };
 
-      int start = switch (startPosition) {
-        StartVideoPosition.fromBeginning => 0,
-        StartVideoPosition.fromRemembered => collectionItem.currentPosition,
-        StartVideoPosition.fromFixedPosition =>
-          AppPreferences.videoPlayerSettingFixedPosition,
-      };
-
-      final currentItemPosition = collectionItem.currentMediaItemPosition;
-      if (currentItemPosition.length > 0 &&
-          start > currentItemPosition.length - 60) {
-        start = start - 60;
+        final currentItemPosition = collectionItem.currentMediaItemPosition;
+        if (currentItemPosition.length > 0 &&
+            start > currentItemPosition.length - 60) {
+          start = start - 60;
+        }
       }
       start = max(0, start);
 
@@ -331,8 +424,9 @@ class VideoPlayerController {
         return;
       }
 
+      _resumePosition = null;
       videoBackend.value = AsyncValue.data(newVideoBackend);
-      _videoBackendStateStreamController.add(newVideoBackend.value);
+      _emitState(newVideoBackend.value);
 
       var wasEnded = false;
       newVideoBackend.addListener(() {
@@ -341,15 +435,17 @@ class VideoPlayerController {
         }
 
         final value = newVideoBackend.value;
-        _videoBackendStateStreamController.add(value);
+        _emitState(value);
 
         if (value.hasError) {
-          if (videoBackend.value is! AsyncError) {
-            videoBackend.value = AsyncValue.error(
-              value.error ?? "Playback error",
-              StackTrace.current,
-            );
-          }
+          final stackTrace = StackTrace.current;
+          // Backend can't be disposed while it is notifying listeners.
+          scheduleMicrotask(() {
+            if (_disposed || _currentVideoBackend != newVideoBackend) {
+              return;
+            }
+            _failPlayback(value.error ?? "Playback error", stackTrace);
+          });
           return;
         }
 
@@ -364,6 +460,10 @@ class VideoPlayerController {
 
       // set volume
       newVideoBackend.setVolume(AppPreferences.volume);
+
+      if (_playbackSpeed != 1.0) {
+        newVideoBackend.setPlaybackSpeed(_playbackSpeed);
+      }
     } catch (e, stackTrace) {
       if (e is ContentSuppliersException) {
         traceError(
@@ -381,11 +481,7 @@ class VideoPlayerController {
         return;
       }
 
-      _disposeCurrentVideoBackend();
-      videoBackend.value = AsyncValue.error(e, stackTrace);
-      _videoBackendStateStreamController.add(
-        VideoBackendState.erroneous(e.toString()),
-      );
+      _failPlayback(e, stackTrace);
     }
   }
 

@@ -243,3 +243,48 @@ class SeekForwardButton extends StatelessWidget {
     );
   }
 }
+
+class RetryButton extends StatelessWidget {
+  const RetryButton({super.key});
+
+  // Player background is always black, so the style ignores the app theme.
+  static final _style = ButtonStyle(
+    backgroundColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.pressed)) return Colors.white70;
+      if (states.contains(WidgetState.focused) ||
+          states.contains(WidgetState.hovered)) {
+        return Colors.white;
+      }
+      return Colors.white.withValues(alpha: 0.15);
+    }),
+    foregroundColor: WidgetStateProperty.resolveWith((states) {
+      return states.contains(WidgetState.focused) ||
+              states.contains(WidgetState.hovered) ||
+              states.contains(WidgetState.pressed)
+          ? Colors.black
+          : Colors.white;
+    }),
+    overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+    side: const WidgetStatePropertyAll(
+      BorderSide(color: Colors.white, width: 1.5),
+    ),
+    padding: const WidgetStatePropertyAll(
+      EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+    ),
+    textStyle: const WidgetStatePropertyAll(
+      TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+    ),
+    iconSize: const WidgetStatePropertyAll(22),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      autofocus: true,
+      onPressed: videoContentController(context).retry,
+      style: _style,
+      icon: const Icon(Icons.refresh),
+      label: Text(AppLocalizations.of(context)!.errorReload),
+    );
+  }
+}
