@@ -1,9 +1,10 @@
-## [1.30.1](https://github.com/strumok-app/strumok/compare/v1.30.0...v1.30.1) (2026-10-02)
+## [1.30.2](https://github.com/strumok-app/strumok/compare/v1.30.1...v1.30.2) (2026-10-03)
 
 
 ### Bug Fixes
 
-* fMP4 streams seek ([911fa24](https://github.com/strumok-app/strumok/commit/911fa240b91b8f6167c70b90b77da1912dcbc310))
+* add retry button ([8dce22e](https://github.com/strumok-app/strumok/commit/8dce22e61ceec6d2ce90f38b3953b4251c91ddd1))
+* some video contoller issues ([bc87439](https://github.com/strumok-app/strumok/commit/bc874393074b46411bd1c3f7dfdcfcd83b2530a1))
 
 
 
