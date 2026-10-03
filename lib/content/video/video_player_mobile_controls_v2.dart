@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 import 'package:strumok/content/video/source_selector.dart';
 import 'package:strumok/content/video/track_selector.dart';
@@ -44,8 +45,12 @@ class _VideoPlayerMobileControlsV2State
   static const _speedUpFactor = 2.0;
 
   late VideoPlayerController _controller;
+  VideoPlayerController? _listenedController;
   final _volumeController = VolumeController.instance;
   StreamSubscription<double>? _brightnessSubscription;
+
+  // Error is shown by VideoView underneath; gestures must not cover its retry button.
+  bool _hasError = false;
 
   // Controls overlay
   bool _controlsVisible = false;
@@ -91,10 +96,23 @@ class _VideoPlayerMobileControlsV2State
   void didChangeDependencies() {
     super.didChangeDependencies();
     _controller = videoContentController(context);
+
+    if (_listenedController != _controller) {
+      _listenedController?.videoBackend.removeListener(_onVideoBackendChanged);
+      _listenedController = _controller;
+      _controller.videoBackend.addListener(_onVideoBackendChanged);
+
+      _hasError = _controller.videoBackend.value is AsyncError;
+      if (_hasError) {
+        _controlsMounted = true;
+        _controlsVisible = true;
+      }
+    }
   }
 
   @override
   void dispose() {
+    _listenedController?.videoBackend.removeListener(_onVideoBackendChanged);
     _hideTimer?.cancel();
     _indicatorTimer?.cancel();
     _tapSeekTimer?.cancel();
@@ -141,6 +159,22 @@ class _VideoPlayerMobileControlsV2State
 
   // Controls visibility
 
+  void _onVideoBackendChanged() {
+    final hasError = _controller.videoBackend.value is AsyncError;
+    if (hasError == _hasError || !mounted) return;
+
+    setState(() => _hasError = hasError);
+    if (hasError) {
+      // Gesture layer is removed, so its end callbacks will never fire.
+      _onLongPressEnd();
+      _dragStartX = null;
+      _swipeSeek = null;
+      _showControls();
+    } else {
+      _scheduleHide();
+    }
+  }
+
   void _toggleControls() =>
       _controlsVisible ? _hideControls() : _showControls();
 
@@ -164,6 +198,7 @@ class _VideoPlayerMobileControlsV2State
 
   void _scheduleHide() {
     _hideTimer?.cancel();
+    if (_hasError) return;
     _hideTimer = Timer(_hideDelay, _hideControls);
   }
 
@@ -332,13 +367,14 @@ class _VideoPlayerMobileControlsV2State
                     ),
                   ),
                 ),
-                Positioned.fill(
-                  left: _edgeInset,
-                  top: _edgeInset,
-                  right: _edgeInset,
-                  bottom: _edgeInset + _subtitleShift,
-                  child: _buildGestureLayer(),
-                ),
+                if (!_hasError)
+                  Positioned.fill(
+                    left: _edgeInset,
+                    top: _edgeInset,
+                    right: _edgeInset,
+                    bottom: _edgeInset + _subtitleShift,
+                    child: _buildGestureLayer(),
+                  ),
                 if (_controlsMounted)
                   Positioned.fill(
                     // Hidden (or fading out) controls must not receive taps.
@@ -351,6 +387,7 @@ class _VideoPlayerMobileControlsV2State
                         onEnd: _onControlsFadeEnd,
                         child: _ControlsOverlay(
                           seekPreview: seekPreview,
+                          showCenterButtons: !_hasError,
                           onSeekStart: () => _hideTimer?.cancel(),
                           onSeekEnd: _scheduleHide,
                         ),
@@ -468,11 +505,13 @@ class _VideoPlayerMobileControlsV2State
 
 class _ControlsOverlay extends StatelessWidget {
   final Duration? seekPreview;
+  final bool showCenterButtons;
   final VoidCallback onSeekStart;
   final VoidCallback onSeekEnd;
 
   const _ControlsOverlay({
     required this.seekPreview,
+    required this.showCenterButtons,
     required this.onSeekStart,
     required this.onSeekEnd,
   });
@@ -495,18 +534,20 @@ class _ControlsOverlay extends StatelessWidget {
             ],
           ),
         ),
-        const Expanded(
-          child: Row(
-            children: [
-              Spacer(flex: 2),
-              SkipPrevButton(iconSize: 36.0),
-              Spacer(),
-              PlayOrPauseButton(iconSize: 48.0),
-              Spacer(),
-              SkipNextButton(iconSize: 36.0),
-              Spacer(flex: 2),
-            ],
-          ),
+        Expanded(
+          child: showCenterButtons
+              ? const Row(
+                  children: [
+                    Spacer(flex: 2),
+                    SkipPrevButton(iconSize: 36.0),
+                    Spacer(),
+                    PlayOrPauseButton(iconSize: 48.0),
+                    Spacer(),
+                    SkipNextButton(iconSize: 36.0),
+                    Spacer(flex: 2),
+                  ],
+                )
+              : const SizedBox.shrink(),
         ),
         Stack(
           alignment: Alignment.bottomCenter,
