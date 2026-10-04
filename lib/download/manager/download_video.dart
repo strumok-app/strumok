@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:strumok/download/manager/download_file.dart';
@@ -159,6 +160,7 @@ Future<void> _downloadStreamSegments(
   final startTs = DateTime.now();
 
   HLSDecryptor? decrypter;
+  HLSInitSegment? writtenInitSegment;
   int bytesDownloaded = 0;
 
   for (var i = 0; i < manifest.segments.length; i++) {
@@ -174,6 +176,33 @@ Future<void> _downloadStreamSegments(
     }
 
     final segment = manifest.segments[i];
+
+    final initSegment = segment.initSegment;
+    if (initSegment != null && initSegment != writtenInitSegment) {
+      logger.info("downloading HLS fMP4 init segment: $initSegment");
+      var initBytes = await _fetchBytes(
+        client,
+        initSegment.uri,
+        request.headers,
+        initSegment.byteRange,
+      );
+      if (initSegment.encryptionKey != null) {
+        final keyBytes = await _fetchBytes(
+          client,
+          initSegment.encryptionKey!.uri,
+          null,
+          null,
+        );
+        initBytes = HLSDecryptor(
+          keyBytes,
+          initSegment.encryptionKey!.iv,
+        ).decrypt(initBytes);
+      }
+      sink.add(initBytes);
+      bytesDownloaded += initBytes.length;
+      writtenInitSegment = initSegment;
+    }
+
     final segmentReq = Request('GET', segment.uri);
     segmentReq.headers["Accept"] = "*";
     segmentReq.headers["User-Agent"] = userAgent;
@@ -182,13 +211,18 @@ Future<void> _downloadStreamSegments(
       segmentReq.headers.addAll(request.headers!);
     }
 
+    if (segment.byteRange != null) {
+      segmentReq.headers["Range"] = segment.byteRange!.rangeHeader;
+    }
+
     final res = await retry(
       () => client.send(segmentReq).timeout(httpTimeout),
       3,
       const Duration(seconds: 10),
     );
 
-    if (res.statusCode != HttpStatus.ok) {
+    if (res.statusCode != HttpStatus.ok &&
+        res.statusCode != HttpStatus.partialContent) {
       await sink.close();
       throw Exception("segment: $segment httpStatus: ${res.statusCode}");
     }
@@ -217,6 +251,16 @@ Future<void> _downloadStreamSegments(
         i / manifest.segments.length,
         downloadSpeed(startTs, bytesDownloaded),
       );
+    } else if (segment.isFMP4) {
+      await for (var chunk in res.stream) {
+        sink.add(chunk);
+
+        bytesDownloaded += chunk.length;
+        updateProgress(
+          i / manifest.segments.length,
+          downloadSpeed(startTs, bytesDownloaded),
+        );
+      }
     } else {
       final filter = TSJunkFilter();
 
@@ -246,4 +290,34 @@ Future<void> _downloadStreamSegments(
   await sink.close();
 
   await partialFile.rename(request.fileSrc);
+}
+
+Future<Uint8List> _fetchBytes(
+  Client client,
+  Uri uri,
+  Map<String, String>? headers,
+  HLSByteRange? byteRange,
+) async {
+  final req = Request('GET', uri);
+  req.headers["Accept"] = "*";
+  req.headers["User-Agent"] = userAgent;
+  if (headers != null) {
+    req.headers.addAll(headers);
+  }
+  if (byteRange != null) {
+    req.headers["Range"] = byteRange.rangeHeader;
+  }
+
+  final res = await retry(
+    () => client.send(req).timeout(httpTimeout),
+    3,
+    const Duration(seconds: 10),
+  );
+
+  if (res.statusCode != HttpStatus.ok &&
+      res.statusCode != HttpStatus.partialContent) {
+    throw Exception("uri: $uri httpStatus: ${res.statusCode}");
+  }
+
+  return res.stream.toBytes();
 }

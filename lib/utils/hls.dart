@@ -42,13 +42,65 @@ class HLSStream {
 class HLSSegment {
   final Uri uri;
   final HLSKey? encryptionKey;
+  final HLSByteRange? byteRange;
 
-  HLSSegment({required this.uri, this.encryptionKey});
+  /// fMP4 initialization section (EXT-X-MAP); null for MPEG-TS segments.
+  final HLSInitSegment? initSegment;
+
+  HLSSegment({
+    required this.uri,
+    this.encryptionKey,
+    this.byteRange,
+    this.initSegment,
+  });
+
+  bool get isFMP4 => initSegment != null;
 
   @override
   String toString() {
-    return 'HLSSegment{uri: $uri, encryptionKey: $encryptionKey}';
+    return 'HLSSegment{uri: $uri, encryptionKey: $encryptionKey, byteRange: $byteRange, initSegment: $initSegment}';
   }
+}
+
+class HLSInitSegment {
+  final Uri uri;
+  final HLSByteRange? byteRange;
+  final HLSKey? encryptionKey;
+
+  HLSInitSegment({required this.uri, this.byteRange, this.encryptionKey});
+
+  @override
+  bool operator ==(Object other) =>
+      other is HLSInitSegment &&
+      other.uri == uri &&
+      other.byteRange == byteRange;
+
+  @override
+  int get hashCode => Object.hash(uri, byteRange);
+
+  @override
+  String toString() {
+    return 'HLSInitSegment{uri: $uri, byteRange: $byteRange, encryptionKey: $encryptionKey}';
+  }
+}
+
+class HLSByteRange {
+  final int length;
+  final int offset;
+
+  HLSByteRange({required this.length, required this.offset});
+
+  String get rangeHeader => 'bytes=$offset-${offset + length - 1}';
+
+  @override
+  bool operator ==(Object other) =>
+      other is HLSByteRange && other.length == length && other.offset == offset;
+
+  @override
+  int get hashCode => Object.hash(length, offset);
+
+  @override
+  String toString() => '$length@$offset';
 }
 
 class HLSKey {
@@ -86,6 +138,11 @@ Future<HLSManifest> parseHLSManifest(Uri uri, String content) async {
   final List<HLSStream> streams = [];
   final List<HLSSegment> segments = [];
   HLSKey? encryptionKey;
+  HLSKey? activeKey;
+  HLSInitSegment? initSegment;
+  String? pendingByteRange;
+  Uri? lastRangeUri;
+  int lastRangeEnd = 0;
   final lines = content.split('\n');
 
   for (var i = 0; i < lines.length; i++) {
@@ -98,6 +155,20 @@ Future<HLSManifest> parseHLSManifest(Uri uri, String content) async {
     if (line.startsWith('#')) {
       if (line.startsWith("#EXT-X-KEY:")) {
         encryptionKey = await parseHLSKey(uri, line);
+        activeKey = encryptionKey;
+      } else if (line.startsWith("#EXT-X-MAP:")) {
+        final attrs = _parseAttributes(line.substring(11));
+        final mapUri = attrs['URI'];
+        if (mapUri != null) {
+          final rangeAttr = attrs['BYTERANGE'];
+          initSegment = HLSInitSegment(
+            uri: relativeUri(uri, mapUri),
+            byteRange: rangeAttr != null ? _parseByteRange(rangeAttr, 0) : null,
+            encryptionKey: activeKey,
+          );
+        }
+      } else if (line.startsWith("#EXT-X-BYTERANGE:")) {
+        pendingByteRange = line.substring(17).trim();
       } else if (line.startsWith("#EXT-X-STREAM-INF:")) {
         final attrs = line.split(':').last.split(',');
         int? bandwidth;
@@ -127,14 +198,47 @@ Future<HLSManifest> parseHLSManifest(Uri uri, String content) async {
         }
       }
     } else {
+      final segmentUri = relativeUri(uri, line);
+      HLSByteRange? byteRange;
+      if (pendingByteRange != null) {
+        // Without explicit offset the range continues from the previous sub-range of the same resource.
+        final defaultOffset = lastRangeUri == segmentUri ? lastRangeEnd : 0;
+        byteRange = _parseByteRange(pendingByteRange, defaultOffset);
+        lastRangeUri = segmentUri;
+        lastRangeEnd = byteRange.offset + byteRange.length;
+        pendingByteRange = null;
+      }
+
       segments.add(
-        HLSSegment(uri: relativeUri(uri, line), encryptionKey: encryptionKey),
+        HLSSegment(
+          uri: segmentUri,
+          encryptionKey: encryptionKey,
+          byteRange: byteRange,
+          initSegment: initSegment,
+        ),
       );
       encryptionKey = null;
     }
   }
 
   return HLSManifest(uri: uri, streams: streams, segments: segments);
+}
+
+HLSByteRange _parseByteRange(String value, int defaultOffset) {
+  final parts = value.replaceAll('"', '').split('@');
+  return HLSByteRange(
+    length: int.parse(parts[0].trim()),
+    offset: parts.length > 1 ? int.parse(parts[1].trim()) : defaultOffset,
+  );
+}
+
+Map<String, String> _parseAttributes(String attrs) {
+  final result = <String, String>{};
+  final regex = RegExp(r'([A-Z0-9-]+)=("[^"]*"|[^,]*)');
+  for (final match in regex.allMatches(attrs)) {
+    result[match.group(1)!] = match.group(2)!.replaceAll('"', '').trim();
+  }
+  return result;
 }
 
 Future<HLSKey?> parseHLSKey(Uri masterUri, String keyLine) async {

@@ -18,6 +18,10 @@ const _buttonBarHeight = 56.0;
 const _topBarMargin = EdgeInsets.only(left: 20, right: 8, bottom: 8, top: 8);
 const _bottomBarMargin = EdgeInsets.all(8);
 const _white = Color(0xFFFFFFFF);
+const _scrimColor = Color(0x99000000);
+const _transparent = Color(0x00000000);
+// Extra height so the bar gradients fade out softly instead of ending at the buttons.
+const _scrimFade = 32.0;
 
 enum _SeekDirection { backward, forward }
 
@@ -357,16 +361,6 @@ class _VideoPlayerMobileControlsV2State
               clipBehavior: Clip.none,
               alignment: Alignment.center,
               children: [
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: AnimatedOpacity(
-                      opacity: _controlsVisible ? 1.0 : 0.0,
-                      curve: Curves.easeInOut,
-                      duration: _fadeDuration,
-                      child: const ColoredBox(color: Color(0x66000000)),
-                    ),
-                  ),
-                ),
                 if (!_hasError)
                   Positioned.fill(
                     left: _edgeInset,
@@ -521,17 +515,30 @@ class _ControlsOverlay extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
-          height: _buttonBarHeight,
-          margin: _topBarMargin,
-          child: const Row(
-            children: [
-              ExitButton(),
-              SizedBox(width: 8),
-              MediaTitle(),
-              Spacer(),
-              PlayerPlaylistButton(),
-            ],
+        DecoratedBox(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [_scrimColor, _transparent],
+            ),
+          ),
+          child: Padding(
+            padding: _topBarMargin.copyWith(
+              bottom: _topBarMargin.bottom + _scrimFade,
+            ),
+            child: const SizedBox(
+              height: _buttonBarHeight,
+              child: Row(
+                children: [
+                  ExitButton(),
+                  SizedBox(width: 8),
+                  MediaTitle(),
+                  Spacer(),
+                  PlayerPlaylistButton(),
+                ],
+              ),
+            ),
           ),
         ),
         Expanded(
@@ -539,40 +546,68 @@ class _ControlsOverlay extends StatelessWidget {
               ? const Row(
                   children: [
                     Spacer(flex: 2),
-                    SkipPrevButton(iconSize: 36.0),
+                    _CircleBackdrop(child: SkipPrevButton(iconSize: 36.0)),
                     Spacer(),
-                    PlayOrPauseButton(iconSize: 48.0),
+                    _CircleBackdrop(child: PlayOrPauseButton(iconSize: 48.0)),
                     Spacer(),
-                    SkipNextButton(iconSize: 36.0),
+                    _CircleBackdrop(child: SkipNextButton(iconSize: 36.0)),
                     Spacer(flex: 2),
                   ],
                 )
               : const SizedBox.shrink(),
         ),
-        Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            _SeekBar(
-              preview: seekPreview,
-              onSeekStart: onSeekStart,
-              onSeekEnd: onSeekEnd,
+        DecoratedBox(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [_scrimColor, _transparent],
             ),
-            Container(
-              height: _buttonBarHeight,
-              margin: _bottomBarMargin,
-              child: const Row(
-                children: [
-                  _PositionIndicator(),
-                  Spacer(),
-                  TrackSelector(),
-                  SourceSelector(),
-                  PlayerSettingsButton(),
-                ],
-              ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(top: _scrimFade),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                _SeekBar(
+                  preview: seekPreview,
+                  onSeekStart: onSeekStart,
+                  onSeekEnd: onSeekEnd,
+                ),
+                Container(
+                  height: _buttonBarHeight,
+                  margin: _bottomBarMargin,
+                  child: const Row(
+                    children: [
+                      _PositionIndicator(),
+                      Spacer(),
+                      TrackSelector(),
+                      SourceSelector(),
+                      PlayerSettingsButton(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ],
+    );
+  }
+}
+
+class _CircleBackdrop extends StatelessWidget {
+  final Widget child;
+
+  const _CircleBackdrop({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: _scrimColor,
+      shape: const CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      child: child,
     );
   }
 }
