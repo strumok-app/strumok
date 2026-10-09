@@ -86,7 +86,6 @@ class CollectionItem extends _$CollectionItem {
             length: length,
           ),
         },
-        status: MediaCollectionItemStatus.inProgress,
       );
 
       _setNewState(newValue);
