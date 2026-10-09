@@ -92,11 +92,9 @@ class _RecommendationChannel extends ConsumerWidget {
           children: [
             SizedBox(
               height: 48,
-              child: Center(
-                child: Text(
-                  channel,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+              child: Text(
+                channel,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
             Spacer(),
@@ -132,12 +130,7 @@ class _RecommendationChannel extends ConsumerWidget {
       loading: () => HorizontalList(
         title: SizedBox(
           height: 48,
-          child: Center(
-            child: Text(
-              channel,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ),
+          child: Text(channel, style: Theme.of(context).textTheme.titleMedium),
         ),
         itemBuilder: (context, index) => HorizontalListCard(
           key: Key("loading"),
@@ -147,14 +140,25 @@ class _RecommendationChannel extends ConsumerWidget {
         itemCount: 1,
       ),
       error: (e, s) => HorizontalList(
-        title: SizedBox(
-          height: 48,
-          child: Center(
-            child: Text(
-              channel,
-              style: Theme.of(context).textTheme.titleMedium,
+        title: Row(
+          children: [
+            SizedBox(
+              height: 48,
+              child: Text(
+                channel,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
-          ),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: IconButton(
+                constraints: BoxConstraints(),
+                onPressed: () => ref.refresh(provider.future),
+                icon: Icon(Icons.refresh),
+              ),
+            ),
+          ],
         ),
         itemBuilder: (context, index) => HorizontalListCard(
           key: Key("error"),

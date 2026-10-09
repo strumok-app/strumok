@@ -3,6 +3,7 @@ import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/details/content_details_provider.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_player_view.dart';
+import 'package:strumok/utils/app_orientation.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:flutter/material.dart';
@@ -31,9 +32,18 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
     floatingVideoPlayerProvider.notifier,
   );
 
+  final bool _mobileFullscreen = AppOrientation.isMobile;
+  bool _inFullscreen = false;
+  bool _exiting = false;
+
   @override
   void initState() {
     super.initState();
+
+    if (_mobileFullscreen) {
+      _inFullscreen = true;
+      AppOrientation.enterFullscreenVideo();
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       videoPlayerProviderNotifier.load(widget.supplier, widget.id);
@@ -41,8 +51,40 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
     });
   }
 
+  Future<void> _leaveFullscreen() async {
+    if (!_inFullscreen) {
+      return;
+    }
+
+    _inFullscreen = false;
+    await AppOrientation.exitFullscreenVideo();
+  }
+
+  // Rotate back before popping so the previous screen is never shown
+  // with landscape layout.
+  Future<void> _rotateAndPop() async {
+    if (_exiting) {
+      return;
+    }
+
+    _exiting = true;
+    final navigator = Navigator.of(context);
+    final view = View.of(context);
+
+    await _leaveFullscreen();
+    if (AppOrientation.isPhone) {
+      await AppOrientation.waitForPortrait(view);
+    }
+
+    if (mounted) {
+      navigator.pop();
+    }
+  }
+
   @override
   void dispose() {
+    _leaveFullscreen();
+
     if (TVDetector.isTV) {
       videoPlayerProviderNotifier.dispose();
     } else {
@@ -61,7 +103,7 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
   Widget build(BuildContext context) {
     final videoPlayer = ref.watch(videoPlayerProvider);
 
-    return Material(
+    final content = Material(
       color: Colors.black,
       child: videoPlayer.when(
         skipLoadingOnRefresh: false,
@@ -82,6 +124,23 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
           child: Center(child: CircularProgressIndicator(color: Colors.white)),
         ),
       ),
+    );
+
+    if (!_mobileFullscreen) {
+      return content;
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          // forced pop (Navigator.pop) - restore orientation as early as possible
+          _leaveFullscreen();
+        } else {
+          _rotateAndPop();
+        }
+      },
+      child: content,
     );
   }
 }

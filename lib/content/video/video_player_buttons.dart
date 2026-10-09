@@ -18,7 +18,7 @@ class ExitButton extends StatelessWidget {
       color: Colors.white,
       onPressed: () async {
         if (context.mounted) {
-          Navigator.of(context).pop();
+          Navigator.of(context).maybePop();
         }
       },
     );

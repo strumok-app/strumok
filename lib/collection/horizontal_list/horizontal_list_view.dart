@@ -71,7 +71,6 @@ class CollectionHorizontalGroup extends ConsumerWidget {
 
     return HorizontalList(
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           title,
           Spacer(),
