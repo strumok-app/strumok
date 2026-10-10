@@ -32,7 +32,7 @@ class FilterSelectorsDialog extends ConsumerWidget {
     final searchSettings = ref.watch(searchSettingsProvider);
 
     return Dialog(
-      insetPadding: EdgeInsets.only(left: isMobile(context) ? 0 : 80.0),
+      insetPadding: EdgeInsets.only(left: isMobileSize(context) ? 0 : 80.0),
       child: SingleChildScrollView(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 800),

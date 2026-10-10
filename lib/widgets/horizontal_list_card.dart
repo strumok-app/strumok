@@ -28,7 +28,7 @@ class HorizontalListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mobile = isMobile(context);
+    final mobile = isMobileSize(context);
     var size = calcSize(context);
 
     return SizedBox(
@@ -82,7 +82,7 @@ class HorizontalListCard extends StatelessWidget {
   static Size calcSize(BuildContext context) {
     var width = 200.0;
 
-    if (isMobile(context)) {
+    if (isMobileSize(context)) {
       var screenWidth = MediaQuery.of(context).size.width;
       width = (screenWidth - 24) / 2;
     }

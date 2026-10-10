@@ -93,7 +93,7 @@ class _SearchBar extends ConsumerWidget {
     return SearchAnchor(
       enabled: !offlineMode,
       dividerColor: Colors.transparent,
-      isFullScreen: isMobile(context),
+      isFullScreen: isMobileSize(context),
       searchController: searchController,
       viewOnChanged: (value) {
         ref.read(suggestionsProvider.notifier).suggest(value);

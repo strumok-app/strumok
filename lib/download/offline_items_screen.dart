@@ -37,7 +37,7 @@ class OfflineItemsScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (isMobile(context)) _InprogressDownloads(),
+                      if (isMobileSize(context)) _InprogressDownloads(),
                       _OfflineItemsView(),
                     ],
                   ),

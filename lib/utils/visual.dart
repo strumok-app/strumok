@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 
 const mobileWidth = 450.0;
 
-bool isMobile(BuildContext context) {
-  return MediaQuery.sizeOf(context).width < mobileWidth;
+bool isMobileSize(BuildContext context) {
+  return MediaQuery.sizeOf(context).shortestSide < mobileWidth;
 }
 
 bool isMobileDevice() {

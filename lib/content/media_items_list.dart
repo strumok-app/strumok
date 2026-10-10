@@ -72,7 +72,7 @@ class _MediaItemsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mobile = isMobile(context);
+    final mobile = isMobileSize(context);
 
     const radius = Radius.circular(16);
 

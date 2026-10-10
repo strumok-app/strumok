@@ -70,7 +70,9 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
     }
 
     _inLandscape = false;
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    await SystemChrome.setPreferredOrientations([]);
   }
 
   // Rotate back before popping so the previous screen is never shown

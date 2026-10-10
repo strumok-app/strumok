@@ -36,7 +36,7 @@ class _AISearchPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
     final theme = Theme.of(context);
-    final mobile = isMobile(context);
+    final mobile = isMobileSize(context);
 
     const radius = Radius.circular(16);
 

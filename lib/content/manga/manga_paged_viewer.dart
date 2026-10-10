@@ -220,7 +220,7 @@ class _ReaderGestureDetectorState extends State<_ReaderGestureDetector> {
       return;
     }
 
-    if (isMobile(context)) {
+    if (isMobileSize(context)) {
       if (_isInZone(1, 3, _lastTapDetails!.globalPosition)) {
         Actions.invoke(context, const PrevPageIntent());
       } else if (_isInZone(3, 3, _lastTapDetails!.globalPosition)) {
