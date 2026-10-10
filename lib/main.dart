@@ -15,7 +15,6 @@ import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/layouts/version_guard.dart';
 import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/utils/utils.dart';
-import 'package:strumok/utils/app_orientation.dart';
 import 'package:strumok/video_backend/init.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/tv.dart';
@@ -66,7 +65,6 @@ void appRunner() async {
   await AppPreferences.init();
   await AppDatabase().init();
   await TVDetector.detect();
-  await AppOrientation.applyDefault();
 
   if (isDesktopDevice()) {
     await windowManager.ensureInitialized();

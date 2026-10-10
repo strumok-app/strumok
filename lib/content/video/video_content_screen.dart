@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/services.dart';
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/details/content_details_provider.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_player_view.dart';
-import 'package:strumok/utils/app_orientation.dart';
 import 'package:strumok/utils/tv.dart';
+import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/display_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,18 +33,17 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
     floatingVideoPlayerProvider.notifier,
   );
 
-  final bool _mobileFullscreen = AppOrientation.isMobile;
-  bool _inFullscreen = false;
-  bool _exiting = false;
+  // final bool _mobileFullscreen = AppOrientation.isMobile;
+  bool _inLandscape = false;
+  bool _exitingLanscape = false;
+
+  final bool _mobile = isMobileDevice();
 
   @override
   void initState() {
     super.initState();
 
-    if (_mobileFullscreen) {
-      _inFullscreen = true;
-      AppOrientation.enterFullscreenVideo();
-    }
+    _enterLandscape();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       videoPlayerProviderNotifier.load(widget.supplier, widget.id);
@@ -51,30 +51,39 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
     });
   }
 
-  Future<void> _leaveFullscreen() async {
-    if (!_inFullscreen) {
+  Future<void> _enterLandscape() async {
+    if (!_mobile || _inLandscape) {
+      return;
+    }
+    _inLandscape = true;
+
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  Future<void> _leaveLandscape() async {
+    if (!_mobile || !_inLandscape) {
       return;
     }
 
-    _inFullscreen = false;
-    await AppOrientation.exitFullscreenVideo();
+    _inLandscape = false;
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   // Rotate back before popping so the previous screen is never shown
   // with landscape layout.
   Future<void> _rotateAndPop() async {
-    if (_exiting) {
+    if (_exitingLanscape) {
       return;
     }
 
-    _exiting = true;
+    _exitingLanscape = true;
     final navigator = Navigator.of(context);
-    final view = View.of(context);
 
-    await _leaveFullscreen();
-    if (AppOrientation.isPhone) {
-      await AppOrientation.waitForPortrait(view);
-    }
+    await _leaveLandscape();
 
     if (mounted) {
       navigator.pop();
@@ -83,7 +92,7 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
 
   @override
   void dispose() {
-    _leaveFullscreen();
+    _leaveLandscape();
 
     if (TVDetector.isTV) {
       videoPlayerProviderNotifier.dispose();
@@ -126,7 +135,7 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
       ),
     );
 
-    if (!_mobileFullscreen) {
+    if (!_mobile) {
       return content;
     }
 
@@ -134,8 +143,7 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) {
-          // forced pop (Navigator.pop) - restore orientation as early as possible
-          _leaveFullscreen();
+          _leaveLandscape();
         } else {
           _rotateAndPop();
         }
