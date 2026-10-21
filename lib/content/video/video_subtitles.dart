@@ -137,29 +137,76 @@ class _SubtitleText extends StatelessWidget {
   final String text;
   final double fontSize;
 
+  double _fitFontSize(BuildContext context, double availableWidth) {
+    final maximumWidth = availableWidth.clamp(80.0, double.infinity);
+    var fittedSize = fontSize;
+
+    while (fittedSize > 14.0) {
+      final painter = TextPainter(
+        text: TextSpan(
+          text: text,
+          style: TextStyle(
+            height: 1.4,
+            fontSize: fittedSize,
+            letterSpacing: 0.0,
+            wordSpacing: 0.0,
+            color: Color(0xffffffff),
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        textDirection: Directionality.of(context),
+        textAlign: TextAlign.center,
+        maxLines: 3,
+        ellipsis: '…',
+      )..layout(maxWidth: maximumWidth);
+
+      final exceedsWidth = painter.maxIntrinsicWidth > maximumWidth;
+      final exceedsLines = painter.didExceedMaxLines;
+      if (!exceedsWidth && !exceedsLines) {
+        return fittedSize;
+      }
+
+      fittedSize -= 1.0;
+    }
+
+    return 14.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: videoContentController(context).subtitlePaddings,
       builder: (context, value, child) {
+        print('Subtitle paddings: $value');
         return Container(
           padding: const EdgeInsets.only(bottom: 16) + value,
           alignment: Alignment.bottomCenter,
           child: child!,
         );
       },
-      child: RoundedBackgroundText(
-        text,
-        style: TextStyle(
-          height: 1.4,
-          fontSize: fontSize,
-          letterSpacing: 0.0,
-          wordSpacing: 0.0,
-          color: Color(0xffffffff),
-          fontWeight: FontWeight.normal,
-        ),
-        backgroundColor: Color(0xaa000000),
-        textAlign: TextAlign.center,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final availableWidth = constraints.maxWidth == double.infinity
+              ? MediaQuery.sizeOf(context).width * 0.9
+              : constraints.maxWidth * 0.9;
+          final effectiveFontSize = _fitFontSize(context, availableWidth);
+
+          return RoundedBackgroundText(
+            text,
+            maxLines: 3,
+            ellipsis: '…',
+            style: TextStyle(
+              height: 1.4,
+              fontSize: effectiveFontSize,
+              letterSpacing: 0.0,
+              wordSpacing: 0.0,
+              color: Color(0xffffffff),
+              fontWeight: FontWeight.normal,
+            ),
+            backgroundColor: Color(0xaa000000),
+            textAlign: TextAlign.center,
+          );
+        },
       ),
     );
   }

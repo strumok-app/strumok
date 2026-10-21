@@ -20,6 +20,24 @@ class AppConstances {
 }
 
 class AppPreferences {
+  static const Color defaultColor = Colors.green;
+  static const double defaultVolume = 100.0;
+  static const int defaultLastSyncTimestamp = 0;
+  static const bool defaultMangaReaderAutoCrop = true;
+  static const bool defaultVideoPlayerShuffleMode = false;
+  static const bool defaultFloatingVideoPlayerEnabled = true;
+  static const bool defaultAiSearchEnabled = false;
+  static const double defaultVideoPlayerSubtitlesSize = 16.0;
+  static const int defaultVideoPlayerFixedPosition = 0;
+  static const MangaReaderBackground defaultMangaReaderBackground =
+      MangaReaderBackground.dark;
+  static const MangaReaderMode defaultMangaReaderMode =
+      MangaReaderMode.longStrip;
+  static const OnVideoEndsAction defaultVideoPlayerEndsAction =
+      OnVideoEndsAction.playNext;
+  static const StartVideoPosition defaultVideoPlayerStartFrom =
+      StartVideoPosition.fromRemembered;
+
   // Preference key constants
   static const String _keySelectedContentLanguage = "selected_content_language";
   static const String _keySelectedContentType = "selected_content_type";
@@ -123,16 +141,17 @@ class AppPreferences {
 
   static Color get themeColor {
     final colorValue = instance.getInt(_keyThemeColor);
-    // colorValue
-    return colorValue != null ? Color(colorValue) : AppConstances.defaultColor;
+    return colorValue != null ? Color(colorValue) : AppPreferences.defaultColor;
   }
 
-  static int get lastSyncTimestamp => instance.getInt(_keyLastSyncTs) ?? 0;
+  static int get lastSyncTimestamp =>
+      instance.getInt(_keyLastSyncTs) ?? AppPreferences.defaultLastSyncTimestamp;
 
   static set lastSyncTimestamp(int timestamp) =>
       instance.setInt(_keyLastSyncTs, timestamp);
 
-  static double get volume => instance.getDouble(_keyVolume) ?? 100.0;
+  static double get volume =>
+      instance.getDouble(_keyVolume) ?? AppPreferences.defaultVolume;
 
   static set volume(double value) => instance.setDouble(_keyVolume, value);
 
@@ -169,7 +188,7 @@ class AppPreferences {
                 type.name == instance.getString(_keyMangaReaderBackground),
           )
           .firstOrNull ??
-      MangaReaderBackground.dark;
+      AppPreferences.defaultMangaReaderBackground;
 
   static set mangaReaderMode(MangaReaderMode mode) =>
       instance.setString(_keyMangaReaderMode, mode.name);
@@ -178,16 +197,18 @@ class AppPreferences {
       MangaReaderMode.values
           .where((type) => type.name == instance.getString(_keyMangaReaderMode))
           .firstOrNull ??
-      MangaReaderMode.longStrip;
+      AppPreferences.defaultMangaReaderMode;
 
   static bool get mangaReaderAutoCrop =>
-      instance.getBool(_keyMangaReaderAutoCrop) ?? true;
+      instance.getBool(_keyMangaReaderAutoCrop) ??
+      AppPreferences.defaultMangaReaderAutoCrop;
 
   static set mangaReaderAutoCrop(bool enabled) =>
       instance.setBool(_keyMangaReaderAutoCrop, enabled);
 
   static bool get videoPlayerSettingShuffleMode =>
-      instance.getBool(_keyVideoPlayerSettingShuffleMode) ?? false;
+      instance.getBool(_keyVideoPlayerSettingShuffleMode) ??
+      AppPreferences.defaultVideoPlayerShuffleMode;
 
   static set videoPlayerSettingShuffleMode(bool enabled) =>
       instance.setBool(_keyVideoPlayerSettingShuffleMode, enabled);
@@ -200,7 +221,7 @@ class AppPreferences {
                 instance.getString(_keyVideoPlayerSettingEndsAction),
           )
           .firstOrNull ??
-      OnVideoEndsAction.playNext;
+      AppPreferences.defaultVideoPlayerEndsAction;
 
   static set videoPlayerSettingEndsAction(OnVideoEndsAction action) =>
       instance.setString(_keyVideoPlayerSettingEndsAction, action.name);
@@ -213,19 +234,21 @@ class AppPreferences {
                 instance.getString(_keyVideoPlayerSettingStartFrom),
           )
           .firstOrNull ??
-      StartVideoPosition.fromRemembered;
+      AppPreferences.defaultVideoPlayerStartFrom;
 
   static set videoPlayerSettingStarFrom(StartVideoPosition startFrom) =>
       instance.setString(_keyVideoPlayerSettingStartFrom, startFrom.name);
 
   static int get videoPlayerSettingFixedPosition =>
-      instance.getInt(_keyVideoPlayerSettingFixedPosition) ?? 0;
+      instance.getInt(_keyVideoPlayerSettingFixedPosition) ??
+      AppPreferences.defaultVideoPlayerFixedPosition;
 
   static set videoPlayerSettingFixedPosition(int pos) =>
       instance.setInt(_keyVideoPlayerSettingFixedPosition, pos);
 
   static double get videoPlayerSubtitlesSize =>
-      instance.getDouble(_keyVideoPlayerSubtitlesSize) ?? 26.0;
+      instance.getDouble(_keyVideoPlayerSubtitlesSize) ??
+      AppPreferences.defaultVideoPlayerSubtitlesSize;
 
   static set videoPlayerSubtitlesSize(double size) =>
       instance.setDouble(_keyVideoPlayerSubtitlesSize, size);
@@ -285,7 +308,8 @@ class AppPreferences {
       instance.setBool(_keyFloatingVideoPlayerEnabled, enabled);
 
   static bool get floatingVideoPlayerEnabled =>
-      instance.getBool(_keyFloatingVideoPlayerEnabled) ?? true;
+      instance.getBool(_keyFloatingVideoPlayerEnabled) ??
+      AppPreferences.defaultFloatingVideoPlayerEnabled;
 
   static set geminiApiToken(String? token) => token != null
       ? instance.setString(_keyGeminiApiToken, token)
@@ -297,5 +321,6 @@ class AppPreferences {
       instance.setBool(_keyAiSearchEnabled, enabled);
 
   static bool get aiSearchEnabled =>
-      instance.getBool(_keyAiSearchEnabled) ?? false;
+      instance.getBool(_keyAiSearchEnabled) ??
+      AppPreferences.defaultAiSearchEnabled;
 }
