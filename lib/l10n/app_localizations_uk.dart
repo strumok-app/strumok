@@ -179,6 +179,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get videoSubtitlesOff => 'Без субтитрів';
 
   @override
+  String get videoSubtitlesSize => 'Розмір субтитрів';
+
+  @override
   String get videoSubtitlesOffset => 'Змішення субтитрів';
 
   @override

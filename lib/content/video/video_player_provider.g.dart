@@ -378,6 +378,59 @@ abstract class _$FixedPositionSettings extends $Notifier<int> {
   }
 }
 
+@ProviderFor(SubtitlesSizeSettings)
+final subtitlesSizeSettingsProvider = SubtitlesSizeSettingsProvider._();
+
+final class SubtitlesSizeSettingsProvider
+    extends $NotifierProvider<SubtitlesSizeSettings, double> {
+  SubtitlesSizeSettingsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'subtitlesSizeSettingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$subtitlesSizeSettingsHash();
+
+  @$internal
+  @override
+  SubtitlesSizeSettings create() => SubtitlesSizeSettings();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(double value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<double>(value),
+    );
+  }
+}
+
+String _$subtitlesSizeSettingsHash() =>
+    r'f3269b7794a64650152fd1c145c64421b9e3b230';
+
+abstract class _$SubtitlesSizeSettings extends $Notifier<double> {
+  double build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<double, double>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<double, double>,
+              double,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
 @ProviderFor(EqualizerBandsSettings)
 final equalizerBandsSettingsProvider = EqualizerBandsSettingsProvider._();
 

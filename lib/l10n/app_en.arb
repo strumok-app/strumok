@@ -55,6 +55,7 @@
     "videoSourceFailed": "Video playback error",
     "videoNoSources": "No available video source",
     "videoSubtitlesOff": "Subtitles off",
+    "videoSubtitlesSize": "Subtitles size",
     "videoSubtitlesOffset": "Subtitles offset",
     "videoPlayerSettingShuffleMode": "Shuffle playlist mode",
     "videoPlayerSettingEndsAction": "On video ends",

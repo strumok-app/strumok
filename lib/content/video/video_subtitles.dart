@@ -15,6 +15,7 @@ class VideoSubtitles extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final subtitlesOffset = ref.watch(subtitlesOffsetProvider);
+    final subtitlesSize = ref.watch(subtitlesSizeSettingsProvider);
 
     return ValueListenableBuilder(
       valueListenable: videoContentController(context).subtitleController,
@@ -28,6 +29,7 @@ class VideoSubtitles extends ConsumerWidget {
             return PlayerSubtitleView(
               subtitleController: subtitleController,
               subtitlesOffset: subtitlesOffset,
+              subtitlesSize: subtitlesSize,
             );
           },
           error: (e, _) => _SubtitleText(
@@ -45,11 +47,13 @@ class VideoSubtitles extends ConsumerWidget {
 class PlayerSubtitleView extends StatefulWidget {
   final SubtitleController subtitleController;
   final Duration subtitlesOffset;
+  final double subtitlesSize;
 
   const PlayerSubtitleView({
     super.key,
     required this.subtitleController,
     required this.subtitlesOffset,
+    required this.subtitlesSize,
   });
 
   @override
@@ -123,14 +127,15 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
           };
         });
 
-    return _SubtitleText(text: text);
+    return _SubtitleText(text: text, fontSize: widget.subtitlesSize);
   }
 }
 
 class _SubtitleText extends StatelessWidget {
-  const _SubtitleText({required this.text});
+  const _SubtitleText({required this.text, this.fontSize = 26.0});
 
   final String text;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +152,7 @@ class _SubtitleText extends StatelessWidget {
         text,
         style: TextStyle(
           height: 1.4,
-          fontSize: 32.0,
+          fontSize: fontSize,
           letterSpacing: 0.0,
           wordSpacing: 0.0,
           color: Color(0xffffffff),

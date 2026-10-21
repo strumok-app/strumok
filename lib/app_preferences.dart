@@ -42,6 +42,8 @@ class AppPreferences {
       "video_player_setting_start_from";
   static const String _keyVideoPlayerSettingFixedPosition =
       "video_player_setting_fixed_position";
+  static const String _keyVideoPlayerSubtitlesSize =
+      "video_player_subtitles_size";
   static const String _keyVideoPlayerEqualizerBands =
       "video_player_equalizer_bands";
   static const String _keyOfflineMode = "offline_mode";
@@ -222,6 +224,12 @@ class AppPreferences {
   static set videoPlayerSettingFixedPosition(int pos) =>
       instance.setInt(_keyVideoPlayerSettingFixedPosition, pos);
 
+  static double get videoPlayerSubtitlesSize =>
+      instance.getDouble(_keyVideoPlayerSubtitlesSize) ?? 26.0;
+
+  static set videoPlayerSubtitlesSize(double size) =>
+      instance.setDouble(_keyVideoPlayerSubtitlesSize, size);
+
   static List<double> get videoPlayerEqualizerBands {
     final bandsString = instance.getString(_keyVideoPlayerEqualizerBands);
     if (bandsString == null) {
@@ -283,8 +291,7 @@ class AppPreferences {
       ? instance.setString(_keyGeminiApiToken, token)
       : instance.remove(_keyGeminiApiToken);
 
-  static String? get geminiApiToken =>
-      instance.getString(_keyGeminiApiToken);
+  static String? get geminiApiToken => instance.getString(_keyGeminiApiToken);
 
   static set aiSearchEnabled(bool enabled) =>
       instance.setBool(_keyAiSearchEnabled, enabled);

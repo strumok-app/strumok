@@ -434,6 +434,12 @@ abstract class AppLocalizations {
   /// **'Subtitles off'**
   String get videoSubtitlesOff;
 
+  /// No description provided for @videoSubtitlesSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitles size'**
+  String get videoSubtitlesSize;
+
   /// No description provided for @videoSubtitlesOffset.
   ///
   /// In en, this message translates to:

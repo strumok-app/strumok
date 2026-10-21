@@ -185,6 +185,20 @@ class FixedPositionSettings extends _$FixedPositionSettings {
 }
 
 @riverpod
+class SubtitlesSizeSettings extends _$SubtitlesSizeSettings {
+  @override
+  double build() {
+    return AppPreferences.videoPlayerSubtitlesSize;
+  }
+
+  void select(double size) {
+    final clampedSize = size.clamp(16.0, 48.0);
+    AppPreferences.videoPlayerSubtitlesSize = clampedSize;
+    state = clampedSize;
+  }
+}
+
+@riverpod
 class EqualizerBandsSettings extends _$EqualizerBandsSettings {
   @override
   List<double> build() {

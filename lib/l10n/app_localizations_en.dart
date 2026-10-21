@@ -179,6 +179,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoSubtitlesOff => 'Subtitles off';
 
   @override
+  String get videoSubtitlesSize => 'Subtitles size';
+
+  @override
   String get videoSubtitlesOffset => 'Subtitles offset';
 
   @override

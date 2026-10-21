@@ -66,6 +66,9 @@ class PlayerSettingsDialogState extends State<PlayerSettingsDialog>
                   );
                 },
                 child: switch (_location) {
+                  _MenuLocation.subtitlesSize => _MenuSubtitlesSize(
+                    onNav: _navTo,
+                  ),
                   _MenuLocation.subtitlesOffset => _MenuSubtitlesOffset(
                     onNav: _navTo,
                   ),
@@ -91,7 +94,14 @@ class PlayerSettingsDialogState extends State<PlayerSettingsDialog>
 
 typedef _MenuLocationCallback = Function(_MenuLocation);
 
-enum _MenuLocation { root, onEnds, startFrom, subtitlesOffset, equalizer }
+enum _MenuLocation {
+  root,
+  onEnds,
+  startFrom,
+  subtitlesOffset,
+  subtitlesSize,
+  equalizer,
+}
 
 class _MenuEqualizer extends ConsumerWidget {
   final _MenuLocationCallback onNav;
@@ -327,6 +337,65 @@ class _EqualizerBandState extends State<_EqualizerBand> {
   }
 }
 
+class _MenuSubtitlesSize extends ConsumerWidget {
+  final _MenuLocationCallback onNav;
+
+  const _MenuSubtitlesSize({required this.onNav});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final subtitlesSize = ref.watch(subtitlesSizeSettingsProvider);
+
+    return SizedBox(
+      width: 320,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.arrow_back),
+            onTap: () {
+              onNav(_MenuLocation.root);
+            },
+            title: Text(
+              AppLocalizations.of(context)!.videoSubtitlesSize,
+              style: theme.textTheme.bodyLarge,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+            child: Row(
+              children: [
+                const Icon(Icons.text_fields),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Slider(
+                    value: subtitlesSize,
+                    min: 16,
+                    max: 48,
+                    divisions: 32,
+                    label: '${subtitlesSize.toStringAsFixed(0)}px',
+                    onChanged: (value) {
+                      ref
+                          .read(subtitlesSizeSettingsProvider.notifier)
+                          .select(value);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  '${subtitlesSize.toStringAsFixed(0)}px',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _MenuSubtitlesOffset extends ConsumerWidget {
   final _MenuLocationCallback onNav;
 
@@ -496,6 +565,12 @@ class _MenuRoot extends ConsumerWidget {
             onNav(_MenuLocation.equalizer);
           },
           title: Text(AppLocalizations.of(context)!.equalizerTitle),
+        ),
+        ListTile(
+          onTap: () {
+            onNav(_MenuLocation.subtitlesSize);
+          },
+          title: Text(AppLocalizations.of(context)!.videoSubtitlesSize),
         ),
         ListTile(
           onTap: () {
