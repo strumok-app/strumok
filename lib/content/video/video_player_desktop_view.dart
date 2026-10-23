@@ -106,7 +106,7 @@ class _PipVideoControlsState extends State<PipVideoControls> {
                     child: IconButton(
                       color: Colors.white,
                       onPressed: widget.onPipExit,
-                      icon: const Icon(Symbols.pip_exit),
+                      icon: const Icon(Symbols.fullscreen_exit),
                     ),
                   ),
                 ),

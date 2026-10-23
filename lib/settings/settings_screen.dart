@@ -3,6 +3,8 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/layouts/general_layout.dart';
 import 'package:strumok/settings/app_version/app_version_settings.dart';
+import 'package:strumok/settings/brightness_switcher.dart';
+import 'package:strumok/settings/color_switcher.dart';
 import 'package:strumok/settings/floating_video_switcher.dart';
 import 'package:strumok/settings/ai_search.dart';
 import 'package:strumok/settings/suppliers/suppliers_bundle_version_settings.dart';
@@ -52,6 +54,16 @@ class _SettingsView extends StatelessWidget {
                 context,
                 AppLocalizations.of(context)!.settingsSuppliersVersion,
                 const SuppliersBundleVersionSettings(),
+              ),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsTheme,
+                const BrightnessSwitcher(),
+              ),
+              _renderSection(
+                context,
+                AppLocalizations.of(context)!.settingsColor,
+                const ColorSwitcher(),
               ),
               _renderSection(
                 context,
