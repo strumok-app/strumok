@@ -45,9 +45,9 @@ class CollectionItemPrioritySelector extends StatelessWidget {
 
   IconData _priorityIcon(int priority) {
     return switch (priority) {
-      0 => Icons.filter_1,
-      1 => Icons.filter_2,
-      _ => Icons.filter_3,
+      0 => Icons.looks_one,
+      1 => Icons.looks_two,
+      _ => Icons.looks_3,
     };
   }
 }
