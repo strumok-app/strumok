@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/search/ai_search/ai_search_provider.dart';
 import 'package:strumok/search/search_provider.dart';
@@ -87,7 +86,7 @@ class _AISearchPanel extends ConsumerWidget {
               onPressed: () {
                 ref.read(aIChatProvider.notifier).reset();
               },
-              icon: Icon(Symbols.delete_history),
+              icon: Icon(Icons.delete_sweep),
             ),
           ),
         ),

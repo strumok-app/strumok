@@ -48,7 +48,6 @@ dependencies:
   # widgets
   scrollable_positioned_list: ^0.3.8
   readmore: ^3.0.0
-  material_symbols_icons: ^4.2874.0
   rounded_background_text: ^0.6.0
   cached_network_image: ^3.4.1
 

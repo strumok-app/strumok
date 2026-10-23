@@ -1,7 +1,6 @@
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/download/manager/manager.dart';
 import 'package:strumok/download/media_item_download_provider.dart';
@@ -45,7 +44,7 @@ class MediaItemDownloadButton extends ConsumerWidget {
         MediaItemDownloadStatus.stored => IconButton(
           padding: EdgeInsets.all(8),
           onPressed: () => _showDialog(context),
-          icon: Icon(Symbols.folder_check),
+          icon: Icon(Icons.folder_copy),
         ),
         MediaItemDownloadStatus.downloading => _MediaItemDownloadIndicator(
           state: state,

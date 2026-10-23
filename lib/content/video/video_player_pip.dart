@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_controller.dart';
@@ -135,7 +134,7 @@ class PipButton extends StatelessWidget {
 
     return IconButton(
       onPressed: Pip.instance.enter,
-      icon: const Icon(Symbols.pip),
+      icon: const Icon(Icons.picture_in_picture_alt),
       iconSize: iconSize,
       color: Colors.white,
     );
@@ -284,7 +283,7 @@ class _PipControlsOverlay extends StatelessWidget {
             child: IconButton(
               color: Colors.white,
               onPressed: Pip.instance.exit,
-              icon: const Icon(Symbols.pip_exit),
+              icon: const Icon(Icons.open_in_full),
             ),
           ),
           const Positioned(top: 4, right: 4, child: _PipCloseButton()),

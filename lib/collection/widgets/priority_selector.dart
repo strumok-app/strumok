@@ -2,7 +2,6 @@ import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/widgets/dropdown.dart';
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 typedef PrioritySelectCallback = Function(int priority);
 
@@ -46,9 +45,9 @@ class CollectionItemPrioritySelector extends StatelessWidget {
 
   IconData _priorityIcon(int priority) {
     return switch (priority) {
-      0 => Symbols.stat_1,
-      1 => Symbols.stat_2,
-      _ => Symbols.stat_3
+      0 => Icons.filter_1,
+      1 => Icons.filter_2,
+      _ => Icons.filter_3,
     };
   }
 }

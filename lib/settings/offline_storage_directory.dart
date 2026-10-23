@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/app_localizations.dart';
 
@@ -43,7 +42,7 @@ class OfflineStorageDirectorySelector extends ConsumerWidget {
                       .read(offlineStorageDirectoryProvider.notifier)
                       .select(null);
                 },
-                icon: Icon(Symbols.reset_settings),
+                icon: Icon(Icons.settings_backup_restore),
               ),
             Spacer(),
             ElevatedButton(

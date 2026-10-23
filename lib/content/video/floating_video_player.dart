@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:strumok/app_router.dart';
 import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
@@ -282,7 +281,7 @@ class FloatingPlayerExpandButton extends ConsumerWidget {
         final id = controller.contentDetails.id;
         appRouter.push(VideoContentRoute(supplier: supplier, id: id));
       },
-      icon: const Icon(Symbols.pip_exit, color: Colors.white, size: 24),
+      icon: const Icon(Icons.open_in_full, color: Colors.white, size: 24),
     );
   }
 }
