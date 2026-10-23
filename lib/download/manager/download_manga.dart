@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/http.dart';
 import 'package:strumok/utils/utils.dart';
 
 void downloadManga(
@@ -81,7 +82,7 @@ Future<void> downloadPageToFile({
     }
 
     final httpRes = await retry(
-      () => Client().send(httpReq).timeout(httpTimeout),
+      () => appHttpClient.send(httpReq).timeout(httpTimeout),
       3,
       const Duration(seconds: 10),
     );

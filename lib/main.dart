@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:logging_to_logcat/logging_to_logcat.dart';
+import 'package:http/http.dart' as http;
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:strumok/app_database.dart';
 import 'package:strumok/app_init_firebase.dart';
@@ -14,7 +15,7 @@ import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/layouts/version_guard.dart';
 import 'package:strumok/download/offline_storage.dart';
-import 'package:strumok/utils/utils.dart';
+import 'package:strumok/utils/http.dart';
 import 'package:strumok/video_backend/init.dart';
 import 'package:strumok/settings/settings_provider.dart';
 import 'package:strumok/utils/tv.dart';
@@ -27,9 +28,7 @@ import 'package:strumok/content/video/floating_video_player.dart';
 import 'package:strumok/content/video/pip/pip.dart';
 import 'package:window_manager/window_manager.dart';
 
-void main() async {
-  // disable ssl cert due to windows issue
-  HttpOverrides.global = DisableCertVerifyHttpOverrides();
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Logger.root.level = Level.ALL; // defaults to Level.INFO
@@ -52,13 +51,18 @@ void main() async {
   }
 
   if (kDebugMode) {
-    appRunner();
+    // Makes `http.Client()` (including in third-party packages) prefer HTTP/2.
+    http.runWithClient(appRunner, createAppHttpClient);
   } else {
     const sentryDns = String.fromEnvironment("SENTRY_DNS");
-    await SentryFlutter.init((options) {
-      options.tracesSampleRate = 1.0;
-      options.dsn = sentryDns;
-    }, appRunner: appRunner);
+    await SentryFlutter.init(
+      (options) {
+        options.tracesSampleRate = 1.0;
+        options.dsn = sentryDns;
+      },
+      // Makes `http.Client()` (including in third-party packages) prefer HTTP/2.
+      appRunner: () => http.runWithClient(appRunner, createAppHttpClient),
+    );
   }
 }
 

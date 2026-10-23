@@ -7,6 +7,7 @@ import 'package:strumok/download/manager/download_file.dart';
 import 'package:strumok/download/manager/models.dart';
 import 'package:strumok/utils/hls.dart';
 import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/http.dart';
 import 'package:strumok/utils/utils.dart';
 
 void downloadVideo(
@@ -35,7 +36,7 @@ void downloadVideo(
     httpReq.headers["User-Agent"] = userAgent;
 
     logger.info("downloading HLS master playlist for request: $request");
-    final res = await Client().send(httpReq).timeout(httpTimeout);
+    final res = await appHttpClient.send(httpReq).timeout(httpTimeout);
 
     if (request.url.endsWith(".m3u8") ||
         res.headers['content-type'] == 'application/vnd.apple.mpegurl') {
@@ -121,7 +122,7 @@ Future<void> _downloadHLSStream(
   }
 
   logger.info("downloading HLS stream: $stream");
-  final res = await Client().send(req).timeout(httpTimeout);
+  final res = await appHttpClient.send(req).timeout(httpTimeout);
 
   if (res.statusCode != HttpStatus.ok) {
     throw Exception("stream: ${stream.uri} httpError: ${res.statusCode}");
@@ -148,7 +149,7 @@ Future<void> _downloadStreamSegments(
   CancelToken cancelToken,
   HLSManifest manifest,
 ) async {
-  final client = Client();
+  final client = appHttpClient;
 
   final partialFilePath = request.fileSrc + partialExtension;
   final partialFile = File(partialFilePath);
@@ -231,7 +232,7 @@ Future<void> _downloadStreamSegments(
       final key = segment.encryptionKey!;
 
       logger.info("downloading HLS key for key: $key");
-      final response = await get(key.uri);
+      final response = await appHttpClient.get(key.uri);
 
       if (response.statusCode != HttpStatus.ok) {
         throw Exception("Failed to download HLS key: ${response.statusCode}");

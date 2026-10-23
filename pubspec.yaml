@@ -76,6 +76,8 @@ dependencies:
 
   content_suppliers_rust:
     path: content_suppliers_rust
+  # Pinned: `Http2Client` is experimental.
+  http2: ">=3.1.0 <3.2.0"
 
 dev_dependencies:
   build_runner: ^2.13.1

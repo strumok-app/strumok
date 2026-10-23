@@ -651,6 +651,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.0"
+  http2:
+    dependency: "direct main"
+    description:
+      name: http2
+      sha256: "480bf904908b4e4ec4fac8117f69f5ff54cf48c12b1761f0a192e1e10196ee7b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   http_multi_server:
     dependency: transitive
     description:

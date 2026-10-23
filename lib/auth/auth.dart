@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:firebase_dart/firebase_dart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:http/http.dart';
 import 'package:strumok/app_init_firebase.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/trace.dart';
+import 'package:strumok/utils/http.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -90,7 +90,10 @@ class Auth {
   Future<void> signInWithPairCode(String code) async {
     final endpoint = AppInitFirebase().getEndpoint("exchangecodefortoken");
 
-    final res = await Client().post(Uri.parse(endpoint), body: {"code": code});
+    final res = await appHttpClient.post(
+      Uri.parse(endpoint),
+      body: {"code": code},
+    );
 
     if (res.statusCode >= 400) {
       final ex = Exception("Fail to exchange code for token: ${res.body}");
@@ -113,7 +116,7 @@ class Auth {
     final token = await user.getIdToken();
     final endpoint = AppInitFirebase().getEndpoint("generatecode");
 
-    final res = await Client().post(
+    final res = await appHttpClient.post(
       Uri.parse(endpoint),
       headers: {"Authorization": "Bearer $token"},
     );
@@ -206,7 +209,7 @@ class DesktopPlatformSignIn extends PlatformSignIn {
     final credentials = await obtainAccessCredentialsViaUserConsent(
       clientId,
       scopes,
-      Client(),
+      createAppHttpClient(),
       (uri) {
         launchUrl(Uri.parse(uri));
       },

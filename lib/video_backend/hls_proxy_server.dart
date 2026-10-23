@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:strumok/utils/hls.dart';
 import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/http.dart';
 import 'package:strumok/utils/utils.dart';
 
 /// An HLS-aware reverse proxy that runs on localhost.
@@ -40,7 +41,7 @@ class HLSProxyServer {
   final int port;
 
   HttpServer? _server;
-  final http.Client _httpClient = http.Client();
+  http.Client? _httpClient;
 
   HLSProxyServer({required this.port});
 
@@ -67,6 +68,7 @@ class HLSProxyServer {
     }
 
     _server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
+    _httpClient = createAppHttpClient();
     logger.info('[HLSProxyServer] Listening on $baseUrl');
 
     _server!.listen(
@@ -85,7 +87,8 @@ class HLSProxyServer {
 
     await _server?.close(force: true);
     _server = null;
-    _httpClient.close();
+    _httpClient?.close();
+    _httpClient = null;
     logger.info('[HLSProxyServer] Stopped');
   }
 
@@ -193,7 +196,7 @@ class HLSProxyServer {
         }
       });
 
-      final streamedResponse = await _httpClient.send(upstreamReq);
+      final streamedResponse = await _httpClient!.send(upstreamReq);
 
       if (streamedResponse.statusCode >= 400) {
         logger.warning(
@@ -327,7 +330,7 @@ class HLSProxyServer {
         '[HLSProxyServer] Fetching $upstreamUri with headers: ${upstreamReq.headers}',
       );
 
-      final response = await _httpClient.send(upstreamReq);
+      final response = await _httpClient!.send(upstreamReq);
 
       if (response.statusCode > 400) {
         logger.warning(

@@ -12,9 +12,9 @@ import 'package:strumok/settings/models.dart';
 import 'package:strumok/settings/suppliers/suppliers_settings_provider.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/utils/trace.dart';
+import 'package:strumok/utils/http.dart';
 
 import 'package:strumok/download/manager/manager.dart';
 
@@ -41,7 +41,7 @@ FutureOr<FFISupplierBundleInfo?> latestSupplierBundleInfo(Ref ref) async {
     const latestVersionUrl = String.fromEnvironment(
       "FFI_LIB_VERSION_CHECK_URL",
     );
-    final res = await Client().get(Uri.parse(latestVersionUrl));
+    final res = await appHttpClient.get(Uri.parse(latestVersionUrl));
     return FFISupplierBundleInfo.fromJson(json.decode(res.body));
   } catch (e) {
     traceError(error: e, message: "Failed to load lattest bundle version");

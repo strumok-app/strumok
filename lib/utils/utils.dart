@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 Future<T> retry<T>(
@@ -17,15 +16,6 @@ Future<T> retry<T>(
       }
       await Future.delayed(retryDelay);
     }
-  }
-}
-
-class DisableCertVerifyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
   }
 }
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:http/http.dart';
 import 'package:strumok/utils/logger.dart';
+import 'package:strumok/utils/http.dart';
 import 'package:strumok/utils/utils.dart';
 
 import 'models.dart';
@@ -52,7 +53,7 @@ void donwloadFile(
     httpReq.headers.addAll(headers);
 
     logger.info("downloading file for request: $request");
-    final res = await Client().send(httpReq).timeout(httpTimeout);
+    final res = await appHttpClient.send(httpReq).timeout(httpTimeout);
 
     if (res.statusCode != HttpStatus.partialContent &&
         res.statusCode != HttpStatus.ok) {

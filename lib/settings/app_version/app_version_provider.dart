@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:http/http.dart';
 import 'package:strumok/download/manager/manager.dart';
 import 'package:strumok/settings/models.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/sem_ver.dart';
 import 'package:strumok/utils/trace.dart';
+import 'package:strumok/utils/http.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -55,7 +55,7 @@ class LatestAppVersionInfo {
 FutureOr<LatestAppVersionInfo?> latestAppVersionInfo(Ref ref) async {
   try {
     const appVersionCheckURL = String.fromEnvironment("APP_VERSION_CHECK_URL");
-    final res = await Client().get(Uri.parse(appVersionCheckURL));
+    final res = await appHttpClient.get(Uri.parse(appVersionCheckURL));
 
     return LatestAppVersionInfo.fromJson(json.decode(res.body));
   } catch (e) {
