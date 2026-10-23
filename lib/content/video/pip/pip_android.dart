@@ -38,9 +38,9 @@ class AndroidPip extends Pip {
   }
 
   @override
-  Future<void> enable({bool autoEnter = false}) async {
+  Future<void> enable() async {
     if (!_supported) return;
-    await _invoke('enable', {'autoEnter': autoEnter});
+    await _invoke('enable');
   }
 
   @override

@@ -31,7 +31,7 @@ class DesktopPip extends Pip {
   }
 
   @override
-  Future<void> enable({bool autoEnter = false}) async {
+  Future<void> enable() async {
     _enabled = true;
   }
 

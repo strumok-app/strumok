@@ -73,9 +73,8 @@ abstract class Pip {
 
   bool get isSupported;
 
-  /// Allows PIP. With [autoEnter] the platform enters PIP automatically when
-  /// the user leaves the app while video is playing (where supported).
-  Future<void> enable({bool autoEnter = false});
+  /// Allows PIP and automatically enters it when the user leaves the app.
+  Future<void> enable();
 
   /// Disallows PIP and restores the app if PIP is active.
   Future<void> disable();
@@ -94,7 +93,7 @@ class UnsupportedPip extends Pip {
   bool get isSupported => false;
 
   @override
-  Future<void> enable({bool autoEnter = false}) async {}
+  Future<void> enable() async {}
 
   @override
   Future<void> disable() async {}

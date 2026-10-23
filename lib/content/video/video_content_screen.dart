@@ -46,7 +46,7 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
     super.initState();
 
     _enterLandscape();
-    Pip.instance.enable(autoEnter: true);
+    Pip.instance.enable();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       videoPlayerProviderNotifier.load(widget.supplier, widget.id);

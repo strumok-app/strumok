@@ -42,7 +42,6 @@ class PipHandler(
     private val channel = MethodChannel(messenger, PIP_CHANNEL)
 
     private var enabled = false
-    private var autoEnter = false
     private var isPlaying = false
     private var hasPrev = false
     private var hasNext = false
@@ -79,13 +78,11 @@ class PipHandler(
             "isSupported" -> result.success(isSupported)
             "enable" -> {
                 enabled = true
-                autoEnter = call.argument<Boolean>("autoEnter") ?: false
                 applyParams()
                 result.success(null)
             }
             "disable" -> {
                 enabled = false
-                autoEnter = false
                 applyParams()
                 restore()
                 result.success(null)
@@ -114,7 +111,7 @@ class PipHandler(
 
     /** Auto enter for Android < 12, newer versions use [PictureInPictureParams.Builder.setAutoEnterEnabled]. */
     fun onUserLeaveHint() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && enabled && autoEnter && isPlaying) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && enabled) {
             enter()
         }
     }
@@ -170,7 +167,7 @@ class PipHandler(
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             builder
-                .setAutoEnterEnabled(enabled && autoEnter && isPlaying)
+                .setAutoEnterEnabled(enabled)
                 .setSeamlessResizeEnabled(false)
         }
 
