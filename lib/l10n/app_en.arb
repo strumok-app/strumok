@@ -11,6 +11,7 @@
     "watchButton": "Watch",
     "readButton": "Read",
     "episodesList": "Episodes",
+    "videoPlayerScreenLocked": "Screen locked. Tap the screen and use the unlock button in the top right corner",
     "mangaChapter": "Chapters",
     "status": "Status",
     "language": "Language",

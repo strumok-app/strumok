@@ -170,6 +170,12 @@ abstract class AppLocalizations {
   /// **'Episodes'**
   String get episodesList;
 
+  /// No description provided for @videoPlayerScreenLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen locked. Tap the screen and use the unlock button in the top right corner'**
+  String get videoPlayerScreenLocked;
+
   /// No description provided for @mangaChapter.
   ///
   /// In en, this message translates to:

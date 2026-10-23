@@ -45,6 +45,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get episodesList => 'Список епізодів';
 
   @override
+  String get videoPlayerScreenLocked =>
+      'Екран заблоковано. Торкніться екрана та натисніть кнопку розблокування у правому верхньому куті';
+
+  @override
   String get mangaChapter => 'Розділи';
 
   @override

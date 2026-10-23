@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
+import 'package:strumok/app_localizations.dart';
 import 'package:strumok/content/video/source_selector.dart';
 import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
@@ -56,6 +57,9 @@ class _VideoPlayerMobileControlsV2State
 
   // Error is shown by VideoView underneath; gestures must not cover its retry button.
   bool _hasError = false;
+
+  // While locked, the controls overlay only shows the unlock button.
+  bool _locked = false;
 
   // Controls overlay
   bool _controlsVisible = false;
@@ -168,7 +172,11 @@ class _VideoPlayerMobileControlsV2State
     final hasError = _controller.videoBackend.value is AsyncError;
     if (hasError == _hasError || !mounted) return;
 
-    setState(() => _hasError = hasError);
+    setState(() {
+      _hasError = hasError;
+      // Retry button must stay reachable.
+      if (hasError) _locked = false;
+    });
     if (hasError) {
       // Gesture layer is removed, so its end callbacks will never fire.
       _onLongPressEnd();
@@ -188,9 +196,9 @@ class _VideoPlayerMobileControlsV2State
       _controlsMounted = true;
       _controlsVisible = true;
     });
-    _controller.subtitlePaddings.value = const EdgeInsets.only(
-      bottom: _subtitleShift,
-    );
+    _controller.subtitlePaddings.value = _locked
+        ? EdgeInsets.zero
+        : const EdgeInsets.only(bottom: _subtitleShift);
     _scheduleHide();
   }
 
@@ -205,6 +213,17 @@ class _VideoPlayerMobileControlsV2State
     _hideTimer?.cancel();
     if (_hasError) return;
     _hideTimer = Timer(_hideDelay, _hideControls);
+  }
+
+  void _lock() {
+    if (_hasError) return;
+    setState(() => _locked = true);
+    _showControls();
+  }
+
+  void _unlock() {
+    setState(() => _locked = false);
+    _showControls();
   }
 
   void _onControlsFadeEnd() {
@@ -345,127 +364,139 @@ class _VideoPlayerMobileControlsV2State
     final swipeSeek = _swipeSeek;
     final tapSeekDirection = _tapSeekDirection;
 
-    return Theme(
-      data: Theme.of(context).copyWith(
-        focusColor: Colors.black,
-        hoverColor: Colors.black,
-        splashColor: Colors.black,
-        highlightColor: Colors.black,
-      ),
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: Focus(
-          autofocus: true,
-          child: Material(
-            type: MaterialType.transparency,
-            child: Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
-              children: [
-                if (!_hasError)
-                  Positioned.fill(
-                    left: _edgeInset,
-                    top: _edgeInset,
-                    right: _edgeInset,
-                    bottom: _edgeInset + _subtitleShift,
-                    child: _buildGestureLayer(),
-                  ),
-                if (_controlsMounted)
-                  Positioned.fill(
-                    // Hidden (or fading out) controls must not receive taps.
-                    child: IgnorePointer(
-                      ignoring: !_controlsVisible,
-                      child: AnimatedOpacity(
-                        opacity: _controlsVisible ? 1.0 : 0.0,
-                        curve: Curves.easeInOut,
-                        duration: _fadeDuration,
-                        onEnd: _onControlsFadeEnd,
-                        child: _ControlsOverlay(
-                          seekPreview: seekPreview,
-                          showCenterButtons: !_hasError,
-                          onSeekStart: () => _hideTimer?.cancel(),
-                          onSeekEnd: _scheduleHide,
+    return PopScope(
+      canPop: !_locked,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _locked) _showControls();
+      },
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          focusColor: Colors.black,
+          hoverColor: Colors.black,
+          splashColor: Colors.black,
+          highlightColor: Colors.black,
+        ),
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Focus(
+            autofocus: true,
+            child: Material(
+              type: MaterialType.transparency,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  if (!_hasError)
+                    Positioned.fill(
+                      left: _edgeInset,
+                      top: _edgeInset,
+                      right: _edgeInset,
+                      bottom: _edgeInset + _subtitleShift,
+                      child: _buildGestureLayer(),
+                    ),
+                  if (_controlsMounted)
+                    Positioned.fill(
+                      // Hidden (or fading out) controls must not receive taps.
+                      child: IgnorePointer(
+                        ignoring: !_controlsVisible,
+                        child: AnimatedOpacity(
+                          opacity: _controlsVisible ? 1.0 : 0.0,
+                          curve: Curves.easeInOut,
+                          duration: _fadeDuration,
+                          onEnd: _onControlsFadeEnd,
+                          child: _locked
+                              ? _LockedOverlay(onUnlock: _unlock)
+                              : _ControlsOverlay(
+                                  seekPreview: seekPreview,
+                                  showCenterButtons: !_hasError,
+                                  onLock: _lock,
+                                  onSeekStart: () => _hideTimer?.cancel(),
+                                  onSeekEnd: _scheduleHide,
+                                ),
                         ),
                       ),
+                    )
+                  else if (seekPreview != null)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: IgnorePointer(
+                        child: _SeekBar(preview: seekPreview),
+                      ),
                     ),
-                  )
-                else if (seekPreview != null)
+                  if (tapSeekDirection != null)
+                    Positioned.fill(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: tapSeekDirection == _SeekDirection.backward
+                                ? _TapSeekZone(
+                                    direction: _SeekDirection.backward,
+                                    amount: _tapSeekAmount,
+                                    onTap: () =>
+                                        _tapSeek(_SeekDirection.backward),
+                                  )
+                                : const SizedBox(),
+                          ),
+                          const Spacer(),
+                          Expanded(
+                            child: tapSeekDirection == _SeekDirection.forward
+                                ? _TapSeekZone(
+                                    direction: _SeekDirection.forward,
+                                    amount: _tapSeekAmount,
+                                    onTap: () =>
+                                        _tapSeek(_SeekDirection.forward),
+                                  )
+                                : const SizedBox(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  const IgnorePointer(child: BufferingIndicator()),
+                  _Pill(
+                    visible: _indicator == _Indicator.volume,
+                    leading: _volume == 0.0
+                        ? Icons.volume_off
+                        : _volume < 0.5
+                        ? Icons.volume_down
+                        : Icons.volume_up,
+                    text: '${(_volume * 100.0).round()}%',
+                  ),
+                  _Pill(
+                    visible: _indicator == _Indicator.brightness,
+                    leading: _brightness < 1.0 / 3.0
+                        ? Icons.brightness_low
+                        : _brightness < 2.0 / 3.0
+                        ? Icons.brightness_medium
+                        : Icons.brightness_high,
+                    text: '${(_brightness * 100.0).round()}%',
+                  ),
+                  _Pill(
+                    visible: swipeSeek != null,
+                    text: swipeSeek == null
+                        ? ''
+                        : '${swipeSeek.isNegative ? '-' : '+'} ${formatDuration(swipeSeek.abs())}',
+                  ),
                   Positioned(
+                    top:
+                        MediaQuery.paddingOf(context).top +
+                        _topBarMargin.vertical +
+                        _buttonBarHeight +
+                        16.0,
                     left: 0,
                     right: 0,
-                    bottom: 0,
-                    child: IgnorePointer(child: _SeekBar(preview: seekPreview)),
-                  ),
-                if (tapSeekDirection != null)
-                  Positioned.fill(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: tapSeekDirection == _SeekDirection.backward
-                              ? _TapSeekZone(
-                                  direction: _SeekDirection.backward,
-                                  amount: _tapSeekAmount,
-                                  onTap: () =>
-                                      _tapSeek(_SeekDirection.backward),
-                                )
-                              : const SizedBox(),
-                        ),
-                        const Spacer(),
-                        Expanded(
-                          child: tapSeekDirection == _SeekDirection.forward
-                              ? _TapSeekZone(
-                                  direction: _SeekDirection.forward,
-                                  amount: _tapSeekAmount,
-                                  onTap: () => _tapSeek(_SeekDirection.forward),
-                                )
-                              : const SizedBox(),
-                        ),
-                      ],
+                    child: Center(
+                      child: _Pill(
+                        visible: _rateBeforeSpeedUp != null,
+                        height: 48.0,
+                        text: '${_speedUpFactor.toStringAsFixed(1)}x',
+                        trailing: Icons.fast_forward,
+                      ),
                     ),
                   ),
-                const IgnorePointer(child: BufferingIndicator()),
-                _Pill(
-                  visible: _indicator == _Indicator.volume,
-                  leading: _volume == 0.0
-                      ? Icons.volume_off
-                      : _volume < 0.5
-                      ? Icons.volume_down
-                      : Icons.volume_up,
-                  text: '${(_volume * 100.0).round()}%',
-                ),
-                _Pill(
-                  visible: _indicator == _Indicator.brightness,
-                  leading: _brightness < 1.0 / 3.0
-                      ? Icons.brightness_low
-                      : _brightness < 2.0 / 3.0
-                      ? Icons.brightness_medium
-                      : Icons.brightness_high,
-                  text: '${(_brightness * 100.0).round()}%',
-                ),
-                _Pill(
-                  visible: swipeSeek != null,
-                  text: swipeSeek == null
-                      ? ''
-                      : '${swipeSeek.isNegative ? '-' : '+'} ${formatDuration(swipeSeek.abs())}',
-                ),
-                Positioned(
-                  top:
-                      MediaQuery.paddingOf(context).top +
-                      _topBarMargin.vertical +
-                      _buttonBarHeight +
-                      16.0,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: _Pill(
-                      visible: _rateBeforeSpeedUp != null,
-                      height: 48.0,
-                      text: '${_speedUpFactor.toStringAsFixed(1)}x',
-                      trailing: Icons.fast_forward,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -474,6 +505,14 @@ class _VideoPlayerMobileControlsV2State
   }
 
   Widget _buildGestureLayer() {
+    if (_locked) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _toggleControls,
+        child: const SizedBox.expand(),
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
@@ -503,12 +542,14 @@ class _ControlsOverlay extends StatelessWidget {
   final bool showCenterButtons;
   final VoidCallback onSeekStart;
   final VoidCallback onSeekEnd;
+  final VoidCallback onLock;
 
   const _ControlsOverlay({
     required this.seekPreview,
     required this.showCenterButtons,
     required this.onSeekStart,
     required this.onSeekEnd,
+    required this.onLock,
   });
 
   @override
@@ -528,15 +569,20 @@ class _ControlsOverlay extends StatelessWidget {
             padding: _topBarMargin.copyWith(
               bottom: _topBarMargin.bottom + _scrimFade,
             ),
-            child: const SizedBox(
+            child: SizedBox(
               height: _buttonBarHeight,
               child: Row(
                 children: [
-                  ExitButton(),
-                  SizedBox(width: 8),
-                  MediaTitle(),
-                  Spacer(),
-                  PlayerPlaylistButton(),
+                  const ExitButton(),
+                  const SizedBox(width: 8),
+                  const MediaTitle(),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: this.onLock,
+                    icon: const Icon(Icons.lock_outline),
+                    color: _white,
+                  ),
+                  const PlayerPlaylistButton(),
                 ],
               ),
             ),
@@ -590,6 +636,73 @@ class _ControlsOverlay extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LockedOverlay extends StatelessWidget {
+  final VoidCallback onUnlock;
+
+  const _LockedOverlay({required this.onUnlock});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Padding(
+            padding: _topBarMargin,
+            child: SizedBox(
+              height: _buttonBarHeight,
+              child: Center(
+                child: _CircleBackdrop(
+                  child: IconButton(
+                    onPressed: onUnlock,
+                    icon: const Icon(Icons.lock_open),
+                    color: _white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 32.0,
+          right: 32.0,
+          bottom: 32.0,
+          child: IgnorePointer(
+            child: Center(
+              child: Container(
+                constraints: BoxConstraints(maxWidth: 400),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0x88000000),
+                  borderRadius: BorderRadius.circular(24.0),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.lock, color: _white, size: 20.0),
+                    const SizedBox(width: 8.0),
+                    Flexible(
+                      child: Text(
+                        AppLocalizations.of(context)!.videoPlayerScreenLocked,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 14.0, color: _white),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

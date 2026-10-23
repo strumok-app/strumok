@@ -45,6 +45,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get episodesList => 'Episodes';
 
   @override
+  String get videoPlayerScreenLocked =>
+      'Screen locked. Tap the screen and use the unlock button in the top right corner';
+
+  @override
   String get mangaChapter => 'Chapters';
 
   @override
