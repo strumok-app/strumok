@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:strumok/app_localizations.dart';
 import 'package:strumok/collection/collection_item_provider.dart';
 import 'package:strumok/content/media_items_list.dart';
@@ -11,6 +10,7 @@ import 'package:strumok/content/video/content_details_video_actions.dart';
 import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
+import 'package:strumok/content/video/video_player_pip.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/source_selector.dart';
 import 'package:strumok/content/video/widgets.dart';
@@ -19,8 +19,7 @@ import 'package:strumok/utils/text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class VideoPlayerDesktopControls extends ConsumerStatefulWidget {
-  final VoidCallback onPipEnter;
-  const VideoPlayerDesktopControls({super.key, required this.onPipEnter});
+  const VideoPlayerDesktopControls({super.key});
 
   @override
   ConsumerState<VideoPlayerDesktopControls> createState() =>
@@ -328,9 +327,7 @@ class _VideoContentDesktopControlsState
                                           const TrackSelector(),
                                           const SourceSelector(),
                                           const PlayerSettingsButton(),
-                                          _PIPButton(
-                                            onPipEnter: widget.onPipEnter,
-                                          ),
+                                          const PipButton(),
                                           const _DesktopPlayerFullscreenButton(),
                                         ],
                                       ),
@@ -817,21 +814,6 @@ class _CustomTrackShape extends RoundedRectSliderTrackShape {
     final top = offset.dy + (parentBox.size.height - height!) / 2;
     final width = parentBox.size.width;
     return Rect.fromLTWH(left, top, width, height);
-  }
-}
-
-class _PIPButton extends StatelessWidget {
-  final VoidCallback onPipEnter;
-
-  const _PIPButton({required this.onPipEnter});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onPipEnter,
-      icon: const Icon(Symbols.pip),
-      color: Colors.white,
-    );
   }
 }
 

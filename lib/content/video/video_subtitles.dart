@@ -9,8 +9,42 @@ import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/video_backend/video_backend.dart';
 import 'package:subtitle/subtitle.dart';
 
-class VideoSubtitles extends ConsumerWidget {
+/// Subtitles overlay. In views narrower than [_minLayoutWidth] (PIP, floating
+/// player) subtitles are laid out as on a wider screen and scaled down to fit.
+class VideoSubtitles extends StatelessWidget {
+  static const _minLayoutWidth = 640.0;
+
   const VideoSubtitles({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final height = constraints.maxHeight;
+        if (!width.isFinite ||
+            !height.isFinite ||
+            height <= 0 ||
+            width >= _minLayoutWidth) {
+          return const _VideoSubtitlesContent();
+        }
+
+        final scale = width / _minLayoutWidth;
+        return FittedBox(
+          fit: BoxFit.fill,
+          child: SizedBox(
+            width: _minLayoutWidth,
+            height: height / scale,
+            child: const _VideoSubtitlesContent(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _VideoSubtitlesContent extends ConsumerWidget {
+  const _VideoSubtitlesContent();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

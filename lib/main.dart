@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strumok/content/video/floating_video_player.dart';
+import 'package:strumok/content/video/pip/pip.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -65,6 +66,7 @@ void appRunner() async {
   await AppPreferences.init();
   await AppDatabase().init();
   await TVDetector.detect();
+  await Pip.instance.init();
 
   if (isDesktopDevice()) {
     await windowManager.ensureInitialized();

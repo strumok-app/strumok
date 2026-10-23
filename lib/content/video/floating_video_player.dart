@@ -7,6 +7,7 @@ import 'package:strumok/app_router.gr.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
+import 'package:strumok/content/video/video_subtitles.dart';
 import 'package:strumok/content/video/video_view.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/utils/visual.dart';
@@ -80,6 +81,13 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
     totalHeight = videoHeight + (mobile ? mobileControlsHeight : 0);
     vPadding = mobile ? vPaddingMobile : vPaddingDesktop;
     hPadding = mobile ? hPaddingMobile : hPaddingDesktop;
+
+    // Full player controls may have left subtitles shifted up.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        widget.controller.subtitlePaddings.value = EdgeInsets.zero;
+      }
+    });
   }
 
   @override
@@ -191,6 +199,7 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
           child: Stack(
             children: [
               const VideoView(),
+              const Positioned.fill(child: VideoSubtitles()),
               const Positioned.fill(child: BufferingIndicator()),
               Positioned(
                 top: 0,
@@ -226,6 +235,7 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
       child: Stack(
         children: [
           const VideoView(),
+          const Positioned.fill(child: VideoSubtitles()),
           const Positioned.fill(child: BufferingIndicator()),
           if (isHovering) ...[
             Positioned.fill(

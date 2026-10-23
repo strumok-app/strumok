@@ -4,6 +4,8 @@ import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/details/content_details_provider.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_player_view.dart';
+import 'package:strumok/utils/fullscrean.dart';
+import 'package:strumok/content/video/pip/pip.dart';
 import 'package:strumok/utils/tv.dart';
 import 'package:strumok/utils/visual.dart';
 import 'package:strumok/widgets/display_error.dart';
@@ -44,6 +46,7 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
     super.initState();
 
     _enterLandscape();
+    Pip.instance.enable(autoEnter: true);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       videoPlayerProviderNotifier.load(widget.supplier, widget.id);
@@ -95,6 +98,12 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
   @override
   void dispose() {
     _leaveLandscape();
+    // Leaving the video screen always restores the app from PIP.
+    Pip.instance.disable().then((_) {
+      if (isDesktopDevice()) {
+        exitFullscreen();
+      }
+    });
 
     if (TVDetector.isTV) {
       videoPlayerProviderNotifier.dispose();

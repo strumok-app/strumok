@@ -2,10 +2,12 @@ package app.strumok
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.core.content.FileProvider
+import androidx.lifecycle.Lifecycle
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
@@ -17,6 +19,8 @@ const val INSTALL_APK_CHANNEL = "install_apk"
 
 class MainActivity : FlutterActivity() {
 
+    private var pipHandler: PipHandler? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // The system keeps the last requested orientation across process death,
         // so a fullscreen video lock would otherwise survive a cold start.
@@ -26,6 +30,8 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
+        pipHandler = PipHandler(this, flutterEngine.dartExecutor.binaryMessenger)
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -55,6 +61,27 @@ class MainActivity : FlutterActivity() {
                 result.notImplemented()
             }
         }
+    }
+
+    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        pipHandler?.dispose()
+        pipHandler = null
+        super.cleanUpFlutterEngine(flutterEngine)
+    }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        pipHandler?.onUserLeaveHint()
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        // Activity is already stopped when the user dismissed the PIP window.
+        val dismissed = lifecycle.currentState == Lifecycle.State.CREATED
+        pipHandler?.onPictureInPictureModeChanged(isInPictureInPictureMode, dismissed)
     }
 
     private fun installNormal(filePath: String): Boolean {

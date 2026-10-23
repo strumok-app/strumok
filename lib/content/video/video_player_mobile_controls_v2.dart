@@ -7,6 +7,7 @@ import 'package:strumok/content/video/source_selector.dart';
 import 'package:strumok/content/video/track_selector.dart';
 import 'package:strumok/content/video/video_player_buttons.dart';
 import 'package:strumok/content/video/video_player_controller.dart';
+import 'package:strumok/content/video/video_player_pip.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/utils/text.dart';
@@ -584,6 +585,7 @@ class _ControlsOverlay extends StatelessWidget {
                       TrackSelector(),
                       SourceSelector(),
                       PlayerSettingsButton(),
+                      PipButton(),
                     ],
                   ),
                 ),
