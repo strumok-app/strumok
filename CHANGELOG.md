@@ -1,10 +1,10 @@
-## [1.31.1](https://github.com/strumok-app/strumok/compare/v1.31.0...v1.31.1) (2026-10-23)
+## [1.31.2](https://github.com/strumok-app/strumok/compare/v1.31.1...v1.31.2) (2026-10-23)
 
 
 ### Bug Fixes
 
-* replace some icons that missing during release build ([f14ed2c](https://github.com/strumok-app/strumok/commit/f14ed2c32dbbf6b8d25fd7a4ba7572468e0a0ce8))
-* small refactoring ([544ef7a](https://github.com/strumok-app/strumok/commit/544ef7a8e983ef53a1a087416cb99a63f2a7955a))
+* change some icons ([a965672](https://github.com/strumok-app/strumok/commit/a965672dda77d02258e3446962fbf9d8a2a21777))
+* simplify pip handler ([a393ced](https://github.com/strumok-app/strumok/commit/a393ceddee97b074b3e6d58172b30afecc0365ba))
 
 
 
