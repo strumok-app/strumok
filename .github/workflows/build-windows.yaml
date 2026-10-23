@@ -18,7 +18,7 @@ jobs:
       - name: Enable long paths on Windows
         run: git config --system core.longpaths true
       - name: Clone Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref }}
       - name: Create secrets
@@ -49,7 +49,7 @@ jobs:
           iscc.exe strumok.iss
         shell: bash
       - name: Upload windows outputs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-outputs
           path: .packaging/windows/Output

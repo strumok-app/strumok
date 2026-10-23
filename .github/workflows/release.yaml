@@ -17,11 +17,11 @@ jobs:
       tag: ${{ steps.changelog.outputs.tag  }}
     steps:
     - name: Clone Repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
     
     - name: Conventional Changelog Action
       id: changelog
-      uses: TriPSs/conventional-changelog-action@v5
+      uses: TriPSs/conventional-changelog-action@v6
       with:
         github-token: ${{ github.token }}
         version-file: "pubspec.yaml"

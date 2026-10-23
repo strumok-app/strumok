@@ -50,18 +50,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate to GCP using Service Account Key
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
 
       - name: Upload Android artifacts
         if: ${{ needs.build-android.result == 'success' }}
-        uses: google-github-actions/upload-cloud-storage@v2
+        uses: google-github-actions/upload-cloud-storage@v3
         with:
           path: artifacts/android-outputs/
           destination:  ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/android/
@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload Windows artifacts
         if: ${{ needs.build-windows.result == 'success' }}
-        uses: google-github-actions/upload-cloud-storage@v2
+        uses: google-github-actions/upload-cloud-storage@v3
         with:
           path: artifacts/windows-outputs/
           destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/
@@ -86,7 +86,7 @@ jobs:
 
       - name: Upload Linux artifacts
         if: ${{ needs.build-linux.result == 'success' }}
-        uses: google-github-actions/upload-cloud-storage@v2
+        uses: google-github-actions/upload-cloud-storage@v3
         with:
           path: linux.tar.gz
           destination: ${{ secrets.GCS_BUCKET_NAME }}/artifacts/prerelease/

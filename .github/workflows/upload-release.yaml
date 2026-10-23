@@ -22,24 +22,24 @@ jobs:
     permissions: write-all
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref }}
           sparse-checkout: |
             CHANGELOG.md
           sparse-checkout-cone-mode: false
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: android-outputs
           path: android-outputs
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: linux-outputs
           path: linux-outputs
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: windows-outputs
           path: windows-outputs
@@ -48,7 +48,7 @@ jobs:
           chmod +x linux-outputs/strumok
           tar -czf strumok-linux.tar.gz -C linux-outputs .
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           prerelease: ${{ inputs.prerelease }}
           name: ${{ inputs.tag_name }}
