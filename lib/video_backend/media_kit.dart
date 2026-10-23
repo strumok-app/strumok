@@ -292,14 +292,13 @@ class MediaKitVideoBackend extends VideoBackend {
       'reconnect_delay_max=10',
     ];
 
+    await nativePlayer.setProperty(
+      'stream-lavf-o',
+      httpReconnectOptions.join(','),
+    );
+
     // Appended to keep media_kit's protocol whitelist and other defaults
     for (final option in httpReconnectOptions) {
-      await nativePlayer.command([
-        'change-list',
-        'stream-lavf-o',
-        'append',
-        option,
-      ]);
       await nativePlayer.command([
         'change-list',
         'demuxer-lavf-o',
