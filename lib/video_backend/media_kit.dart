@@ -128,14 +128,15 @@ class MediaKitVideoBackend extends VideoBackend {
     await nativePlayer.setProperty("framedrop", "no");
     await nativePlayer.setProperty('video-sync', 'audio');
     await nativePlayer.setProperty('cache', 'yes');
-    await nativePlayer.setProperty(
-      'demuxer-max-bytes',
-      '33554432',
-    ); // 32 MB buffer limit
-    await nativePlayer.setProperty(
-      'demuxer-max-back-bytes',
-      '16777216',
-    ); // 16 MB back-buffer
+    // Read ahead up to 3 minutes; byte limit sized for ~8 Mbps (1080p) streams
+    await nativePlayer.setProperty('cache-secs', '180');
+    await nativePlayer.setProperty('demuxer-readahead-secs', '180');
+    await nativePlayer.setProperty('demuxer-max-bytes', '128M');
+    await nativePlayer.setProperty('demuxer-max-back-bytes', '32M');
+    // Wait for a bit more data after an underrun to avoid pause/play flapping
+    await nativePlayer.setProperty('cache-pause-wait', '3');
+
+    await _configureReconnect(nativePlayer);
 
     // Set preferred audio language
     if (preferredLanguage != null && preferredLanguage.isNotEmpty) {
@@ -276,6 +277,43 @@ class MediaKitVideoBackend extends VideoBackend {
         }
       }),
     );
+  }
+
+  Future<void> _configureReconnect(media_kit.NativePlayer nativePlayer) async {
+    // media_kit defaults to 5s, which drops slow CDNs too eagerly
+    await nativePlayer.setProperty('network-timeout', '30');
+
+    // FFmpeg HTTP reconnect options (4xx is excluded: expired links won't recover)
+    const httpReconnectOptions = [
+      'reconnect=1',
+      'reconnect_streamed=1',
+      'reconnect_on_network_error=1',
+      'reconnect_on_http_error=5xx',
+      'reconnect_delay_max=10',
+    ];
+
+    // Appended to keep media_kit's protocol whitelist and other defaults
+    for (final option in httpReconnectOptions) {
+      await nativePlayer.command([
+        'change-list',
+        'stream-lavf-o',
+        'append',
+        option,
+      ]);
+      await nativePlayer.command([
+        'change-list',
+        'demuxer-lavf-o',
+        'append',
+        option,
+      ]);
+    }
+    // Retry failed HLS segments more times before skipping (media_kit default is 5)
+    await nativePlayer.command([
+      'change-list',
+      'demuxer-lavf-o',
+      'append',
+      'seg_max_retry=10',
+    ]);
   }
 
   Completer initializationCompleter(media_kit.Player player) {
