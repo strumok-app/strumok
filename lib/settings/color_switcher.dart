@@ -2,39 +2,15 @@ import 'package:strumok/settings/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final colors = [
+const colors = [
   Colors.red,
-  Colors.pink,
-  Colors.purple,
-  Colors.deepPurple,
-  Colors.indigo,
-  Colors.blue,
-  Colors.lightBlue,
-  Colors.cyan,
-  Colors.teal,
-  Colors.green,
-  Colors.lightGreen,
-  Colors.lime,
-  Colors.yellow,
-  Colors.amber,
   Colors.orange,
-  Colors.deepOrange,
-  Colors.brown,
-  Colors.grey,
-  Colors.blueGrey,
-  // Colors.deepOrange,
-  // Colors.orange,
-  // Colors.amber,
-  // Colors.yellow,
-  // Colors.lime,
-  // Colors.lightGreen,
-  // Colors.green,
-  // Colors.teal,
-  // Colors.cyan,
-  // Colors.blue,
-  // Colors.indigo,
-  // Colors.purple,
-  // Colors.deepPurple,
+  Colors.lime,
+  Colors.green,
+  Colors.teal,
+  Colors.blue,
+  Colors.deepPurple,
+  Colors.pink,
 ];
 
 class ColorSwitcher extends ConsumerWidget {
@@ -43,6 +19,11 @@ class ColorSwitcher extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selected = ref.watch(colorSettingsProvider);
+    final availableColors = [
+      ...colors,
+      if (!colors.any((color) => color.toARGB32() == selected.toARGB32()))
+        selected,
+    ];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Align(
@@ -51,7 +32,7 @@ class ColorSwitcher extends ConsumerWidget {
           alignment: WrapAlignment.end,
           spacing: 4,
           runSpacing: 4,
-          children: colors
+          children: availableColors
               .map((color) => _ColorSelector(color: color, selected: selected))
               .toList(),
         ),
@@ -75,41 +56,44 @@ class _ColorSelectorState extends ConsumerState<_ColorSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final colorSchema = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isSelected = widget.color.toARGB32() == widget.selected.toARGB32();
+    final checkColor =
+        ThemeData.estimateBrightnessForColor(widget.color) == Brightness.light
+        ? Colors.black
+        : Colors.white;
 
-    final icon = widget.color.toARGB32() == widget.selected.toARGB32()
-        ? const Icon(
-            color: Colors.white,
-            shadows: [Shadow(blurRadius: 4, color: Colors.black)],
-            Icons.check,
-          )
-        : null;
-
-    return InkResponse(
-      onTap: () {
-        ref.read(colorSettingsProvider.notifier).select(widget.color);
-      },
-      radius: 20,
-      onFocusChange: (value) {
-        setState(() {
-          focused = value;
-        });
-      },
-      focusColor: Colors.transparent,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: SizedBox(
-          height: 32,
-          width: 32,
-          child: Center(
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: colorSchema.onSurfaceVariant),
-                shape: BoxShape.circle,
-              ),
-              height: focused ? 32 : 26,
-              width: focused ? 32 : 26,
-              child: CircleAvatar(backgroundColor: widget.color, child: icon),
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      child: Material(
+        color: widget.color,
+        shape: CircleBorder(
+          side: BorderSide(
+            color: colorScheme.onSurfaceVariant,
+            width: focused ? 3 : 1,
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkResponse(
+          onTap: () {
+            ref.read(colorSettingsProvider.notifier).select(widget.color);
+          },
+          onFocusChange: (value) {
+            setState(() {
+              focused = value;
+            });
+          },
+          mouseCursor: SystemMouseCursors.click,
+          customBorder: const CircleBorder(),
+          containedInkWell: true,
+          focusColor: Colors.transparent,
+          child: SizedBox.square(
+            dimension: 32,
+            child: Center(
+              child: isSelected
+                  ? Icon(Icons.check, color: checkColor, size: 20)
+                  : null,
             ),
           ),
         ),
