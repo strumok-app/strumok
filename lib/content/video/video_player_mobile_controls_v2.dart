@@ -12,7 +12,6 @@ import 'package:strumok/content/video/video_player_pip.dart';
 import 'package:strumok/content/video/video_player_settings.dart';
 import 'package:strumok/content/video/widgets.dart';
 import 'package:strumok/utils/text.dart';
-import 'package:strumok/video_backend/video_backend.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 const _fadeDuration = Duration(milliseconds: 300);
@@ -593,11 +592,11 @@ class _ControlsOverlay extends StatelessWidget {
               ? const Row(
                   children: [
                     Spacer(flex: 2),
-                    _CircleBackdrop(child: SkipPrevButton(iconSize: 36.0)),
+                    CircleBackdrop(child: SkipPrevButton(iconSize: 36.0)),
                     Spacer(),
-                    _CircleBackdrop(child: PlayOrPauseButton(iconSize: 48.0)),
+                    CircleBackdrop(child: PlayOrPauseButton(iconSize: 48.0)),
                     Spacer(),
-                    _CircleBackdrop(child: SkipNextButton(iconSize: 36.0)),
+                    CircleBackdrop(child: SkipNextButton(iconSize: 36.0)),
                     Spacer(flex: 2),
                   ],
                 )
@@ -653,6 +652,7 @@ class _LockedOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        // lock icon button
         Positioned(
           top: 0,
           right: 0,
@@ -661,7 +661,7 @@ class _LockedOverlay extends StatelessWidget {
             child: SizedBox(
               height: _buttonBarHeight,
               child: Center(
-                child: _CircleBackdrop(
+                child: CircleBackdrop(
                   child: IconButton(
                     onPressed: onUnlock,
                     icon: const Icon(Icons.lock_open),
@@ -672,6 +672,7 @@ class _LockedOverlay extends StatelessWidget {
             ),
           ),
         ),
+        // notify user that the screen is locked
         Positioned(
           left: 32.0,
           right: 32.0,
@@ -706,40 +707,13 @@ class _LockedOverlay extends StatelessWidget {
             ),
           ),
         ),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(child: _SeekBar(iteractive: false)),
+        ),
       ],
-    );
-  }
-}
-
-class _CircleBackdrop extends StatelessWidget {
-  final Widget child;
-
-  const _CircleBackdrop({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: _scrimColor,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: child,
-    );
-  }
-}
-
-class _PlaybackStateBuilder extends StatelessWidget {
-  final Widget Function(BuildContext context, VideoBackendState state) builder;
-
-  const _PlaybackStateBuilder({required this.builder});
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = videoContentController(context);
-    return StreamBuilder<VideoBackendState>(
-      stream: controller.videoBackendStateStream,
-      initialData: controller.videoBackendState,
-      builder: (context, snapshot) =>
-          builder(context, snapshot.data ?? controller.videoBackendState),
     );
   }
 }
@@ -749,7 +723,7 @@ class _PositionIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _PlaybackStateBuilder(
+    return PlaybackStateBuilder(
       builder: (context, state) => Text(
         '${formatDuration(state.position)} / ${formatDuration(state.duration)}',
         style: const TextStyle(height: 1.0, fontSize: 12.0, color: _white),
@@ -763,8 +737,14 @@ class _SeekBar extends StatefulWidget {
   final Duration? preview;
   final VoidCallback? onSeekStart;
   final VoidCallback? onSeekEnd;
+  final bool iteractive;
 
-  const _SeekBar({this.preview, this.onSeekStart, this.onSeekEnd});
+  _SeekBar({
+    this.preview,
+    this.onSeekStart,
+    this.onSeekEnd,
+    this.iteractive = true,
+  });
 
   @override
   State<_SeekBar> createState() => _SeekBarState();
@@ -816,11 +796,47 @@ class _SeekBarState extends State<_SeekBar> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        return _PlaybackStateBuilder(
+        return PlaybackStateBuilder(
           builder: (context, state) {
             final position = state.position + (widget.preview ?? Duration.zero);
             final value = _dragValue ?? _fraction(position, state.duration);
             final buffered = _fraction(state.buffered, state.duration);
+
+            final bar = SizedBox(
+              width: width,
+              height: _hitHeight,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.bottomLeft,
+                children: [
+                  Container(width: width, height: _barHeight, color: _barColor),
+                  Container(
+                    width: width * buffered,
+                    height: _barHeight,
+                    color: _barColor,
+                  ),
+                  Container(
+                    width: width * value,
+                    height: _barHeight,
+                    color: primary,
+                  ),
+                  Positioned(
+                    left: width * value - _thumbSize / 2,
+                    bottom: _barHeight / 2 - _thumbSize / 2,
+                    child: Container(
+                      width: _thumbSize,
+                      height: _thumbSize,
+                      decoration: BoxDecoration(
+                        color: primary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+
+            if (!widget.iteractive) return bar;
 
             return Listener(
               behavior: HitTestBehavior.opaque,
@@ -829,43 +845,7 @@ class _SeekBarState extends State<_SeekBar> {
                   _onMove(e.localPosition.dx, width, state.duration),
               onPointerUp: (_) => _onUp(state.duration),
               onPointerCancel: (_) => _onCancel(),
-              child: SizedBox(
-                width: width,
-                height: _hitHeight,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  alignment: Alignment.bottomLeft,
-                  children: [
-                    Container(
-                      width: width,
-                      height: _barHeight,
-                      color: _barColor,
-                    ),
-                    Container(
-                      width: width * buffered,
-                      height: _barHeight,
-                      color: _barColor,
-                    ),
-                    Container(
-                      width: width * value,
-                      height: _barHeight,
-                      color: primary,
-                    ),
-                    Positioned(
-                      left: width * value - _thumbSize / 2,
-                      bottom: _barHeight / 2 - _thumbSize / 2,
-                      child: Container(
-                        width: _thumbSize,
-                        height: _thumbSize,
-                        decoration: BoxDecoration(
-                          color: primary,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              child: bar,
             );
           },
         );

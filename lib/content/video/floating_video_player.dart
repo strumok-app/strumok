@@ -50,7 +50,9 @@ class FloatingVideoPlayer extends StatefulWidget {
 
 const mobilePlayerWidth = 220.0;
 const desktopPlayerWidth = 420.0;
-const mobileControlsHeight = 24.0;
+const controlsPadding = 6.0;
+const controlsIconSize = 20.0;
+const playPauseIconSize = 32.0;
 
 const hPaddingDesktop = 10.0;
 const hPaddingMobile = 16.0;
@@ -66,7 +68,6 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
   late final bool mobile;
   late final double width;
   late final double videoHeight;
-  late final double totalHeight;
   late final double hPadding;
   late final double vPadding;
 
@@ -77,7 +78,6 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
     mobile = isMobileDevice();
     width = mobile ? mobilePlayerWidth : desktopPlayerWidth;
     videoHeight = width * 9 / 16;
-    totalHeight = videoHeight + (mobile ? mobileControlsHeight : 0);
     vPadding = mobile ? vPaddingMobile : vPaddingDesktop;
     hPadding = mobile ? hPaddingMobile : hPaddingDesktop;
 
@@ -97,7 +97,7 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
     final miny = vPadding;
 
     final maxx = math.max(minx, screenSize.width - width - hPadding);
-    final maxy = math.max(miny, screenSize.height - totalHeight - vPadding);
+    final maxy = math.max(miny, screenSize.height - videoHeight - vPadding);
 
     Offset getCornerPosition(FloatingPlayerCorner corner) {
       switch (corner) {
@@ -140,7 +140,7 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
         onPanEnd: (details) {
           final center = Offset(
             currentPosition.dx + width / 2,
-            currentPosition.dy + totalHeight / 2,
+            currentPosition.dy + videoHeight / 2,
           );
           final screenCenter = Offset(
             screenSize.width / 2,
@@ -168,10 +168,9 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
             dragPosition = null;
           });
         },
-        onTap: () {
-          widget.controller.playOrPause();
-        },
+        onTap: _openVideoPlayerScreen,
         child: MouseRegion(
+          cursor: SystemMouseCursors.click,
           onEnter: (_) => setState(() => isHovering = true),
           onExit: (_) => setState(() => isHovering = false),
           child: Material(
@@ -181,7 +180,7 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
             color: Colors.black,
             child: VideoContentControllerInheritedWidget(
               controller: widget.controller,
-              child: mobile ? _renderMobile() : _renderDesktop(),
+              child: _renderPlayer(),
             ),
           ),
         ),
@@ -189,45 +188,20 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
     );
   }
 
-  Widget _renderMobile() {
-    return Column(
-      children: [
-        SizedBox(
-          width: width,
-          height: videoHeight,
-          child: Stack(
-            children: [
-              const VideoView(),
-              const Positioned.fill(child: VideoSubtitles()),
-              const Positioned.fill(child: BufferingIndicator()),
-              Positioned(
-                top: 0,
-                left: 0,
-                child: FloatingPlayerExpandButton(widget.appRouter),
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: FloatingVideoPlayerCloseButton(),
-              ),
-            ],
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SeekBackwardButton(iconSize: 24),
-            const SizedBox(width: 16),
-            const PlayOrPauseButton(iconSize: 24),
-            const SizedBox(width: 16),
-            const SeekForwardButton(iconSize: 24),
-          ],
-        ),
-      ],
+  void _openVideoPlayerScreen() {
+    final contentDetails = widget.controller.contentDetails;
+    widget.appRouter.push(
+      VideoContentRoute(
+        supplier: contentDetails.supplier,
+        id: contentDetails.id,
+      ),
     );
   }
 
-  Widget _renderDesktop() {
+  Widget _renderPlayer() {
+    // No hover on touch devices, so mobile controls are always visible.
+    final showControls = mobile || isHovering;
+
     return SizedBox(
       width: width,
       height: videoHeight,
@@ -236,63 +210,45 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
           const VideoView(),
           const Positioned.fill(child: VideoSubtitles()),
           const Positioned.fill(child: BufferingIndicator()),
-          if (isHovering) ...[
-            Positioned.fill(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SeekBackwardButton(),
-                  const SizedBox(width: 16),
-                  const PlayOrPauseButton(iconSize: 48),
-                  const SizedBox(width: 16),
-                  const SeekForwardButton(),
-                ],
+          if (showControls) ...[
+            Positioned(
+              top: controlsPadding,
+              left: controlsPadding,
+              child: CircleBackdrop(
+                child: PlayOrPauseButton(iconSize: playPauseIconSize),
               ),
             ),
             Positioned(
-              top: 0,
-              left: 0,
-              child: FloatingPlayerExpandButton(widget.appRouter),
-            ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: FloatingVideoPlayerCloseButton(),
+              top: controlsPadding,
+              right: controlsPadding,
+              child: CircleBackdrop(
+                child: FloatingVideoPlayerCloseButton(
+                  iconSize: controlsIconSize,
+                ),
+              ),
             ),
           ],
+          const Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: SimpleVideoProgressIndicator(),
+          ),
         ],
       ),
     );
   }
 }
 
-class FloatingPlayerExpandButton extends ConsumerWidget {
-  const FloatingPlayerExpandButton(this.appRouter, {super.key});
-
-  final AppRouter appRouter;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = videoContentController(context);
-
-    return IconButton(
-      onPressed: () {
-        final supplier = controller.contentDetails.supplier;
-        final id = controller.contentDetails.id;
-        appRouter.push(VideoContentRoute(supplier: supplier, id: id));
-      },
-      icon: const Icon(Icons.open_in_full, color: Colors.white, size: 24),
-    );
-  }
-}
-
 class FloatingVideoPlayerCloseButton extends ConsumerWidget {
-  const FloatingVideoPlayerCloseButton({super.key});
+  final double? iconSize;
+
+  const FloatingVideoPlayerCloseButton({super.key, this.iconSize});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
-      icon: const Icon(Icons.close, color: Colors.white, size: 24),
+      icon: Icon(Icons.close, color: Colors.white, size: iconSize),
       onPressed: () {
         ref.read(videoPlayerProvider.notifier).dispose();
       },

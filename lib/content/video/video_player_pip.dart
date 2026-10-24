@@ -283,10 +283,16 @@ class _PipControlsOverlay extends StatelessWidget {
             child: IconButton(
               color: Colors.white,
               onPressed: Pip.instance.exit,
-              icon: const Icon(Icons.open_in_full),
+              icon: const Icon(Icons.pin_end),
             ),
           ),
           const Positioned(top: 4, right: 4, child: _PipCloseButton()),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            left: 0,
+            child: SimpleVideoProgressIndicator(),
+          ),
         ],
       ),
     );
