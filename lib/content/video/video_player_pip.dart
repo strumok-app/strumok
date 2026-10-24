@@ -277,17 +277,9 @@ class _PipControlsOverlay extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            top: 4,
-            left: 4,
-            child: IconButton(
-              color: Colors.white,
-              onPressed: Pip.instance.exit,
-              icon: const Icon(Icons.pin_end),
-            ),
-          ),
+          const Positioned(top: 4, left: 4, child: _PipExitButton()),
           const Positioned(top: 4, right: 4, child: _PipCloseButton()),
-          Positioned(
+          const Positioned(
             bottom: 0,
             right: 0,
             left: 0,
@@ -295,6 +287,19 @@ class _PipControlsOverlay extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _PipExitButton extends StatelessWidget {
+  const _PipExitButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      color: Colors.white,
+      onPressed: Pip.instance.exit,
+      icon: const Icon(Icons.pin_end),
     );
   }
 }

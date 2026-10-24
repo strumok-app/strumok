@@ -592,11 +592,11 @@ class _ControlsOverlay extends StatelessWidget {
               ? const Row(
                   children: [
                     Spacer(flex: 2),
-                    CircleBackdrop(child: SkipPrevButton(iconSize: 36.0)),
+                    SkipPrevButton(iconSize: 36.0, filled: true),
                     Spacer(),
-                    CircleBackdrop(child: PlayOrPauseButton(iconSize: 48.0)),
+                    PlayOrPauseButton(iconSize: 48.0, filled: true),
                     Spacer(),
-                    CircleBackdrop(child: SkipNextButton(iconSize: 36.0)),
+                    SkipNextButton(iconSize: 36.0, filled: true),
                     Spacer(flex: 2),
                   ],
                 )
@@ -661,12 +661,11 @@ class _LockedOverlay extends StatelessWidget {
             child: SizedBox(
               height: _buttonBarHeight,
               child: Center(
-                child: CircleBackdrop(
-                  child: IconButton(
-                    onPressed: onUnlock,
-                    icon: const Icon(Icons.lock_open),
-                    color: _white,
-                  ),
+                child: IconButton.filled(
+                  style: videoFilledIconButtonStyle,
+                  onPressed: onUnlock,
+                  icon: const Icon(Icons.lock_open),
+                  color: _white,
                 ),
               ),
             ),

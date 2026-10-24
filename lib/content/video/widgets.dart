@@ -112,24 +112,6 @@ class PlaybackStateBuilder extends StatelessWidget {
   }
 }
 
-class CircleBackdrop extends StatelessWidget {
-  final Widget child;
-
-  const CircleBackdrop({super.key, required this.child});
-
-  static const _scrimColor = Color(0x99000000);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: _scrimColor,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: child,
-    );
-  }
-}
-
 class SimpleVideoProgressIndicator extends StatelessWidget {
   final double height;
 

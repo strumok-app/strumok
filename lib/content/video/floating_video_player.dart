@@ -214,18 +214,15 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
             Positioned(
               top: controlsPadding,
               left: controlsPadding,
-              child: CircleBackdrop(
-                child: PlayOrPauseButton(iconSize: playPauseIconSize),
+              child: PlayOrPauseButton(
+                iconSize: playPauseIconSize,
+                filled: true,
               ),
             ),
             Positioned(
               top: controlsPadding,
               right: controlsPadding,
-              child: CircleBackdrop(
-                child: FloatingVideoPlayerCloseButton(
-                  iconSize: controlsIconSize,
-                ),
-              ),
+              child: FloatingVideoPlayerCloseButton(iconSize: controlsIconSize),
             ),
           ],
           const Positioned(
@@ -247,7 +244,8 @@ class FloatingVideoPlayerCloseButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return IconButton(
+    return IconButton.filled(
+      style: videoFilledIconButtonStyle,
       icon: Icon(Icons.close, color: Colors.white, size: iconSize),
       onPressed: () {
         ref.read(videoPlayerProvider.notifier).dispose();

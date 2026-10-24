@@ -9,6 +9,16 @@ import 'package:strumok/content/video/content_details_video_actions.dart';
 import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 
+const _scrimColor = Color(0x99000000);
+
+/// Style for [IconButton.filled] rendered over video content.
+final videoFilledIconButtonStyle = IconButton.styleFrom(
+  foregroundColor: Colors.white,
+  disabledForegroundColor: Colors.white.withValues(alpha: 0.7),
+  backgroundColor: _scrimColor,
+  disabledBackgroundColor: _scrimColor,
+);
+
 class ExitButton extends StatelessWidget {
   const ExitButton({super.key});
 
@@ -67,8 +77,9 @@ class PlayerPlaylistButton extends ConsumerWidget {
 
 class SkipPrevButton extends ConsumerWidget {
   final double? iconSize;
+  final bool filled;
 
-  const SkipPrevButton({super.key, this.iconSize});
+  const SkipPrevButton({super.key, this.iconSize, this.filled = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -86,8 +97,10 @@ class SkipPrevButton extends ConsumerWidget {
     }
 
     final enabled = currentItem > 0 && !shuffleMode;
+    final button = filled ? IconButton.filled : IconButton.new;
 
-    return IconButton(
+    return button(
+      style: filled ? videoFilledIconButtonStyle : null,
       focusNode: enabled ? null : FocusNode(canRequestFocus: false),
       onPressed: enabled ? controller.prevItem : null,
       icon: const Icon(Icons.skip_previous),
@@ -101,8 +114,14 @@ class SkipPrevButton extends ConsumerWidget {
 class SkipNextButton extends ConsumerWidget {
   final double? iconSize;
   final FocusNode? focusNode;
+  final bool filled;
 
-  const SkipNextButton({super.key, this.iconSize, this.focusNode});
+  const SkipNextButton({
+    super.key,
+    this.iconSize,
+    this.focusNode,
+    this.filled = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -121,8 +140,10 @@ class SkipNextButton extends ConsumerWidget {
     }
 
     final enabled = currentItem < mediaItems.length - 1 || shuffleMode;
+    final button = filled ? IconButton.filled : IconButton.new;
 
-    return IconButton(
+    return button(
+      style: filled ? videoFilledIconButtonStyle : null,
       onPressed: enabled ? controller.nextItem : null,
       padding: EdgeInsets.zero,
       icon: const Icon(Icons.skip_next),
@@ -138,12 +159,14 @@ class PlayOrPauseButton extends StatefulWidget {
   final double? iconSize;
   final Color? iconColor;
   final FocusNode? focusNode;
+  final bool filled;
 
   const PlayOrPauseButton({
     super.key,
     this.iconSize,
     this.iconColor,
     this.focusNode,
+    this.filled = false,
   });
 
   @override
@@ -196,7 +219,10 @@ class _PlayOrPauseButtonState extends State<PlayOrPauseButton>
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    final button = widget.filled ? IconButton.filled : IconButton.new;
+
+    return button(
+      style: widget.filled ? videoFilledIconButtonStyle : null,
       focusNode: widget.focusNode,
       color: Colors.white,
       onPressed: videoContentController(context).playOrPause,

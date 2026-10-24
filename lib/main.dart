@@ -29,6 +29,10 @@ import 'package:strumok/content/video/pip/pip.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
+  http.runWithClient(wrapWithLogger, createAppHttpClient);
+}
+
+Future<void> wrapWithLogger() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Logger.root.level = Level.ALL; // defaults to Level.INFO
@@ -51,18 +55,13 @@ Future<void> main() async {
   }
 
   if (kDebugMode) {
-    // Makes `http.Client()` (including in third-party packages) prefer HTTP/2.
-    http.runWithClient(appRunner, createAppHttpClient);
+    appRunner();
   } else {
     const sentryDns = String.fromEnvironment("SENTRY_DNS");
-    await SentryFlutter.init(
-      (options) {
-        options.tracesSampleRate = 1.0;
-        options.dsn = sentryDns;
-      },
-      // Makes `http.Client()` (including in third-party packages) prefer HTTP/2.
-      appRunner: () => http.runWithClient(appRunner, createAppHttpClient),
-    );
+    await SentryFlutter.init((options) {
+      options.tracesSampleRate = 1.0;
+      options.dsn = sentryDns;
+    }, appRunner: () => appRunner());
   }
 }
 
