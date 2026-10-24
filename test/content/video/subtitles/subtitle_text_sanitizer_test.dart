@@ -33,17 +33,42 @@ void main() {
       expect(sanitizeCueText('<I>Upper</I>'), 'Upper');
     });
 
-    test('strips tags with attributes, classes and voices', () {
+    test('strips tags with attributes and classes', () {
       expect(
         sanitizeCueText(
           '<font color="#ffff00">Yellow</font> <c.red.bg_blue>x</c>',
         ),
         'Yellow x',
       );
-      expect(sanitizeCueText('<v Bob>Hi</v>'), 'Hi');
-      expect(sanitizeCueText('<v.loud Bob Smith>Hey'), 'Hey');
       expect(sanitizeCueText('<lang en-US>Hello</lang>'), 'Hello');
       expect(sanitizeCueText('<span style="x">a</span>'), 'a');
+    });
+
+    test('preserves voice names as speaker labels', () {
+      expect(sanitizeCueText('<v Bob>Hi</v>'), 'Bob: Hi');
+      expect(sanitizeCueText('<v.loud Bob Smith>Hey'), 'Bob Smith: Hey');
+      expect(sanitizeCueText('<V.loud.fast Alice>Hello</V>'), 'Alice: Hello');
+      expect(sanitizeCueText('<v>Hi</v>'), 'Hi');
+      expect(sanitizeCueText('<v   >Hi</v>'), 'Hi');
+    });
+
+    test('separates adjacent voices and preserves existing line breaks', () {
+      expect(
+        sanitizeCueText('<v Alice>Hello!</v><v Bob>Hi!</v>'),
+        'Alice: Hello! Bob: Hi!',
+      );
+      expect(
+        sanitizeCueText('<v Alice>Hello!</v>\n<v Bob>Hi!</v>'),
+        'Alice: Hello!\nBob: Hi!',
+      );
+    });
+
+    test('decodes escaped voice tags and speaker names', () {
+      expect(sanitizeCueText('&lt;v Bob&gt;Hi&lt;/v&gt;'), 'Bob: Hi');
+      expect(
+        sanitizeCueText('<v Ren&#233;e><i>Hi &amp; bye</i></v>'),
+        'Renée: Hi & bye',
+      );
     });
 
     test('strips WebVTT karaoke timestamps', () {
@@ -73,12 +98,6 @@ void main() {
       expect(sanitizeCueText('One<br>Two<BR/>Three'), 'One\nTwo\nThree');
     });
 
-    test('removes ASS override blocks and converts ASS escapes', () {
-      expect(sanitizeCueText(r'{\an8}Top line\NSecond'), 'Top line\nSecond');
-      expect(sanitizeCueText(r'{\i1}It{\i0}alic'), 'Italic');
-      expect(sanitizeCueText(r'a\hb'), 'a\u00A0b');
-    });
-
     test('keeps plain braces', () {
       expect(sanitizeCueText('{laughs}'), '{laughs}');
     });
@@ -99,8 +118,12 @@ void main() {
       );
     });
 
+    test('returns the same instance for already clean text', () {
+      const clean = 'Hello world\nBye';
+      expect(identical(sanitizeCueText(clean), clean), isTrue);
+    });
+
     test('returns empty string for markup-only or blank cues', () {
-      expect(sanitizeCueText(r'{\an8}'), '');
       expect(sanitizeCueText('<i></i>'), '');
       expect(sanitizeCueText('&nbsp;'), '');
       expect(sanitizeCueText('   \n  '), '');

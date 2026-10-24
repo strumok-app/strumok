@@ -598,7 +598,9 @@ class VideoPlayerController {
         return;
       }
 
-      logger.info("Loading subtitle: $subtitle");
+      logger.info(
+        "Loading subtitle: ${subtitle.link}, headers: ${subtitle.headers}",
+      );
 
       // Use the subtitle worker to parse subtitle in isolate
       final link = await subtitle.link;

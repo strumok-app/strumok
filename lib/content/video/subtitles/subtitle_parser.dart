@@ -15,9 +15,6 @@ const _timestamp = r'((?:\d+:)?\d{1,2}:\d{1,2}(?:[.,]\d+)?)';
 final _timingLine = RegExp('^\\s*$_timestamp\\s*-->\\s*$_timestamp(.*)\$');
 final _integerLine = RegExp(r'^\s*\d+\s*$');
 final _vttBlockKeyword = RegExp(r'^(?:NOTE|STYLE|REGION)(?:[ \t]|$)');
-final _assTopAlignment = RegExp(
-  r'\{[^}]*\\(?:an[789]|a(?:5|6|7)(?!\d))[^}]*\}',
-);
 final _vttLineSetting = RegExp(r'(?:^|\s)line:(-?\d+(?:\.\d+)?)(%?)');
 
 /// Parses SubRip (SRT) or WebVTT [content] into a [SubtitleTrack].
@@ -131,8 +128,7 @@ SubtitleCue? _buildCue(RegExpMatch timing, String rawText) {
     start: start,
     end: end,
     text: text,
-    alignTop:
-        _assTopAlignment.hasMatch(rawText) || _isVttTopLine(timing[3] ?? ''),
+    alignTop: _isVttTopLine(timing[3] ?? ''),
   );
 }
 

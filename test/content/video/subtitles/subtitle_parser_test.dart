@@ -77,20 +77,6 @@ void main() {
 
       expect(track.cues.single.text, 'OK');
     });
-
-    test('detects ASS top alignment overrides', () {
-      final track = parseSubtitles(
-        '1\n00:00:01,000 --> 00:00:02,000\n{\\an8}Sign\n\n'
-        '2\n00:00:01,000 --> 00:00:02,000\n{\\i1\\an2}Bottom\n\n'
-        '3\n00:00:01,000 --> 00:00:02,000\n{\\a6}Legacy top\n',
-      );
-
-      expect(track.cues.map((c) => (c.text, c.alignTop)), [
-        ('Sign', true),
-        ('Bottom', false),
-        ('Legacy top', true),
-      ]);
-    });
   });
 
   group('parseSubtitles WebVTT', () {
@@ -128,7 +114,7 @@ void main() {
         '00:03.000 --> 00:04.000\nSecond\n',
       );
 
-      expect(track.cues.map((c) => c.text), ['Hi & bye', 'Second']);
+      expect(track.cues.map((c) => c.text), ['Bob: Hi & bye', 'Second']);
       expect(track.cues.first.start, _ms(1000));
     });
 
