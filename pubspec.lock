@@ -506,7 +506,7 @@ packages:
     source: hosted
     version: "2.12.0"
   flutter_test:
-    dependency: transitive
+    dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -1499,14 +1499,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
-  subtitle:
-    dependency: "direct main"
-    description:
-      name: subtitle
-      sha256: "29115fbaa5d87c5909ffa477cbfdeec2c6ee8ac9a5ef3dce9b2db731afc79f26"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.4"
   synchronized:
     dependency: transitive
     description:
@@ -1555,14 +1547,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
-  universal_io:
-    dependency: transitive
-    description:
-      name: universal_io
-      sha256: ba9dde5f7c6d8ec7ed856bef0eb01c425881acae7748f77dac4d5cc46f2edf04
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.3"
   universal_platform:
     dependency: transitive
     description:

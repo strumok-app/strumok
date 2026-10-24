@@ -1,5 +1,13 @@
+import 'dart:io';
 import 'dart:isolate';
-import 'package:subtitle/subtitle.dart';
+import 'dart:typed_data';
+
+import 'package:strumok/content/video/subtitles/subtitle_decoder.dart';
+import 'package:strumok/content/video/subtitles/subtitle_parser.dart';
+import 'package:strumok/content/video/subtitles/subtitle_track.dart';
+
+const _connectionTimeout = Duration(seconds: 30);
+const _downloadTimeout = Duration(seconds: 60);
 
 /// Message sent to the subtitle worker isolate
 class SubtitleWorkerMessage {
@@ -16,11 +24,11 @@ class SubtitleWorkerMessage {
 
 /// Response from the subtitle worker isolate
 class SubtitleWorkerResponse {
-  final SubtitleController? controller;
+  final SubtitleTrack? track;
   final String? error;
 
-  SubtitleWorkerResponse.success(this.controller) : error = null;
-  SubtitleWorkerResponse.error(this.error) : controller = null;
+  SubtitleWorkerResponse.success(this.track) : error = null;
+  SubtitleWorkerResponse.error(this.error) : track = null;
 }
 
 /// The main function for the subtitle worker isolate
@@ -34,8 +42,8 @@ void subtitleWorkerMain(SendPort mainSendPort) {
   receivePort.listen((message) async {
     if (message is SubtitleWorkerMessage) {
       try {
-        final controller = await _parseSubtitle(message.uri, message.headers);
-        final response = SubtitleWorkerResponse.success(controller);
+        final track = await _loadSubtitle(message.uri, message.headers);
+        final response = SubtitleWorkerResponse.success(track);
         message.replyPort.send(response);
       } catch (e) {
         final response = SubtitleWorkerResponse.error(e.toString());
@@ -45,32 +53,38 @@ void subtitleWorkerMain(SendPort mainSendPort) {
   });
 }
 
-/// Parse subtitle using the subtitle library
-Future<SubtitleController> _parseSubtitle(
+/// Fetch, decode and parse a subtitle file
+Future<SubtitleTrack> _loadSubtitle(
   String uri,
   Map<String, String>? headers,
 ) async {
-  // todo: rework this.
-  SubtitleType? type;
-  if (uri.contains("srt")) {
-    type = SubtitleType.srt;
-  } else if (uri.contains("vtt")) {
-    type = SubtitleType.vtt;
+  final url = Uri.parse(uri);
+  final bytes = url.scheme == 'file'
+      ? await File.fromUri(url).readAsBytes()
+      : await _download(url, headers);
+
+  return parseSubtitles(decodeSubtitleBytes(bytes));
+}
+
+Future<Uint8List> _download(Uri url, Map<String, String>? headers) async {
+  final client = HttpClient()..connectionTimeout = _connectionTimeout;
+
+  try {
+    final request = await client.getUrl(url);
+    headers?.forEach(request.headers.add);
+
+    final response = await request.close().timeout(_downloadTimeout);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      await response.drain<void>();
+      throw HttpException('HTTP ${response.statusCode}', uri: url);
+    }
+
+    final builder = BytesBuilder(copy: false);
+    await response.forEach(builder.add).timeout(_downloadTimeout);
+    return builder.takeBytes();
+  } finally {
+    client.close(force: true);
   }
-
-  final controller = SubtitleController(
-    provider: NetworkSubtitle(
-      Uri.parse(uri),
-      type: type,
-      headers: headers ?? {},
-      connectionTimeout: Duration(seconds: 30),
-    ),
-  );
-
-  // Initialize the controller (this is where the actual parsing happens)
-  await controller.initial();
-
-  return controller;
 }
 
 /// Worker class to manage the subtitle parsing isolate
@@ -96,7 +110,7 @@ class SubtitleWorker {
   }
 
   /// Parse subtitle using the worker isolate
-  Future<SubtitleController> parseSubtitle(
+  Future<SubtitleTrack> parseSubtitle(
     String uri,
     Map<String, String>? headers,
   ) async {
@@ -121,7 +135,7 @@ class SubtitleWorker {
       throw Exception('Failed to parse subtitle: ${response.error}');
     }
 
-    return response.controller!;
+    return response.track!;
   }
 
   /// Dispose of the worker isolate

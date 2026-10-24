@@ -10,15 +10,16 @@ import 'package:strumok/app_preferences.dart';
 import 'package:strumok/collection/collection_item_model.dart';
 import 'package:strumok/content/video/model.dart';
 import 'package:strumok/content/video/subtitle_worker.dart';
+import 'package:strumok/content/video/subtitles/subtitle_track.dart';
 import 'package:strumok/utils/cache.dart';
 import 'package:strumok/utils/logger.dart';
 import 'package:strumok/utils/trace.dart';
 import 'package:strumok/video_backend/video_backend.dart';
-import 'package:subtitle/subtitle.dart';
 
 class VideoPlayerController {
-  static final SimpleCache<SubCacheKey, SubtitleController> _subsCache =
-      SimpleCache(10);
+  static final SimpleCache<SubCacheKey, SubtitleTrack> _subsCache = SimpleCache(
+    10,
+  );
 
   final ContentDetails contentDetails;
   final SegmentedList<ContentMediaItem> mediaItems;
@@ -38,8 +39,9 @@ class VideoPlayerController {
   Duration? _resumePosition;
   double _playbackSpeed = 1.0;
 
-  ValueNotifier<AsyncValue<SubtitleController?>> subtitleController =
-      ValueNotifier(AsyncValue.data(null));
+  ValueNotifier<AsyncValue<SubtitleTrack?>> subtitleTrack = ValueNotifier(
+    AsyncValue.data(null),
+  );
   ValueNotifier<EdgeInsets> subtitlePaddings = ValueNotifier(EdgeInsets.zero);
 
   VideoBackend? _currentVideoBackend;
@@ -70,7 +72,7 @@ class VideoPlayerController {
     _videoBackendStateStreamController.close();
 
     videoBackend.dispose();
-    subtitleController.dispose();
+    subtitleTrack.dispose();
     subtitlePaddings.dispose();
   }
 
@@ -91,8 +93,7 @@ class VideoPlayerController {
 
     Future.wait([
       _playCollectionItem(collectionItem, startOverride: resumePosition),
-      if (subtitleController.value is AsyncError)
-        _loadSubtitles(collectionItem),
+      if (subtitleTrack.value is AsyncError) _loadSubtitles(collectionItem),
     ]);
   }
 
@@ -561,7 +562,7 @@ class VideoPlayerController {
         _currentSubtitleName != subtitleName;
 
     if (subtitleName == null || sourcesFuture == null) {
-      subtitleController.value = AsyncValue.data(null);
+      subtitleTrack.value = AsyncValue.data(null);
       return;
     }
 
@@ -574,11 +575,11 @@ class VideoPlayerController {
 
     final cachedSub = _subsCache.get(cacheKey);
     if (cachedSub != null) {
-      subtitleController.value = AsyncValue.data(cachedSub);
+      subtitleTrack.value = AsyncValue.data(cachedSub);
       return;
     }
 
-    subtitleController.value = AsyncValue.loading();
+    subtitleTrack.value = AsyncValue.loading();
 
     try {
       final sources = await sourcesFuture;
@@ -593,7 +594,7 @@ class VideoPlayerController {
               as FileMediaItemSource?;
 
       if (subtitle == null) {
-        subtitleController.value = AsyncValue.data(null);
+        subtitleTrack.value = AsyncValue.data(null);
         return;
       }
 
@@ -601,7 +602,7 @@ class VideoPlayerController {
 
       // Use the subtitle worker to parse subtitle in isolate
       final link = await subtitle.link;
-      final controller = await _subtitleWorker.parseSubtitle(
+      final track = await _subtitleWorker.parseSubtitle(
         link.toString(),
         subtitle.headers,
       );
@@ -610,8 +611,8 @@ class VideoPlayerController {
         return;
       }
 
-      _subsCache.put(cacheKey, controller);
-      subtitleController.value = AsyncValue.data(controller);
+      _subsCache.put(cacheKey, track);
+      subtitleTrack.value = AsyncValue.data(track);
 
       logger.info("Subtitle loaded successfully");
     } catch (e, stackTrace) {
@@ -622,7 +623,7 @@ class VideoPlayerController {
         return;
       }
 
-      subtitleController.value = AsyncValue.error(e, stackTrace);
+      subtitleTrack.value = AsyncValue.error(e, stackTrace);
     }
   }
 }

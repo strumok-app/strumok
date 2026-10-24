@@ -1,13 +1,15 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart' show Bidi;
 import 'package:rounded_background_text/rounded_background_text.dart';
+import 'package:strumok/content/video/subtitles/subtitle_track.dart';
 import 'package:strumok/content/video/video_player_controller.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/l10n/app_localizations.dart';
 import 'package:strumok/video_backend/video_backend.dart';
-import 'package:subtitle/subtitle.dart';
 
 /// Subtitles overlay. In views narrower than [_minLayoutWidth] (PIP, floating
 /// player) subtitles are laid out as on a wider screen and scaled down to fit.
@@ -52,16 +54,16 @@ class _VideoSubtitlesContent extends ConsumerWidget {
     final subtitlesSize = ref.watch(subtitlesSizeSettingsProvider);
 
     return ValueListenableBuilder(
-      valueListenable: videoContentController(context).subtitleController,
-      builder: (context, asyncSubtitleController, _) {
-        return asyncSubtitleController.when(
-          data: (subtitleController) {
-            if (subtitleController == null) {
+      valueListenable: videoContentController(context).subtitleTrack,
+      builder: (context, asyncSubtitleTrack, _) {
+        return asyncSubtitleTrack.when(
+          data: (subtitleTrack) {
+            if (subtitleTrack == null || subtitleTrack.isEmpty) {
               return SizedBox.shrink();
             }
 
             return PlayerSubtitleView(
-              subtitleController: subtitleController,
+              subtitleTrack: subtitleTrack,
               subtitlesOffset: subtitlesOffset,
               subtitlesSize: subtitlesSize,
             );
@@ -79,13 +81,13 @@ class _VideoSubtitlesContent extends ConsumerWidget {
 }
 
 class PlayerSubtitleView extends StatefulWidget {
-  final SubtitleController subtitleController;
+  final SubtitleTrack subtitleTrack;
   final Duration subtitlesOffset;
   final double subtitlesSize;
 
   const PlayerSubtitleView({
     super.key,
-    required this.subtitleController,
+    required this.subtitleTrack,
     required this.subtitlesOffset,
     required this.subtitlesSize,
   });
@@ -95,10 +97,8 @@ class PlayerSubtitleView extends StatefulWidget {
 }
 
 class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
-  static final _htmlCharsEntries = RegExp(r'&([^;]+);');
-
   StreamSubscription? _subscription;
-  List<Subtitle> _subtitles = List.empty();
+  List<SubtitleCue> _cues = List.empty();
 
   @override
   void didChangeDependencies() {
@@ -107,10 +107,10 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
     if (_subscription == null) {
       final controller = videoContentController(context);
       _subscription = controller.videoBackendStateStream.listen(
-        _updateSubtitles,
+        _onBackendState,
       );
 
-      _updateSubtitles(controller.videoBackendState, true);
+      _cues = _cuesAt(controller.videoBackendState);
     }
   }
 
@@ -118,8 +118,7 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
   void didUpdateWidget(covariant PlayerSubtitleView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final controller = videoContentController(context);
-    _updateSubtitles(controller.videoBackendState, true);
+    _cues = _cuesAt(videoContentController(context).videoBackendState);
   }
 
   @override
@@ -129,66 +128,78 @@ class PlayerSubtitleViewState extends State<PlayerSubtitleView> {
     super.dispose();
   }
 
-  void _updateSubtitles(VideoBackendState state, [forceUpdate = false]) {
-    final time = state.position + widget.subtitlesOffset;
+  List<SubtitleCue> _cuesAt(VideoBackendState state) {
+    return widget.subtitleTrack.cuesAt(state.position + widget.subtitlesOffset);
+  }
 
-    if (!forceUpdate && _subtitles.firstOrNull?.inRange(time) == true) {
+  void _onBackendState(VideoBackendState state) {
+    final cues = _cuesAt(state);
+    if (!mounted || listEquals(cues, _cues)) {
       return;
     }
 
-    final subs = widget.subtitleController.multiDurationSearch(time);
     setState(() {
-      _subtitles = subs;
+      _cues = cues;
     });
+  }
+
+  static String _joinCues(Iterable<SubtitleCue> cues) {
+    // Set keeps order and drops duplicated overlapping cues.
+    return cues.map((c) => c.text).toSet().join('\n');
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_subtitles.isEmpty) {
-      return SizedBox.shrink();
+    final bottomText = _joinCues(_cues.where((c) => !c.alignTop));
+    final topText = _joinCues(_cues.where((c) => c.alignTop));
+
+    final bottom = bottomText.isEmpty
+        ? null
+        : _SubtitleText(text: bottomText, fontSize: widget.subtitlesSize);
+    final top = topText.isEmpty
+        ? null
+        : _SubtitleText(
+            text: topText,
+            fontSize: widget.subtitlesSize,
+            alignTop: true,
+          );
+
+    if (top == null || bottom == null) {
+      return top ?? bottom ?? SizedBox.shrink();
     }
 
-    final text = _subtitles
-        .map((s) => s.data)
-        .nonNulls
-        .join('\n')
-        .replaceAllMapped(_htmlCharsEntries, (match) {
-          return switch (match.group(1)) {
-            'lt' => '<',
-            'gt' => '>',
-            'quot' => '"',
-            _ => match.group(1) ?? '',
-          };
-        });
-
-    return _SubtitleText(text: text, fontSize: widget.subtitlesSize);
+    return Stack(fit: StackFit.expand, children: [top, bottom]);
   }
 }
 
 class _SubtitleText extends StatelessWidget {
-  const _SubtitleText({required this.text, this.fontSize = 26.0});
+  const _SubtitleText({
+    required this.text,
+    this.fontSize = 26.0,
+    this.alignTop = false,
+  });
 
   final String text;
   final double fontSize;
+  final bool alignTop;
 
-  double _fitFontSize(BuildContext context, double availableWidth) {
+  TextStyle _textStyle(double fontSize) => TextStyle(
+    height: 1.4,
+    fontSize: fontSize,
+    letterSpacing: 0.0,
+    wordSpacing: 0.0,
+    color: Color(0xffffffff),
+    fontWeight: FontWeight.normal,
+  );
+
+  double _fitFontSize(TextDirection textDirection, double availableWidth) {
     final maximumWidth = availableWidth.clamp(80.0, double.infinity);
     var fittedSize = fontSize;
 
     while (fittedSize > 14.0) {
       final painter = TextPainter(
-        text: TextSpan(
-          text: text,
-          style: TextStyle(
-            height: 1.4,
-            fontSize: fittedSize,
-            letterSpacing: 0.0,
-            wordSpacing: 0.0,
-            color: Color(0xffffffff),
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        textDirection: Directionality.of(context),
+        text: TextSpan(text: text, style: _textStyle(fittedSize)),
+        textDirection: textDirection,
         textAlign: TextAlign.center,
         maxLines: 3,
         ellipsis: '…',
@@ -196,6 +207,8 @@ class _SubtitleText extends StatelessWidget {
 
       final exceedsWidth = painter.maxIntrinsicWidth > maximumWidth;
       final exceedsLines = painter.didExceedMaxLines;
+      painter.dispose();
+
       if (!exceedsWidth && !exceedsLines) {
         return fittedSize;
       }
@@ -208,13 +221,18 @@ class _SubtitleText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textDirection = Bidi.detectRtlDirectionality(text)
+        ? TextDirection.rtl
+        : TextDirection.ltr;
+
     return ValueListenableBuilder(
       valueListenable: videoContentController(context).subtitlePaddings,
       builder: (context, value, child) {
-        print('Subtitle paddings: $value');
         return Container(
-          padding: const EdgeInsets.only(bottom: 16) + value,
-          alignment: Alignment.bottomCenter,
+          padding: alignTop
+              ? EdgeInsets.fromLTRB(value.left, 16 + value.top, value.right, 0)
+              : const EdgeInsets.only(bottom: 16) + value,
+          alignment: alignTop ? Alignment.topCenter : Alignment.bottomCenter,
           child: child!,
         );
       },
@@ -223,22 +241,18 @@ class _SubtitleText extends StatelessWidget {
           final availableWidth = constraints.maxWidth == double.infinity
               ? MediaQuery.sizeOf(context).width * 0.9
               : constraints.maxWidth * 0.9;
-          final effectiveFontSize = _fitFontSize(context, availableWidth);
+
+          final effectiveFontSize = _fitFontSize(textDirection, availableWidth);
 
           return RoundedBackgroundText(
             text,
             maxLines: 3,
             ellipsis: '…',
-            style: TextStyle(
-              height: 1.4,
-              fontSize: effectiveFontSize,
-              letterSpacing: 0.0,
-              wordSpacing: 0.0,
-              color: Color(0xffffffff),
-              fontWeight: FontWeight.normal,
-            ),
+            innerRadius: 0,
+            style: _textStyle(effectiveFontSize),
             backgroundColor: Color(0xaa000000),
             textAlign: TextAlign.center,
+            textDirection: textDirection,
           );
         },
       ),
