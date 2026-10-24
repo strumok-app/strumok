@@ -67,8 +67,6 @@ const _namedEntities = <String, String>{
 
 String sanitizeCueText(String raw) {
   var text = raw
-      .replaceAll('\r\n', '\n')
-      .replaceAll('\r', '\n')
       .replaceAll(_assOverrideBlock, '')
       .replaceAll(_assLineBreak, '\n')
       .replaceAll(r'\h', '\u00A0')

@@ -43,12 +43,6 @@ void main() {
       );
     });
 
-    test('decodes BOM-less UTF-16 LE and BE', () {
-      const ascii = '1\n00:00:01,000 --> 00:00:02,000\nHello world\n';
-      expect(decodeSubtitleBytes(_utf16(ascii, littleEndian: true)), ascii);
-      expect(decodeSubtitleBytes(_utf16(ascii, littleEndian: false)), ascii);
-    });
-
     test('falls back to Windows-1251 for Cyrillic legacy files', () {
       // "Привіт, світе! Ґанок їжак є Ёё №" in Windows-1251.
       final bytes = [

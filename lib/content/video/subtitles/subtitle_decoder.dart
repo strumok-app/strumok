@@ -2,8 +2,8 @@ import 'dart:convert';
 
 /// Decodes raw subtitle file bytes into a string.
 ///
-/// Order: BOM (UTF-8 / UTF-16 LE/BE) → BOM-less UTF-16 heuristic → strict
-/// UTF-8 → legacy single-byte fallback (Windows-1251 for Cyrillic-looking
+/// Order: BOM (UTF-8 / UTF-16 LE/BE) → strict UTF-8 →
+/// legacy single-byte fallback (Windows-1251 for Cyrillic-looking
 /// content, Windows-1252 otherwise).
 String decodeSubtitleBytes(List<int> bytes) {
   if (_startsWith(bytes, const [0xEF, 0xBB, 0xBF])) {
@@ -14,11 +14,6 @@ String decodeSubtitleBytes(List<int> bytes) {
   }
   if (_startsWith(bytes, const [0xFE, 0xFF])) {
     return _decodeUtf16(bytes, 2, littleEndian: false);
-  }
-
-  final utf16Endianness = _guessBomLessUtf16(bytes);
-  if (utf16Endianness != null) {
-    return _decodeUtf16(bytes, 0, littleEndian: utf16Endianness);
   }
 
   try {
@@ -47,25 +42,6 @@ String _decodeUtf16(List<int> bytes, int offset, {required bool littleEndian}) {
     codeUnits[i] = littleEndian ? (b << 8) | a : (a << 8) | b;
   }
   return String.fromCharCodes(codeUnits);
-}
-
-/// Mostly-ASCII text encoded as UTF-16 has a zero in every other byte.
-/// Returns `true` for little-endian, `false` for big-endian, `null` otherwise.
-bool? _guessBomLessUtf16(List<int> bytes) {
-  final sample = bytes.length < 4096 ? bytes.length : 4096;
-  if (sample < 4) return null;
-
-  var evenZeros = 0;
-  var oddZeros = 0;
-  for (var i = 0; i + 1 < sample; i += 2) {
-    if (bytes[i] == 0) evenZeros++;
-    if (bytes[i + 1] == 0) oddZeros++;
-  }
-
-  final pairs = sample ~/ 2;
-  if (oddZeros > pairs * 0.4 && evenZeros < pairs * 0.1) return true;
-  if (evenZeros > pairs * 0.4 && oddZeros < pairs * 0.1) return false;
-  return null;
 }
 
 /// Windows-1251 Cyrillic words are runs of consecutive high bytes, while in
