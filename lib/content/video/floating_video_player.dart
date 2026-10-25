@@ -52,7 +52,6 @@ const mobilePlayerWidth = 220.0;
 const desktopPlayerWidth = 420.0;
 const controlsPadding = 6.0;
 const controlsIconSize = 20.0;
-const playPauseIconSize = 32.0;
 
 const hPaddingDesktop = 10.0;
 const hPaddingMobile = 16.0;
@@ -215,7 +214,7 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
               top: controlsPadding,
               left: controlsPadding,
               child: PlayOrPauseButton(
-                iconSize: playPauseIconSize,
+                iconSize: controlsIconSize,
                 filled: true,
               ),
             ),
