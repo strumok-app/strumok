@@ -245,7 +245,6 @@ class FloatingVideoPlayerCloseButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton.filled(
       style: videoFilledIconButtonStyle,
-      visualDensity: VisualDensity.comfortable,
       icon: Icon(Icons.close, color: Colors.white, size: iconSize),
       onPressed: () {
         ref.read(videoPlayerProvider.notifier).dispose();
