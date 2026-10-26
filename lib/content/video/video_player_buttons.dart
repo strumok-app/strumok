@@ -144,13 +144,12 @@ class SkipNextButton extends ConsumerWidget {
 
     return button(
       style: filled ? videoFilledIconButtonStyle : null,
+      focusNode: enabled ? null : FocusNode(canRequestFocus: false),
       onPressed: enabled ? controller.nextItem : null,
-      padding: EdgeInsets.zero,
       icon: const Icon(Icons.skip_next),
       iconSize: iconSize,
       color: Colors.white,
       disabledColor: Colors.white.withValues(alpha: 0.7),
-      focusNode: focusNode,
     );
   }
 }
