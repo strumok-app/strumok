@@ -128,7 +128,7 @@ abstract class _$CollectionFilterQuery extends $Notifier<String> {
   String build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -138,7 +138,7 @@ abstract class _$CollectionFilterQuery extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -352,7 +352,7 @@ abstract class _$CollectionFilter extends $Notifier<CollectionFilterModel> {
   CollectionFilterModel build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<CollectionFilterModel, CollectionFilterModel>;
     final element =
         ref.element
@@ -362,6 +362,6 @@ abstract class _$CollectionFilter extends $Notifier<CollectionFilterModel> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

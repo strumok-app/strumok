@@ -82,13 +82,13 @@ final class AIChatProvider extends $NotifierProvider<AIChat, AIChatState> {
   }
 }
 
-String _$aIChatHash() => r'f473b7964f501dc7f240f09e0dacdb23e7179104';
+String _$aIChatHash() => r'dcc0eaf1d5edf72ea00c8d73ce8294e9b2c3d874';
 
 abstract class _$AIChat extends $Notifier<AIChatState> {
   AIChatState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AIChatState, AIChatState>;
     final element =
         ref.element
@@ -98,6 +98,6 @@ abstract class _$AIChat extends $Notifier<AIChatState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

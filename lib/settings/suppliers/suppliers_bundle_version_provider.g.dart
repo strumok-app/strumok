@@ -92,7 +92,7 @@ final class LatestSupplierBundleInfoProvider
 }
 
 String _$latestSupplierBundleInfoHash() =>
-    r'b99b01b7a7f96a4e5f93f2f149d54951d393da78';
+    r'2d7a3dc5b963a9729903a0f07bd8dd6a8db30692';
 
 @ProviderFor(SuppliersBundleDownload)
 final suppliersBundleDownloadProvider = SuppliersBundleDownloadProvider._();
@@ -133,7 +133,7 @@ abstract class _$SuppliersBundleDownload extends $Notifier<DownloadState> {
   DownloadState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<DownloadState, DownloadState>;
     final element =
         ref.element
@@ -143,6 +143,6 @@ abstract class _$SuppliersBundleDownload extends $Notifier<DownloadState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

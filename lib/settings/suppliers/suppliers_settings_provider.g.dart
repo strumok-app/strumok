@@ -47,7 +47,7 @@ abstract class _$SuppliersSettings extends $Notifier<SuppliersSettingsModel> {
   SuppliersSettingsModel build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<SuppliersSettingsModel, SuppliersSettingsModel>;
     final element =
@@ -58,7 +58,7 @@ abstract class _$SuppliersSettings extends $Notifier<SuppliersSettingsModel> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 

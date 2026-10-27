@@ -40,7 +40,7 @@ abstract class _$DownloadsUpdateStream extends $StreamNotifier<DownloadTask> {
   Stream<DownloadTask> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<DownloadTask>, DownloadTask>;
     final element =
         ref.element
@@ -50,7 +50,7 @@ abstract class _$DownloadsUpdateStream extends $StreamNotifier<DownloadTask> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 

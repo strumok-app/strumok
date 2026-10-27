@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
-import 'package:logging_to_logcat/logging_to_logcat.dart';
 import 'package:http/http.dart' as http;
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:strumok/app_database.dart';
@@ -37,22 +35,18 @@ Future<void> wrapWithLogger() async {
 
   Logger.root.level = Level.ALL; // defaults to Level.INFO
 
-  if (Platform.isAndroid) {
-    Logger.root.activateLogcat();
-  } else {
-    Logger.root.onRecord.listen((record) {
-      if (record.loggerName.startsWith('GoogleAI')) {
-        return; // Skip logging for GoogleAI spam
-      }
+  Logger.root.onRecord.listen((record) {
+    if (record.loggerName.startsWith('GoogleAI')) {
+      return; // Skip logging for GoogleAI spam
+    }
 
-      var msg = "${record.level.name}: ${record.time}: ${record.message}";
-      if (record.error != null) {
-        msg += "\n${record.error}\n${record.stackTrace}";
-      }
-      // ignore: avoid_print
-      print(msg);
-    });
-  }
+    var msg = "${record.level.name}: ${record.time}: ${record.message}";
+    if (record.error != null) {
+      msg += "\n${record.error}\n${record.stackTrace}";
+    }
+    // ignore: avoid_print
+    print(msg);
+  });
 
   if (kDebugMode) {
     appRunner();

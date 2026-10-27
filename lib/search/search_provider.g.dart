@@ -83,13 +83,13 @@ final class SearchProvider extends $NotifierProvider<Search, SearchState> {
   }
 }
 
-String _$searchHash() => r'501adde69d1c03461f83c24ad49a523ddd219337';
+String _$searchHash() => r'fb5f96b4c6ec26d9cf8ac28c33d8aa9eed9e19cf';
 
 abstract class _$Search extends $Notifier<SearchState> {
   SearchState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<SearchState, SearchState>;
     final element =
         ref.element
@@ -99,7 +99,7 @@ abstract class _$Search extends $Notifier<SearchState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -141,7 +141,7 @@ abstract class _$SearchSettings extends $Notifier<SearchSettingsModel> {
   SearchSettingsModel build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<SearchSettingsModel, SearchSettingsModel>;
     final element =
         ref.element
@@ -151,6 +151,6 @@ abstract class _$SearchSettings extends $Notifier<SearchSettingsModel> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

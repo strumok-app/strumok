@@ -119,7 +119,7 @@ final class CollectionItemProvider
   }
 }
 
-String _$collectionItemHash() => r'283d3aef78e590211b4ec74e223cb3123ef1539e';
+String _$collectionItemHash() => r'974774f39739b61264d20348dd62bb83def3d0a5';
 
 final class CollectionItemFamily extends $Family
     with
@@ -153,7 +153,7 @@ abstract class _$CollectionItem extends $AsyncNotifier<MediaCollectionItem> {
   FutureOr<MediaCollectionItem> build(ContentDetails details);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<MediaCollectionItem>, MediaCollectionItem>;
     final element =
@@ -164,7 +164,7 @@ abstract class _$CollectionItem extends $AsyncNotifier<MediaCollectionItem> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 

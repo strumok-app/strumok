@@ -7,3 +7,7 @@ analyzer:
     - content_suppliers_rust/*
     - "**/*.g.dart"
     - "**/*.freezed.dart"
+    - build/**
+    - android/**
+    - windows/**
+    - linux/**

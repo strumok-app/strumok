@@ -46,7 +46,7 @@ abstract class _$OfflineMode extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -56,7 +56,7 @@ abstract class _$OfflineMode extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -98,7 +98,7 @@ abstract class _$BrightnessSetting extends $Notifier<Brightness?> {
   Brightness? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Brightness?, Brightness?>;
     final element =
         ref.element
@@ -108,7 +108,7 @@ abstract class _$BrightnessSetting extends $Notifier<Brightness?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -151,7 +151,7 @@ abstract class _$ColorSchemeSetting extends $Notifier<AppColorScheme> {
   AppColorScheme build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AppColorScheme, AppColorScheme>;
     final element =
         ref.element
@@ -161,7 +161,7 @@ abstract class _$ColorSchemeSetting extends $Notifier<AppColorScheme> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -204,7 +204,7 @@ abstract class _$UserLanguageSetting extends $Notifier<String> {
   String build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -214,7 +214,7 @@ abstract class _$UserLanguageSetting extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -263,7 +263,7 @@ abstract class _$MangaReaderBackgroundSettings
   MangaReaderBackground build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<MangaReaderBackground, MangaReaderBackground>;
     final element =
         ref.element
@@ -273,7 +273,7 @@ abstract class _$MangaReaderBackgroundSettings
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -316,7 +316,7 @@ abstract class _$MangaReaderModeSettings extends $Notifier<MangaReaderMode> {
   MangaReaderMode build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<MangaReaderMode, MangaReaderMode>;
     final element =
         ref.element
@@ -326,7 +326,7 @@ abstract class _$MangaReaderModeSettings extends $Notifier<MangaReaderMode> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -370,7 +370,7 @@ abstract class _$MangaReaderAutoCropSettings extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -380,7 +380,7 @@ abstract class _$MangaReaderAutoCropSettings extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -424,7 +424,7 @@ abstract class _$FloatingVideoPlayerEnabled extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -434,7 +434,7 @@ abstract class _$FloatingVideoPlayerEnabled extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -477,7 +477,7 @@ abstract class _$OfflineStorageDirectory extends $Notifier<String?> {
   String? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<String?, String?>;
     final element =
         ref.element
@@ -487,7 +487,7 @@ abstract class _$OfflineStorageDirectory extends $Notifier<String?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -529,7 +529,7 @@ abstract class _$GeminiApiToken extends $Notifier<String?> {
   String? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<String?, String?>;
     final element =
         ref.element
@@ -539,7 +539,7 @@ abstract class _$GeminiApiToken extends $Notifier<String?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -581,7 +581,7 @@ abstract class _$AiSearchEnabled extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -591,6 +591,6 @@ abstract class _$AiSearchEnabled extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

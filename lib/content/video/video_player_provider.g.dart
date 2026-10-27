@@ -48,7 +48,7 @@ abstract class _$FloatingVideoPlayer extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -58,7 +58,7 @@ abstract class _$FloatingVideoPlayer extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -92,7 +92,7 @@ abstract class _$VideoPlayer extends $AsyncNotifier<VideoPlayerController?> {
   FutureOr<VideoPlayerController?> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<AsyncValue<VideoPlayerController?>, VideoPlayerController?>;
@@ -107,7 +107,7 @@ abstract class _$VideoPlayer extends $AsyncNotifier<VideoPlayerController?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -149,7 +149,7 @@ abstract class _$SubtitlesOffset extends $Notifier<Duration> {
   Duration build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Duration, Duration>;
     final element =
         ref.element
@@ -159,7 +159,7 @@ abstract class _$SubtitlesOffset extends $Notifier<Duration> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -202,7 +202,7 @@ abstract class _$ShuffleModeSettings extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -212,7 +212,7 @@ abstract class _$ShuffleModeSettings extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -256,7 +256,7 @@ abstract class _$OnVideoEndsActionSettings
   OnVideoEndsAction build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<OnVideoEndsAction, OnVideoEndsAction>;
     final element =
         ref.element
@@ -266,7 +266,7 @@ abstract class _$OnVideoEndsActionSettings
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -311,7 +311,7 @@ abstract class _$StartVideoPositionSettings
   StartVideoPosition build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<StartVideoPosition, StartVideoPosition>;
     final element =
         ref.element
@@ -321,7 +321,7 @@ abstract class _$StartVideoPositionSettings
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -364,7 +364,7 @@ abstract class _$FixedPositionSettings extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -374,7 +374,7 @@ abstract class _$FixedPositionSettings extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -417,7 +417,7 @@ abstract class _$SubtitlesSizeSettings extends $Notifier<double> {
   double build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<double, double>;
     final element =
         ref.element
@@ -427,7 +427,7 @@ abstract class _$SubtitlesSizeSettings extends $Notifier<double> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -470,7 +470,7 @@ abstract class _$EqualizerBandsSettings extends $Notifier<List<double>> {
   List<double> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<List<double>, List<double>>;
     final element =
         ref.element
@@ -480,7 +480,7 @@ abstract class _$EqualizerBandsSettings extends $Notifier<List<double>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 

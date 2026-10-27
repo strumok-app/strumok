@@ -102,7 +102,7 @@ final class LatestAppVersionInfoProvider
 }
 
 String _$latestAppVersionInfoHash() =>
-    r'e75cffaac55d5f35152d7cbfc17417f0a7e415dc';
+    r'a66ff6ce3fcff1b58d47df222053a5a2dc4c8c06';
 
 @ProviderFor(AppDownload)
 final appDownloadProvider = AppDownloadProvider._();
@@ -142,7 +142,7 @@ abstract class _$AppDownload extends $Notifier<DownloadState> {
   DownloadState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<DownloadState, DownloadState>;
     final element =
         ref.element
@@ -152,6 +152,6 @@ abstract class _$AppDownload extends $Notifier<DownloadState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
