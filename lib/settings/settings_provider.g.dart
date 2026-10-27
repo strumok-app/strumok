@@ -112,51 +112,52 @@ abstract class _$BrightnessSetting extends $Notifier<Brightness?> {
   }
 }
 
-@ProviderFor(ColorSettings)
-final colorSettingsProvider = ColorSettingsProvider._();
+@ProviderFor(ColorSchemeSetting)
+final colorSchemeSettingProvider = ColorSchemeSettingProvider._();
 
-final class ColorSettingsProvider
-    extends $NotifierProvider<ColorSettings, Color> {
-  ColorSettingsProvider._()
+final class ColorSchemeSettingProvider
+    extends $NotifierProvider<ColorSchemeSetting, AppColorScheme> {
+  ColorSchemeSettingProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'colorSettingsProvider',
+        name: r'colorSchemeSettingProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$colorSettingsHash();
+  String debugGetCreateSourceHash() => _$colorSchemeSettingHash();
 
   @$internal
   @override
-  ColorSettings create() => ColorSettings();
+  ColorSchemeSetting create() => ColorSchemeSetting();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Color value) {
+  Override overrideWithValue(AppColorScheme value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<Color>(value),
+      providerOverride: $SyncValueProvider<AppColorScheme>(value),
     );
   }
 }
 
-String _$colorSettingsHash() => r'c267c017ab86c9e61c35f6538e707141d424e757';
+String _$colorSchemeSettingHash() =>
+    r'46e1017e25ac1b07cd3edf7f2935b64f9d396e24';
 
-abstract class _$ColorSettings extends $Notifier<Color> {
-  Color build();
+abstract class _$ColorSchemeSetting extends $Notifier<AppColorScheme> {
+  AppColorScheme build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<Color, Color>;
+    final ref = this.ref as $Ref<AppColorScheme, AppColorScheme>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<Color, Color>,
-              Color,
+              AnyNotifier<AppColorScheme, AppColorScheme>,
+              AppColorScheme,
               Object?,
               Object?
             >;

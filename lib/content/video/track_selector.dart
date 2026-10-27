@@ -60,6 +60,7 @@ class _TrackSelectorDialog extends StatelessWidget {
     final videoTracks = videoBackend.value.videoTracks;
 
     return AppTheme(
+      brightness: Brightness.dark,
       child: Dialog(
         child: SizedBox(
           width: 480,

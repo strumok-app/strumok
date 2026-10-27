@@ -6,20 +6,18 @@ import 'package:strumok/utils/visual.dart';
 
 class AppTheme extends ConsumerWidget {
   final Widget child;
+  final Brightness? brightness;
 
-  const AppTheme({super.key, required this.child});
+  const AppTheme({super.key, required this.child, this.brightness});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final brightness =
+        this.brightness ??
         ref.watch(brightnessSettingProvider) ??
         MediaQuery.platformBrightnessOf(context);
-    final color = ref.watch(colorSettingsProvider);
-
-    final colorScheme = ColorScheme.fromSeed(
-      brightness: brightness,
-      seedColor: color,
-    );
+    final scheme = ref.watch(colorSchemeSettingProvider);
+    final colorScheme = scheme.colorScheme(brightness);
 
     final focusBorder = BorderSide(color: colorScheme.onSurfaceVariant);
     final navigationIndicatorShape = RoundedRectangleBorder(
@@ -27,7 +25,7 @@ class AppTheme extends ConsumerWidget {
       side: focusBorder,
     );
 
-    if (isMobileDevice()) {
+    if (isMobileDevice() && this.brightness == null) {
       SystemChrome.setSystemUIOverlayStyle(
         brightness == Brightness.light
             ? SystemUiOverlayStyle.dark

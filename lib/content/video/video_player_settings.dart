@@ -41,6 +41,7 @@ class PlayerSettingsDialogState extends State<PlayerSettingsDialog>
   @override
   Widget build(BuildContext context) {
     return AppTheme(
+      brightness: Brightness.dark,
       child: Dialog(
         child: FocusScope(
           child: SingleChildScrollView(

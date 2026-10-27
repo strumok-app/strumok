@@ -4,6 +4,7 @@ import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/details/content_details_provider.dart';
 import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_player_view.dart';
+import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/utils/fullscrean.dart';
 import 'package:strumok/content/video/pip/pip.dart';
 import 'package:strumok/utils/tv.dart';
@@ -123,25 +124,30 @@ class _VideoContentScreenState extends ConsumerState<VideoContentScreen> {
   Widget build(BuildContext context) {
     final videoPlayer = ref.watch(videoPlayerProvider);
 
-    final content = Material(
-      color: Colors.black,
-      child: videoPlayer.when(
-        skipLoadingOnRefresh: false,
-        data: (controller) {
-          if (controller != null) {
-            return VideoPlayerView(controller: controller);
-          }
+    final content = AppTheme(
+      brightness: Brightness.dark,
+      child: Material(
+        color: Colors.black,
+        child: videoPlayer.when(
+          skipLoadingOnRefresh: false,
+          data: (controller) {
+            if (controller != null) {
+              return VideoPlayerView(controller: controller);
+            }
 
-          return SizedBox.shrink();
-        },
-        error: (error, stackTrace) => DisplayError(
-          error: error,
-          onRefresh: () =>
-              ref.refresh(detailsProvider(widget.supplier, widget.id).future),
-        ),
-        loading: () => const Material(
-          color: Colors.black,
-          child: Center(child: CircularProgressIndicator(color: Colors.white)),
+            return SizedBox.shrink();
+          },
+          error: (error, stackTrace) => DisplayError(
+            error: error,
+            onRefresh: () =>
+                ref.refresh(detailsProvider(widget.supplier, widget.id).future),
+          ),
+          loading: () => const Material(
+            color: Colors.black,
+            child: Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+          ),
         ),
       ),
     );

@@ -9,6 +9,7 @@ import 'package:strumok/content/video/video_player_provider.dart';
 import 'package:strumok/content/video/video_subtitles.dart';
 import 'package:strumok/content/video/video_view.dart';
 import 'package:strumok/content/video/widgets.dart';
+import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/utils/visual.dart';
 
 enum FloatingPlayerCorner { topLeft, topRight, bottomLeft, bottomRight }
@@ -172,14 +173,17 @@ class _FloatingVideoPlayerState extends State<FloatingVideoPlayer> {
           cursor: SystemMouseCursors.click,
           onEnter: (_) => setState(() => isHovering = true),
           onExit: (_) => setState(() => isHovering = false),
-          child: Material(
-            elevation: 8,
-            borderRadius: BorderRadius.circular(8),
-            clipBehavior: Clip.antiAlias,
-            color: Colors.black,
-            child: VideoContentControllerInheritedWidget(
-              controller: widget.controller,
-              child: _renderPlayer(),
+          child: AppTheme(
+            brightness: Brightness.dark,
+            child: Material(
+              elevation: 8,
+              borderRadius: BorderRadius.circular(8),
+              clipBehavior: Clip.antiAlias,
+              color: Colors.black,
+              child: VideoContentControllerInheritedWidget(
+                controller: widget.controller,
+                child: _renderPlayer(),
+              ),
             ),
           ),
         ),

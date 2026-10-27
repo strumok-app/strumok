@@ -54,6 +54,7 @@ class _SourceSelectDialog extends ConsumerWidget {
     );
 
     return AppTheme(
+      brightness: Brightness.dark,
       child: Dialog(
         child: sourceSelectorValue.when(
           data: (model) {

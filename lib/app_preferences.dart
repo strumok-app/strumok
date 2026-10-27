@@ -7,9 +7,9 @@ import 'package:collection/collection.dart';
 import 'package:content_suppliers_api/model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:strumok/layouts/app_colors.dart';
 
 class AppConstances {
-  static const Color defaultColor = Colors.green;
   static const equalizerBandsFreq = [60, 230, 910, 4000, 14000];
   static const equalizerDefaultBands = [0.0, 0.0, 0.0, 0.0, 0.0];
   static const equalizerMaxBands = [12.0, 12.0, 12.0, 12.0, 12.0];
@@ -20,7 +20,6 @@ class AppConstances {
 }
 
 class AppPreferences {
-  static const Color defaultColor = Colors.green;
   static const double defaultVolume = 100.0;
   static const int defaultLastSyncTimestamp = 0;
   static const bool defaultMangaReaderAutoCrop = true;
@@ -45,7 +44,7 @@ class AppPreferences {
       "selected_content_suppliers";
   static const String _keyUserLanguage = "user_language";
   static const String _keyThemeBrightness = "theme_brightness";
-  static const String _keyThemeColor = "theme_color";
+  static const String _keyThemeColorScheme = "theme_color_scheme";
   static const String _keyLastSyncTs = "last_sync_ts";
   static const String _keyVolume = "volume";
   static const String _keySuppliersOrder = "suppliers_order";
@@ -136,16 +135,15 @@ class AppPreferences {
       .where((type) => type.name == instance.getString(_keyThemeBrightness))
       .firstOrNull;
 
-  static set themeColor(Color color) =>
-      instance.setInt(_keyThemeColor, color.toARGB32());
+  static set themeColorScheme(AppColorScheme scheme) =>
+      instance.setString(_keyThemeColorScheme, scheme.name);
 
-  static Color get themeColor {
-    final colorValue = instance.getInt(_keyThemeColor);
-    return colorValue != null ? Color(colorValue) : AppPreferences.defaultColor;
-  }
+  static AppColorScheme get themeColorScheme =>
+      AppColorScheme.fromName(instance.getString(_keyThemeColorScheme));
 
   static int get lastSyncTimestamp =>
-      instance.getInt(_keyLastSyncTs) ?? AppPreferences.defaultLastSyncTimestamp;
+      instance.getInt(_keyLastSyncTs) ??
+      AppPreferences.defaultLastSyncTimestamp;
 
   static set lastSyncTimestamp(int timestamp) =>
       instance.setInt(_keyLastSyncTs, timestamp);

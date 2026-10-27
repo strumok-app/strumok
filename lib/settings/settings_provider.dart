@@ -1,6 +1,7 @@
 import 'package:strumok/app_preferences.dart';
 import 'package:strumok/content/manga/model.dart';
 import 'package:flutter/material.dart';
+import 'package:strumok/layouts/app_colors.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:strumok/download/offline_storage.dart';
 import 'dart:io';
@@ -34,15 +35,15 @@ class BrightnessSetting extends _$BrightnessSetting {
 }
 
 @Riverpod(keepAlive: true)
-class ColorSettings extends _$ColorSettings {
+class ColorSchemeSetting extends _$ColorSchemeSetting {
   @override
-  Color build() {
-    return AppPreferences.themeColor;
+  AppColorScheme build() {
+    return AppPreferences.themeColorScheme;
   }
 
-  void select(Color color) {
-    AppPreferences.themeColor = color;
-    state = color;
+  void select(AppColorScheme scheme) {
+    AppPreferences.themeColorScheme = scheme;
+    state = scheme;
   }
 }
 
