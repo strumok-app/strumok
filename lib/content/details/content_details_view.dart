@@ -13,7 +13,7 @@ class ContentDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, _) {
-        final mobile = isMobileSize(context);
+        final mobile = true; //isMobileSize(context);
 
         if (mobile) {
           return ContentDetailsMobileView(contentDetails: contentDetails);
