@@ -278,9 +278,17 @@ Future<void> _downloadStreamSegments(
         }
       }
 
-      if (!filter.syncFound) {
-        throw Exception('No MPEG-TS sync found in segment: ${segment.uri}');
-      } else if (filter.filteredBytes > 0) {
+      final remaining = filter.finish();
+      if (remaining != null) {
+        sink.add(remaining);
+        bytesDownloaded += remaining.length;
+        updateProgress(
+          i / manifest.segments.length,
+          downloadSpeed(startTs, bytesDownloaded),
+        );
+      }
+
+      if (filter.filteredBytes > 0) {
         logger.info(
           '[HLSProxyServer] Stripped ${filter.filteredBytes} leading junk bytes from segment: ${segment.uri}',
         );

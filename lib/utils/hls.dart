@@ -274,11 +274,11 @@ Future<HLSKey?> parseHLSKey(Uri masterUri, String keyLine) async {
 // MPEG-TS junk stripping
 //
 // Some CDNs prepend a 1×1 PNG tracking pixel (or other garbage) before
-// the real TS data. We buffer chunks until we have at least
-// 3 × 188 = 564 bytes, then locate the first offset where three
+// the real TS data. We buffer chunks until we can locate three
 // consecutive 0x47 bytes are exactly 188 bytes apart. Everything before
 // that offset is discarded. Once the sync is confirmed we switch to
-// direct passthrough with no extra buffering.
+// direct passthrough with no extra buffering. At end of stream, one or
+// two complete packets can also confirm a short segment.
 // -----------------------------------------------------------------------
 
 class TSJunkFilter {
@@ -318,21 +318,49 @@ class TSJunkFilter {
 
     pending.add(chunk);
 
-    // Wait until we have enough data to confirm a sync at position 0.
-    if (pending.length < 3 * _kTsPacketSize) return null;
+    if (pending.length < 2 * _kTsPacketSize + 1) return null;
 
     final bytes = pending.toBytes();
     final syncOffset = _findTsSyncOffset(bytes);
 
     if (syncOffset >= 0) {
-      syncFound = true;
-      filteredBytes = syncOffset;
-      // Use the accumulated buffer, not just the latest chunk, since the
-      // sync offset is relative to all bytes buffered so far.
-      return bytes.sublist(syncOffset);
+      return _confirmSync(bytes, syncOffset);
     }
 
     // else: keep buffering until the next chunk arrives.
     return null;
+  }
+
+  /// Flushes a short segment after the last chunk.
+  ///
+  /// Throws if the buffered data contains no confirmed TS packets. Encrypted
+  /// or non-TS data must bypass this filter.
+  List<int>? finish() {
+    if (syncFound) return null;
+
+    final bytes = pending.takeBytes();
+    for (var packetCount = 2; packetCount >= 1; packetCount--) {
+      final offset = bytes.length - packetCount * _kTsPacketSize;
+      if (offset < 0) continue;
+
+      var valid = true;
+      for (var i = offset; i < bytes.length; i += _kTsPacketSize) {
+        // adaptation_field_control == 0 is reserved, not a TS header.
+        if (bytes[i] != _kTsSyncByte || bytes[i + 3] & 0x30 == 0) {
+          valid = false;
+          break;
+        }
+      }
+      if (valid) return _confirmSync(bytes, offset);
+    }
+
+    throw const FormatException('No MPEG-TS sync found in segment');
+  }
+
+  List<int> _confirmSync(Uint8List bytes, int offset) {
+    syncFound = true;
+    filteredBytes = offset;
+    pending.clear();
+    return Uint8List.sublistView(bytes, offset);
   }
 }
