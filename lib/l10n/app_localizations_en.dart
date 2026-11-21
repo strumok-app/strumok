@@ -429,4 +429,28 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get aiSearchUnavailableTooltip =>
       'Set your Gemini API token in settings to enable AI Search';
+
+  @override
+  String get nextGenPromptTitle => 'New app available';
+
+  @override
+  String nextGenPromptMessage(Object version) {
+    return 'A new generation of the app ($version) is available. We recommend installing it to keep getting updates and new content suppliers.';
+  }
+
+  @override
+  String get nextGenPromptInstall => 'Install now';
+
+  @override
+  String get nextGenPromptLater => 'Later';
+
+  @override
+  String get nextGenPromptDownloading => 'Downloading…';
+
+  @override
+  String get nextGenPromptInstallFailed =>
+      'Installation failed. You can download the app manually from the release page.';
+
+  @override
+  String get nextGenPromptOpenReleasePage => 'Open release page';
 }

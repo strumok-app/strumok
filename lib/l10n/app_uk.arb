@@ -134,5 +134,12 @@
     "settingsAiSearchGeminiApiToken": "Gemini API Token",
     "settingsAiSearchGet": "Отримати",
     "settingsAiSearchTokenHint": "Введіть ваш API token",
-    "aiSearchUnavailableTooltip": "Встановіть свій Gemini API token у налаштуваннях, щоб увімкнути AI Search"
+    "aiSearchUnavailableTooltip": "Встановіть свій Gemini API token у налаштуваннях, щоб увімкнути AI Search",
+    "nextGenPromptTitle": "Доступний новий застосунок",
+    "nextGenPromptMessage": "Доступне нове покоління застосунку ({version}). Рекомендуємо встановити його, щоб отримувати оновлення та нові джерела контенту.",
+    "nextGenPromptInstall": "Встановити зараз",
+    "nextGenPromptLater": "Пізніше",
+    "nextGenPromptDownloading": "Завантаження…",
+    "nextGenPromptInstallFailed": "Не вдалося встановити. Ви можете завантажити застосунок вручну зі сторінки релізу.",
+    "nextGenPromptOpenReleasePage": "Відкрити сторінку релізу"
 }

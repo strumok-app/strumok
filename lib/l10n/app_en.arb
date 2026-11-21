@@ -134,5 +134,12 @@
     "settingsAiSearchGeminiApiToken": "Gemini API Token",
     "settingsAiSearchGet": "Get",
     "settingsAiSearchTokenHint": "Enter your API token",
-    "aiSearchUnavailableTooltip": "Set your Gemini API token in settings to enable AI Search"
+    "aiSearchUnavailableTooltip": "Set your Gemini API token in settings to enable AI Search",
+    "nextGenPromptTitle": "New app available",
+    "nextGenPromptMessage": "A new generation of the app ({version}) is available. We recommend installing it to keep getting updates and new content suppliers.",
+    "nextGenPromptInstall": "Install now",
+    "nextGenPromptLater": "Later",
+    "nextGenPromptDownloading": "Downloading…",
+    "nextGenPromptInstallFailed": "Installation failed. You can download the app manually from the release page.",
+    "nextGenPromptOpenReleasePage": "Open release page"
 }

@@ -261,6 +261,9 @@ class OfflineVideoMediaItemSource extends Equatable
   bool get hlsProxy => false;
 
   @override
+  ContentLanguage? get language => null;
+
+  @override
   List<Object?> get props => [link];
 }
 
@@ -301,4 +304,7 @@ class OfflineMangaMediaItemSource
 
   @override
   Map<String, String>? get headers => null;
+
+  @override
+  ContentLanguage? get language => null;
 }

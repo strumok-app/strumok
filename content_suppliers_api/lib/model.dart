@@ -56,10 +56,14 @@ abstract interface class ContentMediaItemSource {
   FileKind get kind;
   String get description;
   Map<String, String>? get headers;
+  ContentLanguage? get language;
 }
 
-abstract interface class VideoMediaItemSource extends ContentMediaItemSource {
+abstract interface class FileMediaItemSource extends ContentMediaItemSource {
   FutureOr<Uri> get link;
+}
+
+abstract interface class VideoMediaItemSource extends FileMediaItemSource {
   bool get hlsProxy;
 }
 
@@ -79,17 +83,17 @@ class SimpleVideoMediaItemSource implements VideoMediaItemSource {
   @override
   final bool hlsProxy;
 
+  @override
+  final ContentLanguage? language;
+
   SimpleVideoMediaItemSource({
     required this.kind,
     required this.description,
     required this.link,
     this.headers,
     this.hlsProxy = false,
+    this.language,
   });
-}
-
-abstract interface class FileMediaItemSource extends ContentMediaItemSource {
-  FutureOr<Uri> get link;
 }
 
 class SimpleFileMediaItemSource implements FileMediaItemSource {
@@ -105,11 +109,15 @@ class SimpleFileMediaItemSource implements FileMediaItemSource {
   @override
   final Map<String, String>? headers;
 
+  @override
+  final ContentLanguage? language;
+
   SimpleFileMediaItemSource({
     required this.kind,
     required this.description,
     required this.link,
     this.headers,
+    this.language,
   });
 }
 

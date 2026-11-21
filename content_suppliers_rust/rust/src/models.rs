@@ -53,16 +53,19 @@ pub enum ContentMediaItemSource {
         description: String,
         headers: Option<HashMap<String, String>>,
         hls_proxy: bool,
+        language: Option<String>,
     },
     Subtitle {
         link: String,
         description: String,
         headers: Option<HashMap<String, String>>,
+        language: Option<String>,
     },
     Manga {
         description: String,
         headers: Option<HashMap<String, String>>,
         pages: Option<Vec<String>>,
         params: Vec<String>,
+        language: Option<String>,
     },
 }

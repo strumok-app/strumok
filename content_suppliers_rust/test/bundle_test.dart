@@ -128,6 +128,7 @@ void main() async {
     expect(videoSource.kind, equals(FileKind.video));
     expect(videoSource.description, equals("$id 1,2,3"));
     expect(videoSource.headers, equals({"User-Agent": "dummy"}));
+    expect(videoSource.language, equals(ContentLanguage.en));
 
     expect(sources[1], isA<FileMediaItemSource>());
     final subtitleSource = sources[1] as FileMediaItemSource;
@@ -136,6 +137,7 @@ void main() async {
     expect(subtitleSource.kind, equals(FileKind.subtitle));
     expect(subtitleSource.description, equals("$id 1,2,3"));
     expect(subtitleSource.headers, equals({"User-Agent": "dummy"}));
+    expect(subtitleSource.language, equals(ContentLanguage.uk));
 
     expect(sources[2], isA<MangaMediaItemSource>());
     final mangaSource = sources[2] as MangaMediaItemSource;
@@ -144,6 +146,7 @@ void main() async {
     expect(pages, equals(["http://page1", "http://page2"]));
     expect(mangaSource.kind, equals(FileKind.manga));
     expect(mangaSource.description, equals("$id 1,2,3"));
+    expect(mangaSource.language, isNull);
   });
 
   test("should_load_manga_page_async", () async {

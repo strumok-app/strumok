@@ -12,6 +12,7 @@ import 'package:strumok/content_suppliers/content_suppliers.dart';
 import 'package:strumok/content_suppliers/ffi_suppliers_bundle_storage.dart';
 import 'package:strumok/layouts/app_theme.dart';
 import 'package:strumok/layouts/version_guard.dart';
+import 'package:strumok/layouts/next_gen_app_prompt.dart';
 import 'package:strumok/download/offline_storage.dart';
 import 'package:strumok/utils/http.dart';
 import 'package:strumok/video_backend/init.dart';
@@ -133,12 +134,15 @@ class MainApp extends ConsumerWidget {
         ),
         builder: (context, child) => AppTheme(
           child: Scaffold(
-            body: VersionGuard(
-              child: Stack(
-                children: [
-                  Positioned.fill(child: child!),
-                  FloatingVideoPlayerOverlay(_appRouter),
-                ],
+            body: NextGenAppPrompt(
+              _appRouter,
+              child: VersionGuard(
+                child: Stack(
+                  children: [
+                    Positioned.fill(child: child!),
+                    FloatingVideoPlayerOverlay(_appRouter),
+                  ],
+                ),
               ),
             ),
           ),

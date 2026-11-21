@@ -8,7 +8,7 @@ import 'package:content_suppliers_rust/rust/frb_generated.io.dart';
 import 'package:content_suppliers_rust/rust/models.dart' as models;
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-const compatibleApiVersion = 4;
+const compatibleApiVersion = 5;
 
 // ignore_for_file: invalid_use_of_internal_member
 class RustContentSuppliersBundle implements ContentSupplierBundle {
@@ -330,12 +330,14 @@ class _RustMediaItem implements ContentMediaItem {
       link: Uri.parse(item.link),
       headers: item.headers,
       hlsProxy: item.hlsProxy,
+      language: _mapLanguage(item.language),
     ),
     models.ContentMediaItemSource_Subtitle() => SimpleFileMediaItemSource(
       kind: FileKind.subtitle,
       description: item.description,
       link: Uri.parse(item.link),
       headers: item.headers,
+      language: _mapLanguage(item.language),
     ),
     models.ContentMediaItemSource_Manga() => _RustMangaMediaItemSource.fromRust(
       id,
@@ -346,6 +348,10 @@ class _RustMediaItem implements ContentMediaItem {
   };
 }
 
+ContentLanguage? _mapLanguage(String? language) => language == null
+    ? null
+    : ContentLanguage.values.firstWhereOrNull((v) => v.name == language);
+
 class _RustMangaMediaItemSource implements MangaMediaItemSource {
   final String id;
   final String supplier;
@@ -353,6 +359,8 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
   final String description;
   @override
   final Map<String, String>? headers;
+  @override
+  final ContentLanguage? language;
 
   List<String>? _pages;
   final RustLibApi _api;
@@ -366,6 +374,7 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
     required RustLibApi api,
     required List<String> params,
     this.headers,
+    this.language,
   }) : _pages = pages,
        _api = api,
        _params = params;
@@ -383,6 +392,7 @@ class _RustMangaMediaItemSource implements MangaMediaItemSource {
       headers: item.headers,
       pages: item.pages,
       params: item.params,
+      language: _mapLanguage(item.language),
       api: api,
     );
   }

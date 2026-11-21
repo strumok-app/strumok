@@ -428,4 +428,28 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get aiSearchUnavailableTooltip =>
       'Встановіть свій Gemini API token у налаштуваннях, щоб увімкнути AI Search';
+
+  @override
+  String get nextGenPromptTitle => 'Доступний новий застосунок';
+
+  @override
+  String nextGenPromptMessage(Object version) {
+    return 'Доступне нове покоління застосунку ($version). Рекомендуємо встановити його, щоб отримувати оновлення та нові джерела контенту.';
+  }
+
+  @override
+  String get nextGenPromptInstall => 'Встановити зараз';
+
+  @override
+  String get nextGenPromptLater => 'Пізніше';
+
+  @override
+  String get nextGenPromptDownloading => 'Завантаження…';
+
+  @override
+  String get nextGenPromptInstallFailed =>
+      'Не вдалося встановити. Ви можете завантажити застосунок вручну зі сторінки релізу.';
+
+  @override
+  String get nextGenPromptOpenReleasePage => 'Відкрити сторінку релізу';
 }

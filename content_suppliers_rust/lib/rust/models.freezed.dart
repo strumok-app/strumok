@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'models.dart';
@@ -9,12 +9,13 @@ part of 'models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ContentMediaItemSource {
 
- String get description; Map<String, String>? get headers;
+ String get description; Map<String, String>? get headers; String? get language;
 /// Create a copy of ContentMediaItemSource
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,21 @@ $ContentMediaItemSourceCopyWith<ContentMediaItemSource> get copyWith => _$Conten
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContentMediaItemSource&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.headers, headers));
+  final _this = this as ContentMediaItemSource;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContentMediaItemSource&&(identical(other.description, _this.description) || other.description == _this.description)&&const DeepCollectionEquality().equals(other.headers, _this.headers)&&(identical(other.language, _this.language) || other.language == _this.language));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,description,const DeepCollectionEquality().hash(headers));
+int get hashCode {
+  final _this = this as ContentMediaItemSource;
+  return Object.hash(runtimeType,_this.description,const DeepCollectionEquality().hash(_this.headers),_this.language);
+}
 
 @override
 String toString() {
-  return 'ContentMediaItemSource(description: $description, headers: $headers)';
+  final _this = this as ContentMediaItemSource;
+  return 'ContentMediaItemSource(description: ${_this.description}, headers: ${_this.headers}, language: ${_this.language})';
 }
 
 
@@ -45,7 +51,7 @@ abstract mixin class $ContentMediaItemSourceCopyWith<$Res>  {
   factory $ContentMediaItemSourceCopyWith(ContentMediaItemSource value, $Res Function(ContentMediaItemSource) _then) = _$ContentMediaItemSourceCopyWithImpl;
 @useResult
 $Res call({
- String description, Map<String, String>? headers
+ String description, Map<String, String>? headers, String? language
 });
 
 
@@ -62,11 +68,12 @@ class _$ContentMediaItemSourceCopyWithImpl<$Res>
 
 /// Create a copy of ContentMediaItemSource
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? description = null,Object? headers = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? description = null,Object? headers = freezed,Object? language = freezed,}) {
   return _then(_self.copyWith(
 description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
-as Map<String, String>?,
+as Map<String, String>?,language: freezed == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -154,12 +161,12 @@ return manga(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String link,  String description,  Map<String, String>? headers,  bool hlsProxy)?  video,TResult Function( String link,  String description,  Map<String, String>? headers)?  subtitle,TResult Function( String description,  Map<String, String>? headers,  List<String>? pages,  List<String> params)?  manga,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String link,  String description,  Map<String, String>? headers,  bool hlsProxy,  String? language)?  video,TResult Function( String link,  String description,  Map<String, String>? headers,  String? language)?  subtitle,TResult Function( String description,  Map<String, String>? headers,  List<String>? pages,  List<String> params,  String? language)?  manga,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ContentMediaItemSource_Video() when video != null:
-return video(_that.link,_that.description,_that.headers,_that.hlsProxy);case ContentMediaItemSource_Subtitle() when subtitle != null:
-return subtitle(_that.link,_that.description,_that.headers);case ContentMediaItemSource_Manga() when manga != null:
-return manga(_that.description,_that.headers,_that.pages,_that.params);case _:
+return video(_that.link,_that.description,_that.headers,_that.hlsProxy,_that.language);case ContentMediaItemSource_Subtitle() when subtitle != null:
+return subtitle(_that.link,_that.description,_that.headers,_that.language);case ContentMediaItemSource_Manga() when manga != null:
+return manga(_that.description,_that.headers,_that.pages,_that.params,_that.language);case _:
   return orElse();
 
 }
@@ -177,12 +184,12 @@ return manga(_that.description,_that.headers,_that.pages,_that.params);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String link,  String description,  Map<String, String>? headers,  bool hlsProxy)  video,required TResult Function( String link,  String description,  Map<String, String>? headers)  subtitle,required TResult Function( String description,  Map<String, String>? headers,  List<String>? pages,  List<String> params)  manga,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String link,  String description,  Map<String, String>? headers,  bool hlsProxy,  String? language)  video,required TResult Function( String link,  String description,  Map<String, String>? headers,  String? language)  subtitle,required TResult Function( String description,  Map<String, String>? headers,  List<String>? pages,  List<String> params,  String? language)  manga,}) {final _that = this;
 switch (_that) {
 case ContentMediaItemSource_Video():
-return video(_that.link,_that.description,_that.headers,_that.hlsProxy);case ContentMediaItemSource_Subtitle():
-return subtitle(_that.link,_that.description,_that.headers);case ContentMediaItemSource_Manga():
-return manga(_that.description,_that.headers,_that.pages,_that.params);}
+return video(_that.link,_that.description,_that.headers,_that.hlsProxy,_that.language);case ContentMediaItemSource_Subtitle():
+return subtitle(_that.link,_that.description,_that.headers,_that.language);case ContentMediaItemSource_Manga():
+return manga(_that.description,_that.headers,_that.pages,_that.params,_that.language);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -196,12 +203,12 @@ return manga(_that.description,_that.headers,_that.pages,_that.params);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String link,  String description,  Map<String, String>? headers,  bool hlsProxy)?  video,TResult? Function( String link,  String description,  Map<String, String>? headers)?  subtitle,TResult? Function( String description,  Map<String, String>? headers,  List<String>? pages,  List<String> params)?  manga,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String link,  String description,  Map<String, String>? headers,  bool hlsProxy,  String? language)?  video,TResult? Function( String link,  String description,  Map<String, String>? headers,  String? language)?  subtitle,TResult? Function( String description,  Map<String, String>? headers,  List<String>? pages,  List<String> params,  String? language)?  manga,}) {final _that = this;
 switch (_that) {
 case ContentMediaItemSource_Video() when video != null:
-return video(_that.link,_that.description,_that.headers,_that.hlsProxy);case ContentMediaItemSource_Subtitle() when subtitle != null:
-return subtitle(_that.link,_that.description,_that.headers);case ContentMediaItemSource_Manga() when manga != null:
-return manga(_that.description,_that.headers,_that.pages,_that.params);case _:
+return video(_that.link,_that.description,_that.headers,_that.hlsProxy,_that.language);case ContentMediaItemSource_Subtitle() when subtitle != null:
+return subtitle(_that.link,_that.description,_that.headers,_that.language);case ContentMediaItemSource_Manga() when manga != null:
+return manga(_that.description,_that.headers,_that.pages,_that.params,_that.language);case _:
   return null;
 
 }
@@ -213,7 +220,7 @@ return manga(_that.description,_that.headers,_that.pages,_that.params);case _:
 
 
 class ContentMediaItemSource_Video extends ContentMediaItemSource {
-  const ContentMediaItemSource_Video({required this.link, required this.description, final  Map<String, String>? headers, required this.hlsProxy}): _headers = headers,super._();
+  const ContentMediaItemSource_Video({required this.link, required this.description,  Map<String, String>? headers, required this.hlsProxy, this.language}): _headers = headers,super._();
   
 
  final  String link;
@@ -228,6 +235,7 @@ class ContentMediaItemSource_Video extends ContentMediaItemSource {
 }
 
  final  bool hlsProxy;
+@override final  String? language;
 
 /// Create a copy of ContentMediaItemSource
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +247,18 @@ $ContentMediaItemSource_VideoCopyWith<ContentMediaItemSource_Video> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContentMediaItemSource_Video&&(identical(other.link, link) || other.link == link)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._headers, _headers)&&(identical(other.hlsProxy, hlsProxy) || other.hlsProxy == hlsProxy));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ContentMediaItemSource_Video&&(identical(other.link, link) || other.link == link)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.headers, _headers)&&(identical(other.hlsProxy, hlsProxy) || other.hlsProxy == hlsProxy)&&(identical(other.language, language) || other.language == language));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,link,description,const DeepCollectionEquality().hash(_headers),hlsProxy);
+int get hashCode {
+    return Object.hash(runtimeType,link,description,const DeepCollectionEquality().hash(_headers),hlsProxy,language);
+}
 
 @override
 String toString() {
-  return 'ContentMediaItemSource.video(link: $link, description: $description, headers: $headers, hlsProxy: $hlsProxy)';
+    return 'ContentMediaItemSource.video(link: $link, description: $description, headers: $headers, hlsProxy: $hlsProxy, language: $language)';
 }
 
 
@@ -259,7 +269,7 @@ abstract mixin class $ContentMediaItemSource_VideoCopyWith<$Res> implements $Con
   factory $ContentMediaItemSource_VideoCopyWith(ContentMediaItemSource_Video value, $Res Function(ContentMediaItemSource_Video) _then) = _$ContentMediaItemSource_VideoCopyWithImpl;
 @override @useResult
 $Res call({
- String link, String description, Map<String, String>? headers, bool hlsProxy
+ String link, String description, Map<String, String>? headers, bool hlsProxy, String? language
 });
 
 
@@ -276,13 +286,14 @@ class _$ContentMediaItemSource_VideoCopyWithImpl<$Res>
 
 /// Create a copy of ContentMediaItemSource
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? link = null,Object? description = null,Object? headers = freezed,Object? hlsProxy = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? link = null,Object? description = null,Object? headers = freezed,Object? hlsProxy = null,Object? language = freezed,}) {
   return _then(ContentMediaItemSource_Video(
 link: null == link ? _self.link : link // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,headers: freezed == headers ? _self._headers : headers // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,hlsProxy: null == hlsProxy ? _self.hlsProxy : hlsProxy // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,language: freezed == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -293,7 +304,7 @@ as bool,
 
 
 class ContentMediaItemSource_Subtitle extends ContentMediaItemSource {
-  const ContentMediaItemSource_Subtitle({required this.link, required this.description, final  Map<String, String>? headers}): _headers = headers,super._();
+  const ContentMediaItemSource_Subtitle({required this.link, required this.description,  Map<String, String>? headers, this.language}): _headers = headers,super._();
   
 
  final  String link;
@@ -307,6 +318,7 @@ class ContentMediaItemSource_Subtitle extends ContentMediaItemSource {
   return EqualUnmodifiableMapView(value);
 }
 
+@override final  String? language;
 
 /// Create a copy of ContentMediaItemSource
 /// with the given fields replaced by the non-null parameter values.
@@ -318,16 +330,18 @@ $ContentMediaItemSource_SubtitleCopyWith<ContentMediaItemSource_Subtitle> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContentMediaItemSource_Subtitle&&(identical(other.link, link) || other.link == link)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._headers, _headers));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ContentMediaItemSource_Subtitle&&(identical(other.link, link) || other.link == link)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.headers, _headers)&&(identical(other.language, language) || other.language == language));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,link,description,const DeepCollectionEquality().hash(_headers));
+int get hashCode {
+    return Object.hash(runtimeType,link,description,const DeepCollectionEquality().hash(_headers),language);
+}
 
 @override
 String toString() {
-  return 'ContentMediaItemSource.subtitle(link: $link, description: $description, headers: $headers)';
+    return 'ContentMediaItemSource.subtitle(link: $link, description: $description, headers: $headers, language: $language)';
 }
 
 
@@ -338,7 +352,7 @@ abstract mixin class $ContentMediaItemSource_SubtitleCopyWith<$Res> implements $
   factory $ContentMediaItemSource_SubtitleCopyWith(ContentMediaItemSource_Subtitle value, $Res Function(ContentMediaItemSource_Subtitle) _then) = _$ContentMediaItemSource_SubtitleCopyWithImpl;
 @override @useResult
 $Res call({
- String link, String description, Map<String, String>? headers
+ String link, String description, Map<String, String>? headers, String? language
 });
 
 
@@ -355,12 +369,13 @@ class _$ContentMediaItemSource_SubtitleCopyWithImpl<$Res>
 
 /// Create a copy of ContentMediaItemSource
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? link = null,Object? description = null,Object? headers = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? link = null,Object? description = null,Object? headers = freezed,Object? language = freezed,}) {
   return _then(ContentMediaItemSource_Subtitle(
 link: null == link ? _self.link : link // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,headers: freezed == headers ? _self._headers : headers // ignore: cast_nullable_to_non_nullable
-as Map<String, String>?,
+as Map<String, String>?,language: freezed == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -371,7 +386,7 @@ as Map<String, String>?,
 
 
 class ContentMediaItemSource_Manga extends ContentMediaItemSource {
-  const ContentMediaItemSource_Manga({required this.description, final  Map<String, String>? headers, final  List<String>? pages, required final  List<String> params}): _headers = headers,_pages = pages,_params = params,super._();
+  const ContentMediaItemSource_Manga({required this.description,  Map<String, String>? headers,  List<String>? pages, required  List<String> params, this.language}): _headers = headers,_pages = pages,_params = params,super._();
   
 
 @override final  String description;
@@ -400,6 +415,7 @@ class ContentMediaItemSource_Manga extends ContentMediaItemSource {
   return EqualUnmodifiableListView(_params);
 }
 
+@override final  String? language;
 
 /// Create a copy of ContentMediaItemSource
 /// with the given fields replaced by the non-null parameter values.
@@ -411,16 +427,18 @@ $ContentMediaItemSource_MangaCopyWith<ContentMediaItemSource_Manga> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContentMediaItemSource_Manga&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._headers, _headers)&&const DeepCollectionEquality().equals(other._pages, _pages)&&const DeepCollectionEquality().equals(other._params, _params));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ContentMediaItemSource_Manga&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.headers, _headers)&&const DeepCollectionEquality().equals(other.pages, _pages)&&const DeepCollectionEquality().equals(other.params, _params)&&(identical(other.language, language) || other.language == language));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,description,const DeepCollectionEquality().hash(_headers),const DeepCollectionEquality().hash(_pages),const DeepCollectionEquality().hash(_params));
+int get hashCode {
+    return Object.hash(runtimeType,description,const DeepCollectionEquality().hash(_headers),const DeepCollectionEquality().hash(_pages),const DeepCollectionEquality().hash(_params),language);
+}
 
 @override
 String toString() {
-  return 'ContentMediaItemSource.manga(description: $description, headers: $headers, pages: $pages, params: $params)';
+    return 'ContentMediaItemSource.manga(description: $description, headers: $headers, pages: $pages, params: $params, language: $language)';
 }
 
 
@@ -431,7 +449,7 @@ abstract mixin class $ContentMediaItemSource_MangaCopyWith<$Res> implements $Con
   factory $ContentMediaItemSource_MangaCopyWith(ContentMediaItemSource_Manga value, $Res Function(ContentMediaItemSource_Manga) _then) = _$ContentMediaItemSource_MangaCopyWithImpl;
 @override @useResult
 $Res call({
- String description, Map<String, String>? headers, List<String>? pages, List<String> params
+ String description, Map<String, String>? headers, List<String>? pages, List<String> params, String? language
 });
 
 
@@ -448,13 +466,14 @@ class _$ContentMediaItemSource_MangaCopyWithImpl<$Res>
 
 /// Create a copy of ContentMediaItemSource
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? description = null,Object? headers = freezed,Object? pages = freezed,Object? params = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? description = null,Object? headers = freezed,Object? pages = freezed,Object? params = null,Object? language = freezed,}) {
   return _then(ContentMediaItemSource_Manga(
 description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,headers: freezed == headers ? _self._headers : headers // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,pages: freezed == pages ? _self._pages : pages // ignore: cast_nullable_to_non_nullable
 as List<String>?,params: null == params ? _self._params : params // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as List<String>,language: freezed == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

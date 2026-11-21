@@ -907,6 +907,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set your Gemini API token in settings to enable AI Search'**
   String get aiSearchUnavailableTooltip;
+
+  /// No description provided for @nextGenPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New app available'**
+  String get nextGenPromptTitle;
+
+  /// No description provided for @nextGenPromptMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A new generation of the app ({version}) is available. We recommend installing it to keep getting updates and new content suppliers.'**
+  String nextGenPromptMessage(Object version);
+
+  /// No description provided for @nextGenPromptInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install now'**
+  String get nextGenPromptInstall;
+
+  /// No description provided for @nextGenPromptLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get nextGenPromptLater;
+
+  /// No description provided for @nextGenPromptDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading…'**
+  String get nextGenPromptDownloading;
+
+  /// No description provided for @nextGenPromptInstallFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Installation failed. You can download the app manually from the release page.'**
+  String get nextGenPromptInstallFailed;
+
+  /// No description provided for @nextGenPromptOpenReleasePage.
+  ///
+  /// In en, this message translates to:
+  /// **'Open release page'**
+  String get nextGenPromptOpenReleasePage;
 }
 
 class _AppLocalizationsDelegate
